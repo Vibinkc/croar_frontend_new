@@ -65,12 +65,12 @@ function SuperAdminDashboardContent() {
     const health = stats?.system_status;
     const healthStyle =
         health === "Operational"
-            ? { gradient: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)", icon: "dns", tone: "success" as const }
+            ? { gradient: "linear-gradient(135deg,#66BB6A,#2E7D32)", glow: "rgba(46,125,50,0.25)", icon: "dns", tone: "success" as const }
             : health === "Degraded"
-                ? { gradient: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)", icon: "warning", tone: "warning" as const }
+                ? { gradient: "linear-gradient(135deg,#FFB300,#EF6C00)", glow: "rgba(239,108,0,0.25)", icon: "warning", tone: "warning" as const }
                 : health === "Down"
-                    ? { gradient: "linear-gradient(135deg,#F87171,#DC2626)", glow: "rgba(220,38,38,0.25)", icon: "error", tone: "danger" as const }
-                    : { gradient: "linear-gradient(135deg,#94A3B8,#64748B)", glow: "rgba(100,116,139,0.25)", icon: "dns", tone: "neutral" as const };
+                    ? { gradient: "linear-gradient(135deg,#F87171,#DC2626)", glow: "rgba(198,40,40,0.25)", icon: "error", tone: "danger" as const }
+                    : { gradient: "linear-gradient(135deg,#94A3B8,#616161)", glow: "rgba(100,116,139,0.25)", icon: "dns", tone: "neutral" as const };
 
     const quickActions = [
         { label: t("superAdmin.newOrganization"), desc: t("superAdmin.provisionNewTenant"), icon: "add_business", href: "/super-admin/organizations" },
@@ -90,26 +90,26 @@ function SuperAdminDashboardContent() {
 
             {/* Stats */}
             <StatGrid>
-                <StatCard label={t("superAdmin.totalOrganizations")} value={isLoading ? "—" : stats?.tenants ?? 0} icon="corporate_fare" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
-                <StatCard label={t("superAdmin.platformUsers")} value={isLoading ? "—" : stats?.users ?? 0} icon="groups" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-                <StatCard label={t("superAdmin.globalRoles")} value={isLoading ? "—" : stats?.global_roles ?? 0} icon="security" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+                <StatCard label={t("superAdmin.totalOrganizations")} value={isLoading ? "—" : stats?.tenants ?? 0} icon="corporate_fare" gradient="linear-gradient(135deg,#42A5F5,#1976D2)" glow="rgba(25,118,210,0.28)" />
+                <StatCard label={t("superAdmin.platformUsers")} value={isLoading ? "—" : stats?.users ?? 0} icon="groups" gradient="linear-gradient(135deg,#66BB6A,#2E7D32)" glow="rgba(46,125,50,0.25)" />
+                <StatCard label={t("superAdmin.globalRoles")} value={isLoading ? "—" : stats?.global_roles ?? 0} icon="security" gradient="linear-gradient(135deg,#42A5F5,#1565C0)" glow="rgba(21,101,192,0.25)" />
                 <StatCard label={t("superAdmin.systemHealth")} value={isLoading ? "—" : stats?.system_status ?? t("superAdmin.unknown")} icon={healthStyle.icon} gradient={healthStyle.gradient} glow={healthStyle.glow} />
             </StatGrid>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                 {/* Quick actions */}
                 <div className="lg:col-span-2">
-                    <h3 className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#8A929E] mb-3 px-1">{t("superAdmin.administrativeActions")}</h3>
+                    <h3 className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#757575] mb-3 px-1">{t("superAdmin.administrativeActions")}</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         {quickActions.map((a) => (
                             <Link key={a.label} href={a.href} className="group">
                                 <Card interactive className="flex items-center gap-3.5 h-full">
-                                    <span className="w-10 h-10 rounded-[11px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0 group-hover:bg-[#5B53E0] group-hover:text-white transition-colors">
+                                    <span className="w-10 h-10 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0 group-hover:bg-[#1976D2] group-hover:text-white transition-colors">
                                         <span className="material-symbols-rounded text-[20px]">{a.icon}</span>
                                     </span>
                                     <div className="min-w-0">
-                                        <p className="text-[13.5px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors">{a.label}</p>
-                                        <p className="text-[12px] text-[#8A929E] mt-0.5">{a.desc}</p>
+                                        <p className="text-[13.5px] font-bold text-[#212121] group-hover:text-[#1976D2] transition-colors">{a.label}</p>
+                                        <p className="text-[12px] text-[#757575] mt-0.5">{a.desc}</p>
                                     </div>
                                 </Card>
                             </Link>
@@ -119,30 +119,30 @@ function SuperAdminDashboardContent() {
 
                 {/* Recent activity */}
                 <div>
-                    <h3 className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#8A929E] mb-3 px-1">{t("superAdmin.recentActivity")}</h3>
+                    <h3 className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#757575] mb-3 px-1">{t("superAdmin.recentActivity")}</h3>
                     <Card padding="none" className="overflow-hidden">
                         {logsLoading ? (
                             <div className="p-4 space-y-2.5">
                                 {[1, 2, 3, 4].map((i) => (
-                                    <div key={i} className="h-12 bg-[#F4F5F7] rounded-[10px] animate-pulse" />
+                                    <div key={i} className="h-12 bg-[#F5F6F8] rounded-[4px] animate-pulse" />
                                 ))}
                             </div>
                         ) : recent.length === 0 ? (
-                            <p className="px-5 py-8 text-center text-[12.5px] text-[#8A929E]">{t("superAdmin.noRecentActivity")}</p>
+                            <p className="px-5 py-8 text-center text-[12.5px] text-[#757575]">{t("superAdmin.noRecentActivity")}</p>
                         ) : (
-                            <div className="divide-y divide-[#F0F0F1]">
+                            <div className="divide-y divide-[#EEEEEE]">
                                 {recent.map((log) => (
                                     <div key={log.id} className="flex items-start gap-3 px-5 py-3.5">
-                                        <span className="w-1.5 h-1.5 rounded-full bg-[#5B53E0] mt-1.5 shrink-0" />
+                                        <span className="w-1.5 h-1.5 rounded-full bg-[#1976D2] mt-1.5 shrink-0" />
                                         <div className="min-w-0">
-                                            <p className="text-[12.5px] font-semibold text-[#374151] leading-snug break-words">{log.action}</p>
-                                            <p className="text-[11px] text-[#9AA3AF] mt-1">{timeAgo(log.timestamp)}</p>
+                                            <p className="text-[12.5px] font-semibold text-[#424242] leading-snug break-words">{log.action}</p>
+                                            <p className="text-[11px] text-[#9E9E9E] mt-1">{timeAgo(log.timestamp)}</p>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         )}
-                        <Link href="/super-admin/logs" className="block text-center py-3 text-[12.5px] font-semibold text-[#5B53E0] hover:bg-[#F7F8FA] transition-colors border-t border-[#F0F0F1]">
+                        <Link href="/super-admin/logs" className="block text-center py-3 text-[12.5px] font-semibold text-[#1976D2] hover:bg-[#FAFAFA] transition-colors border-t border-[#EEEEEE]">
                             {t("superAdmin.viewDetailedLogs")}
                         </Link>
                     </Card>
@@ -155,7 +155,7 @@ function SuperAdminDashboardContent() {
 export default function SuperAdminDashboard() {
     const { t } = useI18n();
     return (
-        <Suspense fallback={<div className="p-8 text-[13px] text-[#8A929E]">{t("superAdmin.loadingSystemMetrics")}</div>}>
+        <Suspense fallback={<div className="p-8 text-[13px] text-[#757575]">{t("superAdmin.loadingSystemMetrics")}</div>}>
             <SuperAdminDashboardContent />
         </Suspense>
     );

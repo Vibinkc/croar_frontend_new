@@ -59,23 +59,23 @@ export function GuideBook() {
 
     return createPortal(
         <div className="fixed inset-0 z-[80] flex items-center justify-center p-3 sm:p-5">
-            <div className="absolute inset-0 bg-[#0E1014]/55 backdrop-blur-sm" onClick={close} aria-hidden />
+            <div className="absolute inset-0 bg-[#1E2A38]/55 backdrop-blur-sm" onClick={close} aria-hidden />
 
-            <div className="relative w-full max-w-[960px] h-[min(86vh,720px)] bg-white rounded-[18px] border border-[#E8EAED] shadow-[0_30px_80px_rgba(15,23,42,0.35)] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="relative w-full max-w-[960px] h-[min(86vh,720px)] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_30px_80px_rgba(0,0,0,0.35)] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
                 {/* Header */}
-                <div className="px-5 py-4 bg-[#0E1014] text-white relative shrink-0">
-                    <div className="absolute inset-0 opacity-70" style={{ background: "radial-gradient(120% 140% at 100% 0%, rgba(91,83,224,0.5), transparent 55%)" }} />
+                <div className="px-5 py-4 bg-[#1E2A38] text-white relative shrink-0">
+                    <div className="absolute inset-0 opacity-70" style={{ background: "radial-gradient(120% 140% at 100% 0%, rgba(25,118,210,0.5), transparent 55%)" }} />
                     <div className="relative flex items-center justify-between gap-4">
                         <div className="flex items-center gap-2.5 min-w-0">
-                            <span className="w-9 h-9 rounded-[10px] bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
-                                <span className="material-symbols-rounded text-[20px] text-[#8B7DFF]">menu_book</span>
+                            <span className="w-9 h-9 rounded-[4px] bg-white/10 border border-white/15 flex items-center justify-center shrink-0">
+                                <span className="material-symbols-rounded text-[20px] text-[#42A5F5]">menu_book</span>
                             </span>
                             <div className="min-w-0">
                                 <h2 className="text-[16px] font-bold leading-tight">{tr("sharedUi.croarGuide")}</h2>
                                 <p className="text-[12px] text-white/55">{tr("sharedUi.everythingExplained")}</p>
                             </div>
                         </div>
-                        <button onClick={close} aria-label={tr("sharedUi.closeGuide")} className="w-8 h-8 rounded-[9px] hover:bg-white/10 text-white/70 hover:text-white transition-colors flex items-center justify-center shrink-0">
+                        <button onClick={close} aria-label={tr("sharedUi.closeGuide")} className="w-8 h-8 rounded-[4px] hover:bg-white/10 text-white/70 hover:text-white transition-colors flex items-center justify-center shrink-0">
                             <span className="material-symbols-rounded text-[20px]">close</span>
                         </button>
                     </div>
@@ -86,7 +86,7 @@ export function GuideBook() {
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             placeholder={tr("sharedUi.searchGuide")}
-                            className="w-full h-9 pl-9 pr-3 rounded-[9px] bg-white/[0.08] border border-white/15 text-[13px] text-white placeholder:text-white/40 outline-none focus:border-[#8B7DFF] focus:bg-white/[0.12] transition-colors"
+                            className="w-full h-9 pl-9 pr-3 rounded-[4px] bg-white/[0.08] border border-white/15 text-[13px] text-white placeholder:text-white/40 outline-none focus:border-[#42A5F5] focus:bg-white/[0.12] transition-colors"
                         />
                     </div>
                 </div>
@@ -94,9 +94,9 @@ export function GuideBook() {
                 {/* Body */}
                 <div className="flex-1 flex flex-col md:flex-row min-h-0">
                     {/* Topic nav */}
-                    <nav className="flex md:flex-col gap-1 p-2.5 md:w-[208px] shrink-0 border-b md:border-b-0 md:border-r border-[#E8EAED] overflow-x-auto md:overflow-y-auto bg-[#FAFAFB]">
+                    <nav className="flex md:flex-col gap-1 p-2.5 md:w-[208px] shrink-0 border-b md:border-b-0 md:border-r border-[#E0E0E0] overflow-x-auto md:overflow-y-auto bg-[#FAFAFB]">
                         {filtered.length === 0 && (
-                            <p className="text-[12px] text-[#8A929E] px-2 py-1.5">{tr("sharedUi.noMatches")}</p>
+                            <p className="text-[12px] text-[#757575] px-2 py-1.5">{tr("sharedUi.noMatches")}</p>
                         )}
                         {filtered.map((t) => {
                             const on = t.id === active.id;
@@ -104,9 +104,9 @@ export function GuideBook() {
                                 <button
                                     key={t.id}
                                     onClick={() => setActiveId(t.id)}
-                                    className={`flex items-center gap-2.5 px-3 h-9 rounded-[9px] text-[13px] font-semibold whitespace-nowrap transition-colors shrink-0 ${on ? "bg-[#ECEBFB] text-[#5B53E0]" : "text-[#6B6F76] hover:bg-[#F1F2F5] hover:text-[#374151]"}`}
+                                    className={`flex items-center gap-2.5 px-3 h-9 rounded-[4px] text-[13px] font-semibold whitespace-nowrap transition-colors shrink-0 ${on ? "bg-[#E3F2FD] text-[#1976D2]" : "text-[#616161] hover:bg-[#EEEEEE] hover:text-[#424242]"}`}
                                 >
-                                    <span className={`material-symbols-rounded text-[19px] ${on ? "text-[#5B53E0]" : "text-[#9AA3AF]"}`}>{t.icon}</span>
+                                    <span className={`material-symbols-rounded text-[19px] ${on ? "text-[#1976D2]" : "text-[#9E9E9E]"}`}>{t.icon}</span>
                                     {t.title}
                                 </button>
                             );
@@ -116,25 +116,25 @@ export function GuideBook() {
                     {/* Content */}
                     <div className="flex-1 overflow-y-auto p-5 sm:p-6 custom-scrollbar">
                         <div className="max-w-[620px]">
-                            <h3 className="text-[20px] font-extrabold tracking-[-0.4px] text-[#15171C]">{active.title}</h3>
-                            <p className="text-[13.5px] text-[#8A929E] mt-0.5 mb-5">{active.summary}</p>
+                            <h3 className="text-[20px] font-extrabold tracking-[-0.4px] text-[#212121]">{active.title}</h3>
+                            <p className="text-[13.5px] text-[#757575] mt-0.5 mb-5">{active.summary}</p>
 
                             <div className="space-y-6">
                                 {active.blocks.map((b, i) => (
                                     <section key={i}>
                                         {b.heading && (
-                                            <h4 className="text-[13px] font-bold uppercase tracking-[0.05em] text-[#8A929E] mb-2.5">{b.heading}</h4>
+                                            <h4 className="text-[13px] font-bold uppercase tracking-[0.05em] text-[#757575] mb-2.5">{b.heading}</h4>
                                         )}
 
                                         {b.paragraphs?.map((p, j) => (
-                                            <p key={j} className="text-[13.5px] leading-relaxed text-[#374151] mb-2">{p}</p>
+                                            <p key={j} className="text-[13.5px] leading-relaxed text-[#424242] mb-2">{p}</p>
                                         ))}
 
                                         {b.steps && (
                                             <ol className="space-y-2">
                                                 {b.steps.map((s, j) => (
-                                                    <li key={j} className="flex gap-3 text-[13.5px] leading-relaxed text-[#374151]">
-                                                        <span className="w-5 h-5 rounded-full bg-[#ECEBFB] text-[#5B53E0] text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">{j + 1}</span>
+                                                    <li key={j} className="flex gap-3 text-[13.5px] leading-relaxed text-[#424242]">
+                                                        <span className="w-5 h-5 rounded-full bg-[#E3F2FD] text-[#1976D2] text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">{j + 1}</span>
                                                         <span>{s}</span>
                                                     </li>
                                                 ))}
@@ -148,12 +148,12 @@ export function GuideBook() {
                                                         key={l.href + l.label}
                                                         href={l.href}
                                                         onClick={close}
-                                                        className="group flex items-start gap-2.5 p-3 rounded-[12px] border border-[#E8EAED] hover:border-[#5B53E0]/40 hover:bg-[#FAFAFE] transition-all"
+                                                        className="group flex items-start gap-2.5 p-3 rounded-[4px] border border-[#E0E0E0] hover:border-[#1976D2]/40 hover:bg-[#FAFCFE] transition-all"
                                                     >
-                                                        <span className="material-symbols-rounded text-[18px] text-[#5B53E0] mt-0.5 shrink-0">arrow_circle_right</span>
+                                                        <span className="material-symbols-rounded text-[18px] text-[#1976D2] mt-0.5 shrink-0">arrow_circle_right</span>
                                                         <span className="min-w-0">
-                                                            <span className="block text-[13px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors">{l.label}</span>
-                                                            <span className="block text-[12px] text-[#8A929E] leading-snug mt-0.5">{l.desc}</span>
+                                                            <span className="block text-[13px] font-bold text-[#212121] group-hover:text-[#1976D2] transition-colors">{l.label}</span>
+                                                            <span className="block text-[12px] text-[#757575] leading-snug mt-0.5">{l.desc}</span>
                                                         </span>
                                                     </Link>
                                                 ))}
@@ -161,16 +161,16 @@ export function GuideBook() {
                                         )}
 
                                         {b.example && (
-                                            <div className="mt-2.5 rounded-[12px] border border-[#DAD7F6] bg-[#FAFAFE] overflow-hidden">
+                                            <div className="mt-2.5 rounded-[4px] border border-[#BBDEFB] bg-[#FAFCFE] overflow-hidden">
                                                 <div className="flex items-center gap-1.5 px-4 pt-3">
-                                                    <span className="material-symbols-rounded text-[16px] text-[#5B53E0]">lightbulb</span>
-                                                    <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#5B53E0]">{tr("sharedUi.example")}</span>
+                                                    <span className="material-symbols-rounded text-[16px] text-[#1976D2]">lightbulb</span>
+                                                    <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#1976D2]">{tr("sharedUi.example")}</span>
                                                 </div>
-                                                <p className="px-4 pt-1.5 text-[13px] font-semibold text-[#15171C]">{b.example.scenario}</p>
+                                                <p className="px-4 pt-1.5 text-[13px] font-semibold text-[#212121]">{b.example.scenario}</p>
                                                 <ol className="px-4 pb-4 pt-2.5 space-y-2">
                                                     {b.example.steps.map((s, j) => (
-                                                        <li key={j} className="flex gap-3 text-[13px] leading-relaxed text-[#374151]">
-                                                            <span className="w-5 h-5 rounded-full bg-white border border-[#DAD7F6] text-[#5B53E0] text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">{j + 1}</span>
+                                                        <li key={j} className="flex gap-3 text-[13px] leading-relaxed text-[#424242]">
+                                                            <span className="w-5 h-5 rounded-full bg-white border border-[#BBDEFB] text-[#1976D2] text-[11px] font-bold flex items-center justify-center shrink-0 mt-0.5">{j + 1}</span>
                                                             <span>{s}</span>
                                                         </li>
                                                     ))}

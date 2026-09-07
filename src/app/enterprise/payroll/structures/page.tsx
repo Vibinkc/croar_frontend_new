@@ -90,7 +90,7 @@ function fromMoneyLines(lines: MoneyLine[]): LineDraft[] {
 }
 
 const selectCls =
-  "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
+  "appearance-none bg-white border border-[#E0E0E0] rounded-[4px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#424242] outline-none cursor-pointer hover:bg-[#FAFAFA] focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all";
 
 export default function StructuresPage() {
   const { can } = useAuth();
@@ -376,29 +376,29 @@ export default function StructuresPage() {
             label={tr("payroll.structuresLabel")}
             value={structures.length}
             icon="group"
-            gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)"
-            glow="rgba(91,83,224,0.25)"
+            gradient="linear-gradient(135deg,#42A5F5,#1976D2)"
+            glow="rgba(25,118,210,0.25)"
           />
           <StatCard
             label={tr("payroll.epfEnabled")}
             value={structures.filter((s) => s.pf_enabled).length}
             icon="savings"
-            gradient="linear-gradient(135deg,#34D399,#0E8A6E)"
-            glow="rgba(14,138,110,0.25)"
+            gradient="linear-gradient(135deg,#66BB6A,#2E7D32)"
+            glow="rgba(46,125,50,0.25)"
           />
           <StatCard
             label={tr("payroll.esiEnabled")}
             value={structures.filter((s) => s.esi_enabled).length}
             icon="health_and_safety"
-            gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
-            glow="rgba(53,89,199,0.25)"
+            gradient="linear-gradient(135deg,#42A5F5,#1565C0)"
+            glow="rgba(21,101,192,0.25)"
           />
           <StatCard
             label={tr("payroll.tdsEnabled")}
             value={structures.filter((s) => s.tds_enabled).length}
             icon="account_balance"
-            gradient="linear-gradient(135deg,#FBBF24,#D97706)"
-            glow="rgba(217,119,6,0.25)"
+            gradient="linear-gradient(135deg,#FFB300,#EF6C00)"
+            glow="rgba(239,108,0,0.25)"
           />
         </StatGrid>
       )}
@@ -406,17 +406,17 @@ export default function StructuresPage() {
       {/* Toolbar: search + filter */}
       <div className="flex flex-col md:flex-row md:items-center gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9E9E9E]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={tr("payroll.searchByEmployee")}
-            className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
+            className="w-full h-10 bg-white border border-[#E0E0E0] rounded-[4px] pl-10 pr-4 text-[14px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all"
           />
         </div>
         <div className="relative flex-1 md:flex-none">
-          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
           <select
             value={statutoryFilter}
             onChange={(e) => setStatutoryFilter(e.target.value)}
@@ -429,29 +429,29 @@ export default function StructuresPage() {
             <option value="TDS">{tr("payroll.tdsEnabled")}</option>
             <option value="NONE">{tr("payroll.noStatutory")}</option>
           </select>
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
         </div>
       </div>
 
       {/* Structures list */}
-      <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
+      <div className="bg-white rounded-[4px] border border-[#E0E0E0] overflow-hidden min-h-[420px]">
         {loading ? (
           <div className="p-4 space-y-2.5">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+              <div key={i} className="h-16 bg-[#F5F6F8] rounded-[4px] animate-pulse" />
             ))}
           </div>
         ) : filteredStructures.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
-            <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
-              <SlidersHorizontal className="w-8 h-8 text-[#C7CCD4]" />
+            <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5">
+              <SlidersHorizontal className="w-8 h-8 text-[#BDBDBD]" />
             </div>
             {structures.length === 0 ? (
               <>
-                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">
                   {tr("payroll.noStructuresYet")}
                 </h3>
-                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">
+                <p className="text-[#757575] text-[14px] max-w-xs mx-auto mb-7">
                   {tr("payroll.noStructuresYetDesc")}
                 </p>
                 {canEdit && (
@@ -462,10 +462,10 @@ export default function StructuresPage() {
               </>
             ) : (
               <>
-                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">
                   {tr("payroll.noStructuresMatch")}
                 </h3>
-                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">
+                <p className="text-[#757575] text-[14px] max-w-xs mx-auto mb-7">
                   {tr("payroll.noStructuresMatchDesc")}
                 </p>
                 <Button
@@ -483,18 +483,18 @@ export default function StructuresPage() {
           <>
             {/* Column header (desktop) */}
             <div
-              className={`hidden md:grid ${canEdit ? "grid-cols-[2.4fr_1.2fr_1.4fr_1fr_120px]" : "grid-cols-[2.4fr_1.2fr_1.4fr_1fr]"} gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]`}
+              className={`hidden md:grid ${canEdit ? "grid-cols-[2.4fr_1.2fr_1.4fr_1fr_120px]" : "grid-cols-[2.4fr_1.2fr_1.4fr_1fr]"} gap-4 px-5 py-3 bg-[#FAFAFA] border-b border-[#E0E0E0]`}
             >
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.employee")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.ctcAnnual")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.statutory")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.effective")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.employee")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.ctcAnnual")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.statutory")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.effective")}</span>
               {canEdit && (
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.actions")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.actions")}</span>
               )}
             </div>
 
-            <div className="divide-y divide-[#F0F0F1]">
+            <div className="divide-y divide-[#EEEEEE]">
               {filteredStructures.map((s) => {
                 const e = empOf(s.employee_id);
                 const initials = e
@@ -504,32 +504,32 @@ export default function StructuresPage() {
                 return (
                   <div
                     key={s.id}
-                    className={`grid grid-cols-[1fr_auto] ${canEdit ? "md:grid-cols-[2.4fr_1.2fr_1.4fr_1fr_120px]" : "md:grid-cols-[2.4fr_1.2fr_1.4fr_1fr]"} gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors group`}
+                    className={`grid grid-cols-[1fr_auto] ${canEdit ? "md:grid-cols-[2.4fr_1.2fr_1.4fr_1fr_120px]" : "md:grid-cols-[2.4fr_1.2fr_1.4fr_1fr]"} gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#FAFAFA] transition-colors group`}
                   >
                     {/* Employee */}
                     <div className="flex items-center gap-3 min-w-0">
-                      <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0 text-[12px] font-extrabold uppercase">
+                      <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0 text-[12px] font-extrabold uppercase">
                         {initials}
                       </span>
                       <div className="min-w-0">
-                        <div className="text-[14px] font-bold text-[#15171C] truncate">{empName(s.employee_id)}</div>
-                        {e?.email && <div className="truncate text-[12px] text-[#8A929E]">{e.email}</div>}
+                        <div className="text-[14px] font-bold text-[#212121] truncate">{empName(s.employee_id)}</div>
+                        {e?.email && <div className="truncate text-[12px] text-[#757575]">{e.email}</div>}
                         {/* mobile-only meta */}
                         <div className="flex items-center gap-2 mt-1 md:hidden">
-                          <span className={`text-[12.5px] font-bold text-[#15171C] ${jetbrainsMono.className}`}>
+                          <span className={`text-[12.5px] font-bold text-[#212121] ${jetbrainsMono.className}`}>
                             {inr(s.ctc, s.currency)}
                           </span>
-                          <span className="text-[11px] text-[#8A929E]">{s.effective_from}</span>
+                          <span className="text-[11px] text-[#757575]">{s.effective_from}</span>
                         </div>
                       </div>
                     </div>
 
                     {/* CTC (desktop) */}
                     <div className="hidden md:block text-right">
-                      <div className={`text-[14px] font-bold text-[#15171C] ${jetbrainsMono.className}`}>
+                      <div className={`text-[14px] font-bold text-[#212121] ${jetbrainsMono.className}`}>
                         {inr(s.ctc, s.currency)}
                       </div>
-                      <div className="text-[11px] text-[#8A929E] lowercase">{s.pay_frequency.toLowerCase()}</div>
+                      <div className="text-[11px] text-[#757575] lowercase">{s.pay_frequency.toLowerCase()}</div>
                     </div>
 
                     {/* Statutory */}
@@ -542,7 +542,7 @@ export default function StructuresPage() {
                     </div>
 
                     {/* Effective (desktop) */}
-                    <div className={`hidden md:block text-[13px] text-[#374151] ${jetbrainsMono.className}`}>
+                    <div className={`hidden md:block text-[13px] text-[#424242] ${jetbrainsMono.className}`}>
                       {s.effective_from}
                     </div>
 
@@ -559,14 +559,14 @@ export default function StructuresPage() {
                         </div>
                         <button
                           onClick={() => openEdit(s)}
-                          className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors"
+                          className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#E3F2FD] hover:text-[#1976D2] transition-colors"
                           title={tr("payroll.editStructure")}
                         >
                           <span className="material-symbols-rounded text-[18px]">edit</span>
                         </button>
                         <button
                           onClick={() => remove(s.id)}
-                          className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
+                          className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#FFEBEE] hover:text-[#C62828] transition-colors"
                           title={tr("payroll.deleteStructure")}
                         >
                           <Trash2 className="w-4 h-4" />
@@ -662,7 +662,7 @@ export default function StructuresPage() {
                   footer={
                     <Field
                       label={tr("payroll.lossOfPay")}
-                      className="border-t border-[#E8EAED] pt-3"
+                      className="border-t border-[#E0E0E0] pt-3"
                       hint={tr("payroll.lossOfPayHint")}
                     >
                       <Input
@@ -678,11 +678,11 @@ export default function StructuresPage() {
                 />
 
                 {/* Statutory compliance (Phase 1: PF / ESI / PT / TDS) */}
-                <Card padding="sm" className="bg-[#FAFBFC]">
+                <Card padding="sm" className="bg-[#FAFAFA]">
                   <div className="mb-3 flex items-center gap-2">
-                    <ShieldCheck className="w-[18px] h-[18px] text-[#5B53E0]" />
-                    <span className="text-[14px] font-bold text-[#15171C]">{tr("payroll.statutoryCompliance")}</span>
-                    <span className="ml-auto text-[11.5px] text-[#8A929E]">{tr("payroll.autoComputedWhenOn")}</span>
+                    <ShieldCheck className="w-[18px] h-[18px] text-[#1976D2]" />
+                    <span className="text-[14px] font-bold text-[#212121]">{tr("payroll.statutoryCompliance")}</span>
+                    <span className="ml-auto text-[11.5px] text-[#757575]">{tr("payroll.autoComputedWhenOn")}</span>
                   </div>
                   <div className="flex flex-col gap-2">
                     <ToggleRow
@@ -693,7 +693,7 @@ export default function StructuresPage() {
                       onChange={setPfEnabled}
                     >
                       {pfEnabled && (
-                        <label className="mt-2 flex items-center gap-2 text-[12px] text-[#8A929E]">
+                        <label className="mt-2 flex items-center gap-2 text-[12px] text-[#757575]">
                           <input type="checkbox" checked={pfCap} onChange={(e) => setPfCap(e.target.checked)} />
                           <span>{tr("payroll.capPfWageStatutory")}</span>
                         </label>
@@ -721,13 +721,13 @@ export default function StructuresPage() {
                       onChange={setTdsEnabled}
                     >
                       {tdsEnabled && (
-                        <p className="mt-2 text-[12px] text-[#8A929E]">
+                        <p className="mt-2 text-[12px] text-[#757575]">
                           {tr("payroll.tdsRegimeNote")}
                         </p>
                       )}
                     </ToggleRow>
                   </div>
-                  <p className="mt-3 text-[12px] text-[#8A929E]">
+                  <p className="mt-3 text-[12px] text-[#757575]">
                     {tr("payroll.statutoryAmountsNote")}
                   </p>
                 </Card>
@@ -735,32 +735,32 @@ export default function StructuresPage() {
 
               {/* Right column — live estimate (server-computed; sticky) */}
               <div className="lg:sticky lg:top-0 lg:self-start">
-                <div className="overflow-hidden rounded-[14px] border border-[#DAD7F6] bg-gradient-to-br from-[#ECEBFB] to-white">
-                  <div className="flex items-center justify-between border-b border-[#E8EAED] px-4 py-2.5">
-                    <span className="flex items-center gap-2 text-[13.5px] font-bold text-[#15171C]">
-                      <Calculator className="w-[16px] h-[16px] text-[#5B53E0]" />
+                <div className="overflow-hidden rounded-[4px] border border-[#BBDEFB] bg-gradient-to-br from-[#E3F2FD] to-white">
+                  <div className="flex items-center justify-between border-b border-[#E0E0E0] px-4 py-2.5">
+                    <span className="flex items-center gap-2 text-[13.5px] font-bold text-[#212121]">
+                      <Calculator className="w-[16px] h-[16px] text-[#1976D2]" />
                       {tr("payroll.estimatedMonthlySalary")}
-                      {previewing && <span className="text-[11.5px] font-normal text-[#8A929E]">{tr("payroll.updating")}</span>}
+                      {previewing && <span className="text-[11.5px] font-normal text-[#757575]">{tr("payroll.updating")}</span>}
                     </span>
-                    <span className="text-[11.5px] text-[#8A929E]">
+                    <span className="text-[11.5px] text-[#757575]">
                       {Number(lopDays) > 0 ? tr("payroll.afterLopDays", { count: Number(lopDays) }) : tr("payroll.fullMonthNoLop")}
                     </span>
                   </div>
                   <div className="grid grid-cols-3 gap-4 p-4">
                     <Stat label={tr("payroll.gross")} value={inr(gross, currency)} />
-                    <Stat label={tr("payroll.deductions")} value={`- ${inr(totalDeductions, currency)}`} tone="text-[#C0383C]" />
-                    <Stat label={tr("payroll.netPay")} value={inr(net, currency)} tone="text-[#0E8A6E]" big />
+                    <Stat label={tr("payroll.deductions")} value={`- ${inr(totalDeductions, currency)}`} tone="text-[#C62828]" />
+                    <Stat label={tr("payroll.netPay")} value={inr(net, currency)} tone="text-[#2E7D32]" big />
                   </div>
                   {deductionLines.length > 0 && (
-                    <div className="border-t border-[#E8EAED] px-4 py-3">
-                      <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">
+                    <div className="border-t border-[#E0E0E0] px-4 py-3">
+                      <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">
                         {tr("payroll.deductionBreakdown")}
                       </div>
                       <div className="flex flex-col gap-1">
                         {deductionLines.map((l) => (
                           <div key={l.code} className="flex justify-between text-[13px]">
-                            <span className="text-[#8A929E]">{l.label}</span>
-                            <span className={`font-semibold text-[#C0383C] ${jetbrainsMono.className}`}>
+                            <span className="text-[#757575]">{l.label}</span>
+                            <span className={`font-semibold text-[#C62828] ${jetbrainsMono.className}`}>
                               - {inr(l.amount, currency)}
                             </span>
                           </div>
@@ -769,7 +769,7 @@ export default function StructuresPage() {
                     </div>
                   )}
                   {!preview && !previewing && (
-                    <p className="px-4 pb-3 text-[12px] text-[#8A929E]">
+                    <p className="px-4 pb-3 text-[12px] text-[#757575]">
                       {tr("payroll.localEstimateNote")}
                     </p>
                   )}
@@ -777,7 +777,7 @@ export default function StructuresPage() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 border-t border-[#E8EAED] pt-4">
+            <div className="flex justify-end gap-3 border-t border-[#E0E0E0] pt-4">
               <Button type="button" variant="secondary" onClick={() => setOpen(false)} className="px-8">
                 {tr("common.cancel")}
               </Button>
@@ -792,10 +792,10 @@ export default function StructuresPage() {
   );
 }
 
-function Stat({ label, value, tone = "text-[#15171C]", big = false }: { label: string; value: string; tone?: string; big?: boolean }) {
+function Stat({ label, value, tone = "text-[#212121]", big = false }: { label: string; value: string; tone?: string; big?: boolean }) {
   return (
     <div className="min-w-0">
-      <div className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{label}</div>
+      <div className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{label}</div>
       <div
         className={`font-bold leading-tight break-words ${tone} ${jetbrainsMono.className} ${big ? "text-[16px]" : "text-[14px]"}`}
       >
@@ -813,7 +813,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
       aria-checked={checked}
       onClick={() => onChange(!checked)}
       className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
-        checked ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"
+        checked ? "bg-[#1976D2]" : "bg-[#E0E0E0]"
       }`}
     >
       <span
@@ -842,21 +842,21 @@ function ToggleRow({
 }) {
   return (
     <div
-      className={`rounded-[10px] border p-3 transition-colors ${
-        checked ? "border-[#DAD7F6] bg-[#ECEBFB]/50" : "border-[#E8EAED] bg-white"
+      className={`rounded-[4px] border p-3 transition-colors ${
+        checked ? "border-[#BBDEFB] bg-[#E3F2FD]/50" : "border-[#E0E0E0] bg-white"
       }`}
     >
       <div className="flex items-center gap-3">
         <span
-          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] ${
-            checked ? "bg-[#ECEBFB] text-[#5B53E0]" : "bg-[#F1F2F5] text-[#8A929E]"
+          className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[4px] ${
+            checked ? "bg-[#E3F2FD] text-[#1976D2]" : "bg-[#EEEEEE] text-[#757575]"
           }`}
         >
           <Icon className="w-[18px] h-[18px]" />
         </span>
         <div className="min-w-0 flex-1">
-          <div className="text-[13px] font-bold text-[#15171C]">{title}</div>
-          <div className="text-[12px] text-[#8A929E]">{desc}</div>
+          <div className="text-[13px] font-bold text-[#212121]">{title}</div>
+          <div className="text-[12px] text-[#757575]">{desc}</div>
         </div>
         <Toggle checked={checked} onChange={onChange} />
       </div>
@@ -882,19 +882,19 @@ function LineSection({
   const update = (i: number, patch: Partial<LineDraft>) =>
     setRows(rows.map((r, idx) => (idx === i ? { ...r, ...patch } : r)));
   return (
-    <Card padding="sm" className="bg-[#FAFBFC]">
+    <Card padding="sm" className="bg-[#FAFAFA]">
       <div className="mb-3 flex items-center justify-between">
-        <span className="text-[14px] font-bold text-[#15171C]">{title}</span>
+        <span className="text-[14px] font-bold text-[#212121]">{title}</span>
         <button
           type="button"
           onClick={() => setRows([...rows, emptyLine()])}
-          className="inline-flex items-center gap-1.5 rounded-[8px] border border-[#E1E4E8] bg-white px-2.5 py-1 text-[12px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors"
+          className="inline-flex items-center gap-1.5 rounded-[4px] border border-[#E0E0E0] bg-white px-2.5 py-1 text-[12px] font-semibold text-[#424242] hover:bg-[#F5F6F8] transition-colors"
         >
           <Plus className="w-3.5 h-3.5" /> {tr("payroll.addLine")}
         </button>
       </div>
       <div className="flex flex-col gap-2">
-        {rows.length === 0 && <p className="text-[12px] text-[#8A929E]">{tr("payroll.noLines")}</p>}
+        {rows.length === 0 && <p className="text-[12px] text-[#757575]">{tr("payroll.noLines")}</p>}
         {rows.map((r, i) => (
           <div key={i} className="grid grid-cols-12 items-center gap-2">
             <Input
@@ -927,7 +927,7 @@ function LineSection({
                 onChange={(e) => update(i, { amount: e.target.value })}
               />
             ) : r.type === "balance" ? (
-              <span className="col-span-4 self-center text-[12px] text-[#8A929E]">
+              <span className="col-span-4 self-center text-[12px] text-[#757575]">
                 {tr("payroll.absorbsRemainingAfter")}
               </span>
             ) : (
@@ -957,7 +957,7 @@ function LineSection({
             <button
               type="button"
               onClick={() => setRows(rows.filter((_, idx) => idx !== i))}
-              className="col-span-1 flex justify-center text-[#9AA3AF] hover:text-[#C0383C] transition-colors"
+              className="col-span-1 flex justify-center text-[#9E9E9E] hover:text-[#C62828] transition-colors"
               title={tr("payroll.removeLine")}
             >
               <Trash2 className="w-[18px] h-[18px]" />

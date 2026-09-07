@@ -511,8 +511,8 @@ export default function InterviewAutomationPage() {
       {/* Toast */}
       {toast && (
         <div
-          className={`fixed top-5 right-5 z-[200] flex items-center gap-2 px-4 py-3 rounded-[10px] shadow-lg text-[13.5px] font-semibold transition-all duration-300 ${
-            toast.type === "success" ? "bg-[#5B53E0] text-white" : "bg-rose-600 text-white"
+          className={`fixed top-5 right-5 z-[200] flex items-center gap-2 px-4 py-3 rounded-[4px] shadow-lg text-[13.5px] font-semibold transition-all duration-300 ${
+            toast.type === "success" ? "bg-[#1976D2] text-white" : "bg-rose-600 text-white"
           }`}
         >
           {toast.type === "success" ? (
@@ -525,21 +525,21 @@ export default function InterviewAutomationPage() {
       )}
 
       {/* Header (sticky) */}
-      <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-20 py-3 bg-[#F5F6F8]/95 backdrop-blur-sm border-b border-[#E0E0E0] flex items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-1.5">
-            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("automation.interviewTitle")}</h1>
+            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#212121] leading-tight">{tr("automation.interviewTitle")}</h1>
             <PageHelp title={tr("automation.interviewTitle")}>
               <p>{tr("automation.interviewHelp")}</p>
             </PageHelp>
           </div>
-          <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("automation.interviewSubtitle")}</p>
+          <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("automation.interviewSubtitle")}</p>
         </div>
         <div className="flex items-center gap-2.5 shrink-0">
           {canAccess("interviews:moderate") && (
             <button
               onClick={openCreate}
-              className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-all whitespace-nowrap"
+              className="inline-flex items-center gap-2 h-9 px-4 rounded-[4px] bg-[#1976D2] text-white text-[13px] font-semibold hover:bg-[#1565C0] shadow-[0_4px_12px_rgba(25,118,210,0.28)] transition-all whitespace-nowrap"
             >
               <Plus className="w-3.5 h-3.5" />
               {tr("automation.newAutomation")}
@@ -553,25 +553,25 @@ export default function InterviewAutomationPage() {
         {/* Stats Section */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           {[
-            { label: tr("automation.totalRules"), value: automations.length, Icon: Layers, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
-            { label: tr("automation.activeRules"), value: automations.filter(a => a.is_enabled).length, Icon: Activity, grad: "linear-gradient(135deg,#00C49F,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-            { label: tr("automation.autoMoveRules"), value: automations.filter(a => a.auto_move).length, Icon: Sparkles, grad: "linear-gradient(135deg,#C084FC,#8B5CF6)", glow: "rgba(139,92,246,0.25)" },
-            { label: tr("automation.configuredSlots"), value: automations.reduce((acc, a) => acc + (a.time_slots?.length || 0), 0), Icon: Clock, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" }
+            { label: tr("automation.totalRules"), value: automations.length, Icon: Layers, grad: "linear-gradient(135deg,#42A5F5,#1976D2)", glow: "rgba(25,118,210,0.25)" },
+            { label: tr("automation.activeRules"), value: automations.filter(a => a.is_enabled).length, Icon: Activity, grad: "linear-gradient(135deg,#00C49F,#2E7D32)", glow: "rgba(46,125,50,0.25)" },
+            { label: tr("automation.autoMoveRules"), value: automations.filter(a => a.auto_move).length, Icon: Sparkles, grad: "linear-gradient(135deg,#C084FC,#42A5F5)", glow: "rgba(66,165,245,0.25)" },
+            { label: tr("automation.configuredSlots"), value: automations.reduce((acc, a) => acc + (a.time_slots?.length || 0), 0), Icon: Clock, grad: "linear-gradient(135deg,#FFB300,#EF6C00)", glow: "rgba(239,108,0,0.25)" }
           ].map((s, i) => (
             <motion.div
               key={s.label}
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.06 }}
-              className="relative bg-white border border-[#E8EAED] hover:border-[#D4D7DC] rounded-[14px] p-5 overflow-hidden transition-all duration-300 hover:shadow-sm"
+              className="relative bg-white border border-[#E0E0E0] hover:border-[#E0E0E0] rounded-[4px] p-5 overflow-hidden transition-all duration-300 hover:shadow-sm"
             >
               <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: s.grad }} />
               <div className="flex items-start justify-between">
                 <div>
-                  <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{s.label}</span>
-                  <div className="text-[30px] font-semibold tracking-[-1px] text-[#15171C] mt-2">{s.value}</div>
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{s.label}</span>
+                  <div className="text-[30px] font-semibold tracking-[-1px] text-[#212121] mt-2">{s.value}</div>
                 </div>
-                <span className="w-10 h-10 rounded-[11px] flex items-center justify-center text-white shrink-0" style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}>
+                <span className="w-10 h-10 rounded-[4px] flex items-center justify-center text-white shrink-0" style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}>
                   <s.Icon className="w-[18px] h-[18px]" />
                 </span>
               </div>
@@ -588,7 +588,7 @@ export default function InterviewAutomationPage() {
                 placeholder={tr("automation.searchRulesJobsInterviewers")}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] pl-10 pr-4 text-[13.5px] font-semibold text-slate-700 placeholder:text-slate-400 focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all outline-none shadow-sm"
+                className="w-full h-11 bg-white border border-[#E0E0E0] rounded-[4px] pl-10 pr-4 text-[13.5px] font-semibold text-slate-700 placeholder:text-slate-400 focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all outline-none shadow-sm"
               />
            </div>
 
@@ -596,7 +596,7 @@ export default function InterviewAutomationPage() {
               {(searchQuery || selectedJobId) && (
                 <button 
                   onClick={() => { setSearchQuery(""); setSelectedJobId(""); }}
-                  className="text-[11px] font-extrabold text-[#5B53E0] hover:underline px-2 tracking-wider cursor-pointer"
+                  className="text-[11px] font-extrabold text-[#1976D2] hover:underline px-2 tracking-wider cursor-pointer"
                 >
                   {tr("automation.resetFilters")}
                 </button>
@@ -606,7 +606,7 @@ export default function InterviewAutomationPage() {
                 <select
                   value={selectedJobId}
                   onChange={(e) => setSelectedJobId(e.target.value)}
-                  className="w-full h-11 border border-[#E1E4E8] rounded-[12px] pl-10 pr-10 text-[13px] font-semibold text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] shadow-sm appearance-none cursor-pointer"
+                  className="w-full h-11 border border-[#E0E0E0] rounded-[4px] pl-10 pr-10 text-[13px] font-semibold text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] shadow-sm appearance-none cursor-pointer"
                 >
                   <option value="">{tr("automation.allJobRequirements")}</option>
                   {jobs.map((j) => (
@@ -622,12 +622,12 @@ export default function InterviewAutomationPage() {
       {/* List */}
       {loading ? (
         <div className="flex justify-center py-20">
-          <div className="w-8 h-8 border-[3px] border-[#5B53E0] border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-[3px] border-[#1976D2] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filteredAutomations.length === 0 ? (
-        <div className="bg-white rounded-[14px] border border-[#E1E4E8] p-16 flex flex-col items-center justify-center text-center shadow-sm">
-          <div className="w-16 h-16 rounded-[12px] bg-[#E3F4EF] flex items-center justify-center mb-4 border border-[#BFF0E2]">
-            <Calendar className="w-8 h-8 text-[#0E8A6E]" />
+        <div className="bg-white rounded-[4px] border border-[#E0E0E0] p-16 flex flex-col items-center justify-center text-center shadow-sm">
+          <div className="w-16 h-16 rounded-[4px] bg-[#E8F5E9] flex items-center justify-center mb-4 border border-[#C8E6C9]">
+            <Calendar className="w-8 h-8 text-[#2E7D32]" />
           </div>
           <p className="text-slate-800 font-bold text-[16px]">{searchQuery ? tr("automation.noMatchingRules") : tr("automation.noAutomationsYet")}</p>
           <p className="text-slate-400 text-[13px] mt-1 max-w-sm font-medium">
@@ -636,59 +636,59 @@ export default function InterviewAutomationPage() {
           {!searchQuery && canAccess("interviews:moderate") && (
             <button
               onClick={openCreate}
-              className="mt-5 px-5 h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13px] font-bold shadow-[0_4px_12px_rgba(91,83,224,0.25)] transition-all active:scale-95 cursor-pointer"
+              className="mt-5 px-5 h-11 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-[4px] text-[13px] font-bold shadow-[0_4px_12px_rgba(25,118,210,0.25)] transition-all active:scale-95 cursor-pointer"
             >
               {tr("automation.createAutomation")}
             </button>
           )}
         </div>
       ) : (
-        <div className="bg-white rounded-[14px] border border-[#E1E4E8] shadow-sm overflow-hidden">
+        <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#F7F8FA] border-b border-[#E1E4E8]">
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.ruleConfiguration")}</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.targetJob")}</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.scheduleLogic")}</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.status")}</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] text-right">{tr("automation.actions")}</th>
+                <tr className="bg-[#FAFAFA] border-b border-[#E0E0E0]">
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#757575] uppercase tracking-[0.06em]">{tr("automation.ruleConfiguration")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#757575] uppercase tracking-[0.06em]">{tr("automation.targetJob")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#757575] uppercase tracking-[0.06em]">{tr("automation.scheduleLogic")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#757575] uppercase tracking-[0.06em]">{tr("automation.status")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#757575] uppercase tracking-[0.06em] text-right">{tr("automation.actions")}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F0F0F1]">
+              <tbody className="divide-y divide-[#EEEEEE]">
                 {filteredAutomations.map((a) => (
-                  <tr key={a.id} className="hover:bg-[#F7F8FA]/60 transition-colors group">
+                  <tr key={a.id} className="hover:bg-[#FAFAFA]/60 transition-colors group">
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-[6px] bg-[#E3F4EF] text-[#0E8A6E] text-[10px] font-bold border border-[#BFF0E2]/60 uppercase">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-[3px] bg-[#E8F5E9] text-[#2E7D32] text-[10px] font-bold border border-[#C8E6C9]/60 uppercase">
                             {tr("automation.round")} {a.stage_index}
                           </span>
                           {a.stage_name && (
-                            <span className="text-[12px] font-semibold text-[#8A929E]">{a.stage_name}</span>
+                            <span className="text-[12px] font-semibold text-[#757575]">{a.stage_name}</span>
                           )}
                         </div>
-                        <p className="text-[13.5px] font-semibold text-[#374151] line-clamp-1">
-                          <span className="text-[#8A929E] font-medium italic mr-1">{tr("automation.ifLabel")}</span>
+                        <p className="text-[13.5px] font-semibold text-[#424242] line-clamp-1">
+                          <span className="text-[#757575] font-medium italic mr-1">{tr("automation.ifLabel")}</span>
                           {a.criteria}
                         </p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <div className="flex items-center gap-1.5 text-[13.5px] font-semibold text-[#374151]">
+                      <div className="flex items-center gap-1.5 text-[13.5px] font-semibold text-[#424242]">
                         <Briefcase className="w-4 h-4 text-slate-400 shrink-0" />
                         <span>{jobTitle(a.job_requirement_id)}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-1.5 text-[13px] font-semibold text-[#374151]">
+                        <div className="flex items-center gap-1.5 text-[13px] font-semibold text-[#424242]">
                           <Clock className="w-4 h-4 text-slate-400 shrink-0" />
                           <span>{a.start_time} - {a.end_time} ({a.duration}m)</span>
                         </div>
                         {a.auto_move && (
-                          <div className="flex items-center gap-1 text-[10px] font-bold text-[#5B53E0] uppercase tracking-wider mt-1">
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[6px] bg-[#ECEBFB] text-[#5B53E0] text-[10px] font-bold border border-[#DAD7F6]/60 uppercase tracking-wider">
+                          <div className="flex items-center gap-1 text-[10px] font-bold text-[#1976D2] uppercase tracking-wider mt-1">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[3px] bg-[#E3F2FD] text-[#1976D2] text-[10px] font-bold border border-[#BBDEFB]/60 uppercase tracking-wider">
                               {tr("automation.autoMove")}
                             </span>
                           </div>
@@ -699,7 +699,7 @@ export default function InterviewAutomationPage() {
                       <button
                         onClick={() => handleToggle(a)}
                         disabled={togglingId === a.id || !canAccess("interviews:moderate")}
-                        className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#0E8A6E]" : "bg-[#E1E4E8]"} ${togglingId === a.id || !canAccess("interviews:moderate") ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                        className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#2E7D32]" : "bg-[#E0E0E0]"} ${togglingId === a.id || !canAccess("interviews:moderate") ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                       >
                         <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${a.is_enabled ? "translate-x-4" : "translate-x-0"}`} />
                       </button>
@@ -709,7 +709,7 @@ export default function InterviewAutomationPage() {
                         {canAccess("interviews:moderate") && (
                           <button 
                             onClick={() => openEdit(a)} 
-                            className="w-8 h-8 flex items-center justify-center rounded-[8px] border border-transparent hover:border-[#E1E4E8] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#5B53E0] transition-colors cursor-pointer"
+                            className="w-8 h-8 flex items-center justify-center rounded-[4px] border border-transparent hover:border-[#E0E0E0] hover:bg-[#F5F6F8] text-[#757575] hover:text-[#1976D2] transition-colors cursor-pointer"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
@@ -721,7 +721,7 @@ export default function InterviewAutomationPage() {
                               setIsDeleteModalOpen(true);
                             }} 
                             disabled={deletingId === a.id} 
-                            className="w-8 h-8 flex items-center justify-center rounded-[8px] border border-transparent hover:border-[#E1E4E8] hover:bg-rose-50 text-[#8A929E] hover:text-rose-600 transition-colors cursor-pointer"
+                            className="w-8 h-8 flex items-center justify-center rounded-[4px] border border-transparent hover:border-[#E0E0E0] hover:bg-rose-50 text-[#757575] hover:text-rose-600 transition-colors cursor-pointer"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -744,7 +744,7 @@ export default function InterviewAutomationPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-[#15171C]/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-[#212121]/40 backdrop-blur-sm"
               onClick={closeModal}
             />
             <motion.div
@@ -752,51 +752,51 @@ export default function InterviewAutomationPage() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="relative h-full w-full max-w-md bg-white shadow-2xl flex flex-col border-l border-[#E1E4E8]"
+              className="relative h-full w-full max-w-md bg-white shadow-2xl flex flex-col border-l border-[#E0E0E0]"
             >
               {/* Header */}
-              <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8EAED] shrink-0">
+              <div className="flex items-center justify-between px-6 py-5 border-b border-[#E0E0E0] shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-[10px] bg-[#E3F4EF] flex items-center justify-center border border-[#BFF0E2] shadow-sm">
-                    <Video className="w-5 h-5 text-[#0E8A6E]" />
+                  <div className="w-10 h-10 rounded-[4px] bg-[#E8F5E9] flex items-center justify-center border border-[#C8E6C9] shadow-sm">
+                    <Video className="w-5 h-5 text-[#2E7D32]" />
                   </div>
                   <div>
-                    <h2 className="text-[16px] font-extrabold text-[#15171C] leading-tight">
+                    <h2 className="text-[16px] font-extrabold text-[#212121] leading-tight">
                       {editingId ? tr("automation.editAutomation") : tr("automation.newAutomation")}
                     </h2>
-                    <p className="text-[12.5px] text-[#8A929E] font-medium mt-0.5">{tr("automation.interviewConfiguration")}</p>
+                    <p className="text-[12.5px] text-[#757575] font-medium mt-0.5">{tr("automation.interviewConfiguration")}</p>
                   </div>
                 </div>
                 <button 
                   onClick={closeModal} 
-                  className="p-1.5 hover:bg-[#F4F5F7] text-[#9AA3AF] hover:text-[#4B5563] rounded-lg transition-all cursor-pointer"
+                  className="p-1.5 hover:bg-[#F5F6F8] text-[#9E9E9E] hover:text-[#4F4F4F] rounded-lg transition-all cursor-pointer"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
               
               {/* Tabs */}
-              <div className="flex border-b border-[#E8EAED] shrink-0">
+              <div className="flex border-b border-[#E0E0E0] shrink-0">
                 <button
                   onClick={() => setActiveTab("config")}
                   className={`flex-1 py-3 text-[13px] font-bold relative transition-colors cursor-pointer ${
-                    activeTab === "config" ? "text-[#5B53E0]" : "text-slate-400 hover:text-slate-600"
+                    activeTab === "config" ? "text-[#1976D2]" : "text-slate-400 hover:text-slate-600"
                   }`}
                 >
                   <span>{tr("automation.config")}</span>
                   {activeTab === "config" && (
-                    <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#5B53E0]" />
+                    <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#1976D2]" />
                   )}
                 </button>
                 <button
                   onClick={() => setActiveTab("times")}
                   className={`flex-1 py-3 text-[13px] font-bold relative transition-colors cursor-pointer ${
-                    activeTab === "times" ? "text-[#5B53E0]" : "text-slate-400 hover:text-slate-600"
+                    activeTab === "times" ? "text-[#1976D2]" : "text-slate-400 hover:text-slate-600"
                   }`}
                 >
                   <span>{tr("automation.timeSlots")}</span>
                   {activeTab === "times" && (
-                    <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#5B53E0]" />
+                    <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#1976D2]" />
                   )}
                 </button>
               </div>
@@ -807,7 +807,7 @@ export default function InterviewAutomationPage() {
                   <div className="space-y-6">
                     {/* Job */}
                     <div>
-                      <label htmlFor="automation-job-requirement" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                      <label htmlFor="automation-job-requirement" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                         {tr("automation.jobRequirement")} <span className="text-rose-500">*</span>
                       </label>
                       <div className="relative">
@@ -815,20 +815,20 @@ export default function InterviewAutomationPage() {
                           id="automation-job-requirement"
                           value={form.job_requirement_id}
                           onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 1, stage_name: "" }))}
-                          className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                          className="w-full bg-white border border-[#E0E0E0] rounded-[4px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#424242] hover:border-[#BBDEFB] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm"
                         >
                           <option value="">{tr("automation.selectJob")}</option>
                           {jobs.map((j) => (
                             <option key={j.id} value={j.id}>{j.title}</option>
                           ))}
                         </select>
-                        <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                        <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
                       </div>
                     </div>
 
                     {/* Round */}
                     <div>
-                      <label htmlFor="automation-hiring-round" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                      <label htmlFor="automation-hiring-round" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                         {tr("automation.hiringRound")} <span className="text-rose-500">*</span>
                       </label>
                       {jobRounds.length > 0 ? (
@@ -837,7 +837,7 @@ export default function InterviewAutomationPage() {
                             id="automation-hiring-round"
                             onChange={handleRoundSelect}
                             value={form.stage_name ? `${form.stage_index}|${form.stage_name}` : ""}
-                            className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                            className="w-full bg-white border border-[#E0E0E0] rounded-[4px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#424242] hover:border-[#BBDEFB] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm"
                           >
                             <option value="">{tr("automation.pickRound")}</option>
                             {jobRounds.map((r, i) => (
@@ -846,7 +846,7 @@ export default function InterviewAutomationPage() {
                               </option>
                             ))}
                           </select>
-                          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
                         </div>
                       ) : (
                         <div className="grid grid-cols-5 gap-3">
@@ -855,22 +855,22 @@ export default function InterviewAutomationPage() {
                             min={1}
                             value={form.stage_index}
                             onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))}
-                            className="col-span-2 border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                            className="col-span-2 border border-[#E0E0E0] rounded-[4px] h-11 px-4 text-[13.5px] font-semibold text-[#424242] focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all bg-white"
                             placeholder={tr("automation.noAbbrev")}
                           />
                           <input
                             type="text"
                             value={form.stage_name}
                             onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))}
-                            className="col-span-3 border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                            className="col-span-3 border border-[#E0E0E0] rounded-[4px] h-11 px-4 text-[13.5px] font-semibold text-[#424242] focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all bg-white"
                             placeholder={tr("automation.labelPlaceholder")}
                           />
                         </div>
                       )}
                       {jobRounds.length > 0 && (form.stage_name || Number(form.stage_index) > 1) && (
-                        <div className="mt-2.5 flex items-center gap-2 px-3 py-2 bg-[#E3F4EF]/50 rounded-[8px] border border-[#BFF0E2]/60">
-                          <Check className="w-3.5 h-3.5 text-[#0E8A6E]" />
-                          <p className="text-[12px] text-[#0E8A6E] font-bold tracking-tight">
+                        <div className="mt-2.5 flex items-center gap-2 px-3 py-2 bg-[#E8F5E9]/50 rounded-[4px] border border-[#C8E6C9]/60">
+                          <Check className="w-3.5 h-3.5 text-[#2E7D32]" />
+                          <p className="text-[12px] text-[#2E7D32] font-bold tracking-tight">
                             {tr("automation.selectedRound", { index: form.stage_index, name: form.stage_name })}
                           </p>
                         </div>
@@ -879,7 +879,7 @@ export default function InterviewAutomationPage() {
 
                     {/* Criteria */}
                     <div>
-                      <label htmlFor="automation-criteria" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                      <label htmlFor="automation-criteria" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                         {tr("automation.triggerCriteria")} <span className="text-rose-500">*</span>
                       </label>
                       <textarea
@@ -887,10 +887,10 @@ export default function InterviewAutomationPage() {
                         rows={3}
                         value={form.criteria}
                         onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))}
-                        className="w-full border border-[#E1E4E8] rounded-[12px] px-4 py-3 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all resize-none"
+                        className="w-full border border-[#E0E0E0] rounded-[4px] px-4 py-3 text-[13.5px] font-semibold text-[#424242] focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all resize-none"
                         placeholder={tr("automation.criteriaPlaceholderCondition")}
                       />
-                      <p className="text-[11.5px] text-[#8A929E] mt-1.5 px-1 font-medium">
+                      <p className="text-[11.5px] text-[#757575] mt-1.5 px-1 font-medium">
                         {tr("automation.setConditionsInterview")}
                       </p>
                     </div>
@@ -898,7 +898,7 @@ export default function InterviewAutomationPage() {
                     {/* Dates */}
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label htmlFor="automation-start-date" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                        <label htmlFor="automation-start-date" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                           {tr("automation.startDateOptional")}
                         </label>
                         <input
@@ -906,11 +906,11 @@ export default function InterviewAutomationPage() {
                           type="date"
                           value={form.start_date || ""}
                           onChange={(e) => setForm((f) => ({ ...f, start_date: e.target.value }))}
-                          className="w-full border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                          className="w-full border border-[#E0E0E0] rounded-[4px] h-11 px-4 text-[13.5px] font-semibold text-[#424242] focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all bg-white"
                         />
                       </div>
                       <div>
-                        <label htmlFor="automation-end-date" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                        <label htmlFor="automation-end-date" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                           {tr("automation.endDateOptional")}
                         </label>
                         <input
@@ -918,7 +918,7 @@ export default function InterviewAutomationPage() {
                           type="date"
                           value={form.end_date || ""}
                           onChange={(e) => setForm((f) => ({ ...f, end_date: e.target.value }))}
-                          className="w-full border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                          className="w-full border border-[#E0E0E0] rounded-[4px] h-11 px-4 text-[13.5px] font-semibold text-[#424242] focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all bg-white"
                         />
                       </div>
                     </div>
@@ -926,7 +926,7 @@ export default function InterviewAutomationPage() {
                     {/* Timings and Caps */}
                     <div className="grid grid-cols-3 gap-3">
                       <div>
-                        <label htmlFor="automation-start-time" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                        <label htmlFor="automation-start-time" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                           {tr("automation.startTime")} <span className="text-rose-500">*</span>
                         </label>
                         <input
@@ -934,11 +934,11 @@ export default function InterviewAutomationPage() {
                           type="time"
                           value={form.start_time}
                           onChange={(e) => setForm((f) => ({ ...f, start_time: e.target.value }))}
-                          className="w-full border border-[#E1E4E8] rounded-[12px] h-11 px-3 text-[13px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                          className="w-full border border-[#E0E0E0] rounded-[4px] h-11 px-3 text-[13px] font-semibold text-[#424242] focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all bg-white"
                         />
                       </div>
                       <div>
-                        <label htmlFor="automation-end-time" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                        <label htmlFor="automation-end-time" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                           {tr("automation.endTime")} <span className="text-rose-500">*</span>
                         </label>
                         <input
@@ -946,11 +946,11 @@ export default function InterviewAutomationPage() {
                           type="time"
                           value={form.end_time}
                           onChange={(e) => setForm((f) => ({ ...f, end_time: e.target.value }))}
-                          className="w-full border border-[#E1E4E8] rounded-[12px] h-11 px-3 text-[13px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                          className="w-full border border-[#E0E0E0] rounded-[4px] h-11 px-3 text-[13px] font-semibold text-[#424242] focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all bg-white"
                         />
                       </div>
                       <div>
-                        <label htmlFor="automation-duration" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                        <label htmlFor="automation-duration" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                           {tr("automation.duration")} <span className="text-rose-500">*</span>
                         </label>
                         <div className="relative">
@@ -958,7 +958,7 @@ export default function InterviewAutomationPage() {
                             id="automation-duration"
                             value={form.duration}
                             onChange={(e) => setForm((f) => ({ ...f, duration: e.target.value }))}
-                            className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 pl-3 pr-8 text-[13px] font-semibold text-[#374151] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                            className="w-full bg-white border border-[#E0E0E0] rounded-[4px] h-11 pl-3 pr-8 text-[13px] font-semibold text-[#424242] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm"
                           >
                             <option value="15">15m</option>
                             <option value="30">30m</option>
@@ -966,13 +966,13 @@ export default function InterviewAutomationPage() {
                             <option value="60">60m</option>
                             <option value="90">90m</option>
                           </select>
-                          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                          <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <label htmlFor="automation-daily-limit" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                      <label htmlFor="automation-daily-limit" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                         {tr("automation.dailyLimit")} <span className="text-rose-500">*</span>
                       </label>
                       <input
@@ -981,19 +981,19 @@ export default function InterviewAutomationPage() {
                         min={1}
                         value={form.daily_limit}
                         onChange={(e) => setForm((f) => ({ ...f, daily_limit: e.target.value }))}
-                        className="w-full border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                        className="w-full border border-[#E0E0E0] rounded-[4px] h-11 px-4 text-[13.5px] font-semibold text-[#424242] focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all bg-white"
                       />
                     </div>
 
                     {/* Email Template */}
                     <div>
-                      <label htmlFor="automation-email-template" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                      <label htmlFor="automation-email-template" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                         {tr("automation.emailTemplateOptional")}
                       </label>
                       {templates.length === 0 ? (
-                        <div className="bg-[#F7F8FA] rounded-[12px] p-4 border border-dashed border-[#E1E4E8] text-center">
-                          <p className="text-[12.5px] text-[#8A929E] font-medium">
-                            {tr("automation.noTemplatesFound")} <a href="/enterprise/templates/email-templates" className="text-[#5B53E0] font-bold hover:underline" target="_blank">{tr("automation.createOne")}</a> {tr("automation.firstWord")}
+                        <div className="bg-[#FAFAFA] rounded-[4px] p-4 border border-dashed border-[#E0E0E0] text-center">
+                          <p className="text-[12.5px] text-[#757575] font-medium">
+                            {tr("automation.noTemplatesFound")} <a href="/enterprise/templates/email-templates" className="text-[#1976D2] font-bold hover:underline" target="_blank">{tr("automation.createOne")}</a> {tr("automation.firstWord")}
                           </p>
                         </div>
                       ) : (
@@ -1002,31 +1002,31 @@ export default function InterviewAutomationPage() {
                             id="automation-email-template"
                             value={form.email_template_id}
                             onChange={(e) => setForm((f) => ({ ...f, email_template_id: e.target.value }))}
-                            className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                            className="w-full bg-white border border-[#E0E0E0] rounded-[4px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#424242] hover:border-[#BBDEFB] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm"
                           >
                             <option value="">{tr("automation.noTemplateDefault")}</option>
                             {templates.map((t) => (
                               <option key={t.id} value={t.id}>{t.name}</option>
                             ))}
                           </select>
-                          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
                         </div>
                       )}
                     </div>
 
                     {/* Interview Type Selection */}
                     <div>
-                      <label className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-3 ml-1">
+                      <label className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-3 ml-1">
                         {tr("automation.interviewType")} <span className="text-rose-500">*</span>
                       </label>
                       <div className="grid grid-cols-3 gap-3">
                         <button
                           type="button"
                           onClick={() => setForm(f => ({ ...f, interview_type: "GMEET" }))}
-                          className={`flex flex-col items-center gap-2.5 p-4 rounded-[12px] border-2 transition-all cursor-pointer ${
+                          className={`flex flex-col items-center gap-2.5 p-4 rounded-[4px] border-2 transition-all cursor-pointer ${
                             form.interview_type === "GMEET"
-                              ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]"
-                              : "border-[#E1E4E8] bg-white hover:border-[#DAD7F6] text-[#4B5563]"
+                              ? "border-[#1976D2] bg-[#E3F2FD] text-[#1976D2]"
+                              : "border-[#E0E0E0] bg-white hover:border-[#BBDEFB] text-[#4F4F4F]"
                           }`}
                         >
                           <Video className="w-5 h-5 shrink-0" />
@@ -1035,10 +1035,10 @@ export default function InterviewAutomationPage() {
                         <button
                           type="button"
                           onClick={() => setForm(f => ({ ...f, interview_type: "TEAMS" }))}
-                          className={`flex flex-col items-center gap-2.5 p-4 rounded-[12px] border-2 transition-all cursor-pointer ${
+                          className={`flex flex-col items-center gap-2.5 p-4 rounded-[4px] border-2 transition-all cursor-pointer ${
                             form.interview_type === "TEAMS"
-                              ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]"
-                              : "border-[#E1E4E8] bg-white hover:border-[#DAD7F6] text-[#4B5563]"
+                              ? "border-[#1976D2] bg-[#E3F2FD] text-[#1976D2]"
+                              : "border-[#E0E0E0] bg-white hover:border-[#BBDEFB] text-[#4F4F4F]"
                           }`}
                         >
                           <Video className="w-5 h-5 shrink-0" />
@@ -1047,10 +1047,10 @@ export default function InterviewAutomationPage() {
                         <button
                           type="button"
                           onClick={() => setForm(f => ({ ...f, interview_type: "AI" }))}
-                          className={`flex flex-col items-center gap-2.5 p-4 rounded-[12px] border-2 transition-all cursor-pointer ${
+                          className={`flex flex-col items-center gap-2.5 p-4 rounded-[4px] border-2 transition-all cursor-pointer ${
                             form.interview_type === "AI"
-                              ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]"
-                              : "border-[#E1E4E8] bg-white hover:border-[#DAD7F6] text-[#4B5563]"
+                              ? "border-[#1976D2] bg-[#E3F2FD] text-[#1976D2]"
+                              : "border-[#E0E0E0] bg-white hover:border-[#BBDEFB] text-[#4F4F4F]"
                           }`}
                         >
                           <Brain className="w-5 h-5 shrink-0" />
@@ -1063,7 +1063,7 @@ export default function InterviewAutomationPage() {
                       <div className="space-y-4 pt-2">
                         <div>
                           <div className="flex items-center justify-between mb-2">
-                            <label htmlFor="automation-ai-template" className="text-[11px] font-bold text-[#8A929E] uppercase tracking-wider ml-1">
+                            <label htmlFor="automation-ai-template" className="text-[11px] font-bold text-[#757575] uppercase tracking-wider ml-1">
                               {tr("automation.aiInterviewTemplate")} <span className="text-rose-500">*</span>
                             </label>
                             <button 
@@ -1072,15 +1072,15 @@ export default function InterviewAutomationPage() {
                                 setSelectedTemplateForEdit(null);
                                 setShowTemplateBuilder(true);
                               }}
-                              className="text-[11px] font-bold text-[#5B53E0] hover:text-[#4A43C9] hover:underline flex items-center gap-1 cursor-pointer"
+                              className="text-[11px] font-bold text-[#1976D2] hover:text-[#1565C0] hover:underline flex items-center gap-1 cursor-pointer"
                             >
                               <PlusCircle className="w-3.5 h-3.5" />
                               <span>{tr("automation.createNew")}</span>
                             </button>
                           </div>
                           {interviewTemplates.length === 0 ? (
-                            <div className="bg-[#F7F8FA] rounded-[12px] p-4 border border-dashed border-[#E1E4E8] text-center">
-                              <p className="text-[12.5px] text-[#8A929E] font-medium">
+                            <div className="bg-[#FAFAFA] rounded-[4px] p-4 border border-dashed border-[#E0E0E0] text-center">
+                              <p className="text-[12.5px] text-[#757575] font-medium">
                                 {tr("automation.noAiTemplates")}
                               </p>
                             </div>
@@ -1090,14 +1090,14 @@ export default function InterviewAutomationPage() {
                                 id="automation-ai-template"
                                 value={form.interview_template_id || ""}
                                 onChange={(e) => setForm(f => ({ ...f, interview_template_id: e.target.value }))}
-                                className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                                className="w-full bg-white border border-[#E0E0E0] rounded-[4px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#424242] hover:border-[#BBDEFB] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm"
                               >
                                 <option value="">{tr("automation.selectTemplate")}</option>
                                 {interviewTemplates.map((t) => (
                                   <option key={t.id} value={t.id}>{t.title}</option>
                                 ))}
                               </select>
-                              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                              <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
                             </div>
                           )}
                         </div>
@@ -1106,7 +1106,7 @@ export default function InterviewAutomationPage() {
                       <div className="space-y-4 pt-2">
                         {/* Interviewer Email */}
                         <div>
-                          <label htmlFor="automation-interviewer-email" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                          <label htmlFor="automation-interviewer-email" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                             {tr("automation.interviewerEmailOptional")}
                           </label>
                           <input
@@ -1114,17 +1114,17 @@ export default function InterviewAutomationPage() {
                             type="email"
                             value={form.interviewer_email}
                             onChange={(e) => setForm((f) => ({ ...f, interviewer_email: e.target.value }))}
-                            className="w-full border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                            className="w-full border border-[#E0E0E0] rounded-[4px] h-11 px-4 text-[13.5px] font-semibold text-[#424242] focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all bg-white"
                             placeholder={tr("automation.recruiterEmailPlaceholder")}
                           />
-                          <p className="text-[11.5px] text-[#8A929E] mt-1.5 px-1 font-medium">
+                          <p className="text-[11.5px] text-[#757575] mt-1.5 px-1 font-medium">
                             {tr("automation.ifBlankAccountEmail")}
                           </p>
                         </div>
 
                         {/* Google Meet Link */}
                         <div>
-                          <label htmlFor="automation-google-meet-link" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                          <label htmlFor="automation-google-meet-link" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                             {tr("automation.personalMeetLink")}
                           </label>
                           <input
@@ -1132,10 +1132,10 @@ export default function InterviewAutomationPage() {
                             type="url"
                             value={form.google_meet_link}
                             onChange={(e) => setForm((f) => ({ ...f, google_meet_link: e.target.value }))}
-                            className="w-full border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all bg-white"
+                            className="w-full border border-[#E0E0E0] rounded-[4px] h-11 px-4 text-[13.5px] font-semibold text-[#424242] focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all bg-white"
                             placeholder="e.g. https://meet.google.com/abc-defg-hij"
                           />
-                          <p className="text-[11.5px] text-[#8A929E] mt-1.5 px-1 font-medium">
+                          <p className="text-[11.5px] text-[#757575] mt-1.5 px-1 font-medium">
                             {tr("automation.pasteRealLink")}
                           </p>
                         </div>
@@ -1144,39 +1144,39 @@ export default function InterviewAutomationPage() {
 
                     {/* Toggles Group */}
                     <div className="space-y-3 pt-2">
-                      <div className="flex items-center justify-between p-4 bg-[#F7F8FA] border border-[#E1E4E8] rounded-[12px] transition-all hover:border-[#DAD7F6]">
+                      <div className="flex items-center justify-between p-4 bg-[#FAFAFA] border border-[#E0E0E0] rounded-[4px] transition-all hover:border-[#BBDEFB]">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-[8px] bg-white border border-[#E1E4E8] flex items-center justify-center shadow-sm">
+                          <div className="w-9 h-9 rounded-[4px] bg-white border border-[#E0E0E0] flex items-center justify-center shadow-sm">
                             <Check className="w-4 h-4 text-emerald-600" />
                           </div>
                           <div>
-                            <p className="text-[13.5px] font-bold text-[#15171C]">{tr("automation.enableAutomation")}</p>
-                            <p className="text-[11.5px] text-[#8A929E] font-semibold">{tr("automation.turnRulesOnOff")}</p>
+                            <p className="text-[13.5px] font-bold text-[#212121]">{tr("automation.enableAutomation")}</p>
+                            <p className="text-[11.5px] text-[#757575] font-semibold">{tr("automation.turnRulesOnOff")}</p>
                           </div>
                         </div>
                         <button
                           type="button"
                           onClick={() => setForm((f) => ({ ...f, is_enabled: !f.is_enabled }))}
-                          className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.is_enabled ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"}`}
+                          className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.is_enabled ? "bg-[#1976D2]" : "bg-[#E0E0E0]"}`}
                         >
                           <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${form.is_enabled ? "translate-x-5" : "translate-x-0"}`} />
                         </button>
                       </div>
 
-                      <div className="flex items-center justify-between p-4 bg-[#F7F8FA] border border-[#E1E4E8] rounded-[12px] transition-all hover:border-[#DAD7F6]">
+                      <div className="flex items-center justify-between p-4 bg-[#FAFAFA] border border-[#E0E0E0] rounded-[4px] transition-all hover:border-[#BBDEFB]">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-[8px] bg-white border border-[#E1E4E8] flex items-center justify-center shadow-sm">
-                            <Sparkles className="w-4 h-4 text-[#5B53E0]" />
+                          <div className="w-9 h-9 rounded-[4px] bg-white border border-[#E0E0E0] flex items-center justify-center shadow-sm">
+                            <Sparkles className="w-4 h-4 text-[#1976D2]" />
                           </div>
                           <div>
-                            <p className="text-[13.5px] font-bold text-[#15171C]">{tr("automation.autoMove")}</p>
-                            <p className="text-[11.5px] text-[#8A929E] font-semibold">{tr("automation.advanceNextRound")}</p>
+                            <p className="text-[13.5px] font-bold text-[#212121]">{tr("automation.autoMove")}</p>
+                            <p className="text-[11.5px] text-[#757575] font-semibold">{tr("automation.advanceNextRound")}</p>
                           </div>
                         </div>
                         <button
                           type="button"
                           onClick={() => setForm((f) => ({ ...f, auto_move: !f.auto_move }))}
-                          className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.auto_move ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"}`}
+                          className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.auto_move ? "bg-[#1976D2]" : "bg-[#E0E0E0]"}`}
                         >
                           <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${form.auto_move ? "translate-x-5" : "translate-x-0"}`} />
                         </button>
@@ -1191,18 +1191,18 @@ export default function InterviewAutomationPage() {
                       const atLimit = slotLimit > 0 && form.time_slots.length >= slotLimit;
                       const overLimit = slotLimit > 0 && form.time_slots.length > slotLimit;
                       return (
-                    <div className="bg-[#F7F8FA] border border-[#E1E4E8] rounded-[12px] p-4">
+                    <div className="bg-[#FAFAFA] border border-[#E0E0E0] rounded-[4px] p-4">
                       <div className="flex items-center justify-between mb-1">
-                        <p className="text-[13.5px] font-bold text-[#15171C]">{tr("automation.preGeneratedSlots")}</p>
-                        <span className={`text-[11px] font-bold px-2 py-0.5 rounded-[6px] border ${atLimit ? "bg-[#FEF3E2] text-[#D97706] border-[#FCE1BF]" : "bg-[#ECEBFB] text-[#5B53E0] border-[#DAD7F6]/60"}`}>
+                        <p className="text-[13.5px] font-bold text-[#212121]">{tr("automation.preGeneratedSlots")}</p>
+                        <span className={`text-[11px] font-bold px-2 py-0.5 rounded-[3px] border ${atLimit ? "bg-[#FFF3E0] text-[#EF6C00] border-[#FFE0B2]" : "bg-[#E3F2FD] text-[#1976D2] border-[#BBDEFB]/60"}`}>
                           {tr("automation.slotsCount", { count: form.time_slots.length, limit: slotLimit })}
                         </span>
                       </div>
-                      <p className="text-[12.5px] text-[#8A929E] font-semibold mb-4 leading-relaxed">
+                      <p className="text-[12.5px] text-[#757575] font-semibold mb-4 leading-relaxed">
                         {tr("automation.defineSlotsHelp", { limit: form.daily_limit })}
                       </p>
                       {overLimit && (
-                        <div className="mb-4 flex items-start gap-2.5 rounded-[10px] border border-rose-200 bg-rose-50 px-3.5 py-3">
+                        <div className="mb-4 flex items-start gap-2.5 rounded-[4px] border border-rose-200 bg-rose-50 px-3.5 py-3">
                           <AlertCircle className="w-4 h-4 text-rose-500 mt-0.5 shrink-0" />
                           <p className="text-[12px] font-semibold text-rose-700 leading-relaxed">
                             {tr("automation.slotsOverLimit", { count: form.time_slots.length, limit: slotLimit, over: form.time_slots.length - slotLimit })}
@@ -1213,7 +1213,7 @@ export default function InterviewAutomationPage() {
                         <button
                           type="button"
                           onClick={handleGenerateTimeSlots}
-                          className="flex-1 flex justify-center items-center gap-2 h-11 bg-white border border-[#5B53E0] text-[#5B53E0] hover:bg-[#ECEBFB] rounded-[12px] text-[13px] font-bold transition-all cursor-pointer"
+                          className="flex-1 flex justify-center items-center gap-2 h-11 bg-white border border-[#1976D2] text-[#1976D2] hover:bg-[#E3F2FD] rounded-[4px] text-[13px] font-bold transition-all cursor-pointer"
                         >
                           <Wand2 className="w-4 h-4" />
                           <span>{tr("automation.autoGenerateSlots", { limit: form.daily_limit })}</span>
@@ -1232,7 +1232,7 @@ export default function InterviewAutomationPage() {
                             }
                             setForm(f => ({ ...f, time_slots: [...f.time_slots, "12:00"] }));
                           }}
-                          className="w-11 h-11 flex border border-[#E1E4E8] hover:border-[#DAD7F6] items-center justify-center rounded-[12px] hover:bg-slate-50 text-slate-500 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:border-[#E1E4E8]"
+                          className="w-11 h-11 flex border border-[#E0E0E0] hover:border-[#BBDEFB] items-center justify-center rounded-[4px] hover:bg-slate-50 text-slate-500 transition-colors cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:border-[#E0E0E0]"
                           title={atLimit ? tr("automation.slotLimitReachedTitle") : tr("automation.addSlotManually")}
                         >
                           <Plus className="w-4 h-4" />
@@ -1246,10 +1246,10 @@ export default function InterviewAutomationPage() {
                       <div className="space-y-3">
                         {form.time_slots.map((ts, idx) => (
                           <div key={idx} className="flex items-center gap-2 relative">
-                            <span className="absolute left-4 text-[10px] font-bold text-[#8A929E] tracking-wider uppercase leading-none pointer-events-none">
+                            <span className="absolute left-4 text-[10px] font-bold text-[#757575] tracking-wider uppercase leading-none pointer-events-none">
                               {tr("automation.slotN", { n: idx + 1 })}
                             </span>
-                            <div className="flex-1 flex items-center bg-[#F7F8FA] border border-[#E1E4E8] rounded-[12px] px-2 focus-within:ring-2 focus-within:ring-[#5B53E0]/20 focus-within:border-[#5B53E0] transition-all">
+                            <div className="flex-1 flex items-center bg-[#FAFAFA] border border-[#E0E0E0] rounded-[4px] px-2 focus-within:ring-2 focus-within:ring-[#1976D2]/20 focus-within:border-[#1976D2] transition-all">
                               <input
                                 type="time"
                                 value={ts}
@@ -1258,9 +1258,9 @@ export default function InterviewAutomationPage() {
                                   newSlots[idx] = e.target.value;
                                   setForm((f) => ({ ...f, time_slots: newSlots }));
                                 }}
-                                className="w-full bg-transparent pl-14 pr-2 h-11 text-[13.5px] font-bold text-[#374151] focus:outline-none font-mono"
+                                className="w-full bg-transparent pl-14 pr-2 h-11 text-[13.5px] font-bold text-[#424242] focus:outline-none font-mono"
                               />
-                              <span className="text-[11.5px] text-[#8A929E] font-bold px-3 border-l border-[#E1E4E8] flex items-center h-7 shrink-0">
+                              <span className="text-[11.5px] text-[#757575] font-bold px-3 border-l border-[#E0E0E0] flex items-center h-7 shrink-0">
                                 {tr("automation.endPrefix")} {(() => {
                                    const [h, m] = ts.split(':').map(Number);
                                    if (Number.isNaN(h)) return "--:--";
@@ -1277,7 +1277,7 @@ export default function InterviewAutomationPage() {
                                 const newSlots = form.time_slots.filter((_, i) => i !== idx);
                                   setForm((f) => ({ ...f, time_slots: newSlots }));
                               }}
-                              className="w-11 h-11 shrink-0 bg-rose-50 text-rose-600 rounded-[12px] flex items-center justify-center hover:bg-rose-600 hover:text-white transition-colors border border-rose-100 cursor-pointer"
+                              className="w-11 h-11 shrink-0 bg-rose-50 text-rose-600 rounded-[4px] flex items-center justify-center hover:bg-rose-600 hover:text-white transition-colors border border-rose-100 cursor-pointer"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -1290,11 +1290,11 @@ export default function InterviewAutomationPage() {
               </div>
 
               {/* Footer */}
-              <div className="p-6 border-t border-[#E8EAED] bg-[#F7F8FA] shrink-0">
+              <div className="p-6 border-t border-[#E0E0E0] bg-[#FAFAFA] shrink-0">
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="w-full flex items-center justify-center gap-2 h-12 bg-[#5B53E0] text-white rounded-[12px] text-[13.5px] font-bold hover:bg-[#4A43C9] transition-all active:scale-[0.98] disabled:opacity-60 shadow-[0_4px_12px_rgba(91,83,224,0.25)] cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 h-12 bg-[#1976D2] text-white rounded-[4px] text-[13.5px] font-bold hover:bg-[#1565C0] transition-all active:scale-[0.98] disabled:opacity-60 shadow-[0_4px_12px_rgba(25,118,210,0.25)] cursor-pointer"
                 >
                   {saving ? (
                     <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -1307,7 +1307,7 @@ export default function InterviewAutomationPage() {
                 </button>
                 <button
                   onClick={closeModal}
-                  className="w-full mt-3 h-10 text-[12.5px] font-semibold text-[#8A929E] hover:text-[#4B5563] transition-colors cursor-pointer"
+                  className="w-full mt-3 h-10 text-[12.5px] font-semibold text-[#757575] hover:text-[#4F4F4F] transition-colors cursor-pointer"
                 >
                   {tr("common.cancel")}
                 </button>

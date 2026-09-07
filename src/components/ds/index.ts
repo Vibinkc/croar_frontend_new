@@ -3,9 +3,9 @@
  *
  *   import { Button, Card, Input, Field, Badge, StatCard, PageHeader, PageShell, hankenGrotesk } from "@/components/ds";
  *
- * Visual language: Hanken Grotesk + JetBrains Mono, indigo #5B53E0 accent,
- * flat white surfaces with #E8EAED hairline borders, 10–14px radii, dark
- * #0E1014 surfaces for nav/hero. All components are mobile-responsive.
+ * Visual language: Hanken Grotesk + JetBrains Mono, indigo #1976D2 accent,
+ * flat white surfaces with #E0E0E0 hairline borders, 10–14px radii, dark
+ * #1E2A38 surfaces for nav/hero. All components are mobile-responsive.
  */
 export { cn } from "./cn";
 export { ds, BRAND_GRADIENT, HERO_BG, HERO_GLOW, shadow } from "./tokens";

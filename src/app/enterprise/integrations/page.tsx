@@ -47,7 +47,7 @@ function Mark({ item }: { item: Integration }) {
     const [failed, setFailed] = useState(false);
     return (
         <span
-            className="w-11 h-11 shrink-0 rounded-[10px] flex items-center justify-center overflow-hidden border border-[#E8EAED] bg-white"
+            className="w-11 h-11 shrink-0 rounded-[4px] flex items-center justify-center overflow-hidden border border-[#E0E0E0] bg-white"
             style={failed || !item.icon_url ? { background: `${item.brand_color}14` } : undefined}
         >
             {item.icon_url && !failed ? (
@@ -117,8 +117,8 @@ export default function IntegrationsMarketplace() {
     return (
         <div className="p-6 max-w-[1100px] mx-auto space-y-5">
             <div>
-                <h1 className="text-[22px] font-bold text-[#15171C]">{tr("integrations.title")}</h1>
-                <p className="text-[13px] text-[#8A929E] mt-1">
+                <h1 className="text-[22px] font-bold text-[#212121]">{tr("integrations.title")}</h1>
+                <p className="text-[13px] text-[#757575] mt-1">
                     {tr("integrations.subtitle")}
                     {connectedCount > 0 && ` · ${tr("integrations.connectedCount", { count: connectedCount })}`}
                 </p>
@@ -128,10 +128,10 @@ export default function IntegrationsMarketplace() {
                 <div className="flex gap-1 flex-wrap">
                     <button
                         onClick={() => setFreeOnly((v) => !v)}
-                        className={`h-8 px-3 rounded-[8px] text-[12px] font-semibold transition-colors ${
+                        className={`h-8 px-3 rounded-[4px] text-[12px] font-semibold transition-colors ${
                             freeOnly
-                                ? "bg-[#5B53E0] text-white"
-                                : "border border-[#E8EAED] bg-white text-[#6B6F76] hover:border-[#5B53E0]/50 hover:text-[#5B53E0]"
+                                ? "bg-[#1976D2] text-white"
+                                : "border border-[#E0E0E0] bg-white text-[#616161] hover:border-[#1976D2]/50 hover:text-[#1976D2]"
                         }`}
                     >
                         {tr("integrations.freeToTry")}
@@ -140,10 +140,10 @@ export default function IntegrationsMarketplace() {
                         <button
                             key={c}
                             onClick={() => setCategory(c)}
-                            className={`h-8 px-3 rounded-[8px] text-[12px] font-semibold transition-colors ${
+                            className={`h-8 px-3 rounded-[4px] text-[12px] font-semibold transition-colors ${
                                 category === c
-                                    ? "bg-[#5B53E0] text-white"
-                                    : "border border-[#E8EAED] bg-white text-[#6B6F76] hover:border-[#5B53E0]/50 hover:text-[#5B53E0]"
+                                    ? "bg-[#1976D2] text-white"
+                                    : "border border-[#E0E0E0] bg-white text-[#616161] hover:border-[#1976D2]/50 hover:text-[#1976D2]"
                             }`}
                         >
                             {c === "all" ? tr("integrations.all") : CATEGORY_LABELS[c] || c}
@@ -154,43 +154,43 @@ export default function IntegrationsMarketplace() {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder={tr("integrations.search")}
-                    className="h-8 px-3 ml-auto w-full sm:w-[240px] rounded-[8px] border border-[#E8EAED] bg-white text-[12.5px] text-[#15171C] placeholder:text-[#A8AEB8] focus:border-[#5B53E0]/50 outline-none"
+                    className="h-8 px-3 ml-auto w-full sm:w-[240px] rounded-[4px] border border-[#E0E0E0] bg-white text-[12.5px] text-[#212121] placeholder:text-[#9E9E9E] focus:border-[#1976D2]/50 outline-none"
                 />
             </div>
 
             {loading ? (
                 <div className="py-12 flex justify-center">
-                    <div className="w-6 h-6 border-2 border-[#5B53E0]/30 border-t-[#5B53E0] rounded-full animate-spin" />
+                    <div className="w-6 h-6 border-2 border-[#1976D2]/30 border-t-[#1976D2] rounded-full animate-spin" />
                 </div>
             ) : shown.length === 0 ? (
-                <p className="text-[12.5px] text-[#8A929E] py-10 text-center">{tr("integrations.noResults")}</p>
+                <p className="text-[12.5px] text-[#757575] py-10 text-center">{tr("integrations.noResults")}</p>
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
                     {shown.map((item) => (
                         <Link
                             key={item.key}
                             href={`/enterprise/integrations/${item.key}`}
-                            className="group rounded-[12px] border border-[#E8EAED] bg-white flex flex-col hover:border-[#5B53E0]/45 hover:shadow-[0_2px_10px_rgba(91,83,224,0.07)] transition-all"
+                            className="group rounded-[4px] border border-[#E0E0E0] bg-white flex flex-col hover:border-[#1976D2]/45 hover:shadow-[0_2px_10px_rgba(25,118,210,0.07)] transition-all"
                         >
                             <div className="p-4 flex-1">
                                 <div className="flex items-start gap-3">
                                     <Mark item={item} />
                                     <div className="min-w-0 flex-1">
-                                        <p className="text-[13.5px] font-bold text-[#15171C]">{item.name}</p>
-                                        <p className="text-[10px] font-bold text-[#A8AEB8] uppercase tracking-wider mt-0.5">
+                                        <p className="text-[13.5px] font-bold text-[#212121]">{item.name}</p>
+                                        <p className="text-[10px] font-bold text-[#9E9E9E] uppercase tracking-wider mt-0.5">
                                             {CATEGORY_LABELS[item.category] || item.category}
                                         </p>
                                     </div>
                                     {item.connected && (
-                                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide bg-[#E4F5EF] text-[#0E8A6E] shrink-0">
+                                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-[3px] uppercase tracking-wide bg-[#E8F5E9] text-[#2E7D32] shrink-0">
                                             {tr("integrations.connected")}
                                         </span>
                                     )}
                                 </div>
-                                <p className="text-[11.5px] text-[#8A929E] leading-relaxed mt-2.5">{item.summary}</p>
+                                <p className="text-[11.5px] text-[#757575] leading-relaxed mt-2.5">{item.summary}</p>
                             </div>
-                            <div className="border-t border-[#F0F0F1] px-4 py-2.5 flex items-center justify-between">
-                                <span className="text-[12px] font-bold text-[#5B53E0]">
+                            <div className="border-t border-[#EEEEEE] px-4 py-2.5 flex items-center justify-between">
+                                <span className="text-[12px] font-bold text-[#1976D2]">
                                     {item.connected ? tr("integrations.manage") : tr("integrations.enable")}
                                 </span>
                                 {/* Which tools can be tried without a sales call is the first
@@ -201,13 +201,13 @@ export default function IntegrationsMarketplace() {
                                     {item.free_to_try && (
                                         <span
                                             title={item.trial_note}
-                                            className="text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide bg-[#EDECFB] text-[#5B53E0]"
+                                            className="text-[9px] font-bold px-1.5 py-0.5 rounded-[3px] uppercase tracking-wide bg-[#EDECFB] text-[#1976D2]"
                                         >
                                             {tr("integrations.freeToTry")}
                                         </span>
                                     )}
                                     {item.api_tier === "free" && (
-                                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide bg-[#E4F5EF] text-[#0E8A6E]">
+                                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-[3px] uppercase tracking-wide bg-[#E8F5E9] text-[#2E7D32]">
                                             {tr("integrations.freeApi")}
                                         </span>
                                     )}
@@ -222,16 +222,16 @@ export default function IntegrationsMarketplace() {
                 a pointer to their own screen instead of a card that would behave differently
                 from every other card here. */}
             {boards.length > 0 && (
-                <div className="rounded-[12px] border border-[#E8EAED] bg-white p-4">
-                    <h2 className="text-[14px] font-bold text-[#15171C]">{tr("integrations.boardsTitle")}</h2>
-                    <p className="text-[12px] text-[#8A929E] leading-relaxed mt-1">
+                <div className="rounded-[4px] border border-[#E0E0E0] bg-white p-4">
+                    <h2 className="text-[14px] font-bold text-[#212121]">{tr("integrations.boardsTitle")}</h2>
+                    <p className="text-[12px] text-[#757575] leading-relaxed mt-1">
                         {tr("integrations.boardsHint", { count: boards.length })}
                     </p>
                     <div className="flex flex-wrap gap-1.5 mt-3">
                         {boards.slice(0, 12).map((b) => (
                             <span
                                 key={b.key}
-                                className="text-[11px] font-semibold px-2 py-1 rounded-[6px] bg-[#F7F8FA] border border-[#E8EAED] text-[#4B5057]"
+                                className="text-[11px] font-semibold px-2 py-1 rounded-[3px] bg-[#FAFAFA] border border-[#E0E0E0] text-[#4B5057]"
                             >
                                 {b.name}
                             </span>
@@ -239,7 +239,7 @@ export default function IntegrationsMarketplace() {
                     </div>
                     <Link
                         href="/enterprise/settings/job-portals"
-                        className="inline-flex items-center gap-1.5 mt-3.5 h-9 px-3 rounded-[9px] border border-[#E8EAED] bg-white text-[12px] font-semibold text-[#374151] hover:border-[#5B53E0]/50 hover:text-[#5B53E0] transition-colors"
+                        className="inline-flex items-center gap-1.5 mt-3.5 h-9 px-3 rounded-[4px] border border-[#E0E0E0] bg-white text-[12px] font-semibold text-[#424242] hover:border-[#1976D2]/50 hover:text-[#1976D2] transition-colors"
                     >
                         <span className="material-symbols-rounded text-[17px]">open_in_new</span>
                         {tr("integrations.manageBoards")}
@@ -249,7 +249,7 @@ export default function IntegrationsMarketplace() {
 
             {/* Mailboxes, calendar, Slack and the ATS list. Same screen, because "what is this
                 account connected to?" is one question and used to have two answers. */}
-            <div className="border-t border-[#E8EAED] pt-6 mt-2">
+            <div className="border-t border-[#E0E0E0] pt-6 mt-2">
                 <ConnectionsPanel />
             </div>
         </div>

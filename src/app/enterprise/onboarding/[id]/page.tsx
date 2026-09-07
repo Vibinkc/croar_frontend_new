@@ -269,7 +269,7 @@ export default function OnboardingDetailsPage() {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-screen bg-slate-50/30">
-                <div className="w-10 h-10 border-4 border-[#7C3AED] border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-10 h-10 border-4 border-[#1E88E5] border-t-transparent rounded-full animate-spin"></div>
             </div>
         );
     }
@@ -290,7 +290,7 @@ export default function OnboardingDetailsPage() {
                     {loadFailed && (
                         <button onClick={fetchOnboardingDetails} className="px-4 h-10 rounded-xl bg-white border border-slate-200 text-slate-600 text-xs font-black hover:bg-slate-50 transition-all">{tr("postOnboarding.retry")}</button>
                     )}
-                    <button onClick={() => router.push("/enterprise/onboarding")} className="px-4 h-10 rounded-xl bg-[#7C3AED] hover:bg-[#6D28D9] text-white text-xs font-black transition-all">{tr("onboardingDetail.backToOnboarding")}</button>
+                    <button onClick={() => router.push("/enterprise/onboarding")} className="px-4 h-10 rounded-xl bg-[#1E88E5] hover:bg-[#1565C0] text-white text-xs font-black transition-all">{tr("onboardingDetail.backToOnboarding")}</button>
                 </div>
             </div>
         );
@@ -342,7 +342,7 @@ export default function OnboardingDetailsPage() {
                             <button 
                                 onClick={handleApproveHire}
                                 disabled={isProcessing}
-                                className="px-5 py-2 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-xs font-black   shadow-lg shadow-[#7C3AED]/20 transition-all disabled:opacity-50"
+                                className="px-5 py-2 bg-[#1E88E5] hover:bg-[#1565C0] text-white rounded-xl text-xs font-black   shadow-lg shadow-[#1E88E5]/20 transition-all disabled:opacity-50"
                             >
                                 {isProcessing ? tr("onboardingDetail.processing") : tr("onboardingDetail.approveHire")}
                             </button>
@@ -397,13 +397,13 @@ export default function OnboardingDetailsPage() {
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
-                                className={`pb-4 text-xs font-black  tracking-[0.1em] transition-all relative ${activeTab === tab ? "text-[#7C3AED]" : "text-slate-400 hover:text-slate-600"}`}
+                                className={`pb-4 text-xs font-black  tracking-[0.1em] transition-all relative ${activeTab === tab ? "text-[#1E88E5]" : "text-slate-400 hover:text-slate-600"}`}
                             >
                                 {tabLabel(tab)}
                                 {activeTab === tab && (
                                     <motion.div 
                                         layoutId="activeTab" 
-                                        className="absolute bottom-0 h-1 bg-[#7C3AED] rounded-full w-full"
+                                        className="absolute bottom-0 h-1 bg-[#1E88E5] rounded-full w-full"
                                     />
                                 )}
                             </button>
@@ -465,7 +465,7 @@ export default function OnboardingDetailsPage() {
                                                                             return (
                                                                                 <button 
                                                                                     onClick={() => window.open(`${BACKEND_URL.replace('/api/v1', '')}/${val.replaceAll('\\', '/')}`, '_blank')}
-                                                                                    className="flex items-center gap-2 text-[#7C3AED] hover:underline"
+                                                                                    className="flex items-center gap-2 text-[#1E88E5] hover:underline"
                                                                                 >
                                                                                     <span className="material-symbols-rounded text-sm">attach_file</span>
                                                                                     <span className="text-xs">{tr("onboardingDetail.viewUpload")}</span>
@@ -503,12 +503,12 @@ export default function OnboardingDetailsPage() {
                                     value={newDocName}
                                     onChange={(e) => setNewDocName(e.target.value)}
                                     placeholder={tr("onboardingDetail.docNamePlaceholder")}
-                                    className="flex-1 h-10 px-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]"
+                                    className="flex-1 h-10 px-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#1E88E5]/20 focus:border-[#1E88E5]"
                                 />
                                 <button
                                     onClick={requestDocument}
                                     disabled={isProcessing || !newDocName.trim()}
-                                    className="px-5 h-10 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-xs font-black transition-all disabled:opacity-50 shrink-0"
+                                    className="px-5 h-10 bg-[#1E88E5] hover:bg-[#1565C0] text-white rounded-xl text-xs font-black transition-all disabled:opacity-50 shrink-0"
                                 >
                                     {tr("onboardingDetail.requestDocument")}
                                 </button>
@@ -522,7 +522,7 @@ export default function OnboardingDetailsPage() {
                         ) : (
                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {onboarding.documents?.map((doc: OnboardingDocument) => (
-                                <div key={doc.id} className="bg-white border border-slate-100 rounded-2xl p-6 flex items-center justify-between hover:border-[#7C3AED]/30 hover:shadow-xl hover:shadow-[#7C3AED]/5 transition-all group">
+                                <div key={doc.id} className="bg-white border border-slate-100 rounded-2xl p-6 flex items-center justify-between hover:border-[#1E88E5]/30 hover:shadow-xl hover:shadow-[#1E88E5]/5 transition-all group">
                                     <div className="flex items-center gap-4 text-left">
                                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${doc.status === "Received" ? "bg-emerald-50 text-emerald-600" : "bg-slate-50 text-slate-400"}`}>
                                             <span className="material-symbols-rounded">{doc.status === "Received" ? "check_circle" : "file_present"}</span>
@@ -551,7 +551,7 @@ export default function OnboardingDetailsPage() {
                                         {doc.status === "Received" && doc.file_path && (
                                             <button 
                                                 onClick={() => window.open(`${BACKEND_URL.replace('/api/v1', '')}/${doc.file_path!.replaceAll('\\', '/')}`, '_blank')}
-                                                className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#7C3AED]/5 text-[#7C3AED] hover:bg-[#7C3AED] hover:text-white transition-all shadow-sm"
+                                                className="w-10 h-10 flex items-center justify-center rounded-xl bg-[#1E88E5]/5 text-[#1E88E5] hover:bg-[#1E88E5] hover:text-white transition-all shadow-sm"
                                             >
                                                 <span className="material-symbols-rounded text-lg">visibility</span>
                                             </button>
@@ -576,7 +576,7 @@ export default function OnboardingDetailsPage() {
                                             value={newTask.title}
                                             onChange={(e) => setNewTask({ ...newTask, title: e.target.value })}
                                             placeholder={tr("onboardingDetail.taskTitlePlaceholder")}
-                                            className="w-full h-10 px-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]"
+                                            className="w-full h-10 px-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#1E88E5]/20 focus:border-[#1E88E5]"
                                         />
                                         <div className="flex gap-2">
                                             <select
@@ -592,7 +592,7 @@ export default function OnboardingDetailsPage() {
                                                 onChange={(e) => setNewTask({ ...newTask, due_date: e.target.value })}
                                                 className="flex-1 h-10 px-3 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold text-slate-700 outline-none"
                                             />
-                                            <button onClick={addTask} disabled={isProcessing || !newTask.title.trim()} className="px-4 h-10 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-xs font-black disabled:opacity-50 shrink-0">{tr("onboardingDetail.add")}</button>
+                                            <button onClick={addTask} disabled={isProcessing || !newTask.title.trim()} className="px-4 h-10 bg-[#1E88E5] hover:bg-[#1565C0] text-white rounded-xl text-xs font-black disabled:opacity-50 shrink-0">{tr("onboardingDetail.add")}</button>
                                         </div>
                                     </div>
                                 )}
@@ -622,9 +622,9 @@ export default function OnboardingDetailsPage() {
                                             value={newNote}
                                             onChange={(e) => setNewNote(e.target.value)}
                                             placeholder={tr("onboardingDetail.addNotePlaceholder")}
-                                            className="flex-1 h-10 px-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED]"
+                                            className="flex-1 h-10 px-3 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 outline-none focus:ring-2 focus:ring-[#1E88E5]/20 focus:border-[#1E88E5]"
                                         />
-                                        <button onClick={addNote} disabled={isProcessing || !newNote.trim()} className="px-4 h-10 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-xs font-black disabled:opacity-50 shrink-0">{tr("onboardingDetail.add")}</button>
+                                        <button onClick={addNote} disabled={isProcessing || !newNote.trim()} className="px-4 h-10 bg-[#1E88E5] hover:bg-[#1565C0] text-white rounded-xl text-xs font-black disabled:opacity-50 shrink-0">{tr("onboardingDetail.add")}</button>
                                     </div>
                                 )}
                                 <div className="space-y-2">
@@ -647,7 +647,7 @@ export default function OnboardingDetailsPage() {
                             <div className="space-y-8 relative before:absolute before:left-5 before:top-2 before:bottom-2 before:w-px before:bg-slate-100">
                                 {onboarding.activities?.map((act: OnboardingActivity) => (
                                     <div key={act.id} className="relative pl-12 group/act">
-                                        <div className="absolute left-0 top-1.5 w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 z-10 transition-colors group-hover/act:border-[#7C3AED] group-hover/act:text-[#7C3AED]">
+                                        <div className="absolute left-0 top-1.5 w-10 h-10 rounded-xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 z-10 transition-colors group-hover/act:border-[#1E88E5] group-hover/act:text-[#1E88E5]">
                                             <span className="material-symbols-rounded text-base">history</span>
                                         </div>
                                         <div>
@@ -655,7 +655,7 @@ export default function OnboardingDetailsPage() {
                                             <p className="text-xs font-medium text-slate-400 mt-1">
                                                 {act.performed_by ? `${tr("onboardingDetail.by")} ${act.performed_by}` : act.activity_type}
                                             </p>
-                                            <p className="text-[10px] font-black text-[#7C3AED] bg-[#7C3AED]/5 inline-block px-2 py-1 rounded-xl   mt-3">
+                                            <p className="text-[10px] font-black text-[#1E88E5] bg-[#1E88E5]/5 inline-block px-2 py-1 rounded-xl   mt-3">
                                                 {safeFormat(act.created_at, "MMM dd, HH:mm")}
                                             </p>
                                         </div>
@@ -738,7 +738,7 @@ export default function OnboardingDetailsPage() {
                                             value={rejectReason}
                                             onChange={(e) => setRejectReason(e.target.value)}
                                             placeholder={tr("onboardingDetail.feedbackPlaceholder")}
-                                            className="w-full h-32 p-4 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-[#7C3AED]/20 focus:border-[#7C3AED] outline-none transition-all resize-none"
+                                            className="w-full h-32 p-4 bg-slate-50 border border-slate-100 rounded-xl text-sm font-bold text-slate-800 focus:ring-2 focus:ring-[#1E88E5]/20 focus:border-[#1E88E5] outline-none transition-all resize-none"
                                         />
                                     </div>
                                 </div>

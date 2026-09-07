@@ -17,21 +17,21 @@ export default function TaskCard({ task, getStatusColor }: TaskCardProps) {
         <div className="group bg-white rounded-2xl border border-slate-100 p-4 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 relative overflow-hidden">
             <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
                 <Link href={`/enterprise/projects/${task.project_id}`}>
-                    <span className="material-symbols-rounded p-1.5 bg-indigo-50 text-[#7C3AED] rounded-lg cursor-pointer hover:bg-indigo-100 transition-colors text-base">open_in_new</span>
+                    <span className="material-symbols-rounded p-1.5 bg-indigo-50 text-[#1E88E5] rounded-lg cursor-pointer hover:bg-indigo-100 transition-colors text-base">open_in_new</span>
                 </Link>
             </div>
             
             <div className="flex flex-col h-full space-y-3">
                 <div className="space-y-1">
                     <div className="flex items-center justify-between mb-0.5">
-                        <span className="text-[8px] font-black text-[#7C3AED]   bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100 flex items-center gap-1">
+                        <span className="text-[8px] font-black text-[#1E88E5]   bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100 flex items-center gap-1">
                             {task.project?.name || tr("sharedUi.unlinked")}
                         </span>
                         <span className={`px-2 py-0.5 rounded-md text-[8px] font-black   border ${getStatusColor(task.column)} shadow-sm`}>
                             {task.column}
                         </span>
                     </div>
-                    <h3 className="text-sm font-black text-slate-800 leading-tight group-hover:text-[#7C3AED] transition-colors  tracking-tight truncate">{task.title}</h3>
+                    <h3 className="text-sm font-black text-slate-800 leading-tight group-hover:text-[#1E88E5] transition-colors  tracking-tight truncate">{task.title}</h3>
                 </div>
 
                 <p className="text-slate-500 text-[10px] font-medium line-clamp-2  leading-relaxed opacity-70">

@@ -18,20 +18,20 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const base =
-    "inline-flex items-center justify-center gap-2 rounded-[10px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#5B53E0]/40 disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap";
+    "inline-flex items-center justify-center gap-2 rounded-[4px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1976D2]/40 disabled:opacity-50 disabled:pointer-events-none whitespace-nowrap";
 
 const variants: Record<Variant, string> = {
-    primary: "bg-[#5B53E0] text-white hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)]",
-    secondary: "bg-white border border-[#E1E4E8] text-[#374151] hover:bg-[#F4F5F7]",
-    ghost: "text-[#374151] hover:bg-[#F4F5F7]",
-    danger: "bg-[#EF4444] text-white hover:bg-[#DC2626] shadow-[0_6px_16px_rgba(239,68,68,0.24)]",
+    primary: "bg-[#1976D2] text-white hover:bg-[#1565C0] shadow-[0_6px_16px_rgba(25,118,210,0.28)]",
+    secondary: "bg-white border border-[#E0E0E0] text-[#1976D2] hover:bg-[#E3F2FD]",
+    ghost: "text-[#1976D2] hover:bg-[#E3F2FD]",
+    danger: "bg-[#E53935] text-white hover:bg-[#DC2626] shadow-[0_6px_16px_rgba(229,57,53,0.24)]",
     dark: "bg-white/[0.08] border border-white/15 text-white hover:bg-white/[0.14]",
 };
 
 const sizes: Record<Size, string> = {
-    sm: "h-9 px-3 text-[13px]",
-    md: "h-[42px] px-4 text-[13.5px]",
-    lg: "h-[46px] px-5 text-[14.5px]",
+    sm: "h-8 px-3 text-[13px]",
+    md: "h-9 px-4 text-[13.5px]",
+    lg: "h-10 px-5 text-[14.5px]",
 };
 
 const iconSize: Record<Size, string> = { sm: "text-[17px]", md: "text-[19px]", lg: "text-[19px]" };

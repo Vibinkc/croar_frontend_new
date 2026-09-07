@@ -107,16 +107,16 @@ const AgentCopilot = () => {
                             className="fixed right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl z-[10001] flex flex-col border-l border-slate-100"
                         >
                             {/* Header */}
-                            <div className="px-6 py-4 bg-white border-b border-[#E8EAED] flex items-center justify-between gap-3 shrink-0">
+                            <div className="px-6 py-4 bg-white border-b border-[#E0E0E0] flex items-center justify-between gap-3 shrink-0">
                                 <div>
-                                    <h2 className="text-[20px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex items-center gap-2">
-                                        <span className="material-symbols-rounded text-[#5B53E0] text-[22px]">smart_toy</span> Agent OS
+                                    <h2 className="text-[20px] font-extrabold tracking-[-0.5px] text-[#212121] leading-tight flex items-center gap-2">
+                                        <span className="material-symbols-rounded text-[#1976D2] text-[22px]">smart_toy</span> Agent OS
                                     </h2>
-                                    <p className="text-[13px] text-[#8A929E] mt-0.5">{tr("forms2.copilotActive")}</p>
+                                    <p className="text-[13px] text-[#757575] mt-0.5">{tr("forms2.copilotActive")}</p>
                                 </div>
                                 <button 
                                     onClick={() => setIsOpen(false)} 
-                                    className="w-9 h-9 rounded-[10px] hover:bg-[#F4F5F7] flex items-center justify-center text-[#9AA3AF] hover:text-[#374151] transition-colors border border-transparent hover:border-[#E8EAED]"
+                                    className="w-9 h-9 rounded-[4px] hover:bg-[#F5F6F8] flex items-center justify-center text-[#9E9E9E] hover:text-[#424242] transition-colors border border-transparent hover:border-[#E0E0E0]"
                                 >
                                     <span className="material-symbols-rounded text-[20px]">close</span>
                                 </button>

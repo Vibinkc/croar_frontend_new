@@ -4,10 +4,10 @@ import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { useRouter } from "next/navigation";
-import { Hanken_Grotesk } from "next/font/google";
+import { Roboto } from "next/font/google";
 import { BACKEND_URL, FRONTEND_DOMAIN } from "@/utils/api";
 
-const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
+const hankenGrotesk = Roboto({ subsets: ["latin"], weight: ["300", "400", "500", "700"] });
 
 export default function SuperAdminLoginPage() {
     const [email, setEmail] = useState("");
@@ -58,12 +58,12 @@ export default function SuperAdminLoginPage() {
     };
 
     return (
-        <div className={`flex min-h-screen text-[#C7CCD4] ${hankenGrotesk.className}`} style={{ background: "#0E1014" }}>
+        <div className={`flex min-h-screen text-[#BDBDBD] ${hankenGrotesk.className}`} style={{ background: "#1E2A38" }}>
             {/* Ambient Background Elements */}
             <div className="fixed inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#5B53E0]/15 blur-[120px] rounded-full"></div>
-                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#8B7DFF]/12 blur-[120px] rounded-full"></div>
-                <div className="absolute top-[20%] right-[10%] w-[20%] h-[20%] bg-[#5B53E0]/10 blur-[80px] rounded-full"></div>
+                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#1976D2]/15 blur-[120px] rounded-full"></div>
+                <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[#42A5F5]/12 blur-[120px] rounded-full"></div>
+                <div className="absolute top-[20%] right-[10%] w-[20%] h-[20%] bg-[#1976D2]/10 blur-[80px] rounded-full"></div>
             </div>
 
             <div className="w-full flex flex-col items-center justify-center p-6 relative z-10">
@@ -71,26 +71,26 @@ export default function SuperAdminLoginPage() {
                     {/* Brand/Logo */}
                     <div className="text-center mb-10">
                         <div
-                            className="inline-flex items-center justify-center w-14 h-14 rounded-[14px] mb-6 shadow-[0_6px_18px_rgba(91,83,224,0.45)]"
-                            style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}
+                            className="inline-flex items-center justify-center w-14 h-14 rounded-[4px] mb-6 shadow-[0_6px_18px_rgba(25,118,210,0.45)]"
+                            style={{ background: "linear-gradient(135deg,#42A5F5,#1976D2)" }}
                         >
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L4.5 13H11l-1 9 8.5-11H12l1-9z"/></svg>
                         </div>
                         <h1 className="text-[28px] font-extrabold tracking-[-0.6px] text-white mb-2">
-                            {FRONTEND_DOMAIN.split('.').slice(0, 2).join('.')}.<span className="text-[#8B7DFF]">{FRONTEND_DOMAIN.split('.').slice(2).join('.')}</span>
+                            {FRONTEND_DOMAIN.split('.').slice(0, 2).join('.')}.<span className="text-[#42A5F5]">{FRONTEND_DOMAIN.split('.').slice(2).join('.')}</span>
                         </h1>
-                        <p className="text-[#565E6B] text-[10px] font-bold uppercase tracking-[0.2em]">{t("superAdmin.institutionalPlatformArchitecture")}</p>
+                        <p className="text-[#757575] text-[10px] font-bold uppercase tracking-[0.2em]">{t("superAdmin.institutionalPlatformArchitecture")}</p>
                     </div>
 
                     {/* Login Card */}
-                    <div className="border border-[#252A33] p-8 md:p-9 rounded-[14px] shadow-[0_14px_34px_rgba(0,0,0,0.4)]" style={{ background: "#1A1E25" }}>
+                    <div className="border border-[#252A33] p-8 md:p-9 rounded-[4px] shadow-[0_14px_34px_rgba(0,0,0,0.4)]" style={{ background: "#263A4B" }}>
                         <form onSubmit={handleSubmit} className="space-y-5">
                             <div className="space-y-4">
                                 <div className="space-y-1.5">
-                                    <label htmlFor="super-admin-login-email" className="block text-[10px] font-bold uppercase tracking-[0.1em] text-[#565E6B] ml-0.5">{t("superAdmin.universalIdentity")}</label>
+                                    <label htmlFor="super-admin-login-email" className="block text-[10px] font-bold uppercase tracking-[0.1em] text-[#757575] ml-0.5">{t("superAdmin.universalIdentity")}</label>
                                     <div className="relative group">
                                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                            <span className="material-icons-outlined text-[18px] text-[#565E6B] group-focus-within:text-[#8B7DFF] transition-colors">alternate_email</span>
+                                            <span className="material-icons-outlined text-[18px] text-[#757575] group-focus-within:text-[#42A5F5] transition-colors">alternate_email</span>
                                         </div>
                                         <input
                                             id="super-admin-login-email"
@@ -98,17 +98,17 @@ export default function SuperAdminLoginPage() {
                                             required
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
-                                            className="w-full h-11 bg-[#0E1014] border border-[#252A33] pl-11 pr-4 rounded-[10px] text-sm text-white outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/30 transition-all placeholder:text-[#565E6B]"
+                                            className="w-full h-11 bg-[#1E2A38] border border-[#252A33] pl-11 pr-4 rounded-[4px] text-sm text-white outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/30 transition-all placeholder:text-[#757575]"
                                             placeholder={`root@${FRONTEND_DOMAIN}`}
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label htmlFor="super-admin-login-password" className="block text-[10px] font-bold uppercase tracking-[0.1em] text-[#565E6B] ml-0.5">{t("superAdmin.accessProtocol")}</label>
+                                    <label htmlFor="super-admin-login-password" className="block text-[10px] font-bold uppercase tracking-[0.1em] text-[#757575] ml-0.5">{t("superAdmin.accessProtocol")}</label>
                                     <div className="relative group">
                                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
-                                            <span className="material-icons-outlined text-[18px] text-[#565E6B] group-focus-within:text-[#8B7DFF] transition-colors">lock</span>
+                                            <span className="material-icons-outlined text-[18px] text-[#757575] group-focus-within:text-[#42A5F5] transition-colors">lock</span>
                                         </div>
                                         <input
                                             id="super-admin-login-password"
@@ -116,7 +116,7 @@ export default function SuperAdminLoginPage() {
                                             required
                                             value={password}
                                             onChange={(e) => setPassword(e.target.value)}
-                                            className="w-full h-11 bg-[#0E1014] border border-[#252A33] pl-11 pr-4 rounded-[10px] text-sm text-white outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/30 transition-all placeholder:text-[#565E6B]"
+                                            className="w-full h-11 bg-[#1E2A38] border border-[#252A33] pl-11 pr-4 rounded-[4px] text-sm text-white outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/30 transition-all placeholder:text-[#757575]"
                                             placeholder="••••••••••••"
                                         />
                                     </div>
@@ -124,8 +124,8 @@ export default function SuperAdminLoginPage() {
                             </div>
 
                             {error && (
-                                <div className="bg-[#EF4444]/10 border border-[#EF4444]/25 p-3.5 rounded-[10px] flex items-center gap-2.5 animate-shake">
-                                    <span className="material-icons-outlined text-[#EF4444] text-[20px]">security_update_warning</span>
+                                <div className="bg-[#E53935]/10 border border-[#E53935]/25 p-3.5 rounded-[4px] flex items-center gap-2.5 animate-shake">
+                                    <span className="material-icons-outlined text-[#E53935] text-[20px]">security_update_warning</span>
                                     <span className="text-[13px] font-semibold text-[#F08C8C]">{error}</span>
                                 </div>
                             )}
@@ -133,7 +133,7 @@ export default function SuperAdminLoginPage() {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full h-[46px] bg-[#5B53E0] hover:bg-[#4A43C9] disabled:opacity-50 text-white font-bold text-[14.5px] rounded-[10px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors flex items-center justify-center gap-2"
+                                className="w-full h-[46px] bg-[#1976D2] hover:bg-[#1565C0] disabled:opacity-50 text-white font-bold text-[14.5px] rounded-[4px] shadow-[0_6px_16px_rgba(25,118,210,0.28)] transition-colors flex items-center justify-center gap-2"
                             >
                                 {isLoading ? (
                                     <>
@@ -152,7 +152,7 @@ export default function SuperAdminLoginPage() {
 
                     {/* Footer */}
                     <div className="mt-10 text-center">
-                        <p className="text-[#565E6B] text-[10px] font-semibold uppercase tracking-[0.1em]">
+                        <p className="text-[#757575] text-[10px] font-semibold uppercase tracking-[0.1em]">
                             {t("superAdmin.authorizedAccessOnly")}
                         </p>
                     </div>

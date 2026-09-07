@@ -361,7 +361,7 @@ export default function AIInterviewPage() {
 
             <div className="relative group">
               <div className="absolute -inset-4 bg-gradient-to-tr from-indigo-500/20 via-purple-500/20 to-pink-500/20 rounded-[4rem] blur-2xl opacity-50 group-hover:opacity-100 transition-opacity" />
-              <div className="relative bg-[#0A0A0B] border border-slate-800 rounded-[3rem] overflow-hidden aspect-[4/5] shadow-2xl flex flex-col items-center justify-center space-y-4">
+              <div className="relative bg-[#1E2A38] border border-slate-800 rounded-[3rem] overflow-hidden aspect-[4/5] shadow-2xl flex flex-col items-center justify-center space-y-4">
                  <div className="w-24 h-24 rounded-full bg-slate-900 border-2 border-slate-800 flex items-center justify-center animate-pulse">
                    <Video className="w-10 h-10 text-slate-700" />
                  </div>
@@ -433,7 +433,7 @@ export default function AIInterviewPage() {
                           key={i}
                           animate={isSpeaking ? { 
                             height: [12, 48 * (h / 5), 12],
-                            backgroundColor: ["#6366f1", "#a855f7", "#6366f1"]
+                            backgroundColor: ["#1976D2", "#a855f7", "#1976D2"]
                           } : { 
                             height: 12,
                             backgroundColor: "#334155"
@@ -491,7 +491,7 @@ export default function AIInterviewPage() {
         {/* Right: User Video & Controls */}
         <div className="w-96 flex flex-col gap-6">
            {/* User Feed */}
-           <div className="aspect-[3/4] bg-[#0A0A0B] border border-slate-800/50 rounded-[2.5rem] overflow-hidden relative group">
+           <div className="aspect-[3/4] bg-[#1E2A38] border border-slate-800/50 rounded-[2.5rem] overflow-hidden relative group">
               <video 
                 ref={videoRef} 
                 autoPlay 
@@ -584,7 +584,7 @@ export default function AIInterviewPage() {
           background: transparent;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: #1e293b;
+          background: #37474F;
           border-radius: 10px;
         }
       `}</style>

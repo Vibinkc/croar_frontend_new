@@ -98,7 +98,7 @@ export default function X360NewCycle() {
     };
 
     if (loading) return (
-        <div className="flex items-center justify-center py-24 text-[13px] text-[#8A929E] font-medium">{tr("assess360.loadingDots")}</div>
+        <div className="flex items-center justify-center py-24 text-[13px] text-[#757575] font-medium">{tr("assess360.loadingDots")}</div>
     );
 
     return (
@@ -149,18 +149,18 @@ export default function X360NewCycle() {
                             </div>
                         </div>
 
-                        <div className="pt-5 mt-5 border-t border-[#E8EAED]">
-                            <label htmlFor="x360-template-list" className="block text-[12.5px] font-semibold text-[#374151] mb-3">{tr("assess360.selectTemplate")}</label>
+                        <div className="pt-5 mt-5 border-t border-[#E0E0E0]">
+                            <label htmlFor="x360-template-list" className="block text-[12.5px] font-semibold text-[#424242] mb-3">{tr("assess360.selectTemplate")}</label>
 
                             {/* Empty / error state — templates are scoped to the current organization,
                                 so a workspace with none (or a failed load) would otherwise show a blank area. */}
                             {templates.length === 0 ? (
-                                <div className="rounded-[12px] border border-dashed border-[#D9DCE1] bg-[#F9FAFB] px-4 py-8 text-center">
-                                    <span className="material-symbols-rounded text-[26px] text-[#9AA3AF]">description</span>
-                                    <p className="mt-2 text-[13px] font-bold text-[#15171C]">
+                                <div className="rounded-[4px] border border-dashed border-[#D9DCE1] bg-[#FAFAFA] px-4 py-8 text-center">
+                                    <span className="material-symbols-rounded text-[26px] text-[#9E9E9E]">description</span>
+                                    <p className="mt-2 text-[13px] font-bold text-[#212121]">
                                         {tplError ? tr("assess360.loadFailed") : tr("assess360.noTemplatesWorkspace")}
                                     </p>
-                                    <p className="mt-0.5 text-[12px] text-[#8A929E] max-w-xs mx-auto">
+                                    <p className="mt-0.5 text-[12px] text-[#757575] max-w-xs mx-auto">
                                         {tplError
                                             ? tplError
                                             : tr("assess360.templatesOrgHint")}
@@ -193,14 +193,14 @@ export default function X360NewCycle() {
                                         tabIndex={0}
                                         onClick={handleSelectTemplate}
                                         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { handleSelectTemplate(); } }}
-                                        className={`p-3.5 border rounded-[10px] cursor-pointer transition-all flex items-center justify-between gap-3 ${selected ? 'border-[#5B53E0] bg-[#ECEBFB]/50' : 'border-[#E1E4E8] bg-white hover:border-[#9AA3AF]'}`}
+                                        className={`p-3.5 border rounded-[4px] cursor-pointer transition-all flex items-center justify-between gap-3 ${selected ? 'border-[#1976D2] bg-[#E3F2FD]/50' : 'border-[#E0E0E0] bg-white hover:border-[#9E9E9E]'}`}
                                     >
                                         <div className="min-w-0">
-                                            <h4 className="font-bold text-[#15171C] text-[13px] truncate leading-tight mb-0.5">{tpl.name}</h4>
-                                            <p className="text-[12px] text-[#8A929E] line-clamp-1">{tpl.description || tr("assess360.activeFramework")}</p>
+                                            <h4 className="font-bold text-[#212121] text-[13px] truncate leading-tight mb-0.5">{tpl.name}</h4>
+                                            <p className="text-[12px] text-[#757575] line-clamp-1">{tpl.description || tr("assess360.activeFramework")}</p>
                                         </div>
                                         {selected && (
-                                            <span className="w-5 h-5 rounded-full bg-[#5B53E0] text-white flex items-center justify-center shrink-0">
+                                            <span className="w-5 h-5 rounded-full bg-[#1976D2] text-white flex items-center justify-center shrink-0">
                                                 <span className="material-symbols-rounded text-[14px]">check</span>
                                             </span>
                                         )}
@@ -242,9 +242,9 @@ export default function X360NewCycle() {
                                     tabIndex={0}
                                     onClick={() => toggleRatee(emp.id)}
                                     onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { toggleRatee(emp.id); } }}
-                                    className={`p-3 border rounded-[10px] cursor-pointer transition-all flex items-center gap-3 ${selected ? 'border-[#5B53E0] bg-[#ECEBFB]/50' : 'border-[#E1E4E8] bg-white hover:border-[#9AA3AF]'}`}
+                                    className={`p-3 border rounded-[4px] cursor-pointer transition-all flex items-center gap-3 ${selected ? 'border-[#1976D2] bg-[#E3F2FD]/50' : 'border-[#E0E0E0] bg-white hover:border-[#9E9E9E]'}`}
                                 >
-                                    <div className={`shrink-0 w-9 h-9 rounded-[10px] flex items-center justify-center font-extrabold text-[12px] uppercase transition-all ${selected ? 'bg-[#5B53E0] text-white' : 'bg-[#ECEBFB] text-[#5B53E0] border border-[#DAD7F6]/60'}`}>
+                                    <div className={`shrink-0 w-9 h-9 rounded-[4px] flex items-center justify-center font-extrabold text-[12px] uppercase transition-all ${selected ? 'bg-[#1976D2] text-white' : 'bg-[#E3F2FD] text-[#1976D2] border border-[#BBDEFB]/60'}`}>
                                         {selected ? (
                                             <span className="material-symbols-rounded text-[18px]">check</span>
                                         ) : (
@@ -252,8 +252,8 @@ export default function X360NewCycle() {
                                         )}
                                     </div>
                                     <div className="min-w-0">
-                                        <p className="text-[13px] font-bold text-[#15171C] truncate leading-tight mb-0.5">{emp.first_name} {emp.last_name}</p>
-                                        <p className="text-[12px] text-[#8A929E] truncate">{emp.designation || tr("assess360.specialist")}</p>
+                                        <p className="text-[13px] font-bold text-[#212121] truncate leading-tight mb-0.5">{emp.first_name} {emp.last_name}</p>
+                                        <p className="text-[12px] text-[#757575] truncate">{emp.designation || tr("assess360.specialist")}</p>
                                     </div>
                                 </div>
                                 );

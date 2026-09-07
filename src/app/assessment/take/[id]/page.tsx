@@ -324,7 +324,7 @@ export default function CandidateAssessmentPage() {
 
   if (status === "VERIFY") {
     return (
-      <div className="min-h-screen bg-[#0A0A0B] flex flex-col items-center justify-center p-6 text-slate-300">
+      <div className="min-h-screen bg-[#1E2A38] flex flex-col items-center justify-center p-6 text-slate-300">
         <div className="w-full max-w-md space-y-8">
           <div className="text-center space-y-4">
             <div className="w-16 h-16 bg-indigo-600/10 rounded-2xl flex items-center justify-center mx-auto border border-indigo-500/20 overflow-hidden">
@@ -370,7 +370,7 @@ export default function CandidateAssessmentPage() {
 
   if (status === "INTRO") {
     return (
-      <div className="min-h-screen bg-[#0A0A0B] flex flex-col items-center justify-center p-6 text-slate-300">
+      <div className="min-h-screen bg-[#1E2A38] flex flex-col items-center justify-center p-6 text-slate-300">
         <div className="w-full max-w-2xl space-y-8">
           <div className="text-center space-y-4">
             <h2 className="text-4xl font-black text-white  tracking-tight">{tr("candidate.readyToStart")}</h2>
@@ -422,7 +422,7 @@ export default function CandidateAssessmentPage() {
     
     if (!currentQuestion) {
       return (
-        <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center text-slate-500">
+        <div className="min-h-screen bg-[#1E2A38] flex items-center justify-center text-slate-500">
            <div className="flex flex-col items-center gap-4">
               <AlertCircle className="w-12 h-12 text-slate-800" />
               <p className="text-sm font-black  ">{tr("candidate.noQuestions")}</p>
@@ -432,7 +432,7 @@ export default function CandidateAssessmentPage() {
     }
     
     return (
-      <div className="h-screen bg-[#0A0A0B] flex flex-col text-slate-300 font-sans selection:bg-indigo-500/30">
+      <div className="h-screen bg-[#1E2A38] flex flex-col text-slate-300 font-sans selection:bg-indigo-500/30">
         {/* Header */}
         <header className="h-16 border-b border-slate-800 flex items-center justify-between px-6 bg-slate-950/50 backdrop-blur-md shrink-0">
           <div className="flex items-center gap-5">
@@ -477,7 +477,7 @@ export default function CandidateAssessmentPage() {
           {/* Left Panel: Instructions/Description */}
           <div className="w-1/2 border-r border-slate-800 flex flex-col bg-slate-950/20">
             <div className="h-12 border-b border-slate-800/50 flex items-center px-6 shrink-0">
-              <div className="flex items-center gap-2 text-[#7C3AED]">
+              <div className="flex items-center gap-2 text-[#1E88E5]">
                 <Info className="w-4 h-4" />
                 <span className="text-[10px] font-black  ">{tr("candidate.instructions")}</span>
               </div>
@@ -697,7 +697,7 @@ export default function CandidateAssessmentPage() {
             background: transparent;
           }
           .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #1e293b;
+            background: #37474F;
             border-radius: 10px;
           }
           .custom-scrollbar::-webkit-scrollbar-thumb:hover {
@@ -710,7 +710,7 @@ export default function CandidateAssessmentPage() {
 
   if (status === "COMPLETED") {
     return (
-      <div className="min-h-screen bg-[#0A0A0B] flex flex-col items-center justify-center p-6 text-slate-300">
+      <div className="min-h-screen bg-[#1E2A38] flex flex-col items-center justify-center p-6 text-slate-300">
         <div className="w-full max-w-md bg-slate-900/50 border border-slate-800 rounded-3xl p-10 text-center shadow-2xl backdrop-blur-xl">
           <div className="w-20 h-20 bg-emerald-500/10 text-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-emerald-500/20">
             <CheckCircle2 className="w-10 h-10" />
@@ -737,7 +737,7 @@ export default function CandidateAssessmentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center">
+    <div className="min-h-screen bg-[#1E2A38] flex items-center justify-center">
        <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
     </div>
   );

@@ -36,23 +36,23 @@ export default function SuperAdminLayout({
 
     if (isLoading || (!role && !isLoginPage)) {
         return (
-            <div className="flex h-screen items-center justify-center bg-[#F4F5F7]">
+            <div className="flex h-screen items-center justify-center bg-[#F5F6F8]">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-10 h-10 border-[3px] border-[#5B53E0] border-t-transparent rounded-full animate-spin"></div>
-                    <p className="text-[#8A929E] text-[13px] font-medium">Verifying platform authority…</p>
+                    <div className="w-10 h-10 border-[3px] border-[#1976D2] border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-[#757575] text-[13px] font-medium">Verifying platform authority…</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="flex w-full h-screen bg-[#F4F5F7] overflow-hidden">
+        <div className="flex w-full h-screen bg-[#F5F6F8] overflow-hidden">
             {/* Mobile Overlay */}
             {isMobileMenuOpen && (
                 <div
                     role="button"
                     tabIndex={0}
-                    className="fixed inset-0 bg-[#0E1014]/50 z-40 md:hidden backdrop-blur-sm"
+                    className="fixed inset-0 bg-[#1E2A38]/50 z-40 md:hidden backdrop-blur-sm"
                     onClick={() => setIsMobileMenuOpen(false)}
                     onKeyDown={(e) => {
                         if (e.key === "Enter" || e.key === " ") {
@@ -74,23 +74,23 @@ export default function SuperAdminLayout({
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden w-full">
                 {/* Mobile Top Bar */}
-                <header className="h-16 bg-white border-b border-[#E8EAED] flex items-center justify-between px-6 md:hidden shrink-0">
+                <header className="h-16 bg-white border-b border-[#E0E0E0] flex items-center justify-between px-6 md:hidden shrink-0">
                     <div className="flex items-center gap-3">
                         <button
                             onClick={() => setIsMobileMenuOpen(true)}
-                            className="w-10 h-10 rounded-[10px] hover:bg-[#F4F5F7] flex items-center justify-center transition-colors"
+                            className="w-10 h-10 rounded-[4px] hover:bg-[#F5F6F8] flex items-center justify-center transition-colors"
                         >
-                            <span className="material-icons-outlined text-[#374151]">menu</span>
+                            <span className="material-icons-outlined text-[#424242]">menu</span>
                         </button>
                         <span className="flex items-center gap-2">
                             <CroarMark size={28} />
-                            <span className="text-[17px] font-extrabold tracking-[-0.3px] text-[#15171C]">Croar</span>
+                            <span className="text-[17px] font-extrabold tracking-[-0.3px] text-[#212121]">Croar</span>
                         </span>
                     </div>
                 </header>
 
                 {/* Content */}
-                <main className="flex-1 w-full overflow-y-auto bg-[#F4F5F7] custom-scrollbar">
+                <main className="flex-1 w-full overflow-y-auto bg-[#F5F6F8] custom-scrollbar">
                     {children}
                 </main>
             </div>

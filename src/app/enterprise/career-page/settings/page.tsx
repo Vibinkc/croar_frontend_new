@@ -38,20 +38,20 @@ export default function CareerPageSettingsScreen() {
             {loading ? (
                 <Spinner />
             ) : !slug ? (
-                <div className="p-4 rounded-[12px] border border-[#F3DDBA] bg-[#FEF3E2]">
-                    <p className="text-[12.5px] font-bold text-[#8A5B08]">{tr("careerPage.noCompany")}</p>
+                <div className="p-4 rounded-[4px] border border-[#FFE0B2] bg-[#FFF3E0]">
+                    <p className="text-[12.5px] font-bold text-[#E65100]">{tr("careerPage.noCompany")}</p>
                 </div>
             ) : (
                 <>
-                    <div className="flex gap-1 border-b border-[#E8EAED] overflow-x-auto">
+                    <div className="flex gap-1 border-b border-[#E0E0E0] overflow-x-auto">
                         {TABS.map((t) => (
                             <button
                                 key={t.key}
                                 onClick={() => setTab(t.key)}
                                 className={`px-3 py-2 text-[12.5px] font-semibold whitespace-nowrap border-b-2 -mb-px transition-colors ${
                                     tab === t.key
-                                        ? "border-[#5B53E0] text-[#5B53E0]"
-                                        : "border-transparent text-[#8A929E] hover:text-[#15171C]"
+                                        ? "border-[#1976D2] text-[#1976D2]"
+                                        : "border-transparent text-[#757575] hover:text-[#212121]"
                                 }`}
                             >
                                 {t.label}
@@ -59,7 +59,7 @@ export default function CareerPageSettingsScreen() {
                         ))}
                     </div>
 
-                    <div className="rounded-[12px] border border-[#E8EAED] bg-white p-4 space-y-4">
+                    <div className="rounded-[4px] border border-[#E0E0E0] bg-white p-4 space-y-4">
                         {tab === "general" && (
                             <>
                                 <Field label={tr("careerPage.headline")} hint={tr("careerPage.headlineHint")}>
@@ -93,11 +93,11 @@ export default function CareerPageSettingsScreen() {
                                                 className={INPUT}
                                                 value={settings.brand_color}
                                                 onChange={(e) => set("brand_color", e.target.value)}
-                                                placeholder="#5B53E0"
+                                                placeholder="#1976D2"
                                             />
                                             <span
-                                                className="w-9 h-9 shrink-0 rounded-[8px] border border-[#E8EAED]"
-                                                style={{ background: settings.brand_color || "#5B53E0" }}
+                                                className="w-9 h-9 shrink-0 rounded-[4px] border border-[#E0E0E0]"
+                                                style={{ background: settings.brand_color || "#1976D2" }}
                                                 aria-hidden
                                             />
                                         </div>
@@ -172,9 +172,9 @@ export default function CareerPageSettingsScreen() {
                                         type="checkbox"
                                         checked={settings.show_share_buttons}
                                         onChange={(e) => set("show_share_buttons", e.target.checked)}
-                                        className="w-4 h-4 accent-[#5B53E0]"
+                                        className="w-4 h-4 accent-[#1976D2]"
                                     />
-                                    <span className="text-[12.5px] text-[#15171C]">{tr("careerPage.shareButtons")}</span>
+                                    <span className="text-[12.5px] text-[#212121]">{tr("careerPage.shareButtons")}</span>
                                 </label>
                             </>
                         )}
@@ -205,17 +205,17 @@ export default function CareerPageSettingsScreen() {
                         <button
                             onClick={() => void save()}
                             disabled={saving || !canEdit}
-                            className="h-9 px-4 rounded-[9px] bg-[#5B53E0] text-white text-[12.5px] font-bold hover:bg-[#4A43C9] transition-colors disabled:opacity-50"
+                            className="h-9 px-4 rounded-[4px] bg-[#1976D2] text-white text-[12.5px] font-bold hover:bg-[#1565C0] transition-colors disabled:opacity-50"
                         >
                             {saving ? tr("careerPage.saving") : tr("careerPage.save")}
                         </button>
                         {saved && (
-                            <span className="text-[12px] font-semibold text-[#0E8A6E] inline-flex items-center gap-1">
+                            <span className="text-[12px] font-semibold text-[#2E7D32] inline-flex items-center gap-1">
                                 <span className="material-symbols-rounded text-[16px]">check_circle</span>
                                 {tr("careerPage.savedMsg")}
                             </span>
                         )}
-                        {!canEdit && <span className="text-[11.5px] text-[#8A929E]">{tr("careerPage.noPermission")}</span>}
+                        {!canEdit && <span className="text-[11.5px] text-[#757575]">{tr("careerPage.noPermission")}</span>}
                     </div>
                 </>
             )}

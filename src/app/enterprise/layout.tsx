@@ -5,7 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Hanken_Grotesk } from "next/font/google";
+import { Roboto } from "next/font/google";
 import CommandPalette from "@/components/enterprise/CommandPalette";
 import { GuideProvider, Tour, HelpButton, GuideBook } from "@/components/guide";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
@@ -71,15 +71,16 @@ const NAV_I18N: Record<string, string> = {
     "Templates": "nav.templates",
 };
 
-const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
+// Roboto, matching Manatal. Named as before so the two usages below need no churn.
+const hankenGrotesk = Roboto({ subsets: ["latin"], weight: ["300", "400", "500", "700"] });
 
 // Croar lightning brand mark (indigo gradient chip).
 function CroarMark({ size = 36 }: { size?: number }) {
     const inner = Math.round(size * 0.58);
     return (
         <div
-            className="flex items-center justify-center rounded-[10px] shrink-0 shadow-[0_6px_18px_rgba(91,83,224,0.4)]"
-            style={{ width: size, height: size, background: "linear-gradient(135deg,#8B7DFF,#5B53E0)" }}
+            className="flex items-center justify-center rounded-[4px] shrink-0 shadow-[0_6px_18px_rgba(25,118,210,0.4)]"
+            style={{ width: size, height: size, background: "linear-gradient(135deg,#42A5F5,#1976D2)" }}
         >
             <svg width={inner} height={inner} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L4.5 13H11l-1 9 8.5-11H12l1-9z"/></svg>
         </div>
@@ -113,6 +114,7 @@ export default function EnterprisePortalLayout({
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isPaletteOpen, setIsPaletteOpen] = useState(false);
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     // Accordion state for the nav groups (collapsible sections keep the long menu scannable).
     const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
 
@@ -195,10 +197,10 @@ export default function EnterprisePortalLayout({
 
     if (isLoading || !role) {
         return (
-            <div className={`flex justify-center items-center h-screen bg-[#F4F5F7] ${hankenGrotesk.className}`}>
+            <div className={`flex justify-center items-center h-screen bg-[#F5F6F8] ${hankenGrotesk.className}`}>
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-8 h-8 border-2 border-[#5B53E0] border-t-transparent rounded-full animate-spin"></div>
-                    <p className="text-[#8A929E] text-sm font-medium">Loading Enterprise Portal…</p>
+                    <div className="w-8 h-8 border-2 border-[#1976D2] border-t-transparent rounded-full animate-spin"></div>
+                    <p className="text-[#757575] text-sm font-medium">Loading Enterprise Portal…</p>
                 </div>
             </div>
         );
@@ -388,10 +390,10 @@ export default function EnterprisePortalLayout({
 
     const navLinkClass = (path: string) => {
         const isActive = isItemActive(path);
-        return `group flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] transition-all duration-150 text-[12.5px] ${
+        return `group flex items-center gap-3 px-3.5 py-2.5 rounded-[4px] transition-all duration-150 text-[12.5px] ${
             isActive
-                ? "bg-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.25)] font-semibold"
-                : "text-[#BAC1CC] hover:bg-white/[0.04] hover:text-white font-medium"
+                ? "bg-[#E3F2FD] text-[#1976D2] font-medium border-l-[3px] border-[#1976D2] pl-[11px]"
+                : "text-[#424242] hover:bg-[#F5F6F8] hover:text-[#212121] font-normal"
         } ${isSidebarCollapsed ? 'justify-center px-0' : ''}`;
     };
 
@@ -402,13 +404,110 @@ export default function EnterprisePortalLayout({
 
     return (
         <GuideProvider>
-        <div className={`flex w-full h-screen bg-[#F4F5F7] overflow-hidden ${hankenGrotesk.className}`}>
+        <div className={`flex flex-col w-full h-screen bg-[#F5F6F8] overflow-hidden ${hankenGrotesk.className}`}>
+
+            {/* ── top bar ──────────────────────────────────────────────────────
+                Manatal's chrome: one blue band across the whole width, with the
+                sidebar below it rather than beside it. The search box is the
+                visual centre of their app, so it is the centre of this one; it
+                opens the command palette, which is what actually does the
+                searching. */}
+            <header className="h-14 shrink-0 bg-[#1976D2] text-white flex items-center gap-2 px-2 md:px-3 shadow-[0_2px_4px_rgba(0,0,0,0.16)] z-[60]">
+                <button
+                    onClick={() => setIsMobileMenuOpen(true)}
+                    aria-label={t("nav.openMenu")}
+                    className="md:hidden w-9 h-9 rounded-[4px] hover:bg-white/15 flex items-center justify-center transition-colors"
+                >
+                    <span className="material-symbols-rounded text-[22px]">menu</span>
+                </button>
+                <button
+                    onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+                    aria-label={t("nav.toggleSidebar")}
+                    title={t("nav.toggleSidebar")}
+                    className="hidden md:flex w-9 h-9 rounded-[4px] hover:bg-white/15 items-center justify-center transition-colors shrink-0"
+                >
+                    <span className="material-symbols-rounded text-[21px]">dock_to_right</span>
+                </button>
+
+                <Link href="/enterprise/dashboard" className="flex items-center gap-2 min-w-0 shrink-0 px-1">
+                    <CroarMark size={26} />
+                    <span className="hidden sm:block text-[17px] font-medium truncate">Croar</span>
+                </Link>
+
+                <button
+                    data-tour="search"
+                    onClick={() => setIsPaletteOpen(true)}
+                    title={t("nav.searchHint")}
+                    className="flex-1 max-w-[600px] mx-auto h-9 rounded-[4px] bg-white/15 hover:bg-white/25 transition-colors flex items-center gap-2 px-3 text-white/85 min-w-0"
+                >
+                    <span className="material-symbols-rounded text-[20px] shrink-0">search</span>
+                    <span className="text-[13.5px] truncate text-left flex-1">{t("nav.searchPlaceholder")}</span>
+                </button>
+
+                <div className="flex items-center gap-0.5 shrink-0">
+                    <LanguageSwitcher compact />
+                    <Link
+                        href="/enterprise/settings"
+                        title={t("nav.settings")}
+                        className="hidden sm:flex w-9 h-9 rounded-full hover:bg-white/15 items-center justify-center transition-colors"
+                    >
+                        <span className="material-symbols-rounded text-[21px]">settings</span>
+                    </Link>
+
+                    {/* The avatar is the only place the signed-in identity is stated now that
+                        the sidebar is no longer dark enough to carry it quietly. */}
+                    <div className="relative">
+                        <button
+                            onClick={() => setIsUserMenuOpen((v) => !v)}
+                            aria-label={t("nav.account")}
+                            className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 transition-colors flex items-center justify-center text-[13px] font-medium ml-0.5"
+                        >
+                            {user ? user.charAt(0).toUpperCase() : "R"}
+                        </button>
+                        {isUserMenuOpen && (
+                            <>
+                                <div
+                                    role="button"
+                                    tabIndex={-1}
+                                    aria-label={t("nav.closeMenu")}
+                                    className="fixed inset-0 z-[70] cursor-default"
+                                    onClick={() => setIsUserMenuOpen(false)}
+                                    onKeyDown={(e) => { if (e.key === "Escape") setIsUserMenuOpen(false); }}
+                                />
+                                <div className="absolute right-0 top-11 z-[80] w-64 bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_8px_24px_rgba(0,0,0,0.18)] py-1.5">
+                                    <div className="px-3 py-2 border-b border-[#EEEEEE]">
+                                        <p className="text-[13px] font-medium text-[#212121] truncate">{user || "recruiter@techcorp.com"}</p>
+                                        <p className="text-[11.5px] text-[#757575]">{role ? role.charAt(0) + role.slice(1).toLowerCase() : "Recruiter"}</p>
+                                    </div>
+                                    <Link
+                                        href="/enterprise/settings"
+                                        onClick={() => setIsUserMenuOpen(false)}
+                                        className="flex items-center gap-2.5 px-3 py-2 text-[13px] text-[#424242] hover:bg-[#F5F6F8] transition-colors"
+                                    >
+                                        <span className="material-symbols-rounded text-[19px] text-[#757575]">settings</span>
+                                        {t("nav.settings")}
+                                    </Link>
+                                    <button
+                                        onClick={logout}
+                                        className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-[#C62828] hover:bg-[#FFEBEE] transition-colors"
+                                    >
+                                        <span className="material-symbols-rounded text-[19px]">logout</span>
+                                        {t("general.logout")}
+                                    </button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+            </header>
+
+            <div className="flex flex-1 min-h-0 w-full">
             {/* Mobile Overlay */}
             {isMobileMenuOpen && (
                 <div
                     role="button"
                     tabIndex={0}
-                    className="fixed inset-0 bg-[#0E1014]/50 z-40 md:hidden backdrop-blur-sm"
+                    className="fixed inset-0 bg-black/40 z-40 md:hidden"
                     onClick={() => setIsMobileMenuOpen(false)}
                     onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { setIsMobileMenuOpen(false); } }}
                 />
@@ -417,70 +516,17 @@ export default function EnterprisePortalLayout({
             {/* Sidebar */}
             <aside
                 className={`
-                fixed inset-y-0 left-0 z-50 ${isSidebarCollapsed ? 'w-[90px]' : 'w-[236px]'} flex flex-col transition-all duration-300 ease-in-out md:translate-x-0 md:sticky md:top-0 md:h-screen border-r border-[#1C1F26]
+                fixed inset-y-0 left-0 z-50 ${isSidebarCollapsed ? 'w-[72px]' : 'w-[248px]'} flex flex-col transition-all duration-300 ease-in-out md:translate-x-0 md:relative md:h-auto border-r border-[#E0E0E0]
                 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
             `}
-                style={{ background: "#090A0C" }}
+                style={{ background: "#FFFFFF" }}
             >
                 <div className="p-3 flex-1 overflow-y-auto no-scrollbar flex flex-col">
-                    {/* Logo Section */}
-                    <div className={`px-2 pt-2.5 pb-4 flex items-center justify-between shrink-0 mb-3 border-b border-[#1C1F26] relative ${isSidebarCollapsed ? 'px-0 flex-col gap-4 justify-center' : ''}`}>
-                        <Link href="/enterprise/dashboard" className="flex items-center gap-2.5">
-                            <CroarMark size={32} />
-                            {!isSidebarCollapsed && (
-                                <span className="flex flex-col leading-none">
-                                    <span className="text-[17px] font-extrabold tracking-[-0.3px] text-white">Croar</span>
-                                    <span className="text-[9.5px] text-[#4F5564] font-semibold uppercase mt-0.5 tracking-wider">HR Cloud</span>
-                                </span>
-                            )}
-                        </Link>
-
-                        {/* Toggle Button Positioned on Edge */}
-                        {!isSidebarCollapsed && (
-                            <button
-                                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                                className="w-6 h-6 rounded-full border border-[#252A33] bg-[#1A1E25] hover:bg-[#23272F] text-[#8A929E] hover:text-white transition-colors flex items-center justify-center cursor-pointer absolute -right-3 top-6 shadow-sm"
-                            >
-                                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M15 18l-6-6 6-6"/>
-                                </svg>
-                            </button>
-                        )}
-                        {isSidebarCollapsed && (
-                            <button
-                                onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-                                className="w-6 h-6 rounded-full border border-[#252A33] bg-[#1A1E25] hover:bg-[#23272F] text-[#8A929E] hover:text-white transition-colors flex items-center justify-center cursor-pointer shadow-sm"
-                            >
-                                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M9 18l6-6-6-6"/>
-                                </svg>
-                            </button>
-                        )}
-                    </div>
-
-                    {/* Quick search (opens the ⌘K command palette) */}
-                    <button
-                        data-tour="search"
-                        onClick={() => setIsPaletteOpen(true)}
-                        title="Search (Ctrl/Cmd + K)"
-                        className={`flex items-center gap-2 mb-4 mx-1 px-3.5 h-10 rounded-[10px] border border-[#1F242E] bg-[#13161C]/50 text-[#6B7280] hover:text-[#9CA3AF] hover:border-[#5B53E0]/50 hover:bg-[#161A22] transition-all duration-200 cursor-pointer shrink-0 ${isSidebarCollapsed ? "justify-center px-0" : ""}`}
-                    >
-                        <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
-                        </svg>
-                        {!isSidebarCollapsed && (
-                            <>
-                                <span className="text-[12.5px] font-medium flex-1 text-left">Search…</span>
-                                <span className="text-[10px] font-bold bg-[#1E2330]/60 border border-[#2B3142]/60 text-[#5B6376] rounded-[5px] px-1.5 h-5 leading-none shrink-0 inline-flex items-center justify-center">⌘K</span>
-                            </>
-                        )}
-                    </button>
-
                     {/* Navigation Groups — collapsible accordion (keeps the long menu scannable) */}
                     {inCareerPage && (
                         <Link
                             href="/enterprise/jobs"
-                            className={`flex items-center gap-2 mb-3 mx-1 px-3.5 h-9 rounded-[10px] text-[12px] font-semibold text-[#8A929E] hover:text-white hover:bg-white/[0.04] transition-colors ${isSidebarCollapsed ? "justify-center px-0" : ""}`}
+                            className={`flex items-center gap-2 mb-3 mx-1 px-3.5 h-9 rounded-[4px] text-[12px] font-medium text-[#616161] hover:text-[#1976D2] hover:bg-[#F5F6F8] transition-colors ${isSidebarCollapsed ? "justify-center px-0" : ""}`}
                         >
                             <span className="material-symbols-rounded text-[18px]">arrow_back</span>
                             {!isSidebarCollapsed && navLabel("Back to Croar")}
@@ -495,7 +541,7 @@ export default function EnterprisePortalLayout({
                                 <div key={group.title} className={isSidebarCollapsed ? "" : "mb-2"}>
                                     {isSidebarCollapsed && (
                                         <div className="text-center mt-4 mb-2 px-1 select-none">
-                                            <span className="text-[11px] font-bold tracking-widest uppercase text-[#5C6370] block whitespace-nowrap truncate">
+                                            <span className="text-[10px] font-medium tracking-widest uppercase text-[#9E9E9E] block whitespace-nowrap truncate">
                                                 {getCollapsedGroupTitle(group.title)}
                                             </span>
                                         </div>
@@ -503,17 +549,17 @@ export default function EnterprisePortalLayout({
                                     {!isSidebarCollapsed && (
                                         <button
                                             onClick={() => toggleGroup(group.title)}
-                                            className={`group/hdr flex items-center justify-between w-full px-3.5 py-2.5 rounded-[10px] transition-all duration-150 text-[12.5px] cursor-pointer ${
+                                            className={`group/hdr flex items-center justify-between w-full px-3.5 py-2.5 rounded-[4px] transition-all duration-150 text-[12.5px] cursor-pointer ${
                                                 hasActive
-                                                    ? "text-[#8B7DFF] font-semibold bg-white/[0.02]"
-                                                    : "text-[#BAC1CC] hover:bg-white/[0.04] hover:text-white font-medium"
+                                                    ? "text-[#1976D2] font-medium bg-[#E3F2FD]"
+                                                    : "text-[#424242] hover:bg-[#F5F6F8] hover:text-[#212121] font-normal"
                                             }`}
                                         >
                                             <span className="flex items-center gap-3">
-                                                <span className={`material-symbols-rounded text-[18px] ${hasActive ? 'text-[#8B7DFF]' : 'text-[#656D7A] group-hover/hdr:text-white transition-colors'}`}>{group.icon}</span>
+                                                <span className={`material-symbols-rounded text-[18px] ${hasActive ? 'text-[#1976D2]' : 'text-[#757575] group-hover/hdr:text-[#424242] transition-colors'}`}>{group.icon}</span>
                                                 <span className="whitespace-nowrap">{navLabel(group.title)}</span>
                                             </span>
-                                            <svg className={`w-3.5 h-3.5 ${hasActive ? 'text-[#8B7DFF]' : 'text-[#656D7A] group-hover/hdr:text-white'} transition-transform duration-200 ${open ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                            <svg className={`w-3.5 h-3.5 ${hasActive ? 'text-[#1976D2]' : 'text-[#757575] group-hover/hdr:text-[#424242]'} transition-transform duration-200 ${open ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                                 <path d="m6 9 6 6 6-6"/>
                                             </svg>
                                         </button>
@@ -530,28 +576,28 @@ export default function EnterprisePortalLayout({
                                                             className={navLinkClass(item.path)}
                                                             title={item.label}
                                                         >
-                                                            <span className={`material-symbols-rounded text-[18px] ${isActive ? 'text-white' : 'text-[#656D7A] group-hover:text-white transition-colors'}`}>{item.icon}</span>
+                                                            <span className={`material-symbols-rounded text-[18px] ${isActive ? 'text-[#1976D2]' : 'text-[#757575] group-hover:text-[#424242] transition-colors'}`}>{item.icon}</span>
                                                         </Link>
                                                     );
                                                 })}
                                             </div>
                                         ) : (
-                                            <div className="relative pl-5 ml-[22px] border-l border-white/10 mt-1 mb-2 space-y-1">
+                                            <div className="relative pl-5 ml-[22px] border-l border-[#E0E0E0] mt-1 mb-2 space-y-1">
                                                 {group.items.map((item) => {
                                                     const isActive = isItemActive(item.path);
                                                     return (
                                                         <Link
                                                             key={item.path}
                                                             href={item.path}
-                                                            className={`flex items-center justify-between px-3 py-1.5 rounded-[8px] text-[12.5px] transition-all duration-150 ${
+                                                            className={`flex items-center justify-between px-3 py-1.5 rounded-[4px] text-[12.5px] transition-all duration-150 ${
                                                                 isActive
-                                                                    ? "bg-[#5B53E0]/15 border border-[#5B53E0]/30 text-[#8B7DFF] font-bold"
-                                                                    : "text-[#BAC1CC] hover:text-white hover:bg-white/[0.02] border border-transparent font-medium"
+                                                                    ? "bg-[#E3F2FD] text-[#1976D2] font-medium border-l-[3px] border-[#1976D2] pl-[9px]"
+                                                                    : "text-[#424242] hover:text-[#212121] hover:bg-[#F5F6F8] border-l-[3px] border-transparent font-normal"
                                                             }`}
                                                         >
                                                             <span>{navLabel(item.label)}</span>
                                                             {item.label === "Croar Pilot" && (
-                                                                <span className="px-1.5 py-0.5 rounded-[6px] bg-[#14161F] border border-[#5B53E0]/20 text-[#8B7DFF] text-[9.5px] font-extrabold uppercase tracking-wider leading-none">
+                                                                <span className="px-1.5 py-0.5 rounded-[3px] bg-[#E3F2FD] text-[#1976D2] text-[9.5px] font-extrabold uppercase tracking-wider leading-none">
                                                                     AI
                                                                 </span>
                                                             )}
@@ -568,58 +614,43 @@ export default function EnterprisePortalLayout({
                 </div>
 
                 {/* Sidebar Footer User Info */}
-                <div className={`p-3 border-t border-[#1C1F26] shrink-0 ${isSidebarCollapsed ? 'px-1' : ''}`}>
+                <div className={`p-3 border-t border-[#E0E0E0] shrink-0 ${isSidebarCollapsed ? 'px-1' : ''}`}>
                     {!isSidebarCollapsed && (
                         <div className="mb-3">
-                            <LanguageSwitcher variant="dark" />
+                            <LanguageSwitcher />
                         </div>
                     )}
                     <div className={`flex items-center gap-2.5 mb-3 px-2 ${isSidebarCollapsed ? 'justify-center px-0' : ''}`}>
-                        <div className="w-8 h-8 rounded-[8px] bg-[#5B53E0] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-[0_2px_8px_rgba(91,83,224,0.3)]">
+                        <div className="w-8 h-8 rounded-[4px] bg-[#1976D2] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-[0_2px_8px_rgba(25,118,210,0.3)]">
                             {user ? user.charAt(0).toUpperCase() : 'R'}
                         </div>
                         {!isSidebarCollapsed && (
                             <div className="flex-1 min-w-0">
-                                <p className="text-[12px] font-semibold text-[#C7CCD4] truncate">{user || "recruiter@techcorp.com"}</p>
-                                <p className="text-[10px] font-medium text-[#525969]">{role ? role.charAt(0) + role.slice(1).toLowerCase() : 'Recruiter'}</p>
+                                <p className="text-[12px] font-medium text-[#424242] truncate">{user || "recruiter@techcorp.com"}</p>
+                                <p className="text-[10px] text-[#757575]">{role ? role.charAt(0) + role.slice(1).toLowerCase() : 'Recruiter'}</p>
                             </div>
                         )}
                     </div>
 
                     <button
                         onClick={logout}
-                        className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[#8A929E] hover:bg-white/[0.04] hover:text-rose-400 rounded-[10px] transition-colors duration-150 group cursor-pointer ${isSidebarCollapsed ? 'justify-center px-0' : ''}`}
+                        className={`w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[#616161] hover:bg-[#FFEBEE] hover:text-[#C62828] rounded-[4px] transition-colors duration-150 group cursor-pointer ${isSidebarCollapsed ? 'justify-center px-0' : ''}`}
                         title={isSidebarCollapsed ? t("general.logout") : ''}
                     >
-                        <span className="material-symbols-rounded text-[18px] text-[#525969] group-hover:text-rose-400">logout</span>
+                        <span className="material-symbols-rounded text-[18px] text-[#9E9E9E] group-hover:text-[#C62828]">logout</span>
                         {!isSidebarCollapsed && <span className="text-[12.5px] font-medium">{t("general.logout")}</span>}
                     </button>
                 </div>
             </aside>
 
             {/* Main Content Area */}
-            <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden w-full">
-                {/* Mobile Top Bar */}
-                <header className="h-16 bg-white border-b border-[#E8EAED] flex items-center justify-between px-6 md:hidden shrink-0">
-                    <div className="flex items-center gap-3">
-                        <button
-                            onClick={() => setIsMobileMenuOpen(true)}
-                            className="w-10 h-10 rounded-[10px] hover:bg-[#F4F5F7] flex items-center justify-center transition-colors"
-                        >
-                            <span className="material-icons-outlined text-[#374151]">menu</span>
-                        </button>
-                        <span className="flex items-center gap-2">
-                            <CroarMark size={28} />
-                            <span className="text-[17px] font-extrabold tracking-[-0.3px] text-[#15171C]">Croar</span>
-                        </span>
-                    </div>
-                    <LanguageSwitcher compact />
-                </header>
-
+            <div className="flex-1 flex flex-col min-w-0 min-h-0 overflow-hidden w-full">
                 {/* Content */}
-                <main className="flex-1 w-full overflow-y-auto bg-[#F4F5F7] custom-scrollbar">
+                <main className="flex-1 w-full overflow-y-auto bg-[#F5F6F8] custom-scrollbar">
                     {children}
                 </main>
+            </div>
+
             </div>
 
             {/* Global command palette (⌘K) — jump to any accessible page */}

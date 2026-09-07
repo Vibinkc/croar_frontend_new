@@ -59,7 +59,7 @@ export default function AuditLogsPage() {
                 <Card padding="none" className="overflow-hidden">
                     <div className="p-4 space-y-2.5">
                         {[1, 2, 3, 4, 5, 6].map((i) => (
-                            <div key={i} className="h-14 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+                            <div key={i} className="h-14 bg-[#F5F6F8] rounded-[4px] animate-pulse" />
                         ))}
                     </div>
                 </Card>
@@ -74,31 +74,31 @@ export default function AuditLogsPage() {
                 </Card>
             ) : (
                 <Card padding="none" className="overflow-hidden">
-                    <div className="divide-y divide-[#F0F0F1]">
+                    <div className="divide-y divide-[#EEEEEE]">
                         {logs.map((log) => (
                             <div
                                 key={log.id}
-                                className="flex items-start gap-3.5 px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors"
+                                className="flex items-start gap-3.5 px-4 md:px-5 py-3.5 hover:bg-[#FAFAFA] transition-colors"
                             >
                                 {/* Icon chip */}
-                                <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0 mt-0.5">
+                                <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0 mt-0.5">
                                     <Activity className="w-[17px] h-[17px]" />
                                 </span>
 
                                 {/* Action + meta */}
                                 <div className="min-w-0 flex-1">
                                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                                        <span className="text-[14px] font-bold text-[#15171C] truncate">
+                                        <span className="text-[14px] font-bold text-[#212121] truncate">
                                             {log.action}
                                         </span>
                                         <Badge tone="indigo">{t("superAdmin.action")}</Badge>
                                     </div>
                                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1">
-                                        <span className={`inline-flex items-center gap-1.5 text-[11.5px] text-[#8A929E] ${jetbrainsMono.className}`}>
+                                        <span className={`inline-flex items-center gap-1.5 text-[11.5px] text-[#757575] ${jetbrainsMono.className}`}>
                                             <Clock className="w-3.5 h-3.5" />
                                             {new Date(log.timestamp).toLocaleString()}
                                         </span>
-                                        <span className="inline-flex items-center gap-1.5 text-[12px] text-[#8A929E]">
+                                        <span className="inline-flex items-center gap-1.5 text-[12px] text-[#757575]">
                                             <ShieldAlert className="w-3.5 h-3.5" />
                                             {t("superAdmin.admin")}: {log.admin_id?.split('-')[0] || t("superAdmin.system")}
                                         </span>

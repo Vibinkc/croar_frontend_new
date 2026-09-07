@@ -128,17 +128,17 @@ export function useCareerPage() {
 }
 
 export const INPUT =
-    "w-full h-9 px-2.5 rounded-[8px] border border-[#E8EAED] bg-white text-[12.5px] text-[#15171C] placeholder:text-[#A8AEB8] focus:border-[#5B53E0]/50 outline-none";
+    "w-full h-9 px-2.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[12.5px] text-[#212121] placeholder:text-[#9E9E9E] focus:border-[#1976D2]/50 outline-none";
 export const AREA =
-    "w-full px-2.5 py-2 rounded-[8px] border border-[#E8EAED] bg-white text-[12.5px] text-[#15171C] placeholder:text-[#A8AEB8] focus:border-[#5B53E0]/50 outline-none leading-relaxed resize-y";
+    "w-full px-2.5 py-2 rounded-[4px] border border-[#E0E0E0] bg-white text-[12.5px] text-[#212121] placeholder:text-[#9E9E9E] focus:border-[#1976D2]/50 outline-none leading-relaxed resize-y";
 
 export function Field({
     label, hint, children,
 }: { label: string; hint?: string; children: React.ReactNode }) {
     return (
         <div>
-            <label className="block text-[12px] font-bold text-[#15171C] mb-1">{label}</label>
-            {hint && <p className="text-[11.5px] text-[#8A929E] leading-relaxed mb-1.5">{hint}</p>}
+            <label className="block text-[12px] font-bold text-[#212121] mb-1">{label}</label>
+            {hint && <p className="text-[11.5px] text-[#757575] leading-relaxed mb-1.5">{hint}</p>}
             {children}
         </div>
     );
@@ -164,7 +164,7 @@ export function CopyRow({ value, label, copyLabel, copiedLabel }: {
                     setCopied(true);
                     window.setTimeout(() => setCopied(false), 1600);
                 }}
-                className="h-9 px-3 rounded-[8px] border border-[#E8EAED] bg-white text-[12px] font-semibold text-[#374151] hover:border-[#5B53E0]/50 hover:text-[#5B53E0] transition-colors shrink-0"
+                className="h-9 px-3 rounded-[4px] border border-[#E0E0E0] bg-white text-[12px] font-semibold text-[#424242] hover:border-[#1976D2]/50 hover:text-[#1976D2] transition-colors shrink-0"
             >
                 {copied ? copiedLabel : copyLabel}
             </button>
@@ -183,8 +183,8 @@ export function CareerPageHeader({
     return (
         <div className="flex items-start justify-between gap-4 flex-wrap">
             <div>
-                <h1 className="text-[22px] font-bold text-[#15171C]">{title}</h1>
-                <p className="text-[13px] text-[#8A929E] mt-1">{subtitle}</p>
+                <h1 className="text-[22px] font-bold text-[#212121]">{title}</h1>
+                <p className="text-[13px] text-[#757575] mt-1">{subtitle}</p>
             </div>
             {url && (
                 <div className="flex gap-1.5">
@@ -194,7 +194,7 @@ export function CareerPageHeader({
                             setCopied(true);
                             window.setTimeout(() => setCopied(false), 1600);
                         }}
-                        className="h-9 px-3 rounded-[9px] border border-[#E8EAED] bg-white text-[12px] font-semibold text-[#374151] hover:border-[#5B53E0]/50 hover:text-[#5B53E0] transition-colors"
+                        className="h-9 px-3 rounded-[4px] border border-[#E0E0E0] bg-white text-[12px] font-semibold text-[#424242] hover:border-[#1976D2]/50 hover:text-[#1976D2] transition-colors"
                     >
                         {copied ? copiedLabel : copyLabel}
                     </button>
@@ -202,7 +202,7 @@ export function CareerPageHeader({
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="h-9 px-3 rounded-[9px] bg-[#5B53E0] text-white text-[12px] font-semibold hover:bg-[#4A43C9] transition-colors inline-flex items-center gap-1.5"
+                        className="h-9 px-3 rounded-[4px] bg-[#1976D2] text-white text-[12px] font-semibold hover:bg-[#1565C0] transition-colors inline-flex items-center gap-1.5"
                     >
                         <span className="material-symbols-rounded text-[16px]">open_in_new</span>
                         {openLabel}
@@ -216,7 +216,7 @@ export function CareerPageHeader({
 export function Spinner() {
     return (
         <div className="py-12 flex justify-center">
-            <div className="w-6 h-6 border-2 border-[#5B53E0]/30 border-t-[#5B53E0] rounded-full animate-spin" />
+            <div className="w-6 h-6 border-2 border-[#1976D2]/30 border-t-[#1976D2] rounded-full animate-spin" />
         </div>
     );
 }

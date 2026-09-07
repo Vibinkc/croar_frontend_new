@@ -20,11 +20,11 @@ export default function GenLanguageSelect({
     const { t } = useI18n();
     return (
         <label className={`inline-flex items-center gap-1.5 ${className}`} title={t("common.language")}>
-            <span className="material-symbols-rounded text-[17px] text-[#8A929E]">translate</span>
+            <span className="material-symbols-rounded text-[17px] text-[#757575]">translate</span>
             <select
                 value={value}
                 onChange={(e) => onChange(e.target.value as GenLanguage)}
-                className="bg-white border border-[#E1E4E8] rounded-[8px] px-2 h-8 text-[12.5px] font-medium text-[#374151] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer"
+                className="bg-white border border-[#E0E0E0] rounded-[4px] px-2 h-8 text-[12.5px] font-medium text-[#424242] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all cursor-pointer"
             >
                 {GEN_LANGUAGES.map((l) => (
                     <option key={l} value={l}>

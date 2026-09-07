@@ -39,28 +39,28 @@ export default function MyTimesheetsPage() {
       />
 
       {error && (
-        <div className="flex items-center gap-2.5 rounded-[12px] border border-[#FBD5D5] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
+        <div className="flex items-center gap-2.5 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[13px] font-medium text-[#C62828]">
           <span className="material-symbols-rounded text-[18px]">error</span> {error}
         </div>
       )}
 
       <StatGrid>
-        <StatCard label={t("employee.timesheets")} value={rows ? rows.length : "—"} icon="schedule" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
-        <StatCard label={t("employee.currentStatus")} value={current?.status ?? "—"} icon="event_note" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
-        <StatCard label={t("employee.daysWorked")} value={rows ? totalWorked : "—"} icon="task_alt" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+        <StatCard label={t("employee.timesheets")} value={rows ? rows.length : "—"} icon="schedule" gradient="linear-gradient(135deg,#42A5F5,#1976D2)" glow="rgba(25,118,210,0.28)" />
+        <StatCard label={t("employee.currentStatus")} value={current?.status ?? "—"} icon="event_note" gradient="linear-gradient(135deg,#42A5F5,#1565C0)" glow="rgba(21,101,192,0.25)" />
+        <StatCard label={t("employee.daysWorked")} value={rows ? totalWorked : "—"} icon="task_alt" gradient="linear-gradient(135deg,#66BB6A,#2E7D32)" glow="rgba(46,125,50,0.25)" />
       </StatGrid>
 
       <Card padding="none" className="overflow-hidden">
         <CardHeader className="px-6 pt-6" title={t("employee.payPeriods")} subtitle={t("employee.newestFirst")} />
         {!rows ? (
-          <div className="px-6 pb-6 space-y-2">{[1, 2, 3, 4].map((i) => <div key={i} className="h-12 rounded-[10px] bg-[#F4F5F7] animate-pulse" />)}</div>
+          <div className="px-6 pb-6 space-y-2">{[1, 2, 3, 4].map((i) => <div key={i} className="h-12 rounded-[4px] bg-[#F5F6F8] animate-pulse" />)}</div>
         ) : rows.length === 0 ? (
           <EmptyState tone="muted" icon="schedule" title={t("employee.noTimesheets")} description={t("employee.noTimesheetsDesc")} />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-[13px]">
               <thead>
-                <tr className="border-y border-[#E8EAED] bg-[#F7F8FA] text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">
+                <tr className="border-y border-[#E0E0E0] bg-[#FAFAFA] text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">
                   <th className="px-6 py-3">{t("employee.colPeriod")}</th>
                   <th className="px-6 py-3">{t("employee.colWorked")}</th>
                   <th className="px-6 py-3">{t("employee.colLOP")}</th>
@@ -68,15 +68,15 @@ export default function MyTimesheetsPage() {
                   <th className="px-6 py-3 text-right">{t("employee.colAction")}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F0F0F1]">
+              <tbody className="divide-y divide-[#EEEEEE]">
                 {rows.map((ts) => (
-                  <tr key={ts.id} className="hover:bg-[#F7F7F8] transition-colors">
-                    <td className={`px-6 py-3.5 font-semibold text-[#15171C] ${jetbrainsMono.className}`}>{ts.period_start} → {ts.period_end}</td>
-                    <td className={`px-6 py-3.5 text-[#374151] ${jetbrainsMono.className}`}>{Number(ts.worked_days)}</td>
-                    <td className={`px-6 py-3.5 text-[#374151] ${jetbrainsMono.className}`}>{Number(ts.lop_days)}</td>
+                  <tr key={ts.id} className="hover:bg-[#FAFAFA] transition-colors">
+                    <td className={`px-6 py-3.5 font-semibold text-[#212121] ${jetbrainsMono.className}`}>{ts.period_start} → {ts.period_end}</td>
+                    <td className={`px-6 py-3.5 text-[#424242] ${jetbrainsMono.className}`}>{Number(ts.worked_days)}</td>
+                    <td className={`px-6 py-3.5 text-[#424242] ${jetbrainsMono.className}`}>{Number(ts.lop_days)}</td>
                     <td className="px-6 py-3.5"><Badge tone={statusTone(ts.status)} dot>{ts.status.charAt(0) + ts.status.slice(1).toLowerCase()}</Badge></td>
                     <td className="px-6 py-3.5 text-right">
-                      <Link href={`/employee/timesheets/${ts.id}`} className="text-[12.5px] font-semibold text-[#5B53E0] hover:underline">{t("employee.view")}</Link>
+                      <Link href={`/employee/timesheets/${ts.id}`} className="text-[12.5px] font-semibold text-[#1976D2] hover:underline">{t("employee.view")}</Link>
                     </td>
                   </tr>
                 ))}

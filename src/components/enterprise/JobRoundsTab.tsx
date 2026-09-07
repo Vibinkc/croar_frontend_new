@@ -172,7 +172,7 @@ export default function JobRoundsTab({
     if (isLoading) {
         return (
             <Card padding="sm" className="animate-in fade-in duration-500">
-                <p className="py-10 text-center text-[13px] text-[#8A929E]">{tr("jobRounds.loading")}</p>
+                <p className="py-10 text-center text-[13px] text-[#757575]">{tr("jobRounds.loading")}</p>
             </Card>
         );
     }
@@ -180,21 +180,21 @@ export default function JobRoundsTab({
     return (
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div>
-                <h3 className="text-[15px] font-bold text-[#15171C]">{tr("jobRounds.title")}</h3>
-                <p className="text-[12.5px] text-[#8A929E] mt-0.5 max-w-2xl leading-relaxed">
+                <h3 className="text-[15px] font-bold text-[#212121]">{tr("jobRounds.title")}</h3>
+                <p className="text-[12.5px] text-[#757575] mt-0.5 max-w-2xl leading-relaxed">
                     {tr("jobRounds.subtitle")}
                 </p>
             </div>
 
             {error && (
-                <div className="rounded-[12px] border border-[#F5C6C7] bg-[#FDECEC] px-4 py-3 text-[12.5px] text-[#C0383C]">
+                <div className="rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[12.5px] text-[#C62828]">
                     {error}
                 </div>
             )}
 
             {stages.length === 0 && (
                 <Card padding="sm">
-                    <p className="py-8 text-center text-[13px] text-[#8A929E]">{tr("jobRounds.noStages")}</p>
+                    <p className="py-8 text-center text-[13px] text-[#757575]">{tr("jobRounds.noStages")}</p>
                 </Card>
             )}
 
@@ -207,37 +207,37 @@ export default function JobRoundsTab({
                         <li key={stage.id}>
                             <Card padding="sm">
                                 <div className="flex items-start gap-3">
-                                    <span className="w-8 h-8 shrink-0 rounded-full bg-[#ECEBFB] text-[#5B53E0] text-[12px] font-bold flex items-center justify-center">
+                                    <span className="w-8 h-8 shrink-0 rounded-full bg-[#E3F2FD] text-[#1976D2] text-[12px] font-bold flex items-center justify-center">
                                         {i + 1}
                                     </span>
                                     <div className="min-w-0 flex-1">
                                         <div className="flex flex-wrap items-center gap-2">
-                                            <h4 className="text-[13.5px] font-bold text-[#15171C]">{stage.name}</h4>
+                                            <h4 className="text-[13.5px] font-bold text-[#212121]">{stage.name}</h4>
                                             {a && (
-                                                <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[5px] bg-[#ECEBFB] text-[#5B53E0]">
+                                                <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[3px] bg-[#E3F2FD] text-[#1976D2]">
                                                     {tr(`jobRounds.type.${a.type}`)}
                                                 </span>
                                             )}
                                             {attached.interview && (
-                                                <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[5px] bg-[#E7ECFB] text-[#3559C7]">
+                                                <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[3px] bg-[#E3F2FD] text-[#1565C0]">
                                                     {tr("jobRounds.hasInterview")}
                                                 </span>
                                             )}
                                             {attached.mail && (
-                                                <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[5px] bg-[#E3F4EF] text-[#0E8A6E]">
+                                                <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[3px] bg-[#E8F5E9] text-[#2E7D32]">
                                                     {tr("jobRounds.hasEmail")}
                                                 </span>
                                             )}
                                         </div>
 
                                         {a ? (
-                                            <div className="mt-2 rounded-[10px] border border-[#E8EAED] bg-[#FBFBFC] p-3">
+                                            <div className="mt-2 rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] p-3">
                                                 <div className="flex flex-wrap items-center justify-between gap-2">
                                                     <div className="min-w-0">
-                                                        <p className="text-[12.5px] font-semibold text-[#15171C] truncate">
+                                                        <p className="text-[12.5px] font-semibold text-[#212121] truncate">
                                                             {a.topic}
                                                         </p>
-                                                        <p className="text-[11.5px] text-[#8A929E]">
+                                                        <p className="text-[11.5px] text-[#757575]">
                                                             {tr("jobRounds.meta", {
                                                                 count: a.question_count,
                                                                 minutes: a.test_duration,
@@ -247,7 +247,7 @@ export default function JobRoundsTab({
                                                     </div>
                                                     <div className="flex items-center gap-2 shrink-0">
                                                         {(a.generated_questions?.length || 0) > 0 ? (
-                                                            <span className="inline-flex items-center gap-1 text-[11.5px] font-semibold text-[#15803D]">
+                                                            <span className="inline-flex items-center gap-1 text-[11.5px] font-semibold text-[#2E7D32]">
                                                                 <span className="material-symbols-rounded text-[16px]">check_circle</span>
                                                                 {tr("jobRounds.questionsReady", { n: a.generated_questions?.length || 0 })}
                                                             </span>
@@ -266,7 +266,7 @@ export default function JobRoundsTab({
                                                             onClick={() => removeAssessment(a)}
                                                             title={tr("jobRounds.removeAssessment")}
                                                             aria-label={tr("jobRounds.removeAssessment")}
-                                                            className="w-8 h-8 rounded-[9px] flex items-center justify-center text-[#8A929E] hover:text-[#C0383C] hover:bg-[#FDECEC] transition-colors"
+                                                            className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#C62828] hover:bg-[#FFEBEE] transition-colors"
                                                         >
                                                             <span className="material-symbols-rounded text-[18px]">delete</span>
                                                         </button>
@@ -274,7 +274,7 @@ export default function JobRoundsTab({
                                                 </div>
                                             </div>
                                         ) : isOpen ? (
-                                            <div className="mt-2.5 rounded-[10px] border border-[#E8EAED] bg-[#FBFBFC] p-3.5 space-y-3">
+                                            <div className="mt-2.5 rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] p-3.5 space-y-3">
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                                     <Field label={tr("jobRounds.typeLabel")}>
                                                         <Select
@@ -336,7 +336,7 @@ export default function JobRoundsTab({
                                         ) : (
                                             <button
                                                 onClick={() => { setOpenFor(stage.id); setError(""); }}
-                                                className="mt-1.5 inline-flex items-center gap-1.5 text-[12.5px] font-bold text-[#5B53E0] hover:text-[#4840C4] transition-colors"
+                                                className="mt-1.5 inline-flex items-center gap-1.5 text-[12.5px] font-bold text-[#1976D2] hover:text-[#1565C0] transition-colors"
                                             >
                                                 <span className="material-symbols-rounded text-[17px]">add_circle</span>
                                                 {tr("jobRounds.addAssessment")}
@@ -350,9 +350,9 @@ export default function JobRoundsTab({
                 })}
             </ol>
 
-            <div className={cn("rounded-[12px] border border-[#E8EAED] bg-[#F7F8FA] p-4")}>
-                <p className="text-[12px] font-bold text-[#15171C] mb-1">{tr("jobRounds.moreTitle")}</p>
-                <p className="text-[11.5px] text-[#8A929E] leading-relaxed">{tr("jobRounds.moreHint")}</p>
+            <div className={cn("rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] p-4")}>
+                <p className="text-[12px] font-bold text-[#212121] mb-1">{tr("jobRounds.moreTitle")}</p>
+                <p className="text-[11.5px] text-[#757575] leading-relaxed">{tr("jobRounds.moreHint")}</p>
             </div>
         </div>
     );

@@ -149,28 +149,28 @@ function RolesContent() {
             />
 
             <StatGrid>
-                <StatCard label={t("superAdmin.statTotalRoles")} value={roles.length} icon="verified_user" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.25)" />
-                <StatCard label={t("superAdmin.statSystemRoles")} value={roles.filter(r => r.is_system).length} icon="lock" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
-                <StatCard label={t("superAdmin.statCustomRoles")} value={roles.filter(r => !r.is_system).length} icon="shield" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-                <StatCard label={t("superAdmin.statGlobalPermissions")} value={permissions.length || "—"} icon="security" gradient="linear-gradient(135deg,#FBBF24,#D97706)" glow="rgba(217,119,6,0.25)" />
+                <StatCard label={t("superAdmin.statTotalRoles")} value={roles.length} icon="verified_user" gradient="linear-gradient(135deg,#42A5F5,#1976D2)" glow="rgba(25,118,210,0.25)" />
+                <StatCard label={t("superAdmin.statSystemRoles")} value={roles.filter(r => r.is_system).length} icon="lock" gradient="linear-gradient(135deg,#42A5F5,#1565C0)" glow="rgba(21,101,192,0.25)" />
+                <StatCard label={t("superAdmin.statCustomRoles")} value={roles.filter(r => !r.is_system).length} icon="shield" gradient="linear-gradient(135deg,#66BB6A,#2E7D32)" glow="rgba(46,125,50,0.25)" />
+                <StatCard label={t("superAdmin.statGlobalPermissions")} value={permissions.length || "—"} icon="security" gradient="linear-gradient(135deg,#FFB300,#EF6C00)" glow="rgba(239,108,0,0.25)" />
             </StatGrid>
 
             <div className="flex items-center justify-between px-1">
-                <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight">{t("superAdmin.accessControl")}</h2>
+                <h2 className="text-[16px] font-bold text-[#212121] tracking-tight">{t("superAdmin.accessControl")}</h2>
                 <Badge tone="neutral">{t("superAdmin.availableRoles", { count: roles.length })}</Badge>
             </div>
 
             {isLoading && roles.length === 0 ? (
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                     {[...Array(6)].map((_, i) => (
-                        <div key={i} className="bg-white border border-[#E8EAED] rounded-[14px] p-5 md:p-6 min-h-[180px] animate-pulse">
+                        <div key={i} className="bg-white border border-[#E0E0E0] rounded-[4px] p-5 md:p-6 min-h-[180px] animate-pulse">
                             <div className="flex justify-between items-start mb-4">
-                                <div className="w-9 h-9 rounded-[10px] bg-[#F1F2F5]" />
-                                <div className="w-10 h-8 rounded-[8px] bg-[#F1F2F5]" />
+                                <div className="w-9 h-9 rounded-[4px] bg-[#EEEEEE]" />
+                                <div className="w-10 h-8 rounded-[4px] bg-[#EEEEEE]" />
                             </div>
-                            <div className="h-4 w-2/3 rounded bg-[#F1F2F5] mb-2" />
-                            <div className="h-3 w-full rounded bg-[#F1F2F5] mb-1.5" />
-                            <div className="h-3 w-4/5 rounded bg-[#F1F2F5]" />
+                            <div className="h-4 w-2/3 rounded bg-[#EEEEEE] mb-2" />
+                            <div className="h-3 w-full rounded bg-[#EEEEEE] mb-1.5" />
+                            <div className="h-3 w-4/5 rounded bg-[#EEEEEE]" />
                         </div>
                     ))}
                 </div>
@@ -193,36 +193,36 @@ function RolesContent() {
                         <Card key={role.id} interactive className="flex flex-col justify-between min-h-[180px] animate-in fade-in duration-500">
                             <div>
                                 <div className="flex justify-between items-start mb-3">
-                                    <div className={`w-9 h-9 rounded-[10px] flex items-center justify-center border ${role.is_system ? 'bg-[#15171C] text-white border-[#15171C]' : 'bg-[#ECEBFB] text-[#5B53E0] border-[#DAD7F6]/80'}`}>
+                                    <div className={`w-9 h-9 rounded-[4px] flex items-center justify-center border ${role.is_system ? 'bg-[#212121] text-white border-[#212121]' : 'bg-[#E3F2FD] text-[#1976D2] border-[#BBDEFB]/80'}`}>
                                         <span className="material-symbols-rounded text-[20px]">shield</span>
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-[10px] font-semibold text-[#8A929E] uppercase tracking-[0.06em]">{t("superAdmin.rank")}</div>
-                                        <div className="text-[20px] font-extrabold text-[#15171C] tracking-tight leading-none">{String(role.role_rank).padStart(2, "0")}</div>
+                                        <div className="text-[10px] font-semibold text-[#757575] uppercase tracking-[0.06em]">{t("superAdmin.rank")}</div>
+                                        <div className="text-[20px] font-extrabold text-[#212121] tracking-tight leading-none">{String(role.role_rank).padStart(2, "0")}</div>
                                     </div>
                                 </div>
 
                                 <div className="flex items-center gap-2 mb-1.5">
-                                    <h3 className="text-[14px] font-bold text-[#15171C] truncate">{role.name}</h3>
-                                    {role.is_system && <Badge tone="neutral" className="shrink-0 rounded-[6px] px-2 py-0.5 text-[10px]">{t("superAdmin.system")}</Badge>}
+                                    <h3 className="text-[14px] font-bold text-[#212121] truncate">{role.name}</h3>
+                                    {role.is_system && <Badge tone="neutral" className="shrink-0 rounded-[3px] px-2 py-0.5 text-[10px]">{t("superAdmin.system")}</Badge>}
                                 </div>
-                                <p className="text-[12.5px] text-[#8A929E] leading-normal line-clamp-2 h-9 mb-4">
+                                <p className="text-[12.5px] text-[#757575] leading-normal line-clamp-2 h-9 mb-4">
                                     {role.description || t("superAdmin.roleDefaultDesc")}
                                 </p>
 
-                                <div className="flex flex-wrap items-center gap-1.5 pt-3 border-t border-[#E8EAED]">
+                                <div className="flex flex-wrap items-center gap-1.5 pt-3 border-t border-[#E0E0E0]">
                                     {role.permissions.slice(0, 3).map((p) => (
-                                        <Badge key={p.id} tone="neutral" className="rounded-[6px] px-2 py-0.5 text-[10px]">
+                                        <Badge key={p.id} tone="neutral" className="rounded-[3px] px-2 py-0.5 text-[10px]">
                                             {p.resource}
                                         </Badge>
                                     ))}
                                     {role.permissions.length > 3 && (
-                                        <span className="text-[10px] font-bold text-[#5B53E0] ml-0.5 self-center">{t("superAdmin.nMore", { count: role.permissions.length - 3 })}</span>
+                                        <span className="text-[10px] font-bold text-[#1976D2] ml-0.5 self-center">{t("superAdmin.nMore", { count: role.permissions.length - 3 })}</span>
                                     )}
                                 </div>
                             </div>
 
-                            <div className="flex gap-2 pt-4 mt-4 border-t border-[#E8EAED]">
+                            <div className="flex gap-2 pt-4 mt-4 border-t border-[#E0E0E0]">
                                 <Button variant="secondary" size="sm" icon={role.is_system ? "visibility" : "edit_note"} className="flex-1" onClick={() => handleOpenEdit(role)}>
                                     {role.is_system ? t("superAdmin.view") : t("superAdmin.configure")}
                                 </Button>
@@ -230,7 +230,7 @@ function RolesContent() {
                                     <button
                                         onClick={() => handleDelete(role.id)}
                                         aria-label={t("superAdmin.deleteRole")}
-                                        className="w-9 h-9 flex items-center justify-center bg-[#FDECEC] border border-[#F7D7D7] text-[#C0383C] rounded-[10px] hover:bg-[#EF4444] hover:text-white hover:border-[#EF4444] transition-all shrink-0"
+                                        className="w-9 h-9 flex items-center justify-center bg-[#FFEBEE] border border-[#FFCDD2] text-[#C62828] rounded-[4px] hover:bg-[#E53935] hover:text-white hover:border-[#E53935] transition-all shrink-0"
                                     >
                                         <span className="material-symbols-rounded text-[19px]">delete</span>
                                     </button>
@@ -243,22 +243,22 @@ function RolesContent() {
 
             {/* Create / Edit Role Modal */}
             {isEditing && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#15171C]/40 backdrop-blur-sm">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm">
                     <Card padding="none" className="max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-xl animate-in fade-in zoom-in-95 duration-200">
-                        <div className="flex items-center justify-between p-6 border-b border-[#E8EAED]">
+                        <div className="flex items-center justify-between p-6 border-b border-[#E0E0E0]">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
+                                <div className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center">
                                     <span className="material-symbols-rounded text-[20px]">admin_panel_settings</span>
                                 </div>
                                 <div>
-                                    <h3 className="text-[15px] font-bold text-[#15171C]">{selectedRole ? t("superAdmin.editRole") : t("superAdmin.createRole")}</h3>
-                                    <p className="text-[12.5px] text-[#8A929E]">{t("superAdmin.configureAuthPerms")}</p>
+                                    <h3 className="text-[15px] font-bold text-[#212121]">{selectedRole ? t("superAdmin.editRole") : t("superAdmin.createRole")}</h3>
+                                    <p className="text-[12.5px] text-[#757575]">{t("superAdmin.configureAuthPerms")}</p>
                                 </div>
                             </div>
                             <button
                                 onClick={() => setIsEditing(false)}
                                 aria-label={t("superAdmin.close")}
-                                className="w-7 h-7 rounded-[6px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors"
+                                className="w-7 h-7 rounded-[3px] hover:bg-[#F5F6F8] text-[#757575] hover:text-[#424242] flex items-center justify-center transition-colors"
                             >
                                 <span className="material-symbols-rounded text-[19px]">close</span>
                             </button>
@@ -286,10 +286,10 @@ function RolesContent() {
                                 </div>
 
                                 {selectedRole?.is_system && (
-                                    <div className="flex items-start gap-2.5 rounded-[10px] border border-[#E8EAED] bg-[#F7F8FA] px-3.5 py-2.5">
-                                        <span className="material-symbols-rounded text-[18px] text-[#8A929E] mt-0.5">lock</span>
-                                        <p className="text-[12px] text-[#6B7280] leading-relaxed">
-                                            {t("superAdmin.systemRoleNoticeStart")} <span className="font-semibold text-[#374151]">{t("superAdmin.systemRole")}</span>{t("superAdmin.systemRoleNoticeEnd")}
+                                    <div className="flex items-start gap-2.5 rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] px-3.5 py-2.5">
+                                        <span className="material-symbols-rounded text-[18px] text-[#757575] mt-0.5">lock</span>
+                                        <p className="text-[12px] text-[#616161] leading-relaxed">
+                                            {t("superAdmin.systemRoleNoticeStart")} <span className="font-semibold text-[#424242]">{t("superAdmin.systemRole")}</span>{t("superAdmin.systemRoleNoticeEnd")}
                                         </p>
                                     </div>
                                 )}
@@ -306,7 +306,7 @@ function RolesContent() {
 
                                 <div className="space-y-3">
                                     <div className="flex justify-between items-center">
-                                        <label id="assigned-permissions-label" htmlFor="assigned-permissions-group" className="text-[12.5px] font-semibold text-[#374151]">{t("superAdmin.assignedPermissions")}</label>
+                                        <label id="assigned-permissions-label" htmlFor="assigned-permissions-group" className="text-[12.5px] font-semibold text-[#424242]">{t("superAdmin.assignedPermissions")}</label>
                                         <Badge tone="indigo">{t("superAdmin.nActive", { count: selectedPermIds.length })}</Badge>
                                     </div>
 
@@ -318,10 +318,10 @@ function RolesContent() {
                                         onChange={(e) => setPermSearch(e.target.value)}
                                     />
 
-                                    <div id="assigned-permissions-group" role="group" aria-labelledby="assigned-permissions-label" className="bg-[#F4F5F7]/50 rounded-[10px] border border-[#E8EAED] p-3 max-h-[280px] overflow-y-auto custom-scrollbar space-y-4">
+                                    <div id="assigned-permissions-group" role="group" aria-labelledby="assigned-permissions-label" className="bg-[#F5F6F8]/50 rounded-[4px] border border-[#E0E0E0] p-3 max-h-[280px] overflow-y-auto custom-scrollbar space-y-4">
                                         {Object.keys(groupedPermissions).map(module => (
                                             <div key={module} className="space-y-1.5">
-                                                <h4 className="text-[10px] font-bold text-[#8A929E] uppercase tracking-[0.06em] border-b border-[#E8EAED] pb-1">{t("superAdmin.moduleLabel", { module })}</h4>
+                                                <h4 className="text-[10px] font-bold text-[#757575] uppercase tracking-[0.06em] border-b border-[#E0E0E0] pb-1">{t("superAdmin.moduleLabel", { module })}</h4>
                                                 <div className="space-y-1.5">
                                                     {groupedPermissions[module].map((perm) => (
                                                         <button
@@ -329,10 +329,10 @@ function RolesContent() {
                                                             type="button"
                                                             onClick={() => togglePermission(perm.id)}
                                                             disabled={selectedRole?.is_system}
-                                                            className={`w-full flex items-center justify-between p-2.5 rounded-[8px] border text-[11px] font-bold transition-all disabled:cursor-not-allowed disabled:opacity-70 ${selectedPermIds.includes(perm.id) ? "bg-[#15171C] border-[#15171C] text-white shadow-md" : "bg-white border-[#E1E4E8] text-[#8A929E] hover:border-[#9AA3AF]"}`}
+                                                            className={`w-full flex items-center justify-between p-2.5 rounded-[4px] border text-[11px] font-bold transition-all disabled:cursor-not-allowed disabled:opacity-70 ${selectedPermIds.includes(perm.id) ? "bg-[#212121] border-[#212121] text-white shadow-md" : "bg-white border-[#E0E0E0] text-[#757575] hover:border-[#9E9E9E]"}`}
                                                         >
                                                             <div className="flex items-center gap-2">
-                                                                <div className={`w-1.5 h-1.5 rounded-full ${selectedPermIds.includes(perm.id) ? "bg-[#5B53E0]" : "bg-slate-300"}`} />
+                                                                <div className={`w-1.5 h-1.5 rounded-full ${selectedPermIds.includes(perm.id) ? "bg-[#1976D2]" : "bg-slate-300"}`} />
                                                                 <span>{perm.resource}</span>
                                                             </div>
                                                             <span className="opacity-60">{perm.action}</span>
@@ -345,7 +345,7 @@ function RolesContent() {
                                 </div>
                             </div>
 
-                            <div className="flex gap-3 p-6 border-t border-[#E8EAED]">
+                            <div className="flex gap-3 p-6 border-t border-[#E0E0E0]">
                                 <Button type="button" variant="secondary" onClick={() => setIsEditing(false)} className="flex-1">
                                     {selectedRole?.is_system ? t("superAdmin.close") : t("superAdmin.cancel")}
                                 </Button>
@@ -367,10 +367,10 @@ export default function RolesPage() {
     return (
         <Suspense fallback={
             <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full">
-                <div className="h-12 rounded-[14px] bg-[#F1F2F5] animate-pulse" />
+                <div className="h-12 rounded-[4px] bg-[#EEEEEE] animate-pulse" />
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
                     {[...Array(6)].map((_, i) => (
-                        <div key={i} className="bg-white border border-[#E8EAED] rounded-[14px] p-6 min-h-[180px] animate-pulse" />
+                        <div key={i} className="bg-white border border-[#E0E0E0] rounded-[4px] p-6 min-h-[180px] animate-pulse" />
                     ))}
                 </div>
             </div>

@@ -72,7 +72,13 @@
         "sourcingHub": "ソーシングハブ",
         "candidatesList": "候補者一覧",
         "advancedSearch": "詳細検索",
-        "folders": "フォルダー"
+        "folders": "フォルダー",
+        "searchPlaceholder": "氏名・求人・メール・部署で検索",
+        "searchHint": "検索 (Ctrl/Cmd + K)",
+        "toggleSidebar": "メニューの開閉",
+        "openMenu": "メニューを開く",
+        "closeMenu": "メニューを閉じる",
+        "account": "アカウント"
     },
     "sequences": {
         "title": "シーケンス",

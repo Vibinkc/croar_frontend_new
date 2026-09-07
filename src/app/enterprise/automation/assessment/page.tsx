@@ -676,7 +676,7 @@ export default function AssessmentAutomationPage() {
       {toast && (
         <div
           className={`fixed top-5 right-5 z-[200] flex items-center gap-2.5 px-4 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-300 ${
-            toast.type === "success" ? "bg-[#5B53E0] text-white" : "bg-rose-600 text-white"
+            toast.type === "success" ? "bg-[#1976D2] text-white" : "bg-rose-600 text-white"
           }`}
         >
           {toast.type === "success" ? (
@@ -689,23 +689,23 @@ export default function AssessmentAutomationPage() {
       )}
 
       {/* Header (sticky) */}
-      <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-20 py-3 bg-[#F5F6F8]/95 backdrop-blur-sm border-b border-[#E0E0E0] flex items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-1.5">
-            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">
+            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#212121] leading-tight">
               {tr("automation.assessmentTitle")}
             </h1>
             <PageHelp title={tr("automation.assessmentTitle")}>
               <p>{tr("automation.assessmentHelp")}</p>
             </PageHelp>
           </div>
-          <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("automation.assessmentSubtitle")}</p>
+          <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("automation.assessmentSubtitle")}</p>
         </div>
         <div className="flex items-center gap-2.5 shrink-0">
           {canAccess("assessments:moderate") && (
             <button
               onClick={openCreate}
-              className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-all whitespace-nowrap"
+              className="inline-flex items-center gap-2 h-9 px-4 rounded-[4px] bg-[#1976D2] text-white text-[13px] font-semibold hover:bg-[#1565C0] shadow-[0_4px_12px_rgba(25,118,210,0.28)] transition-all whitespace-nowrap"
             >
               <Plus className="w-3.5 h-3.5" />
               {tr("automation.newAutomation")}
@@ -717,25 +717,25 @@ export default function AssessmentAutomationPage() {
       {/* Stats Section */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {[
-          { label: tr("automation.totalRules"), value: automations.length, Icon: Briefcase, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
-          { label: tr("automation.activeRules"), value: automations.filter(a => a.is_enabled).length, Icon: Zap, grad: "linear-gradient(135deg,#34D399,#059669)", glow: "rgba(5,150,105,0.25)" },
-          { label: tr("automation.readyAssessments"), value: automations.filter(a => a.generated_questions?.length).length, Icon: CheckCircle2, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
-          { label: tr("automation.autoMoveRules"), value: automations.filter(a => a.auto_move).length, Icon: Brain, grad: "linear-gradient(135deg,#C084FC,#8B5CF6)", glow: "rgba(139,92,246,0.25)" }
+          { label: tr("automation.totalRules"), value: automations.length, Icon: Briefcase, grad: "linear-gradient(135deg,#42A5F5,#1976D2)", glow: "rgba(25,118,210,0.25)" },
+          { label: tr("automation.activeRules"), value: automations.filter(a => a.is_enabled).length, Icon: Zap, grad: "linear-gradient(135deg,#66BB6A,#059669)", glow: "rgba(5,150,105,0.25)" },
+          { label: tr("automation.readyAssessments"), value: automations.filter(a => a.generated_questions?.length).length, Icon: CheckCircle2, grad: "linear-gradient(135deg,#FFB300,#EF6C00)", glow: "rgba(239,108,0,0.25)" },
+          { label: tr("automation.autoMoveRules"), value: automations.filter(a => a.auto_move).length, Icon: Brain, grad: "linear-gradient(135deg,#C084FC,#42A5F5)", glow: "rgba(66,165,245,0.25)" }
         ].map((s, i) => (
           <motion.div
             key={s.label}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.06 }}
-            className="relative bg-white border border-[#E8EAED] hover:border-[#D4D7DC] rounded-[14px] p-5 overflow-hidden transition-all duration-300 hover:shadow-sm"
+            className="relative bg-white border border-[#E0E0E0] hover:border-[#E0E0E0] rounded-[4px] p-5 overflow-hidden transition-all duration-300 hover:shadow-sm"
           >
             <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: s.grad }} />
             <div className="flex items-start justify-between">
               <div>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{s.label}</span>
-                <div className="text-[30px] font-semibold tracking-[-1px] text-[#15171C] mt-2">{s.value}</div>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{s.label}</span>
+                <div className="text-[30px] font-semibold tracking-[-1px] text-[#212121] mt-2">{s.value}</div>
               </div>
-              <span className="w-10 h-10 rounded-[11px] flex items-center justify-center text-white shrink-0" style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}>
+              <span className="w-10 h-10 rounded-[4px] flex items-center justify-center text-white shrink-0" style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}>
                 <s.Icon className="w-[18px] h-[18px]" />
               </span>
             </div>
@@ -746,13 +746,13 @@ export default function AssessmentAutomationPage() {
       {/* Filter Bar */}
       <div className="flex flex-col md:flex-row md:items-center gap-3">
         <div className="flex-1 relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] group-focus-within:text-[#1976D2] transition-colors" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={tr("automation.searchTopicRound")}
-            className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] pl-11 pr-4 text-sm font-semibold text-[#1F2127] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+            className="w-full h-11 bg-white border border-[#E0E0E0] rounded-[4px] pl-11 pr-4 text-sm font-semibold text-[#263238] placeholder:text-[#9E9E9E] focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm"
           />
         </div>
 
@@ -760,120 +760,120 @@ export default function AssessmentAutomationPage() {
           {(searchQuery || selectedJobId) && (
             <button
               onClick={() => { setSearchQuery(""); setSelectedJobId(""); }}
-              className="text-[12.5px] font-bold text-[#5B53E0] hover:underline px-2 tracking-tight"
+              className="text-[12.5px] font-bold text-[#1976D2] hover:underline px-2 tracking-tight"
             >
               {tr("automation.resetFiltersShort")}
             </button>
           )}
           <div className="relative w-full md:w-64">
-            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF]">
+            <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E]">
               <Briefcase className="w-4 h-4" />
             </div>
             <select
               value={selectedJobId}
               onChange={(e) => setSelectedJobId(e.target.value)}
-              className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 pl-9 pr-9 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] hover:bg-[#F7F8FA] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+              className="w-full bg-white border border-[#E0E0E0] rounded-[4px] h-11 pl-9 pr-9 text-[13.5px] font-semibold text-[#424242] hover:border-[#BBDEFB] hover:bg-[#FAFAFA] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm"
             >
               <option value="">{tr("automation.allJobRequirements")}</option>
               {jobs.map((j) => (
                 <option key={j.id} value={j.id}>{j.title}</option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+            <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
           </div>
         </div>
       </div>
 
       {/* List */}
       {loading ? (
-        <div className="flex justify-center py-20 bg-white border border-[#E8EAED] rounded-[14px] min-h-[300px] items-center">
-          <div className="w-8 h-8 border-4 border-[#5B53E0] border-t-transparent rounded-full animate-spin" />
+        <div className="flex justify-center py-20 bg-white border border-[#E0E0E0] rounded-[4px] min-h-[300px] items-center">
+          <div className="w-8 h-8 border-4 border-[#1976D2] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : filteredAutomations.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-20 text-center bg-white border border-[#E8EAED] rounded-[14px] min-h-[300px]">
+        <div className="flex flex-col items-center justify-center p-20 text-center bg-white border border-[#E0E0E0] rounded-[4px] min-h-[300px]">
           <div className="relative mb-6">
-            <div className="absolute -inset-3 rounded-full bg-[#FEF3E2] blur-2xl" />
-            <div className="relative w-16 h-16 rounded-[18px] flex items-center justify-center text-white" style={{ background: "linear-gradient(135deg,#FBBF24,#D97706)", boxShadow: "0 12px 30px rgba(217,119,6,0.3)" }}>
+            <div className="absolute -inset-3 rounded-full bg-[#FFF3E0] blur-2xl" />
+            <div className="relative w-16 h-16 rounded-[4px] flex items-center justify-center text-white" style={{ background: "linear-gradient(135deg,#FFB300,#EF6C00)", boxShadow: "0 12px 30px rgba(239,108,0,0.3)" }}>
               <Brain className="w-7 h-7" />
             </div>
           </div>
-          <h3 className="text-[18px] font-bold text-[#15171C] mb-1.5">
+          <h3 className="text-[18px] font-bold text-[#212121] mb-1.5">
             {searchQuery ? tr("automation.noMatchingAssessments") : tr("automation.noAssessmentAutomations")}
           </h3>
-          <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-6">
+          <p className="text-[#757575] text-[14px] max-w-xs mx-auto mb-6">
             {searchQuery ? tr("automation.noResultsFor", { query: searchQuery }) : tr("automation.generateFirstAssessment")}
           </p>
           {searchQuery && (
             <button
               onClick={() => { setSearchQuery(""); setSelectedJobId(""); }}
-              className="px-6 h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13.5px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-all"
+              className="px-6 h-11 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-[4px] font-semibold text-[13.5px] shadow-[0_6px_16px_rgba(25,118,210,0.28)] transition-all"
             >
               {tr("automation.clearSearchFilters")}
             </button>
           )}
         </div>
       ) : (
-        <div className="bg-white rounded-[14px] border border-[#E8EAED] shadow-sm overflow-hidden">
+        <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-[#F7F8FA] border-b border-[#E8EAED]">
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">{tr("automation.ruleConfiguration")}</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">{tr("automation.jobAssessmentTopic")}</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">{tr("automation.readiness")}</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">{tr("automation.triggerSchedule")}</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em]">{tr("automation.status")}</th>
-                  <th className="px-6 py-4 text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.05em] text-right">{tr("automation.actions")}</th>
+                <tr className="bg-[#FAFAFA] border-b border-[#E0E0E0]">
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#757575] uppercase tracking-[0.05em]">{tr("automation.ruleConfiguration")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#757575] uppercase tracking-[0.05em]">{tr("automation.jobAssessmentTopic")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#757575] uppercase tracking-[0.05em]">{tr("automation.readiness")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#757575] uppercase tracking-[0.05em]">{tr("automation.triggerSchedule")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#757575] uppercase tracking-[0.05em]">{tr("automation.status")}</th>
+                  <th className="px-6 py-4 text-[11px] font-bold text-[#757575] uppercase tracking-[0.05em] text-right">{tr("automation.actions")}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#E8EAED]">
+              <tbody className="divide-y divide-[#E0E0E0]">
                 {filteredAutomations.map((a) => (
-                  <tr key={a.id} className="hover:bg-[#F7F8FA]/50 transition-all group">
+                  <tr key={a.id} className="hover:bg-[#FAFAFA]/50 transition-all group">
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1.5">
                         <div className="flex items-center gap-2">
-                          <span className="px-2 py-0.5 bg-[#ECEBFB] text-[#5B53E0] rounded-[6px] text-[10px] font-bold uppercase tracking-wide">
+                          <span className="px-2 py-0.5 bg-[#E3F2FD] text-[#1976D2] rounded-[3px] text-[10px] font-bold uppercase tracking-wide">
                             {tr("automation.round")} {a.stage_index}
                           </span>
                           {a.stage_name && (
-                            <span className="text-[12px] font-semibold text-[#8A929E] tracking-tight">{a.stage_name}</span>
+                            <span className="text-[12px] font-semibold text-[#757575] tracking-tight">{a.stage_name}</span>
                           )}
                         </div>
-                        <p className="text-sm font-semibold text-[#374151] line-clamp-1">
-                          <span className="text-[#8A929E] font-normal italic mr-1">{tr("automation.ifLabel")}</span>
+                        <p className="text-sm font-semibold text-[#424242] line-clamp-1">
+                          <span className="text-[#757575] font-normal italic mr-1">{tr("automation.ifLabel")}</span>
                           {a.criteria}
                         </p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-1.5 text-xs font-semibold text-[#374151]">
-                          <Briefcase className="w-3.5 h-3.5 text-[#8A929E]" />
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-[#424242]">
+                          <Briefcase className="w-3.5 h-3.5 text-[#757575]" />
                           {jobTitle(a.job_requirement_id)}
                         </div>
-                        <div className="flex items-center gap-1.5 text-[11.5px] font-bold text-[#D97706] uppercase">
-                          <Brain className="w-3.5 h-3.5 text-[#D97706]" />
+                        <div className="flex items-center gap-1.5 text-[11.5px] font-bold text-[#EF6C00] uppercase">
+                          <Brain className="w-3.5 h-3.5 text-[#EF6C00]" />
                           {a.type}: {a.topic}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       {a.generated_questions && a.generated_questions.length > 0 ? (
-                        <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#0E8A6E]">
-                          <CheckCircle2 className="w-4 h-4 text-[#0E8A6E]" />
+                        <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#2E7D32]">
+                          <CheckCircle2 className="w-4 h-4 text-[#2E7D32]" />
                           <span>{tr("automation.questionsReady", { count: a.generated_questions.length })}</span>
                         </div>
                       ) : (
-                        <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#D97706]">
-                          <AlertCircle className="w-4 h-4 text-[#D97706]" />
+                        <div className="flex items-center gap-1.5 text-[12px] font-semibold text-[#EF6C00]">
+                          <AlertCircle className="w-4 h-4 text-[#EF6C00]" />
                           <span>{tr("automation.noQuestionsYet")}</span>
                         </div>
                       )}
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-0.5">
-                        <div className="flex items-center gap-1.5 text-xs font-semibold text-[#374151]">
-                          {a.is_immediate ? <Zap className="w-3.5 h-3.5 text-[#D97706]" /> : <Clock className="w-3.5 h-3.5 text-[#8A929E]" />}
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-[#424242]">
+                          {a.is_immediate ? <Zap className="w-3.5 h-3.5 text-[#EF6C00]" /> : <Clock className="w-3.5 h-3.5 text-[#757575]" />}
                           <span>
                             {a.is_immediate
                               ? tr("automation.immediate")
@@ -881,7 +881,7 @@ export default function AssessmentAutomationPage() {
                           </span>
                         </div>
                         {a.auto_move && (
-                          <div className="text-[10px] font-bold text-[#5B53E0] uppercase tracking-wide">
+                          <div className="text-[10px] font-bold text-[#1976D2] uppercase tracking-wide">
                             {tr("automation.autoMoveActive")}
                           </div>
                         )}
@@ -891,7 +891,7 @@ export default function AssessmentAutomationPage() {
                       <button
                         onClick={() => handleToggle(a)}
                         disabled={togglingId === a.id || !canAccess("assessments:moderate")}
-                        className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"} ${togglingId === a.id ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                        className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#1976D2]" : "bg-[#E0E0E0]"} ${togglingId === a.id ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                       >
                         <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${a.is_enabled ? "translate-x-4" : "translate-x-0"}`} />
                       </button>
@@ -902,10 +902,10 @@ export default function AssessmentAutomationPage() {
                           <button
                             onClick={() => setRegenerateTarget(a)}
                             disabled={generatingId === a.id}
-                            className={`w-8 h-8 flex items-center justify-center rounded-[8px] transition-all ${
+                            className={`w-8 h-8 flex items-center justify-center rounded-[4px] transition-all ${
                               a.generated_questions
-                                ? "bg-[#F4F5F7] text-[#8A929E] hover:bg-[#ECEBFB] hover:text-[#5B53E0]"
-                                : "bg-[#FEF3E2] text-[#D97706] hover:bg-[#D97706] hover:text-white"
+                                ? "bg-[#F5F6F8] text-[#757575] hover:bg-[#E3F2FD] hover:text-[#1976D2]"
+                                : "bg-[#FFF3E0] text-[#EF6C00] hover:bg-[#EF6C00] hover:text-white"
                             }`}
                             title={a.generated_questions ? tr("automation.regenerateAiQuestions") : tr("automation.generateAiQuestions")}
                           >
@@ -918,14 +918,14 @@ export default function AssessmentAutomationPage() {
                         )}
                         <button
                           onClick={() => openEdit(a)}
-                          className="w-8 h-8 flex items-center justify-center rounded-[8px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#1F2127] transition-all"
+                          className="w-8 h-8 flex items-center justify-center rounded-[4px] hover:bg-[#F5F6F8] text-[#757575] hover:text-[#263238] transition-all"
                           title={a.generated_questions ? tr("automation.viewEditQuestions") : tr("automation.editRule")}
                         >
                           <Edit2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => { setAutomationToDelete(a); setIsDeleteModalOpen(true); }}
-                          className="w-8 h-8 flex items-center justify-center rounded-[8px] hover:bg-rose-50 text-[#8A929E] hover:text-rose-600 transition-all"
+                          className="w-8 h-8 flex items-center justify-center rounded-[4px] hover:bg-rose-50 text-[#757575] hover:text-rose-600 transition-all"
                           title={tr("automation.deleteRule")}
                         >
                           <Trash2 className="w-4 h-4" />
@@ -947,41 +947,41 @@ export default function AssessmentAutomationPage() {
             role="button"
             tabIndex={0}
             aria-label={tr("automation.closePanel")}
-            className="absolute inset-0 bg-[#15171C]/40 backdrop-blur-sm transition-opacity duration-300"
+            className="absolute inset-0 bg-[#212121]/40 backdrop-blur-sm transition-opacity duration-300"
             onClick={closeModal}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { closeModal(); } }}
           />
           <div className="relative w-full max-w-2xl bg-white h-full shadow-2xl flex flex-col animate-slide-in-right">
-            <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8EAED] bg-white shrink-0">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-[#E0E0E0] bg-white shrink-0">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-[8px] bg-[#FEF3E2] flex items-center justify-center border border-[#FCE1BF]/80 shadow-sm">
-                  <Brain className="w-5 h-5 text-[#D97706]" />
+                <div className="w-9 h-9 rounded-[4px] bg-[#FFF3E0] flex items-center justify-center border border-[#FFE0B2]/80 shadow-sm">
+                  <Brain className="w-5 h-5 text-[#EF6C00]" />
                 </div>
                 <div>
-                  <h2 className="text-[16px] font-bold text-[#15171C]">
+                  <h2 className="text-[16px] font-bold text-[#212121]">
                     {editingId ? tr("automation.editAutomation") : tr("automation.createAutomation")}
                   </h2>
-                  <p className="text-[12px] text-[#8A929E] font-medium">{tr("automation.configureAiAssessment")}</p>
+                  <p className="text-[12px] text-[#757575] font-medium">{tr("automation.configureAiAssessment")}</p>
                 </div>
               </div>
               <button 
                 onClick={closeModal} 
-                className="w-8 h-8 rounded-[8px] hover:bg-[#F4F5F7] flex items-center justify-center text-[#8A929E] hover:text-[#1F2127] transition-all"
+                className="w-8 h-8 rounded-[4px] hover:bg-[#F5F6F8] flex items-center justify-center text-[#757575] hover:text-[#263238] transition-all"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="flex border-b border-[#E8EAED] bg-white px-6">
+            <div className="flex border-b border-[#E0E0E0] bg-white px-6">
               <button 
                 onClick={() => setActiveTab('config')} 
-                className={`px-5 py-3 text-[13px] font-semibold transition-all border-b-2 -mb-px ${activeTab === 'config' ? 'border-[#5B53E0] text-[#5B53E0]' : 'border-transparent text-[#8A929E] hover:text-[#4B5563]'}`}
+                className={`px-5 py-3 text-[13px] font-semibold transition-all border-b-2 -mb-px ${activeTab === 'config' ? 'border-[#1976D2] text-[#1976D2]' : 'border-transparent text-[#757575] hover:text-[#4F4F4F]'}`}
               >
                 {tr("automation.step1Config")}
               </button>
               <button 
                 onClick={() => setActiveTab('questions')} 
-                className={`px-5 py-3 text-[13px] font-semibold transition-all border-b-2 -mb-px ${activeTab === 'questions' ? 'border-[#5B53E0] text-[#5B53E0]' : 'border-transparent text-[#8A929E] hover:text-[#4B5563]'}`}
+                className={`px-5 py-3 text-[13px] font-semibold transition-all border-b-2 -mb-px ${activeTab === 'questions' ? 'border-[#1976D2] text-[#1976D2]' : 'border-transparent text-[#757575] hover:text-[#4F4F4F]'}`}
               >
                 {tr("automation.step2Questions")} {form.generated_questions?.length ? `(${form.generated_questions.length})` : ''}
               </button>
@@ -992,14 +992,14 @@ export default function AssessmentAutomationPage() {
                 <div className="p-6 space-y-5 max-w-xl mx-auto">
                     <div className="space-y-4">
                       <div>
-                        <label htmlFor="assessment-target-job" className="block text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 ml-1">{tr("automation.targetJob")} <span className="text-red-400">*</span></label>
+                        <label htmlFor="assessment-target-job" className="block text-[11px] font-bold uppercase tracking-wider text-[#757575] mb-1.5 ml-1">{tr("automation.targetJob")} <span className="text-red-400">*</span></label>
                         <select
                           id="assessment-target-job"
                           value={form.job_requirement_id}
                           onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value }))}
                           disabled={!!editingId}
                           title={editingId ? "The job can't be changed after creation" : undefined}
-                          className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all cursor-pointer disabled:bg-[#F4F5F7] disabled:cursor-not-allowed"
+                          className="w-full h-11 bg-white border border-[#E0E0E0] rounded-[4px] px-4 text-[13.5px] font-semibold text-[#424242] focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all cursor-pointer disabled:bg-[#F5F6F8] disabled:cursor-not-allowed"
                         >
                           <option value="">{tr("automation.selectAJob")}</option>
                           {jobs.map((j) => (
@@ -1009,13 +1009,13 @@ export default function AssessmentAutomationPage() {
                       </div>
 
                       <div>
-                        <label htmlFor="assessment-hiring-round" className="block text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 ml-1">{tr("automation.hiringRound")} <span className="text-red-400">*</span></label>
+                        <label htmlFor="assessment-hiring-round" className="block text-[11px] font-bold uppercase tracking-wider text-[#757575] mb-1.5 ml-1">{tr("automation.hiringRound")} <span className="text-red-400">*</span></label>
                         {jobRounds.length > 0 ? (
                           <select
                             id="assessment-hiring-round"
                             onChange={handleRoundSelect}
                             defaultValue={editingId ? `${form.stage_index}|${form.stage_name || ''}` : ""}
-                            className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all cursor-pointer"
+                            className="w-full h-11 bg-white border border-[#E0E0E0] rounded-[4px] px-4 text-[13.5px] font-semibold text-[#424242] focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all cursor-pointer"
                           >
                             <option value="">{tr("automation.pickARound")}</option>
                             {jobRounds.map((r, i) => (
@@ -1024,16 +1024,16 @@ export default function AssessmentAutomationPage() {
                           </select>
                         ) : (
                           <div className="grid grid-cols-2 gap-3">
-                            <input id="assessment-hiring-round" type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: Number(e.target.value) }))} placeholder={tr("automation.indexPlaceholder")} className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all" />
-                            <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} placeholder={tr("automation.namePlaceholder")} className="w-full h-11 bg-white border border-[#E1E4E8] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all" />
+                            <input id="assessment-hiring-round" type="number" min={1} value={form.stage_index} onChange={(e) => setForm((f) => ({ ...f, stage_index: Number(e.target.value) }))} placeholder={tr("automation.indexPlaceholder")} className="w-full h-11 bg-white border border-[#E0E0E0] rounded-[4px] px-4 text-[13.5px] font-semibold text-[#424242] focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all" />
+                            <input type="text" value={form.stage_name} onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))} placeholder={tr("automation.namePlaceholder")} className="w-full h-11 bg-white border border-[#E0E0E0] rounded-[4px] px-4 text-[13.5px] font-semibold text-[#424242] focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all" />
                           </div>
                         )}
                       </div>
                     </div>
 
-                    <div className="bg-[#FEF3E2]/40 rounded-[12px] p-5 space-y-4 border border-[#FCE1BF] mb-4">
+                    <div className="bg-[#FFF3E0]/40 rounded-[4px] p-5 space-y-4 border border-[#FFE0B2] mb-4">
                       <div>
-                        <label htmlFor="assessment-template-select" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">{tr("automation.useAssessmentTemplate")}</label>
+                        <label htmlFor="assessment-template-select" className="block text-[11px] font-bold uppercase tracking-wider text-[#EF6C00] mb-1.5 ml-1">{tr("automation.useAssessmentTemplate")}</label>
                         <select
                           id="assessment-template-select"
                           value={form.template_id || ""}
@@ -1060,26 +1060,26 @@ export default function AssessmentAutomationPage() {
                                }));
                             }
                           }}
-                          className="w-full h-11 bg-white border border-[#FCE1BF] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#D97706]/20 focus:border-[#D97706] transition-all cursor-pointer"
+                          className="w-full h-11 bg-white border border-[#FFE0B2] rounded-[4px] px-4 text-[13.5px] font-semibold text-[#424242] focus:ring-2 focus:ring-[#EF6C00]/20 focus:border-[#EF6C00] transition-all cursor-pointer"
                         >
                           <option value="">{tr("automation.customAssessmentConfig")}</option>
                           {assessmentTemplates.map(t => (
                               <option key={t.id} value={t.id}>{t.name} ({t.type} - {t.topic})</option>
                           ))}
                         </select>
-                        <p className="text-[11px] text-[#8A929E] mt-1.5 ml-1 leading-relaxed">{tr("automation.templateAutoFill")}</p>
+                        <p className="text-[11px] text-[#757575] mt-1.5 ml-1 leading-relaxed">{tr("automation.templateAutoFill")}</p>
                       </div>
                     </div>
 
-                    <div className="bg-[#FEF3E2]/20 rounded-[12px] p-5 space-y-4 border border-[#FCE1BF]/50">
+                    <div className="bg-[#FFF3E0]/20 rounded-[4px] p-5 space-y-4 border border-[#FFE0B2]/50">
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label htmlFor="assessment-type" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">{tr("automation.typeLabel")} <span className="text-red-400">*</span></label>
+                          <label htmlFor="assessment-type" className="block text-[11px] font-bold uppercase tracking-wider text-[#EF6C00] mb-1.5 ml-1">{tr("automation.typeLabel")} <span className="text-red-400">*</span></label>
                           <select
                             id="assessment-type"
                             value={form.type}
                             onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as AssessmentType }))}
-                            className="w-full h-11 bg-white border border-[#FCE1BF] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#D97706]/20 focus:border-[#D97706] transition-all cursor-pointer"
+                            className="w-full h-11 bg-white border border-[#FFE0B2] rounded-[4px] px-4 text-[13.5px] font-semibold text-[#424242] focus:ring-2 focus:ring-[#EF6C00]/20 focus:border-[#EF6C00] transition-all cursor-pointer"
                           >
                             {Object.values(AssessmentType).map((p) => (
                               <option key={p} value={p}>{p}</option>
@@ -1087,13 +1087,13 @@ export default function AssessmentAutomationPage() {
                           </select>
                         </div>
                         <div>
-                          <label htmlFor="assessment-topic" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">{tr("automation.topicLabel")} <span className="text-red-400">*</span></label>
+                          <label htmlFor="assessment-topic" className="block text-[11px] font-bold uppercase tracking-wider text-[#EF6C00] mb-1.5 ml-1">{tr("automation.topicLabel")} <span className="text-red-400">*</span></label>
                           <input
                             id="assessment-topic"
                             type="text"
                             value={form.topic}
                             onChange={(e) => setForm((f) => ({ ...f, topic: e.target.value }))}
-                            className="w-full h-11 bg-white border border-[#FCE1BF] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#D97706]/20 focus:border-[#D97706] transition-all"
+                            className="w-full h-11 bg-white border border-[#FFE0B2] rounded-[4px] px-4 text-[13.5px] font-semibold text-[#424242] focus:ring-2 focus:ring-[#EF6C00]/20 focus:border-[#EF6C00] transition-all"
                             placeholder={tr("automation.topicPlaceholder")}
                           />
                         </div>
@@ -1101,7 +1101,7 @@ export default function AssessmentAutomationPage() {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label htmlFor="assessment-question-count" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">{tr("automation.questionsLabel")} <span className="text-red-400">*</span></label>
+                          <label htmlFor="assessment-question-count" className="block text-[11px] font-bold uppercase tracking-wider text-[#EF6C00] mb-1.5 ml-1">{tr("automation.questionsLabel")} <span className="text-red-400">*</span></label>
                           <input
                             id="assessment-question-count"
                             type="number"
@@ -1109,18 +1109,18 @@ export default function AssessmentAutomationPage() {
                             max={50}
                             value={form.question_count}
                             onChange={(e) => setForm((f) => ({ ...f, question_count: Number(e.target.value) }))}
-                            className="w-full h-11 bg-white border border-[#FCE1BF] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#D97706]/20 focus:border-[#D97706] transition-all"
+                            className="w-full h-11 bg-white border border-[#FFE0B2] rounded-[4px] px-4 text-[13.5px] font-semibold text-[#424242] focus:ring-2 focus:ring-[#EF6C00]/20 focus:border-[#EF6C00] transition-all"
                           />
                         </div>
                         <div>
-                          <label htmlFor="assessment-test-duration" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">{tr("automation.timeMin")} <span className="text-red-400">*</span></label>
+                          <label htmlFor="assessment-test-duration" className="block text-[11px] font-bold uppercase tracking-wider text-[#EF6C00] mb-1.5 ml-1">{tr("automation.timeMin")} <span className="text-red-400">*</span></label>
                           <input
                             id="assessment-test-duration"
                             type="number"
                             min={5}
                             value={form.test_duration}
                             onChange={(e) => setForm((f) => ({ ...f, test_duration: Number(e.target.value) }))}
-                            className="w-full h-11 bg-white border border-[#FCE1BF] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#D97706]/20 focus:border-[#D97706] transition-all"
+                            className="w-full h-11 bg-white border border-[#FFE0B2] rounded-[4px] px-4 text-[13.5px] font-semibold text-[#424242] focus:ring-2 focus:ring-[#EF6C00]/20 focus:border-[#EF6C00] transition-all"
                           />
                         </div>
                       </div>
@@ -1128,91 +1128,91 @@ export default function AssessmentAutomationPage() {
 
                     <div className="space-y-4">
                       <div>
-                        <label htmlFor="assessment-criteria" className="block text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 ml-1">{tr("automation.triggerCriteria")} <span className="text-red-400">*</span></label>
+                        <label htmlFor="assessment-criteria" className="block text-[11px] font-bold uppercase tracking-wider text-[#757575] mb-1.5 ml-1">{tr("automation.triggerCriteria")} <span className="text-red-400">*</span></label>
                         <textarea
                           id="assessment-criteria"
                           rows={2}
                           value={form.criteria} 
                           onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))} 
-                          className="w-full bg-white border border-[#E1E4E8] rounded-[12px] px-4 py-3 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all resize-none h-20" 
+                          className="w-full bg-white border border-[#E0E0E0] rounded-[4px] px-4 py-3 text-[13.5px] font-semibold text-[#424242] focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all resize-none h-20" 
                           placeholder={tr("automation.criteriaPlaceholderMatch")}
                         />
                       </div>
 
                       <div>
-                        <label htmlFor="assessment-email-template" className="block text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 ml-1">{tr("automation.emailTemplate")} <span className="text-red-400">*</span></label>
+                        <label htmlFor="assessment-email-template" className="block text-[11px] font-bold uppercase tracking-wider text-[#757575] mb-1.5 ml-1">{tr("automation.emailTemplate")} <span className="text-red-400">*</span></label>
                         <div className="relative">
                           <select
                             id="assessment-email-template"
                             value={form.email_template_id || ""}
                             onChange={(e) => setForm((f) => ({ ...f, email_template_id: e.target.value }))}
-                            className={`w-full bg-white border rounded-[12px] h-11 pl-4 pr-9 text-[13.5px] font-semibold text-[#374151] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all ${!form.email_template_id ? 'border-amber-300' : 'border-[#E1E4E8]'}`}
+                            className={`w-full bg-white border rounded-[4px] h-11 pl-4 pr-9 text-[13.5px] font-semibold text-[#424242] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all ${!form.email_template_id ? 'border-amber-300' : 'border-[#E0E0E0]'}`}
                           >
                             <option value="">{tr("automation.selectEmailTemplate")}</option>
                             {emailTemplates.map((t) => (
                               <option key={t.id} value={t.id}>{t.name}</option>
                             ))}
                           </select>
-                          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
                         </div>
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#E8EAED]">
-                      <div className="flex items-center justify-between p-3.5 bg-[#F7F8FA] border border-[#E8EAED] rounded-[12px] transition-all hover:border-[#DAD7F6]/60">
+                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#E0E0E0]">
+                      <div className="flex items-center justify-between p-3.5 bg-[#FAFAFA] border border-[#E0E0E0] rounded-[4px] transition-all hover:border-[#BBDEFB]/60">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-[8px] bg-white border border-[#E8EAED] flex items-center justify-center shadow-sm">
-                            <CheckCircle2 className={`w-4 h-4 ${form.is_enabled ? "text-[#5B53E0]" : "text-[#8A929E]"}`} />
+                          <div className="w-8 h-8 rounded-[4px] bg-white border border-[#E0E0E0] flex items-center justify-center shadow-sm">
+                            <CheckCircle2 className={`w-4 h-4 ${form.is_enabled ? "text-[#1976D2]" : "text-[#757575]"}`} />
                           </div>
                           <div>
-                            <p className="text-[11px] font-bold text-[#1F2127]">{tr("automation.active")}</p>
+                            <p className="text-[11px] font-bold text-[#263238]">{tr("automation.active")}</p>
                           </div>
                         </div>
                         <button
                           onClick={() => setForm((f) => ({ ...f, is_enabled: !f.is_enabled }))}
-                          className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.is_enabled ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"}`}
+                          className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.is_enabled ? "bg-[#1976D2]" : "bg-[#E0E0E0]"}`}
                         >
                           <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${form.is_enabled ? "translate-x-4" : "translate-x-0"}`} />
                         </button>
                       </div>
 
-                      <div className="flex items-center justify-between p-3.5 bg-[#F7F8FA] border border-[#E8EAED] rounded-[12px] transition-all hover:border-[#DAD7F6]/60">
+                      <div className="flex items-center justify-between p-3.5 bg-[#FAFAFA] border border-[#E0E0E0] rounded-[4px] transition-all hover:border-[#BBDEFB]/60">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-[8px] bg-white border border-[#E8EAED] flex items-center justify-center shadow-sm">
-                            <ChevronRight className={`w-4 h-4 ${form.auto_move ? "text-[#5B53E0]" : "text-[#8A929E]"}`} />
+                          <div className="w-8 h-8 rounded-[4px] bg-white border border-[#E0E0E0] flex items-center justify-center shadow-sm">
+                            <ChevronRight className={`w-4 h-4 ${form.auto_move ? "text-[#1976D2]" : "text-[#757575]"}`} />
                           </div>
                           <div>
-                            <p className="text-[11px] font-bold text-[#1F2127]">{tr("automation.autoMove")}</p>
+                            <p className="text-[11px] font-bold text-[#263238]">{tr("automation.autoMove")}</p>
                           </div>
                         </div>
                         <button
                           onClick={() => setForm((f) => ({ ...f, auto_move: !f.auto_move }))}
-                          className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.auto_move ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"}`}
+                          className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.auto_move ? "bg-[#1976D2]" : "bg-[#E0E0E0]"}`}
                         >
                           <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${form.auto_move ? "translate-x-4" : "translate-x-0"}`} />
                         </button>
                       </div>
                     </div>
 
-                    <div className="pt-4 border-t border-[#E8EAED]">
+                    <div className="pt-4 border-t border-[#E0E0E0]">
                       <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
-                          <Clock className="text-[#8A929E] w-4 h-4" />
-                          <span className="text-[12px] font-bold text-[#374151]">{tr("automation.scheduling")}</span>
+                          <Clock className="text-[#757575] w-4 h-4" />
+                          <span className="text-[12px] font-bold text-[#424242]">{tr("automation.scheduling")}</span>
                         </div>
-                        <div className="flex bg-[#F4F5F7] p-1 rounded-[10px]">
+                        <div className="flex bg-[#F5F6F8] p-1 rounded-[4px]">
                           <button
                             onClick={() => setForm(f => ({ ...f, is_immediate: true }))}
-                            className={`px-3.5 py-1.5 rounded-[8px] text-[12px] font-bold transition-all ${
-                              form.is_immediate ? "bg-white text-[#5B53E0] shadow-sm" : "text-[#8A929E] hover:text-[#4B5563]"
+                            className={`px-3.5 py-1.5 rounded-[4px] text-[12px] font-bold transition-all ${
+                              form.is_immediate ? "bg-white text-[#1976D2] shadow-sm" : "text-[#757575] hover:text-[#4F4F4F]"
                             }`}
                           >
                             {tr("automation.immediate")}
                           </button>
                           <button
                             onClick={() => setForm(f => ({ ...f, is_immediate: false }))}
-                            className={`px-3.5 py-1.5 rounded-[8px] text-[12px] font-bold transition-all ${
-                              !form.is_immediate ? "bg-white text-[#5B53E0] shadow-sm" : "text-[#8A929E] hover:text-[#4B5563]"
+                            className={`px-3.5 py-1.5 rounded-[4px] text-[12px] font-bold transition-all ${
+                              !form.is_immediate ? "bg-white text-[#1976D2] shadow-sm" : "text-[#757575] hover:text-[#4F4F4F]"
                             }`}
                           >
                             {tr("automation.scheduled")}
@@ -1221,25 +1221,25 @@ export default function AssessmentAutomationPage() {
                       </div>
 
                       {!form.is_immediate && (
-                        <div className="bg-[#FEF3E2]/50 rounded-[12px] p-4 border border-[#FCE1BF] animate-in fade-in slide-in-from-top-2 duration-300">
-                          <label htmlFor="assessment-send-at" className="block text-[11px] font-bold uppercase tracking-wider text-[#D97706] mb-1.5 ml-1">{tr("automation.sendAtDateTime")}</label>
+                        <div className="bg-[#FFF3E0]/50 rounded-[4px] p-4 border border-[#FFE0B2] animate-in fade-in slide-in-from-top-2 duration-300">
+                          <label htmlFor="assessment-send-at" className="block text-[11px] font-bold uppercase tracking-wider text-[#EF6C00] mb-1.5 ml-1">{tr("automation.sendAtDateTime")}</label>
                           <input
                             id="assessment-send-at"
                             type="datetime-local"
                             value={form.send_at}
                             onChange={(e) => setForm(f => ({ ...f, send_at: e.target.value }))}
-                            className="w-full h-11 bg-white border border-[#FCE1BF] rounded-[12px] px-4 text-[13.5px] font-semibold text-[#374151] focus:ring-2 focus:ring-[#D97706]/20 focus:border-[#D97706] shadow-sm"
+                            className="w-full h-11 bg-white border border-[#FFE0B2] rounded-[4px] px-4 text-[13.5px] font-semibold text-[#424242] focus:ring-2 focus:ring-[#EF6C00]/20 focus:border-[#EF6C00] shadow-sm"
                           />
-                          <p className="mt-2 text-[11.5px] text-[#D97706] font-medium leading-relaxed">
+                          <p className="mt-2 text-[11.5px] text-[#EF6C00] font-medium leading-relaxed">
                             {tr("automation.sendAtHelp")}
                           </p>
                         </div>
                       )}
 
-                      <div className="pt-4 mt-6 border-t border-[#E8EAED]">
+                      <div className="pt-4 mt-6 border-t border-[#E0E0E0]">
                         {form.template_id && (
-                          <div className="mb-3 flex items-start gap-2 rounded-[10px] border border-[#FCE1BF] bg-[#FEF3E2]/60 px-3.5 py-2.5">
-                            <AlertCircle className="w-4 h-4 text-[#D97706] mt-0.5 shrink-0" />
+                          <div className="mb-3 flex items-start gap-2 rounded-[4px] border border-[#FFE0B2] bg-[#FFF3E0]/60 px-3.5 py-2.5">
+                            <AlertCircle className="w-4 h-4 text-[#EF6C00] mt-0.5 shrink-0" />
                             <p className="text-[11.5px] font-semibold text-[#92590C] leading-relaxed">
                               {tr("automation.questionsFromTemplate", { name: selectedTemplateName })}
                             </p>
@@ -1251,7 +1251,7 @@ export default function AssessmentAutomationPage() {
                         <button
                           onClick={requestGeneratePreview}
                           disabled={saving || !form.job_requirement_id || !form.topic}
-                          className="w-full h-12 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[12px] text-[13.5px] font-bold shadow-[0_6px_16px_rgba(91,83,224,0.25)] active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                          className="w-full h-12 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-[4px] text-[13.5px] font-bold shadow-[0_6px_16px_rgba(25,118,210,0.25)] active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                         >
                           {saving ? (
                             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -1260,7 +1260,7 @@ export default function AssessmentAutomationPage() {
                           )}
                           {form.generated_questions?.length ? tr("automation.regenerateDraftAi") : tr("automation.draftQuestionsAi")}
                         </button>
-                        <p className="text-[11px] text-[#8A929E] mt-3 text-center font-semibold opacity-60">{tr("automation.step1ConfigureDraft")}</p>
+                        <p className="text-[11px] text-[#757575] mt-3 text-center font-semibold opacity-60">{tr("automation.step1ConfigureDraft")}</p>
                       </div>
                     </div>
                 </div>
@@ -1268,12 +1268,12 @@ export default function AssessmentAutomationPage() {
                 <div className="p-6 space-y-6 max-w-3xl mx-auto">
                    <div className="flex items-center justify-between mb-2">
                        <div>
-                         <h3 className="text-[14px] font-bold text-[#15171C]">{tr("automation.assessmentPreview")}</h3>
-                         <p className="text-[12px] text-[#8A929E] font-medium">{tr("automation.reviewEditAiQuestions")}</p>
+                         <h3 className="text-[14px] font-bold text-[#212121]">{tr("automation.assessmentPreview")}</h3>
+                         <p className="text-[12px] text-[#757575] font-medium">{tr("automation.reviewEditAiQuestions")}</p>
                        </div>
                        <button
                          onClick={handleAddQuestion}
-                         className="flex items-center gap-2 h-9 px-3 bg-white border border-[#E1E4E8] rounded-[10px] text-[12px] font-semibold text-[#5B53E0] hover:bg-[#F4F5F7] hover:border-[#DAD7F6] transition-all shadow-sm"
+                         className="flex items-center gap-2 h-9 px-3 bg-white border border-[#E0E0E0] rounded-[4px] text-[12px] font-semibold text-[#1976D2] hover:bg-[#F5F6F8] hover:border-[#BBDEFB] transition-all shadow-sm"
                        >
                          <Plus className="w-4 h-4" />
                          <span>{tr("automation.addQuestion")}</span>
@@ -1283,12 +1283,12 @@ export default function AssessmentAutomationPage() {
                     {form.generated_questions && form.generated_questions.length > 0 ? (
                        <div className="space-y-6">
                          {form.generated_questions.map((q: Question, idx: number) => (
-                           <div key={q.id} className="bg-white border border-[#E8EAED] hover:border-[#D4D7DC] rounded-[12px] p-6 shadow-sm hover:shadow-md transition-all relative group">
-                             <div className="absolute -top-3 -left-3 w-7 h-7 bg-[#5B53E0] text-white rounded-[8px] flex items-center justify-center text-[12px] font-bold shadow-sm">#{idx + 1}</div>
+                           <div key={q.id} className="bg-white border border-[#E0E0E0] hover:border-[#E0E0E0] rounded-[4px] p-6 shadow-sm hover:shadow-md transition-all relative group">
+                             <div className="absolute -top-3 -left-3 w-7 h-7 bg-[#1976D2] text-white rounded-[4px] flex items-center justify-center text-[12px] font-bold shadow-sm">#{idx + 1}</div>
                              
                              <button 
                                onClick={() => handleDeleteQuestion(q.id)}
-                               className="absolute top-4 right-4 w-8 h-8 rounded-[8px] bg-rose-50 text-rose-600 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center hover:bg-rose-600 hover:text-white"
+                               className="absolute top-4 right-4 w-8 h-8 rounded-[4px] bg-rose-50 text-rose-600 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center hover:bg-rose-600 hover:text-white"
                              >
                                <Trash2 className="w-4 h-4" />
                              </button>
@@ -1297,13 +1297,13 @@ export default function AssessmentAutomationPage() {
                                {q.type === 'APTITUDE' ? (
                                  <>
                                    <div>
-                                     <label htmlFor={`cfg-q-question-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">{tr("automation.questionTextAptitude")}</label>
+                                     <label htmlFor={`cfg-q-question-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#757575] mb-1.5 block ml-1">{tr("automation.questionTextAptitude")}</label>
                                      <textarea
                                        id={`cfg-q-question-${q.id}`}
                                        value={q.question || ""}
                                        onChange={(e) => handleUpdateQuestion(q.id, "question", e.target.value)}
                                        placeholder={tr("automation.typeQuestion")}
-                                       className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2.5 text-sm font-semibold text-[#374151] placeholder:text-[#9AA3AF] placeholder:font-normal focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-20 resize-none"
+                                       className="w-full bg-[#FAFAFA] border border-[#E0E0E0] rounded-[4px] px-4 py-2.5 text-sm font-semibold text-[#424242] placeholder:text-[#9E9E9E] placeholder:font-normal focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all h-20 resize-none"
                                      />
                                    </div>
                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1317,11 +1317,11 @@ export default function AssessmentAutomationPage() {
                                              handleUpdateQuestion(q.id, "options", newOpts);
                                            }}
                                            placeholder={tr("automation.optionN", { n: oi + 1 })}
-                                           className={`w-full bg-[#F7F8FA] border-2 rounded-[10px] pl-12 pr-4 py-2.5 text-xs font-semibold transition-all placeholder:text-[#9AA3AF] placeholder:font-normal ${q.correct_answer === opt ? "border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]" : "border-transparent text-[#4B5563]"}`}
+                                           className={`w-full bg-[#FAFAFA] border-2 rounded-[4px] pl-12 pr-4 py-2.5 text-xs font-semibold transition-all placeholder:text-[#9E9E9E] placeholder:font-normal ${q.correct_answer === opt ? "border-[#1976D2] bg-[#E3F2FD] text-[#1976D2]" : "border-transparent text-[#4F4F4F]"}`}
                                          />
                                          <button 
                                            onClick={() => handleUpdateQuestion(q.id, "correct_answer", opt)}
-                                           className={`absolute left-3 top-2.5 w-6 h-6 rounded-[6px] flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#5B53E0] text-white" : "bg-[#E1E4E8] text-[#8A929E] hover:bg-[#D4D7DC]"}`}
+                                           className={`absolute left-3 top-2.5 w-6 h-6 rounded-[3px] flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#1976D2] text-white" : "bg-[#E0E0E0] text-[#757575] hover:bg-[#E0E0E0]"}`}
                                          >
                                            {q.correct_answer === opt ? <Check className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
                                          </button>
@@ -1332,34 +1332,34 @@ export default function AssessmentAutomationPage() {
                                ) : (
                                  <>
                                    <div>
-                                     <label htmlFor={`cfg-q-title-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">{tr("automation.problemTitle")}</label>
+                                     <label htmlFor={`cfg-q-title-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#757575] mb-1.5 block ml-1">{tr("automation.problemTitle")}</label>
                                      <input
                                        id={`cfg-q-title-${q.id}`}
                                        type="text"
                                        value={q.title || ""}
                                        onChange={(e) => handleUpdateQuestion(q.id, "title", e.target.value)}
                                        placeholder={tr("automation.problemTitlePlaceholder")}
-                                       className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-sm font-semibold text-[#374151] placeholder:text-[#9AA3AF] placeholder:font-normal focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all"
+                                       className="w-full bg-[#FAFAFA] border border-[#E0E0E0] rounded-[4px] px-4 py-2 text-sm font-semibold text-[#424242] placeholder:text-[#9E9E9E] placeholder:font-normal focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all"
                                      />
                                    </div>
                                    <div>
-                                     <label htmlFor={`cfg-q-description-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">{tr("automation.problemDescription")}</label>
+                                     <label htmlFor={`cfg-q-description-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#757575] mb-1.5 block ml-1">{tr("automation.problemDescription")}</label>
                                      <textarea
                                        id={`cfg-q-description-${q.id}`}
                                        value={q.description || ""}
                                        onChange={(e) => handleUpdateQuestion(q.id, "description", e.target.value)}
                                        placeholder={tr("automation.describeProblem")}
-                                       className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-sm font-semibold text-[#374151] placeholder:text-[#9AA3AF] placeholder:font-normal focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-32 resize-none"
+                                       className="w-full bg-[#FAFAFA] border border-[#E0E0E0] rounded-[4px] px-4 py-2 text-sm font-semibold text-[#424242] placeholder:text-[#9E9E9E] placeholder:font-normal focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all h-32 resize-none"
                                      />
                                    </div>
                                    <div>
-                                     <label htmlFor={`cfg-q-statement-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5 block ml-1">{tr("automation.problemStatement")}</label>
+                                     <label htmlFor={`cfg-q-statement-${q.id}`} className="text-[11px] font-bold uppercase tracking-wider text-[#757575] mb-1.5 block ml-1">{tr("automation.problemStatement")}</label>
                                      <textarea
                                        id={`cfg-q-statement-${q.id}`}
                                        value={q.problem_statement || ""}
                                        onChange={(e) => handleUpdateQuestion(q.id, "problem_statement", e.target.value)}
                                        placeholder={tr("automation.constraintsPlaceholder")}
-                                       className="w-full bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px] px-4 py-2 text-xs font-mono text-[#374151] placeholder:text-[#9AA3AF] focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all h-32 resize-none"
+                                       className="w-full bg-[#FAFAFA] border border-[#E0E0E0] rounded-[4px] px-4 py-2 text-xs font-mono text-[#424242] placeholder:text-[#9E9E9E] focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all h-32 resize-none"
                                      />
                                    </div>
                                  </>
@@ -1370,11 +1370,11 @@ export default function AssessmentAutomationPage() {
                        </div>
                     ) : (
                       <div className="h-full flex flex-col items-center justify-center p-12 text-center opacity-60">
-                        <div className="w-16 h-16 rounded-[14px] bg-white border border-[#E8EAED] flex items-center justify-center mb-4 shadow-sm">
-                          <EyeOff className="text-[#8A929E] w-6 h-6" />
+                        <div className="w-16 h-16 rounded-[4px] bg-white border border-[#E0E0E0] flex items-center justify-center mb-4 shadow-sm">
+                          <EyeOff className="text-[#757575] w-6 h-6" />
                         </div>
-                        <h3 className="text-[14px] font-bold text-[#15171C]">{tr("automation.noPreviewYet")}</h3>
-                        <p className="max-w-[240px] text-[12px] text-[#8A929E] font-medium leading-relaxed mt-1.5">
+                        <h3 className="text-[14px] font-bold text-[#212121]">{tr("automation.noPreviewYet")}</h3>
+                        <p className="max-w-[240px] text-[12px] text-[#757575] font-medium leading-relaxed mt-1.5">
                           {tr("automation.noPreviewHelp")}
                         </p>
                       </div>
@@ -1383,11 +1383,11 @@ export default function AssessmentAutomationPage() {
               )}
             </div>
 
-            <div className="px-6 py-4 border-t border-[#E8EAED] bg-white shrink-0">
+            <div className="px-6 py-4 border-t border-[#E0E0E0] bg-white shrink-0">
               <div className="flex items-center gap-3">
                 <button
                   onClick={closeModal}
-                  className="flex-1 h-11 bg-white border border-[#E1E4E8] rounded-[10px] text-[13.5px] font-semibold text-[#4B5563] hover:bg-[#F4F5F7] transition-all"
+                  className="flex-1 h-11 bg-white border border-[#E0E0E0] rounded-[4px] text-[13.5px] font-semibold text-[#4F4F4F] hover:bg-[#F5F6F8] transition-all"
                 >
                   {tr("common.cancel")}
                 </button>
@@ -1395,7 +1395,7 @@ export default function AssessmentAutomationPage() {
                   <button
                     onClick={handleUpdate}
                     disabled={saving || !hasFormChanged}
-                    className="flex-[2] h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13.5px] font-semibold transition-all shadow-[0_6px_16px_rgba(91,83,224,0.25)] flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="flex-[2] h-11 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-[4px] text-[13.5px] font-semibold transition-all shadow-[0_6px_16px_rgba(25,118,210,0.25)] flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     {saving ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -1409,7 +1409,7 @@ export default function AssessmentAutomationPage() {
                     onClick={handleFinalCreate}
                     disabled={saving || !form.generated_questions?.length}
                     title={!form.generated_questions?.length ? tr("automation.draftQuestionsFirst") : undefined}
-                    className="flex-[2] h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] text-[13.5px] font-semibold transition-all shadow-[0_6px_16px_rgba(91,83,224,0.25)] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-[2] h-11 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-[4px] text-[13.5px] font-semibold transition-all shadow-[0_6px_16px_rgba(25,118,210,0.25)] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {saving ? (
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />

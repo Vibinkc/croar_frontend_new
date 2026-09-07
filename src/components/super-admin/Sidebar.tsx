@@ -40,12 +40,12 @@ export default function SuperAdminSidebar() {
 
     return (
         <aside
-            className="w-[236px] flex flex-col h-screen sticky top-0 shrink-0 border-r border-[#1C1F26]"
+            className="w-[236px] flex flex-col h-screen sticky top-0 shrink-0 border-r border-[#263238]"
             style={{ background: "#090A0C" }}
         >
             <div className="p-3 flex-1 overflow-y-auto no-scrollbar flex flex-col">
                 {/* Logo */}
-                <div className="px-2 pt-2.5 pb-4 flex items-center justify-between shrink-0 mb-3 border-b border-[#1C1F26]">
+                <div className="px-2 pt-2.5 pb-4 flex items-center justify-between shrink-0 mb-3 border-b border-[#263238]">
                     <Link href="/super-admin" className="flex items-center gap-2.5">
                         <CroarMark size={32} />
                         <span className="flex flex-col leading-none">
@@ -67,13 +67,13 @@ export default function SuperAdminSidebar() {
                                         <Link
                                             key={item.path}
                                             href={item.path}
-                                            className={`group flex items-center gap-3 px-3.5 py-2 rounded-[10px] text-[12.5px] transition-all duration-150 ${
+                                            className={`group flex items-center gap-3 px-3.5 py-2 rounded-[4px] text-[12.5px] transition-all duration-150 ${
                                                 active
-                                                    ? "bg-[#5B53E0]/15 border border-[#5B53E0]/30 text-[#8B7DFF] font-semibold"
+                                                    ? "bg-[#1976D2]/15 border border-[#1976D2]/30 text-[#42A5F5] font-semibold"
                                                     : "text-[#BAC1CC] hover:bg-white/[0.04] hover:text-white border border-transparent font-medium"
                                             }`}
                                         >
-                                            <span className={`material-symbols-rounded text-[18px] ${active ? "text-[#8B7DFF]" : "text-[#656D7A] group-hover:text-white transition-colors"}`}>{item.icon}</span>
+                                            <span className={`material-symbols-rounded text-[18px] ${active ? "text-[#42A5F5]" : "text-[#656D7A] group-hover:text-white transition-colors"}`}>{item.icon}</span>
                                             <span className="whitespace-nowrap">{item.label}</span>
                                         </Link>
                                     );
@@ -85,13 +85,13 @@ export default function SuperAdminSidebar() {
             </div>
 
             {/* Sidebar Footer — user + logout */}
-            <div className="p-3 border-t border-[#1C1F26] shrink-0">
+            <div className="p-3 border-t border-[#263238] shrink-0">
                 <div className="flex items-center gap-2.5 mb-3 px-2">
-                    <div className="w-8 h-8 rounded-[8px] bg-[#5B53E0] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-[0_2px_8px_rgba(91,83,224,0.3)]">
+                    <div className="w-8 h-8 rounded-[4px] bg-[#1976D2] text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-[0_2px_8px_rgba(25,118,210,0.3)]">
                         {user ? user.charAt(0).toUpperCase() : "S"}
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="text-[12px] font-semibold text-[#C7CCD4] truncate">{user || "root@croar.ai"}</p>
+                        <p className="text-[12px] font-semibold text-[#BDBDBD] truncate">{user || "root@croar.ai"}</p>
                         <p className="text-[10px] font-medium text-[#525969]">
                             {role ? role.replace("_", " ").toLowerCase().replace(/\b\w/g, (l) => l.toUpperCase()) : t("superAdmin.superAdmin")}
                         </p>
@@ -100,7 +100,7 @@ export default function SuperAdminSidebar() {
 
                 <button
                     onClick={logout}
-                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[#8A929E] hover:bg-white/[0.04] hover:text-rose-400 rounded-[10px] transition-colors duration-150 group"
+                    className="w-full flex items-center gap-2.5 px-3.5 py-2.5 text-[#757575] hover:bg-white/[0.04] hover:text-rose-400 rounded-[4px] transition-colors duration-150 group"
                 >
                     <span className="material-symbols-rounded text-[18px] text-[#525969] group-hover:text-rose-400">logout</span>
                     <span className="text-[12.5px] font-medium">{t("superAdmin.logout")}</span>

@@ -41,19 +41,19 @@ interface Onboarding {
 const getStatusColor = (statusName: string) => {
     switch (statusName) {
         case "In Progress": 
-            return "bg-[#ECEBFB] text-[#5B53E0] border-[#DAD7F6]/80";
+            return "bg-[#E3F2FD] text-[#1976D2] border-[#BBDEFB]/80";
         case "Awaiting Confirmation": 
-            return "bg-[#FEF3C7] text-[#D97706] border-[#FDE68A]/80";
+            return "bg-[#FEF3C7] text-[#EF6C00] border-[#FDE68A]/80";
         case "Completed": 
-            return "bg-[#E3F4EF] text-[#0E8A6E] border-[#BFF0E2]/80";
+            return "bg-[#E8F5E9] text-[#2E7D32] border-[#C8E6C9]/80";
         case "Discontinued": 
-            return "bg-slate-100 text-[#6B6F76] border-[#E8EAED]";
+            return "bg-slate-100 text-[#616161] border-[#E0E0E0]";
         case "Washed Away": 
             return "bg-rose-50 text-rose-600 border-rose-100";
         case "Pending Approvals": 
-            return "bg-[#F5F3FF] text-[#8B5CF6] border-[#EBE7FF]/80";
+            return "bg-[#F3F9FE] text-[#42A5F5] border-[#EBE7FF]/80";
         default: 
-            return "bg-slate-100 text-[#6B6F76] border-[#E8EAED]";
+            return "bg-slate-100 text-[#616161] border-[#E0E0E0]";
     }
 };
 
@@ -129,15 +129,15 @@ export default function OnboardingDashboard() {
     if (isLoading) {
         return (
             <div className="px-4 sm:px-5 pb-20 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-500">
-                <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
+                <header className="sticky top-0 z-20 py-3 bg-[#F5F6F8]/95 backdrop-blur-sm border-b border-[#E0E0E0] flex items-center justify-between gap-4">
                     <div className="space-y-1">
-                        <div className="w-40 h-6 bg-[#E8EAED] rounded-[8px] animate-pulse" />
-                        <div className="w-60 h-4 bg-[#E8EAED] rounded-[6px] animate-pulse" />
+                        <div className="w-40 h-6 bg-[#E0E0E0] rounded-[4px] animate-pulse" />
+                        <div className="w-60 h-4 bg-[#E0E0E0] rounded-[3px] animate-pulse" />
                     </div>
                 </header>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {[1, 2, 3, 4, 5, 6].map(i => (
-                        <div key={i} className="bg-white h-72 rounded-[14px] border border-[#E8EAED] animate-pulse shadow-sm" />
+                        <div key={i} className="bg-white h-72 rounded-[4px] border border-[#E0E0E0] animate-pulse shadow-sm" />
                     ))}
                 </div>
             </div>
@@ -147,37 +147,37 @@ export default function OnboardingDashboard() {
     return (
         <div className="px-4 sm:px-5 pb-20 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-700 relative">
             {/* Header (sticky) */}
-            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
+            <header className="sticky top-0 z-20 py-3 bg-[#F5F6F8]/95 backdrop-blur-sm border-b border-[#E0E0E0] flex items-center justify-between gap-4">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{t("onboarding.title")}</h1>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#212121] leading-tight">{t("onboarding.title")}</h1>
                         <PageHelp title={t("general.onboardingHubHelpTitle")}>
                             <p>{t("general.onboardingHubHelpDesc")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{t("onboarding.subtitle")}</p>
+                    <p className="text-[12.5px] text-[#757575] mt-0.5">{t("onboarding.subtitle")}</p>
                 </div>
             </header>
 
             {/* Filter & Search Bar */}
             <div className="flex flex-col sm:flex-row items-center gap-3">
                 <div className="flex-1 relative group w-full">
-                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] w-4 h-4 group-focus-within:text-[#5B53E0] transition-colors" />
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] w-4 h-4 group-focus-within:text-[#1976D2] transition-colors" />
                     <input
                         type="text"
                         placeholder={t("onboarding.searchPlaceholder")}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full h-10 pl-10 pr-4 bg-white border border-[#E1E4E8] rounded-[10px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all text-[13.5px] text-[#15171C] placeholder:text-[#9AA3AF]"
+                        className="w-full h-10 pl-10 pr-4 bg-white border border-[#E0E0E0] rounded-[4px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15 transition-all text-[13.5px] text-[#212121] placeholder:text-[#9E9E9E]"
                     />
                 </div>
 
-                <div className="flex items-center gap-2 bg-white border border-[#E1E4E8] px-3 h-10 rounded-[10px] shadow-sm shrink-0 w-full sm:w-auto">
-                    <span className="material-symbols-rounded text-[#9AA3AF] text-[20px]">filter_list</span>
+                <div className="flex items-center gap-2 bg-white border border-[#E0E0E0] px-3 h-10 rounded-[4px] shadow-sm shrink-0 w-full sm:w-auto">
+                    <span className="material-symbols-rounded text-[#9E9E9E] text-[20px]">filter_list</span>
                     <select 
                         value={selectedJobId}
                         onChange={(e) => setSelectedJobId(e.target.value)}
-                        className="bg-transparent text-[12.5px] font-bold text-[#374151] outline-none pr-2 cursor-pointer flex-1 sm:flex-initial"
+                        className="bg-transparent text-[12.5px] font-bold text-[#424242] outline-none pr-2 cursor-pointer flex-1 sm:flex-initial"
                     >
                         <option value="all">{t("onboarding.allPipelines")}</option>
                         {jobs.map(job => (
@@ -188,7 +188,7 @@ export default function OnboardingDashboard() {
 
                 <button 
                     onClick={fetchOnboardings}
-                    className="w-10 h-10 bg-white border border-[#E1E4E8] rounded-[10px] text-[#6B6F76] hover:text-[#374151] hover:bg-[#F4F5F7] transition-all flex items-center justify-center shadow-sm shrink-0"
+                    className="w-10 h-10 bg-white border border-[#E0E0E0] rounded-[4px] text-[#616161] hover:text-[#424242] hover:bg-[#F5F6F8] transition-all flex items-center justify-center shadow-sm shrink-0"
                 >
                     <RefreshCcw className={`w-3.5 h-3.5 ${isLoading ? 'animate-spin' : ''}`} />
                 </button>
@@ -204,21 +204,21 @@ export default function OnboardingDashboard() {
                                 <motion.div 
                                     layout
                                     key={ob.id}
-                                    className="group bg-white border border-[#E8EAED] hover:border-[#5B53E0]/40 rounded-[14px] p-6 shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
+                                    className="group bg-white border border-[#E0E0E0] hover:border-[#1976D2]/40 rounded-[4px] p-6 shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col justify-between"
                                     onClick={() => router.push(`/enterprise/onboarding/${ob.id}`)}
                                 >
                                     <div className="space-y-5">
                                         <div className="flex justify-between items-start">
                                             {/* Initials Avatar */}
-                                            <div className="w-11 h-11 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center font-extrabold border border-[#DAD7F6]/60 shadow-sm text-[12.5px] uppercase transition-all shrink-0">
+                                            <div className="w-11 h-11 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center font-extrabold border border-[#BBDEFB]/60 shadow-sm text-[12.5px] uppercase transition-all shrink-0">
                                                 {candidateName.split(" ").map((n: string) => n[0]).join("").slice(0, 2)}
                                             </div>
                                             <div className="flex flex-col items-end gap-1.5 text-right">
-                                                <span className={`text-[10px] font-bold text-[#5B53E0] bg-[#ECEBFB] border border-[#DAD7F6]/60 px-2 py-0.5 rounded-[6px] ${jetbrainsMono.className}`}>
+                                                <span className={`text-[10px] font-bold text-[#1976D2] bg-[#E3F2FD] border border-[#BBDEFB]/60 px-2 py-0.5 rounded-[3px] ${jetbrainsMono.className}`}>
                                                     {ob.onboarding_code}
                                                 </span>
                                                 {ob.status && (
-                                                    <span className={`text-[9.5px] font-bold px-2 py-0.5 rounded-[6px] border ${getStatusColor(ob.status.name)}`}>
+                                                    <span className={`text-[9.5px] font-bold px-2 py-0.5 rounded-[3px] border ${getStatusColor(ob.status.name)}`}>
                                                         {ob.status.name}
                                                     </span>
                                                 )}
@@ -226,48 +226,48 @@ export default function OnboardingDashboard() {
                                         </div>
 
                                         <div className="space-y-0.5">
-                                            <h3 className="text-[16px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate">
+                                            <h3 className="text-[16px] font-bold text-[#212121] group-hover:text-[#1976D2] transition-colors truncate">
                                                 {candidateName}
                                             </h3>
-                                            <p className="text-[12.5px] text-[#6B6F76] font-medium truncate">
+                                            <p className="text-[12.5px] text-[#616161] font-medium truncate">
                                                 {ob.candidate_email || ob.application?.candidate?.email || "—"}
                                             </p>
                                         </div>
 
                                         {/* nested details container */}
-                                        <div className="bg-[#F8F9FA] rounded-[10px] p-3.5 space-y-3.5 border border-[#E8EAED] group-hover:border-[#5B53E0]/15 transition-all">
+                                        <div className="bg-[#F8F9FA] rounded-[4px] p-3.5 space-y-3.5 border border-[#E0E0E0] group-hover:border-[#1976D2]/15 transition-all">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-[8px] bg-white border border-[#E8EAED] flex items-center justify-center shadow-sm shrink-0">
-                                                    <Briefcase className="w-4 h-4 text-[#5B53E0]" />
+                                                <div className="w-8 h-8 rounded-[4px] bg-white border border-[#E0E0E0] flex items-center justify-center shadow-sm shrink-0">
+                                                    <Briefcase className="w-4 h-4 text-[#1976D2]" />
                                                 </div>
                                                 <div className="min-w-0 flex-1">
-                                                    <p className="text-[12px] font-bold text-[#15171C] truncate leading-tight">
+                                                    <p className="text-[12px] font-bold text-[#212121] truncate leading-tight">
                                                         {ob.job_title || ob.application?.job_requirement?.title || "Unspecified Role"}
                                                     </p>
-                                                    <p className="text-[10px] font-bold text-[#8A929E] uppercase tracking-wider mt-0.5 leading-none">{t("onboarding.hiredRole")}</p>
+                                                    <p className="text-[10px] font-bold text-[#757575] uppercase tracking-wider mt-0.5 leading-none">{t("onboarding.hiredRole")}</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-[8px] bg-white border border-[#E8EAED] flex items-center justify-center shadow-sm shrink-0">
+                                                <div className="w-8 h-8 rounded-[4px] bg-white border border-[#E0E0E0] flex items-center justify-center shadow-sm shrink-0">
                                                     <Calendar className="w-4 h-4 text-emerald-500" />
                                                 </div>
                                                 <div className="min-w-0 flex-1">
-                                                    <p className="text-[12px] font-bold text-[#15171C] leading-tight">
+                                                    <p className="text-[12px] font-bold text-[#212121] leading-tight">
                                                         {safeFormat(ob.initiation_date, "MMM dd, yyyy")}
                                                     </p>
-                                                    <p className="text-[10px] font-bold text-[#8A929E] uppercase tracking-wider mt-0.5 leading-none">{t("onboarding.startDate")}</p>
+                                                    <p className="text-[10px] font-bold text-[#757575] uppercase tracking-wider mt-0.5 leading-none">{t("onboarding.startDate")}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     {/* Action Footer */}
-                                    <div className="flex items-center justify-between pt-3.5 border-t border-[#E8EAED] mt-5">
-                                        <div className="flex items-center gap-1.5 text-[#8A929E] text-[10.5px] font-semibold uppercase tracking-wider">
+                                    <div className="flex items-center justify-between pt-3.5 border-t border-[#E0E0E0] mt-5">
+                                        <div className="flex items-center gap-1.5 text-[#757575] text-[10.5px] font-semibold uppercase tracking-wider">
                                             <Activity className="w-3.5 h-3.5" />
                                             <span>{t("onboarding.activeCycle")}</span>
                                         </div>
-                                        <div className="text-[#5B53E0] group-hover:text-[#4A43C9] transition-all flex items-center gap-1 text-[13px] font-bold">
+                                        <div className="text-[#1976D2] group-hover:text-[#1565C0] transition-all flex items-center gap-1 text-[13px] font-bold">
                                             <span>{t("onboarding.viewDetails")}</span>
                                             <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
                                         </div>
@@ -281,18 +281,18 @@ export default function OnboardingDashboard() {
             
             {/* Empty State */}
             {filteredOnboardings.length === 0 && (
-                <div className="py-20 flex flex-col items-center justify-center text-center bg-white rounded-[14px] border border-dashed border-[#E8EAED] shadow-sm w-full">
+                <div className="py-20 flex flex-col items-center justify-center text-center bg-white rounded-[4px] border border-dashed border-[#E0E0E0] shadow-sm w-full">
                     <div className="relative mb-5">
-                        <div className="absolute -inset-3 rounded-full bg-[#5B53E0]/10 blur-xl" />
-                        <div className="relative w-14 h-14 rounded-[16px] flex items-center justify-center text-white" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)", boxShadow: "0 8px 24px rgba(91,83,224,0.3)" }}>
+                        <div className="absolute -inset-3 rounded-full bg-[#1976D2]/10 blur-xl" />
+                        <div className="relative w-14 h-14 rounded-[4px] flex items-center justify-center text-white" style={{ background: "linear-gradient(135deg,#42A5F5,#1976D2)", boxShadow: "0 8px 24px rgba(25,118,210,0.3)" }}>
                             <ClipboardList className="w-6 h-6" />
                         </div>
                     </div>
-                    <h4 className="text-[16px] font-bold text-[#15171C] mb-1">{t("onboarding.noRecords")}</h4>
-                    <p className="text-[13px] text-[#8A929E] font-medium max-w-[280px] leading-relaxed mb-5">Candidate records will appear here once they begin the onboarding process.</p>
+                    <h4 className="text-[16px] font-bold text-[#212121] mb-1">{t("onboarding.noRecords")}</h4>
+                    <p className="text-[13px] text-[#757575] font-medium max-w-[280px] leading-relaxed mb-5">Candidate records will appear here once they begin the onboarding process.</p>
                     <button 
                         onClick={() => { setSearchQuery(""); setSelectedJobId("all"); }} 
-                        className="px-5 h-9 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(91,83,224,0.2)] transition-all"
+                        className="px-5 h-9 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-[4px] font-semibold text-[13px] shadow-[0_4px_12px_rgba(25,118,210,0.2)] transition-all"
                     >
                         {t("general.resetFilters")}
                     </button>

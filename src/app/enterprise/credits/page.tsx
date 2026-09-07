@@ -27,10 +27,10 @@ type Costs = { costs: Record<string, Record<string, number>>; initial_free_credi
 
 // The four meters, in display order, with a friendly label + icon + accent.
 const METERS: { key: string; label: string; icon: string; gradient: string; glow: string }[] = [
-  { key: "sourcing", label: "Profile Sourcing", icon: "travel_explore", gradient: "linear-gradient(135deg,#5b53e0,#8b7cf6)", glow: "rgba(91,83,224,0.28)" },
+  { key: "sourcing", label: "Profile Sourcing", icon: "travel_explore", gradient: "linear-gradient(135deg,#1976D2,#8b7cf6)", glow: "rgba(25,118,210,0.28)" },
   { key: "ai", label: "AI Usage", icon: "auto_awesome", gradient: "linear-gradient(135deg,#0ea5e9,#22d3ee)", glow: "rgba(14,165,233,0.28)" },
-  { key: "assessment", label: "Assessments", icon: "quiz", gradient: "linear-gradient(135deg,#f59e0b,#f97316)", glow: "rgba(245,158,11,0.26)" },
-  { key: "interview", label: "Interviews", icon: "co_present", gradient: "linear-gradient(135deg,#10b981,#34d399)", glow: "rgba(16,185,129,0.26)" },
+  { key: "assessment", label: "Assessments", icon: "quiz", gradient: "linear-gradient(135deg,#FB8C00,#f97316)", glow: "rgba(245,158,11,0.26)" },
+  { key: "interview", label: "Interviews", icon: "co_present", gradient: "linear-gradient(135deg,#43A047,#66BB6A)", glow: "rgba(67,160,71,0.26)" },
 ];
 
 const CATEGORY_LABEL: Record<string, string> = {

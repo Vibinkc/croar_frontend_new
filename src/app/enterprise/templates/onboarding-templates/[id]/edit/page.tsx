@@ -39,7 +39,7 @@ export default function EditOnboardingTemplatePage() {
 
     if (isLoading) {
         return (
-            <div className="flex justify-center items-center h-screen bg-[#FDFDFF]">
+            <div className="flex justify-center items-center h-screen bg-[#FDFEFF]">
                 <div className="animate-spin material-icons-outlined text-indigo-500 text-6xl">sync</div>
             </div>
         );
@@ -47,7 +47,7 @@ export default function EditOnboardingTemplatePage() {
 
     if (!template) {
         return (
-            <div className="flex flex-col items-center justify-center h-screen text-center p-10 bg-[#FDFDFF]">
+            <div className="flex flex-col items-center justify-center h-screen text-center p-10 bg-[#FDFEFF]">
                 <div className="w-24 h-24 bg-white rounded-2xl flex items-center justify-center shadow-xl shadow-slate-200 mb-6">
                     <span className="material-icons-outlined text-5xl text-rose-500">error_outline</span>
                 </div>
@@ -60,7 +60,7 @@ export default function EditOnboardingTemplatePage() {
     }
 
     return (
-        <div className="p-8 max-w-7xl mx-auto min-h-screen bg-[#FDFDFF] font-sans">
+        <div className="p-8 max-w-7xl mx-auto min-h-screen bg-[#FDFEFF] font-sans">
             {/* Header */}
             <div className="flex items-center gap-6 mb-10">
                 <Link 

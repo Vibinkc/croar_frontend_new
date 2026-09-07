@@ -54,13 +54,13 @@ export default function X360MyAssessments() {
     return (
         <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
             {/* Header (sticky) */}
-            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <header className="sticky top-0 z-20 py-3 bg-[#F5F6F8]/95 backdrop-blur-sm border-b border-[#E0E0E0] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("assess360.myAssessments")}</h1>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#212121] leading-tight">{tr("assess360.myAssessments")}</h1>
                         <PageHelp title={tr("assess360.myAssessments")}>{tr("assess360.myHelp")}</PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("assess360.mySubtitle")}</p>
+                    <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("assess360.mySubtitle")}</p>
                 </div>
                 {!loading && (
                     <div className="flex items-center gap-2.5 shrink-0">
@@ -77,24 +77,24 @@ export default function X360MyAssessments() {
             {/* Action Required */}
             <section className="space-y-3.5">
                 <div className="flex items-center gap-2.5">
-                    <span className="material-symbols-rounded text-[#D97706] text-[19px]">pending_actions</span>
-                    <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">{tr("assess360.actionRequired")}</h2>
+                    <span className="material-symbols-rounded text-[#EF6C00] text-[19px]">pending_actions</span>
+                    <h2 className="text-[13px] font-bold text-[#212121] tracking-tight">{tr("assess360.actionRequired")}</h2>
                 </div>
 
                 {loading ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                         {[1, 2, 3, 4].map(i => (
-                            <div key={i} className="h-[84px] bg-[#F4F5F7] rounded-[14px] animate-pulse" />
+                            <div key={i} className="h-[84px] bg-[#F5F6F8] rounded-[4px] animate-pulse" />
                         ))}
                     </div>
                 ) : pending.length === 0 ? (
                     <Card padding="none" className="overflow-hidden">
                         <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
-                            <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5 text-[#C7CCD4]">
+                            <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5 text-[#BDBDBD]">
                                 <span className="material-symbols-rounded text-[32px]">done_all</span>
                             </div>
-                            <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("assess360.allCaughtUp")}</h3>
-                            <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">{tr("assess360.nothingAssigned")}</p>
+                            <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("assess360.allCaughtUp")}</h3>
+                            <p className="text-[#757575] text-[14px] max-w-xs mx-auto">{tr("assess360.nothingAssigned")}</p>
                         </div>
                     </Card>
                 ) : (
@@ -103,14 +103,14 @@ export default function X360MyAssessments() {
                             <Card key={ass.id} interactive padding="none" className="overflow-hidden group">
                                 <div className="flex items-center justify-between gap-3 p-4">
                                     <div className="flex items-center gap-3.5 min-w-0">
-                                        <span className="w-11 h-11 rounded-[12px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0 text-[14px] font-bold">
+                                        <span className="w-11 h-11 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0 text-[14px] font-bold">
                                             {initials(ass.ratee)}
                                         </span>
                                         <div className="min-w-0">
-                                            <p className="text-[14px] font-bold text-[#15171C] truncate">{ass.ratee.first_name} {ass.ratee.last_name}</p>
+                                            <p className="text-[14px] font-bold text-[#212121] truncate">{ass.ratee.first_name} {ass.ratee.last_name}</p>
                                             <div className="flex items-center gap-2 mt-1">
                                                 <Badge tone="indigo">{ass.relation}</Badge>
-                                                <span className="text-[12px] text-[#8A929E] truncate">{ass.cycle?.name}</span>
+                                                <span className="text-[12px] text-[#757575] truncate">{ass.cycle?.name}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -128,21 +128,21 @@ export default function X360MyAssessments() {
             {!loading && completed.length > 0 && (
                 <section className="space-y-3.5">
                     <div className="flex items-center gap-2.5">
-                        <span className="material-symbols-rounded text-[#0E8A6E] text-[19px]">task_alt</span>
-                        <h2 className="text-[13px] font-bold text-[#15171C] tracking-tight">{tr("assess360.completed")}</h2>
+                        <span className="material-symbols-rounded text-[#2E7D32] text-[19px]">task_alt</span>
+                        <h2 className="text-[13px] font-bold text-[#212121] tracking-tight">{tr("assess360.completed")}</h2>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
                         {completed.map((ass) => (
-                            <Card key={ass.id} padding="none" className="overflow-hidden bg-[#F7F8FA] border-[#E8EAED]">
+                            <Card key={ass.id} padding="none" className="overflow-hidden bg-[#FAFAFA] border-[#E0E0E0]">
                                 <div className="flex items-center gap-3.5 p-4">
-                                    <span className="w-10 h-10 rounded-[11px] bg-white border border-[#E8EAED] text-[#8A929E] flex items-center justify-center shrink-0 text-[12px] font-bold">
+                                    <span className="w-10 h-10 rounded-[4px] bg-white border border-[#E0E0E0] text-[#757575] flex items-center justify-center shrink-0 text-[12px] font-bold">
                                         {initials(ass.ratee)}
                                     </span>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-[13.5px] font-bold text-[#374151] truncate">{ass.ratee.first_name} {ass.ratee.last_name}</p>
-                                        <p className="text-[12px] text-[#8A929E] truncate">{ass.cycle?.name}</p>
+                                        <p className="text-[13.5px] font-bold text-[#424242] truncate">{ass.ratee.first_name} {ass.ratee.last_name}</p>
+                                        <p className="text-[12px] text-[#757575] truncate">{ass.cycle?.name}</p>
                                     </div>
-                                    <span className="material-symbols-rounded text-[#0E8A6E] text-[20px] shrink-0">check_circle</span>
+                                    <span className="material-symbols-rounded text-[#2E7D32] text-[20px] shrink-0">check_circle</span>
                                 </div>
                             </Card>
                         ))}

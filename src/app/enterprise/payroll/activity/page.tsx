@@ -78,20 +78,20 @@ export default function ActivityPage() {
         <Card padding="none" className="overflow-hidden">
           <div className="p-4 space-y-2.5">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <div key={i} className="h-14 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+              <div key={i} className="h-14 bg-[#F5F6F8] rounded-[4px] animate-pulse" />
             ))}
           </div>
         </Card>
       ) : entries.length === 0 ? (
         <Card padding="none">
           <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
-            <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
-              <History className="w-8 h-8 text-[#C7CCD4]" />
+            <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5">
+              <History className="w-8 h-8 text-[#BDBDBD]" />
             </div>
-            <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">
+            <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">
               {tr("payroll.noActivity")}
             </h3>
-            <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">
+            <p className="text-[#757575] text-[14px] max-w-xs mx-auto">
               {tr("payroll.noActivityDesc")}
             </p>
           </div>
@@ -99,30 +99,30 @@ export default function ActivityPage() {
       ) : (
         <div className="space-y-4">
           <Card padding="none" className="overflow-hidden">
-            <div className="divide-y divide-[#F0F0F1]">
+            <div className="divide-y divide-[#EEEEEE]">
               {pageEntries.map((e) => {
                 const tone = statusTone(e.status_code);
                 return (
                   <div
                     key={e.id}
-                    className="flex items-start gap-3.5 px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors"
+                    className="flex items-start gap-3.5 px-4 md:px-5 py-3.5 hover:bg-[#FAFAFA] transition-colors"
                   >
                     {/* Icon chip / timeline rail */}
-                    <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0 mt-0.5">
                       <Activity className="w-[17px] h-[17px]" />
                     </span>
 
                     {/* Actor + action */}
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                        <span className="text-[14px] font-bold text-[#15171C] truncate">
+                        <span className="text-[14px] font-bold text-[#212121] truncate">
                           {e.actor_email ?? tr("payroll.unknown")}
                         </span>
                         <Badge tone={tone}>{e.status_code}</Badge>
                       </div>
-                      <p className="text-[13px] text-[#374151] mt-0.5 break-words">{e.action}</p>
+                      <p className="text-[13px] text-[#424242] mt-0.5 break-words">{e.action}</p>
                       <span
-                        className={`block text-[11.5px] text-[#8A929E] mt-1 ${jetbrainsMono.className}`}
+                        className={`block text-[11.5px] text-[#757575] mt-1 ${jetbrainsMono.className}`}
                       >
                         {when(e.created_at)}
                       </span>
@@ -135,7 +135,7 @@ export default function ActivityPage() {
 
           {/* Pagination */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <span className="text-[13px] text-[#8A929E]">
+            <span className="text-[13px] text-[#757575]">
               {tr("payroll.showingRange", { start: rangeStart, end: rangeEnd, total: entries.length })}
             </span>
             <div className="flex items-center gap-2.5">
@@ -143,18 +143,18 @@ export default function ActivityPage() {
                 type="button"
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={currentPage <= 1}
-                className="inline-flex items-center gap-1 h-9 px-3 rounded-[10px] bg-white border border-[#E1E4E8] text-[13px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex items-center gap-1 h-9 px-3 rounded-[4px] bg-white border border-[#E0E0E0] text-[13px] font-semibold text-[#424242] hover:bg-[#F5F6F8] transition-colors disabled:cursor-not-allowed disabled:opacity-40"
               >
                 <ChevronLeft className="w-4 h-4" /> {tr("payroll.prev")}
               </button>
-              <span className={`text-[12.5px] text-[#8A929E] ${jetbrainsMono.className}`}>
+              <span className={`text-[12.5px] text-[#757575] ${jetbrainsMono.className}`}>
                 {currentPage} / {totalPages}
               </span>
               <button
                 type="button"
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={currentPage >= totalPages}
-                className="inline-flex items-center gap-1 h-9 px-3 rounded-[10px] bg-white border border-[#E1E4E8] text-[13px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex items-center gap-1 h-9 px-3 rounded-[4px] bg-white border border-[#E0E0E0] text-[13px] font-semibold text-[#424242] hover:bg-[#F5F6F8] transition-colors disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {tr("payroll.next")} <ChevronRight className="w-4 h-4" />
               </button>

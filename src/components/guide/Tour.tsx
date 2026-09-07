@@ -118,19 +118,19 @@ export function Tour() {
     return createPortal(
         <div className="fixed inset-0 z-[1000]">
             {/* Click blocker. When there is no spotlight it also supplies the dim. */}
-            <div className="absolute inset-0" style={{ background: rect ? "transparent" : "rgba(14,16,20,0.6)" }} />
+            <div className="absolute inset-0" style={{ background: rect ? "transparent" : "rgba(30,42,56,0.6)" }} />
 
             {/* Spotlight cut-out (the giant box-shadow dims everything except the hole). */}
             {rect && (
                 <div
-                    className="absolute rounded-[12px] transition-all duration-200 ease-out"
+                    className="absolute rounded-[4px] transition-all duration-200 ease-out"
                     style={{
                         top: rect.top - SPOTLIGHT_PAD,
                         left: rect.left - SPOTLIGHT_PAD,
                         width: rect.width + SPOTLIGHT_PAD * 2,
                         height: rect.height + SPOTLIGHT_PAD * 2,
-                        boxShadow: "0 0 0 9999px rgba(14,16,20,0.6)",
-                        border: "2px solid #8B7DFF",
+                        boxShadow: "0 0 0 9999px rgba(30,42,56,0.6)",
+                        border: "2px solid #42A5F5",
                     }}
                 />
             )}
@@ -140,27 +140,27 @@ export function Tour() {
                 ref={tipRef}
                 role="dialog"
                 aria-label={tr("sharedUi.productTour")}
-                className="absolute w-[320px] max-w-[calc(100vw-28px)] bg-white rounded-[14px] shadow-[0_18px_50px_rgba(15,23,42,0.28)] border border-[#E8EAED] p-5 z-[1002]"
+                className="absolute w-[320px] max-w-[calc(100vw-28px)] bg-white rounded-[4px] shadow-[0_18px_50px_rgba(0,0,0,0.28)] border border-[#E0E0E0] p-5 z-[1002]"
                 style={{ top: coords.top, left: coords.left }}
             >
                 <div className="flex items-start justify-between gap-3 mb-1.5">
-                    <h3 className="text-[15px] font-bold text-[#15171C] leading-snug">{step.title}</h3>
+                    <h3 className="text-[15px] font-bold text-[#212121] leading-snug">{step.title}</h3>
                     <button
                         onClick={endTour}
                         aria-label={tr("sharedUi.closeTour")}
-                        className="text-[#8A929E] hover:text-[#374151] transition-colors -mt-0.5 shrink-0"
+                        className="text-[#757575] hover:text-[#424242] transition-colors -mt-0.5 shrink-0"
                     >
                         <span className="material-symbols-rounded text-[20px]">close</span>
                     </button>
                 </div>
-                <p className="text-[13px] leading-relaxed text-[#374151]">{step.body}</p>
+                <p className="text-[13px] leading-relaxed text-[#424242]">{step.body}</p>
 
                 <div className="flex items-center justify-between mt-4">
                     <div className="flex items-center gap-1.5">
                         {TOUR_STEPS.map((_, i) => (
                             <span
                                 key={i}
-                                className={`h-1.5 rounded-full transition-all ${i === stepIndex ? "w-4 bg-[#5B53E0]" : "w-1.5 bg-[#D8DBE0]"}`}
+                                className={`h-1.5 rounded-full transition-all ${i === stepIndex ? "w-4 bg-[#1976D2]" : "w-1.5 bg-[#D8DBE0]"}`}
                             />
                         ))}
                     </div>
@@ -168,14 +168,14 @@ export function Tour() {
                         {stepIndex > 0 && (
                             <button
                                 onClick={back}
-                                className="h-8 px-3 rounded-[8px] text-[12.5px] font-semibold text-[#6B6F76] hover:bg-[#F4F5F7] transition-colors"
+                                className="h-8 px-3 rounded-[4px] text-[12.5px] font-semibold text-[#616161] hover:bg-[#F5F6F8] transition-colors"
                             >
                                 {tr("sharedUi.back")}
                             </button>
                         )}
                         <button
                             onClick={next}
-                            className="h-8 px-4 rounded-[8px] text-[12.5px] font-semibold bg-[#5B53E0] text-white hover:bg-[#4A43C9] transition-colors"
+                            className="h-8 px-4 rounded-[4px] text-[12.5px] font-semibold bg-[#1976D2] text-white hover:bg-[#1565C0] transition-colors"
                         >
                             {isLast ? tr("sharedUi.done") : tr("sharedUi.next")}
                         </button>
@@ -185,7 +185,7 @@ export function Tour() {
                 {!isLast && (
                     <button
                         onClick={endTour}
-                        className="mt-2.5 text-[11.5px] font-medium text-[#9AA3AF] hover:text-[#6B6F76] transition-colors"
+                        className="mt-2.5 text-[11.5px] font-medium text-[#9E9E9E] hover:text-[#616161] transition-colors"
                     >
                         {tr("sharedUi.skipTour")}
                     </button>

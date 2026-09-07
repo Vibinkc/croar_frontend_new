@@ -130,7 +130,7 @@ function JobPortalContent() {
     const companyInfo = jobs.length > 0 ? jobs[0].company : null;
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] font-sans selection:bg-indigo-100 selection:text-indigo-900">
+        <div className="min-h-screen bg-[#FAFAFA] font-sans selection:bg-indigo-100 selection:text-indigo-900">
             {/* Header / Navbar */}
             <nav className="fixed top-0 left-0 right-0 bg-white/70 backdrop-blur-xl border-b border-slate-100 z-50">
                 <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
@@ -446,7 +446,7 @@ function JobPortalContent() {
 export default function JobPortalPage() {
     return (
         <Suspense fallback={
-            <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center p-6">
+            <div className="min-h-screen bg-[#FAFAFA] flex items-center justify-center p-6">
                 <div className="animate-spin material-icons-outlined text-indigo-600 text-4xl">sync</div>
             </div>
         }>

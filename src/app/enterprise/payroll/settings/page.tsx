@@ -25,7 +25,7 @@ import {
 // Shared field control classes — aligns every native <input>/<select> in this
 // page with the design-system Input/Select look (hairline border, indigo focus).
 const INPUT_CLS =
-  "w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed";
+  "w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed";
 const SELECT_CLS = `${INPUT_CLS} appearance-none pr-9 cursor-pointer`;
 
 // value is the stored/API value (kept English); key resolves the display label.
@@ -192,7 +192,7 @@ export default function SettingsPage() {
   }
 
   if (loading)
-    return <p className="p-12 text-center text-[#8A929E]">{tr("common.loading")}</p>;
+    return <p className="p-12 text-center text-[#757575]">{tr("common.loading")}</p>;
 
   const initials = (form.name || "?").trim().charAt(0).toUpperCase() || "?";
   const locality = [form.city, form.state].filter(Boolean).join(", ");
@@ -208,14 +208,14 @@ export default function SettingsPage() {
 
       {/* Organisation hero */}
       <Card padding="lg" className="flex items-center gap-5">
-        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[14px] bg-[#5B53E0] text-[26px] font-extrabold text-white shadow-[0_8px_24px_rgba(91,83,224,0.3)]">
+        <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[4px] bg-[#1976D2] text-[26px] font-extrabold text-white shadow-[0_8px_24px_rgba(25,118,210,0.3)]">
           {initials}
         </div>
         <div className="min-w-0 flex-1">
-          <h2 className="truncate text-[20px] font-extrabold tracking-[-0.4px] text-[#15171C]">
+          <h2 className="truncate text-[20px] font-extrabold tracking-[-0.4px] text-[#212121]">
             {form.name || tr("payroll.yourOrganisation")}
           </h2>
-          <p className="truncate text-[13px] text-[#8A929E] mt-0.5">
+          <p className="truncate text-[13px] text-[#757575] mt-0.5">
             {form.legal_name || tr("payroll.completeProfilePrompt")}
           </p>
           <div className="mt-2.5 flex flex-wrap gap-2">
@@ -234,16 +234,16 @@ export default function SettingsPage() {
       )}
 
       {/* Section tabs (segmented control) */}
-      <div className="flex flex-wrap gap-1 bg-[#E8EAED] rounded-[12px] p-1 w-full sm:w-fit">
+      <div className="flex flex-wrap gap-1 bg-[#E0E0E0] rounded-[4px] p-1 w-full sm:w-fit">
         {TABS.map((t) => (
           <button
             key={t.key}
             type="button"
             onClick={() => setTab(t.key)}
-            className={`flex items-center justify-center gap-2 rounded-[9px] px-4 h-9 text-[13px] font-semibold transition-all flex-1 sm:flex-none ${
+            className={`flex items-center justify-center gap-2 rounded-[4px] px-4 h-9 text-[13px] font-semibold transition-all flex-1 sm:flex-none ${
               tab === t.key
-                ? "bg-white text-[#15171C] shadow-sm"
-                : "text-[#6B6F76] hover:text-[#374151]"
+                ? "bg-white text-[#212121] shadow-sm"
+                : "text-[#616161] hover:text-[#424242]"
             }`}
           >
             <span className="material-symbols-rounded text-[18px]">{t.icon}</span>
@@ -457,29 +457,29 @@ export default function SettingsPage() {
         >
           <Link
             href="/enterprise/payroll/team"
-            className="flex items-center justify-between rounded-[12px] border border-[#E8EAED] px-4 py-3 transition-colors hover:border-[#5B53E0]/40 hover:bg-[#F4F5F7]"
+            className="flex items-center justify-between rounded-[4px] border border-[#E0E0E0] px-4 py-3 transition-colors hover:border-[#1976D2]/40 hover:bg-[#F5F6F8]"
           >
             <span className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-[10px] bg-[#ECEBFB] text-[#5B53E0]">
+              <span className="flex h-9 w-9 items-center justify-center rounded-[4px] bg-[#E3F2FD] text-[#1976D2]">
                 <span className="material-symbols-rounded text-[20px]">manage_accounts</span>
               </span>
               <span>
-                <span className="block text-[13.5px] font-bold text-[#15171C]">{tr("payroll.usersRoles")}</span>
-                <span className="block text-[12px] text-[#8A929E]">
+                <span className="block text-[13.5px] font-bold text-[#212121]">{tr("payroll.usersRoles")}</span>
+                <span className="block text-[12px] text-[#757575]">
                   {tr("payroll.usersRolesDesc")}
                 </span>
               </span>
             </span>
-            <span className="material-symbols-rounded text-[#C7CCD4]">chevron_right</span>
+            <span className="material-symbols-rounded text-[#BDBDBD]">chevron_right</span>
           </Link>
         </Section>
 
         {/* Sticky save bar */}
         {canEdit && (
-          <div className="sticky bottom-4 z-10 flex items-center justify-between gap-4 rounded-[14px] border border-[#E8EAED] bg-white/95 px-5 py-3 shadow-[0_14px_34px_rgba(15,23,42,0.12)] backdrop-blur xl:col-span-2">
-            <span className="flex items-center gap-2 text-[13px] text-[#8A929E]">
+          <div className="sticky bottom-4 z-10 flex items-center justify-between gap-4 rounded-[4px] border border-[#E0E0E0] bg-white/95 px-5 py-3 shadow-[0_14px_34px_rgba(0,0,0,0.12)] backdrop-blur xl:col-span-2">
+            <span className="flex items-center gap-2 text-[13px] text-[#757575]">
               <span
-                className={`h-2 w-2 rounded-full ${dirty ? "bg-[#D97706]" : "bg-[#0E8A6E]"}`}
+                className={`h-2 w-2 rounded-full ${dirty ? "bg-[#EF6C00]" : "bg-[#2E7D32]"}`}
               />
               {dirty ? tr("payroll.unsavedChanges") : tr("payroll.allChangesSaved")}
             </span>
@@ -661,10 +661,10 @@ function StatutoryComplianceSection({ canEdit }: { canEdit: boolean }) {
         </Banner>
 
         {STAT_GROUPS.map((g) => (
-          <div key={g.group} className="rounded-[12px] border border-[#E8EAED] bg-[#F7F8FA] p-4">
+          <div key={g.group} className="rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] p-4">
             <div className="mb-3.5 flex items-center gap-2">
-              <span className="material-symbols-rounded text-[20px] text-[#5B53E0]">{g.icon}</span>
-              <span className="text-[14px] font-bold text-[#15171C]">{tr(`payroll.statGroup_${g.id}`)}</span>
+              <span className="material-symbols-rounded text-[20px] text-[#1976D2]">{g.icon}</span>
+              <span className="text-[14px] font-bold text-[#212121]">{tr(`payroll.statGroup_${g.id}`)}</span>
             </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               {g.rates.map((f) => (
@@ -867,7 +867,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
 
   if (loading) return null;
 
-  const accentPreview = ps.accent_color || "#5B53E0";
+  const accentPreview = ps.accent_color || "#1976D2";
 
   return (
     <form onSubmit={save} className="flex flex-col gap-4">
@@ -897,7 +897,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
                 disabled={!canEdit}
                 value={ps.accent_color || "#2563eb"}
                 onChange={(e) => set("accent_color", e.target.value)}
-                className="h-11 w-11 shrink-0 cursor-pointer rounded-[10px] border border-[#E1E4E8] bg-transparent p-1"
+                className="h-11 w-11 shrink-0 cursor-pointer rounded-[4px] border border-[#E0E0E0] bg-transparent p-1"
                 aria-label={tr("payroll.accentColourAria")}
               />
               <input
@@ -908,7 +908,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
                 value={ps.accent_color ?? ""}
                 onChange={(e) => set("accent_color", e.target.value)}
               />
-              <span className="h-11 w-11 shrink-0 rounded-[10px] border border-[#E1E4E8]" style={{ background: accentPreview }} />
+              <span className="h-11 w-11 shrink-0 rounded-[4px] border border-[#E0E0E0]" style={{ background: accentPreview }} />
             </div>
           </Field>
         </div>
@@ -936,7 +936,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
         </Field>
 
         <div className="flex flex-col gap-2">
-          <span className="block text-[12.5px] font-semibold text-[#374151] mb-0.5">{tr("payroll.sections")}</span>
+          <span className="block text-[12.5px] font-semibold text-[#424242] mb-0.5">{tr("payroll.sections")}</span>
           <PayslipToggle
             label={tr("payroll.employerContributions")}
             desc={tr("payroll.employerContributionsDesc")}
@@ -961,12 +961,12 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
         </div>
 
         {/* Uploaded Word (.docx) template */}
-        <div className="rounded-[12px] border border-[#E8EAED] bg-[#F7F8FA] p-4">
+        <div className="rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] p-4">
           <div className="mb-1.5 flex items-center gap-2">
-            <span className="material-symbols-rounded text-[20px] text-[#5B53E0]">description</span>
-            <span className="text-[14px] font-bold text-[#15171C]">{tr("payroll.advancedDocTemplate")}</span>
+            <span className="material-symbols-rounded text-[20px] text-[#1976D2]">description</span>
+            <span className="text-[14px] font-bold text-[#212121]">{tr("payroll.advancedDocTemplate")}</span>
           </div>
-          <p className="mb-2 text-[12px] leading-relaxed text-[#8A929E] [&_code]:rounded-[6px] [&_code]:bg-[#ECEBFB] [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-[11px] [&_code]:font-semibold [&_code]:text-[#5B53E0]">
+          <p className="mb-2 text-[12px] leading-relaxed text-[#757575] [&_code]:rounded-[3px] [&_code]:bg-[#E3F2FD] [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:text-[11px] [&_code]:font-semibold [&_code]:text-[#1976D2]">
             {tr("payroll.alreadyAdded")} <code>{"{{ tokens }}"}</code> {tr("payroll.docTemplateP1")}{" "}
             <strong>{tr("payroll.docBlankLines")}</strong> {tr("payroll.docCommonOnes")}{" "}
             <code>{"{{ company_name }}"}</code>, <code>{"{{ employee.name }}"}</code>,{" "}
@@ -978,21 +978,21 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
             <code>{"{{ earnings_lines }}"}</code> /{" "}
             <code>{"{{ deductions_lines }}"}</code>.
           </p>
-          <p className="mb-3 text-[12px] leading-relaxed text-[#8A929E]">
+          <p className="mb-3 text-[12px] leading-relaxed text-[#757575]">
             <strong>{tr("payroll.docTipLabel")}</strong> {tr("payroll.docTipText")}{" "}
             <button
               type="button"
               onClick={() => settingsApi.downloadSampleTemplate()}
-              className="font-semibold text-[#5B53E0] underline hover:text-[#4A43C9]"
+              className="font-semibold text-[#1976D2] underline hover:text-[#1565C0]"
             >
               {tr("payroll.downloadSampleTemplate")}
             </button>
           </p>
 
           {ps.has_doc_template ? (
-            <div className="flex flex-wrap items-center gap-3 rounded-[10px] border border-[#E8EAED] bg-white px-3 py-2.5">
-              <span className="material-symbols-rounded text-[20px] text-[#0E8A6E]">check_circle</span>
-              <span className="min-w-0 flex-1 truncate text-[13px] text-[#374151]">{ps.doc_filename || "template.docx"}</span>
+            <div className="flex flex-wrap items-center gap-3 rounded-[4px] border border-[#E0E0E0] bg-white px-3 py-2.5">
+              <span className="material-symbols-rounded text-[20px] text-[#2E7D32]">check_circle</span>
+              <span className="min-w-0 flex-1 truncate text-[13px] text-[#424242]">{ps.doc_filename || "template.docx"}</span>
               {canEdit && (
                 <Button
                   type="button"
@@ -1000,18 +1000,18 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
                   size="sm"
                   onClick={removeDoc}
                   disabled={uploading}
-                  className="text-[#C0383C] hover:bg-[#FDECEC]"
+                  className="text-[#C62828] hover:bg-[#FFEBEE]"
                 >
                   {tr("payroll.remove")}
                 </Button>
               )}
             </div>
           ) : (
-            <p className="text-[13px] text-[#8A929E]">{tr("payroll.noTemplateUploaded")}</p>
+            <p className="text-[13px] text-[#757575]">{tr("payroll.noTemplateUploaded")}</p>
           )}
 
           {ps.has_doc_template && !ps.doc_has_tokens && (
-            <div className="mt-3 flex items-start gap-2 rounded-[10px] border border-[#F7D7D7] bg-[#FDECEC] px-3 py-2.5 text-[13px] text-[#C0383C]">
+            <div className="mt-3 flex items-start gap-2 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-3 py-2.5 text-[13px] text-[#C62828]">
               <span className="material-symbols-rounded text-[20px]">warning</span>
               <span>
                 {tr("payroll.thisTemplateHas")} <strong>{tr("payroll.docNoFillableFields")}</strong>{tr("payroll.docSoPayslips")} <strong>{tr("payroll.docNoData")}</strong>. {tr("payroll.docUse")}{" "}
@@ -1022,7 +1022,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
 
           {canEdit && (
             <div className="mt-3 flex flex-wrap items-center gap-3">
-              <label className="inline-flex h-9 cursor-pointer items-center rounded-[10px] border border-[#E1E4E8] bg-white px-3.5 text-[13px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors">
+              <label className="inline-flex h-9 cursor-pointer items-center rounded-[4px] border border-[#E0E0E0] bg-white px-3.5 text-[13px] font-semibold text-[#424242] hover:bg-[#F5F6F8] transition-colors">
                 {uploading ? tr("payroll.uploading") : ps.has_doc_template ? tr("payroll.replaceFile") : tr("payroll.uploadDocx")}
                 <input
                   type="file"
@@ -1050,21 +1050,21 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
         </div>
 
         {/* Smart mapping wizard — upload YOUR template, map fields, no tokens */}
-        <div className="rounded-[12px] border border-[#5B53E0]/25 bg-[#ECEBFB]/40 p-4">
+        <div className="rounded-[4px] border border-[#1976D2]/25 bg-[#E3F2FD]/40 p-4">
           <div className="mb-1.5 flex items-center gap-2">
-            <span className="material-symbols-rounded text-[20px] text-[#5B53E0]">auto_fix_high</span>
-            <span className="text-[14px] font-bold text-[#15171C]">{tr("payroll.mapOwnTemplate")}</span>
+            <span className="material-symbols-rounded text-[20px] text-[#1976D2]">auto_fix_high</span>
+            <span className="text-[14px] font-bold text-[#212121]">{tr("payroll.mapOwnTemplate")}</span>
           </div>
-          <p className="mb-3 text-[12px] leading-relaxed text-[#8A929E]">
+          <p className="mb-3 text-[12px] leading-relaxed text-[#757575]">
             {tr("payroll.mapOwnDesc1")}{" "}
             <em>Basic</em>, <em>Net Pay</em> {tr("payroll.mapOwnAnd")} <em>Employee Name</em>,{" "}
             {tr("payroll.mapOwnDesc2")}
           </p>
 
           {ps.doc_mapped && (
-            <div className="mb-3 flex flex-wrap items-center gap-3 rounded-[10px] border border-[#E8EAED] bg-white px-3 py-2.5">
-              <span className="material-symbols-rounded text-[20px] text-[#0E8A6E]">link</span>
-              <span className="min-w-0 flex-1 truncate text-[13px] text-[#374151]">
+            <div className="mb-3 flex flex-wrap items-center gap-3 rounded-[4px] border border-[#E0E0E0] bg-white px-3 py-2.5">
+              <span className="material-symbols-rounded text-[20px] text-[#2E7D32]">link</span>
+              <span className="min-w-0 flex-1 truncate text-[13px] text-[#424242]">
                 {tr("payroll.mappedFrom")} <strong>{ps.doc_filename || tr("payroll.yourTemplate")}</strong>
               </span>
               {canEdit && (
@@ -1074,7 +1074,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
                   size="sm"
                   onClick={editMapping}
                   disabled={busy}
-                  className="text-[#5B53E0] hover:bg-[#ECEBFB]"
+                  className="text-[#1976D2] hover:bg-[#E3F2FD]"
                 >
                   {tr("payroll.editMapping")}
                 </Button>
@@ -1083,7 +1083,7 @@ function PayslipTemplateSection({ canEdit }: { canEdit: boolean }) {
           )}
 
           {canEdit && (
-            <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-[10px] border border-[#5B53E0]/40 bg-white px-3.5 text-[13px] font-semibold text-[#5B53E0] hover:bg-[#ECEBFB] transition-colors">
+            <label className="inline-flex h-9 cursor-pointer items-center gap-2 rounded-[4px] border border-[#1976D2]/40 bg-white px-3.5 text-[13px] font-semibold text-[#1976D2] hover:bg-[#E3F2FD] transition-colors">
               <span className="material-symbols-rounded text-[18px]">upload_file</span>
               {busy ? tr("payroll.scanning") : ps.doc_mapped ? tr("payroll.rescanReplace") : tr("payroll.uploadMyTemplate")}
               <input
@@ -1138,10 +1138,10 @@ function PayslipToggle({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <label className={`flex items-center justify-between gap-3 rounded-[10px] border border-[#E8EAED] bg-white px-4 py-3 transition-colors ${disabled ? "opacity-60" : "cursor-pointer hover:border-[#D4D7DC]"}`}>
+    <label className={`flex items-center justify-between gap-3 rounded-[4px] border border-[#E0E0E0] bg-white px-4 py-3 transition-colors ${disabled ? "opacity-60" : "cursor-pointer hover:border-[#E0E0E0]"}`}>
       <span className="min-w-0">
-        <span className="block text-[13.5px] font-semibold text-[#15171C]">{label}</span>
-        <span className="block text-[12px] text-[#8A929E] mt-0.5">{desc}</span>
+        <span className="block text-[13.5px] font-semibold text-[#212121]">{label}</span>
+        <span className="block text-[12px] text-[#757575] mt-0.5">{desc}</span>
       </span>
       <input
         type="checkbox"
@@ -1151,7 +1151,7 @@ function PayslipToggle({
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
       />
-      <span className="relative h-6 w-11 shrink-0 rounded-full bg-[#D4D7DC] transition-colors peer-checked:bg-[#5B53E0] peer-focus-visible:ring-2 peer-focus-visible:ring-[#5B53E0]/40 after:absolute after:left-0.5 after:top-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:shadow-sm after:transition-transform peer-checked:after:translate-x-5" />
+      <span className="relative h-6 w-11 shrink-0 rounded-full bg-[#E0E0E0] transition-colors peer-checked:bg-[#1976D2] peer-focus-visible:ring-2 peer-focus-visible:ring-[#1976D2]/40 after:absolute after:left-0.5 after:top-0.5 after:h-5 after:w-5 after:rounded-full after:bg-white after:shadow-sm after:transition-transform peer-checked:after:translate-x-5" />
     </label>
   );
 }
@@ -1186,19 +1186,19 @@ function MappingWizard({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#15171C]/40 backdrop-blur-sm p-4">
-      <div className="flex max-h-[85vh] w-full max-w-3xl flex-col rounded-[14px] border border-[#E8EAED] bg-white shadow-[0_24px_60px_rgba(15,23,42,0.24)]">
-        <div className="flex items-start justify-between gap-3 border-b border-[#E8EAED] px-5 py-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#212121]/40 backdrop-blur-sm p-4">
+      <div className="flex max-h-[85vh] w-full max-w-3xl flex-col rounded-[4px] border border-[#E0E0E0] bg-white shadow-[0_24px_60px_rgba(0,0,0,0.24)]">
+        <div className="flex items-start justify-between gap-3 border-b border-[#E0E0E0] px-5 py-4">
           <div className="min-w-0">
-            <h3 className="text-[16px] font-bold text-[#15171C]">{tr("payroll.mapTemplateFields")}</h3>
-            <p className="truncate text-[12px] text-[#8A929E] mt-0.5">
+            <h3 className="text-[16px] font-bold text-[#212121]">{tr("payroll.mapTemplateFields")}</h3>
+            <p className="truncate text-[12px] text-[#757575] mt-0.5">
               {tr("payroll.fieldsDetected", { filename: scan.filename, count: scan.slots.length })}
             </p>
           </div>
           <button
             type="button"
             onClick={onCancel}
-            className="w-8 h-8 rounded-[8px] text-[#8A929E] hover:bg-[#F4F5F7] hover:text-[#374151] flex items-center justify-center transition-colors"
+            className="w-8 h-8 rounded-[4px] text-[#757575] hover:bg-[#F5F6F8] hover:text-[#424242] flex items-center justify-center transition-colors"
             aria-label={tr("common.close")}
           >
             <span className="material-symbols-rounded text-[22px]">close</span>
@@ -1207,12 +1207,12 @@ function MappingWizard({
 
         <div className="flex-1 overflow-y-auto px-5 py-4">
           {scan.slots.length === 0 ? (
-            <div className="rounded-[10px] border border-[#E8EAED] bg-[#F7F8FA] p-4 text-[13px] text-[#8A929E]">
+            <div className="rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] p-4 text-[13px] text-[#757575]">
               {tr("payroll.wizNoSlots1")} <strong>{tr("payroll.wizTable")}</strong> {tr("payroll.wizNoSlots2")} <em>Basic | 0.00</em>{tr("payroll.wizNoSlots3")} <em>Label: value</em> {tr("payroll.wizNoSlots4")}
             </div>
           ) : (
             <div className="flex flex-col gap-2">
-              <p className="mb-1 text-[12px] text-[#8A929E]">
+              <p className="mb-1 text-[12px] text-[#757575]">
                 {tr("payroll.mapEachLineIntroA")}{" "}
                 <strong>{tr("payroll.ignore")}</strong> {tr("payroll.mapEachLineIntroB")}
               </p>
@@ -1221,13 +1221,13 @@ function MappingWizard({
                 return (
                   <div
                     key={slot.index}
-                    className="grid grid-cols-1 items-center gap-2 rounded-[10px] border border-[#E8EAED] bg-[#F7F8FA] px-3 py-2.5 sm:grid-cols-[1fr_auto]"
+                    className="grid grid-cols-1 items-center gap-2 rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] px-3 py-2.5 sm:grid-cols-[1fr_auto]"
                   >
                     <div className="min-w-0">
-                      <div className="truncate text-[13px] font-semibold text-[#15171C]">
-                        {slot.label || <span className="italic text-[#8A929E]">{tr("payroll.blank")}</span>}
+                      <div className="truncate text-[13px] font-semibold text-[#212121]">
+                        {slot.label || <span className="italic text-[#757575]">{tr("payroll.blank")}</span>}
                       </div>
-                      <div className="truncate text-[12px] text-[#8A929E]">
+                      <div className="truncate text-[12px] text-[#757575]">
                         {slot.context}
                         {slot.current ? ` → ${slot.current}` : ""}
                       </div>
@@ -1260,8 +1260,8 @@ function MappingWizard({
           )}
         </div>
 
-        <div className="flex items-center justify-between gap-3 border-t border-[#E8EAED] px-5 py-4">
-          <span className="text-[12px] text-[#8A929E]">
+        <div className="flex items-center justify-between gap-3 border-t border-[#E0E0E0] px-5 py-4">
+          <span className="text-[12px] text-[#757575]">
             {tr("payroll.fieldsMapped", { count: mappedCount })}
           </span>
           <div className="flex gap-2">
@@ -1281,7 +1281,7 @@ function MappingWizard({
 // Small success confirmation strip shown after a save.
 function SavedNote({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-2 rounded-[10px] border border-[#BBE7CE] bg-[#E6F4EA] px-4 py-3 text-[13px] font-medium text-[#15803D]">
+    <div className="flex items-center gap-2 rounded-[4px] border border-[#BBE7CE] bg-[#E8F5E9] px-4 py-3 text-[13px] font-medium text-[#2E7D32]">
       <span className="material-symbols-rounded text-[20px]">check_circle</span>
       {children}
     </div>
@@ -1293,15 +1293,15 @@ function SelectWrap({ children, className }: { children: React.ReactNode; classN
   return (
     <div className={`relative ${className ?? ""}`}>
       {children}
-      <span className="material-symbols-rounded absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-[20px] pointer-events-none">expand_more</span>
+      <span className="material-symbols-rounded absolute right-2.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-[20px] pointer-events-none">expand_more</span>
     </div>
   );
 }
 
 function Chip({ icon, children }: { icon: string; children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-1.5 rounded-[20px] bg-[#F1F2F5] px-2.5 py-0.5 text-[12px] font-semibold text-[#4B5563]">
-      <span className="material-symbols-rounded text-[14px] text-[#5B53E0]">{icon}</span>
+    <span className="inline-flex items-center gap-1.5 rounded-[4px] bg-[#EEEEEE] px-2.5 py-0.5 text-[12px] font-semibold text-[#4F4F4F]">
+      <span className="material-symbols-rounded text-[14px] text-[#1976D2]">{icon}</span>
       {children}
     </span>
   );
@@ -1322,13 +1322,13 @@ function Section({
 }) {
   return (
     <Card padding="lg" className={wide ? "xl:col-span-2" : ""}>
-      <div className="mb-5 flex items-center gap-3 border-b border-[#E8EAED] pb-4">
-        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[11px] bg-[#ECEBFB] text-[#5B53E0]">
+      <div className="mb-5 flex items-center gap-3 border-b border-[#E0E0E0] pb-4">
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-[4px] bg-[#E3F2FD] text-[#1976D2]">
           <span className="material-symbols-rounded text-[22px]">{icon}</span>
         </span>
         <div>
-          <h2 className="text-[15px] font-bold text-[#15171C]">{title}</h2>
-          {subtitle && <p className="text-[12.5px] text-[#8A929E] mt-0.5">{subtitle}</p>}
+          <h2 className="text-[15px] font-bold text-[#212121]">{title}</h2>
+          {subtitle && <p className="text-[12.5px] text-[#757575] mt-0.5">{subtitle}</p>}
         </div>
       </div>
       <div className="flex flex-col gap-4">{children}</div>

@@ -27,13 +27,13 @@ const formatSize = (bytes?: number | null) => {
 const fileLook = (filename: string, contentType?: string | null): { icon: string; cls: string } => {
     const ext = filename.split(".").pop()?.toLowerCase() || "";
     const type = contentType || "";
-    if (ext === "pdf" || type.includes("pdf")) return { icon: "picture_as_pdf", cls: "bg-[#FDECEC] text-[#C0383C]" };
-    if (["doc", "docx", "rtf", "odt"].includes(ext)) return { icon: "description", cls: "bg-[#E7ECFB] text-[#3559C7]" };
-    if (["xls", "xlsx", "csv"].includes(ext)) return { icon: "table", cls: "bg-[#E6F4EA] text-[#15803D]" };
-    if (["ppt", "pptx"].includes(ext)) return { icon: "slideshow", cls: "bg-[#FEF3E2] text-[#D97706]" };
-    if (type.startsWith("image/")) return { icon: "image", cls: "bg-[#E3F4EF] text-[#0E8A6E]" };
-    if (["zip", "rar", "7z", "tar", "gz"].includes(ext)) return { icon: "folder_zip", cls: "bg-[#F1F2F5] text-[#4B5563]" };
-    return { icon: "draft", cls: "bg-[#F1F2F5] text-[#4B5563]" };
+    if (ext === "pdf" || type.includes("pdf")) return { icon: "picture_as_pdf", cls: "bg-[#FFEBEE] text-[#C62828]" };
+    if (["doc", "docx", "rtf", "odt"].includes(ext)) return { icon: "description", cls: "bg-[#E3F2FD] text-[#1565C0]" };
+    if (["xls", "xlsx", "csv"].includes(ext)) return { icon: "table", cls: "bg-[#E8F5E9] text-[#2E7D32]" };
+    if (["ppt", "pptx"].includes(ext)) return { icon: "slideshow", cls: "bg-[#FFF3E0] text-[#EF6C00]" };
+    if (type.startsWith("image/")) return { icon: "image", cls: "bg-[#E8F5E9] text-[#2E7D32]" };
+    if (["zip", "rar", "7z", "tar", "gz"].includes(ext)) return { icon: "folder_zip", cls: "bg-[#EEEEEE] text-[#4F4F4F]" };
+    return { icon: "draft", cls: "bg-[#EEEEEE] text-[#4F4F4F]" };
 };
 
 const MAX_BYTES = 20 * 1024 * 1024;
@@ -139,20 +139,20 @@ export default function JobAttachmentsTab({
                     }}
                     disabled={isUploading}
                     className={cn(
-                        "w-full rounded-[12px] border-2 border-dashed px-6 py-10 text-center transition-colors",
+                        "w-full rounded-[4px] border-2 border-dashed px-6 py-10 text-center transition-colors",
                         isDragging
-                            ? "border-[#5B53E0] bg-[#F5F4FE]"
-                            : "border-[#DDE0E5] bg-[#FAFBFC] hover:border-[#5B53E0]/50 hover:bg-[#F7F8FA]",
+                            ? "border-[#1976D2] bg-[#F5F4FE]"
+                            : "border-[#DDE0E5] bg-[#FAFAFA] hover:border-[#1976D2]/50 hover:bg-[#FAFAFA]",
                         isUploading && "opacity-60 cursor-wait"
                     )}
                 >
-                    <span className="material-symbols-rounded text-[32px] text-[#5B53E0]">
+                    <span className="material-symbols-rounded text-[32px] text-[#1976D2]">
                         {isUploading ? "progress_activity" : "cloud_upload"}
                     </span>
-                    <p className="text-[13px] font-bold text-[#15171C] mt-2">
+                    <p className="text-[13px] font-bold text-[#212121] mt-2">
                         {isUploading ? tr("jobFiles.uploading") : tr("jobFiles.dropHere")}
                     </p>
-                    <p className="text-[11.5px] text-[#8A929E] mt-1">{tr("jobFiles.dropHint")}</p>
+                    <p className="text-[11.5px] text-[#757575] mt-1">{tr("jobFiles.dropHint")}</p>
                 </button>
                 <input
                     ref={inputRef}
@@ -166,14 +166,14 @@ export default function JobAttachmentsTab({
             </Card>
 
             {error && (
-                <div className="rounded-[12px] border border-[#F5C6C7] bg-[#FDECEC] px-4 py-3 text-[12.5px] text-[#C0383C]">
+                <div className="rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[12.5px] text-[#C62828]">
                     {error}
                 </div>
             )}
 
             {isLoading ? (
                 <Card padding="sm">
-                    <p className="py-10 text-center text-[13px] text-[#8A929E]">{tr("jobFiles.loading")}</p>
+                    <p className="py-10 text-center text-[13px] text-[#757575]">{tr("jobFiles.loading")}</p>
                 </Card>
             ) : items.length === 0 ? (
                 <Card padding="none">
@@ -191,22 +191,22 @@ export default function JobAttachmentsTab({
                 </Card>
             ) : (
                 <Card padding="none" className="overflow-hidden">
-                    <ul className="divide-y divide-[#F0F0F1]">
+                    <ul className="divide-y divide-[#EEEEEE]">
                         {items.map(item => {
                             const look = fileLook(item.filename, item.content_type);
                             return (
                                 <li key={item.id} className="flex items-center gap-3 px-4 sm:px-5 py-3.5">
                                     <span
                                         className={cn(
-                                            "w-10 h-10 shrink-0 rounded-[10px] flex items-center justify-center",
+                                            "w-10 h-10 shrink-0 rounded-[4px] flex items-center justify-center",
                                             look.cls
                                         )}
                                     >
                                         <span className="material-symbols-rounded text-[20px]">{look.icon}</span>
                                     </span>
                                     <div className="min-w-0 flex-1">
-                                        <p className="text-[13px] font-bold text-[#15171C] truncate">{item.filename}</p>
-                                        <p className="text-[11.5px] text-[#8A929E]">
+                                        <p className="text-[13px] font-bold text-[#212121] truncate">{item.filename}</p>
+                                        <p className="text-[11.5px] text-[#757575]">
                                             {[
                                                 formatSize(item.size_bytes),
                                                 item.uploader_name,
@@ -222,7 +222,7 @@ export default function JobAttachmentsTab({
                                         rel="noopener noreferrer"
                                         title={tr("jobFiles.open")}
                                         aria-label={tr("jobFiles.open")}
-                                        className="w-8 h-8 rounded-[9px] flex items-center justify-center text-[#8A929E] hover:text-[#5B53E0] hover:bg-[#F7F8FA] transition-colors"
+                                        className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#1976D2] hover:bg-[#FAFAFA] transition-colors"
                                     >
                                         <span className="material-symbols-rounded text-[18px]">open_in_new</span>
                                     </a>
@@ -230,7 +230,7 @@ export default function JobAttachmentsTab({
                                         onClick={() => remove(item)}
                                         title={tr("common.delete")}
                                         aria-label={tr("common.delete")}
-                                        className="w-8 h-8 rounded-[9px] flex items-center justify-center text-[#8A929E] hover:text-[#C0383C] hover:bg-[#FDECEC] transition-colors"
+                                        className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#C62828] hover:bg-[#FFEBEE] transition-colors"
                                     >
                                         <span className="material-symbols-rounded text-[18px]">delete</span>
                                     </button>

@@ -17,14 +17,14 @@ export default function LanguageSwitcher({ compact = false, variant = "light" }:
     }, []);
 
     const triggerCls = variant === "dark"
-        ? "border-white/10 bg-white/[0.04] text-[#C7CCD4] hover:bg-white/[0.08]"
-        : "border-[#E1E4E8] bg-white text-[#374151] hover:bg-[#F7F8FA]";
+        ? "border-white/10 bg-white/[0.04] text-[#BDBDBD] hover:bg-white/[0.08]"
+        : "border-[#E0E0E0] bg-white text-[#424242] hover:bg-[#FAFAFA]";
 
     return (
         <div className="relative" ref={ref}>
             <button
                 onClick={() => setOpen((v) => !v)}
-                className={`w-full h-9 px-2.5 rounded-[10px] border text-[13px] font-semibold flex items-center gap-1.5 ${triggerCls}`}
+                className={`w-full h-9 px-2.5 rounded-[4px] border text-[13px] font-semibold flex items-center gap-1.5 ${triggerCls}`}
                 title={t("common.language")}
             >
                 <Globe className="w-4 h-4 opacity-70" />
@@ -32,15 +32,15 @@ export default function LanguageSwitcher({ compact = false, variant = "light" }:
                 <ChevronDown className="w-3.5 h-3.5 opacity-60" />
             </button>
             {open && (
-                <div className={`absolute z-50 w-40 rounded-[12px] border p-1.5 shadow-[0_14px_34px_rgba(15,23,42,0.28)] ${variant === "dark" ? "left-0 bottom-11 bg-[#171A21] border-white/10" : "right-0 top-11 bg-white border-[#E8EAED]"}`}>
+                <div className={`absolute z-50 w-40 rounded-[4px] border p-1.5 shadow-[0_14px_34px_rgba(0,0,0,0.28)] ${variant === "dark" ? "left-0 bottom-11 bg-[#171A21] border-white/10" : "right-0 top-11 bg-white border-[#E0E0E0]"}`}>
                     {LOCALES.map((l) => {
-                        const activeCls = variant === "dark" ? "text-[#A5A0F0] bg-white/[0.06]" : "text-[#5B53E0] bg-[#F4F3FD]";
-                        const idleCls = variant === "dark" ? "text-[#C7CCD4] hover:bg-white/[0.06]" : "text-[#374151] hover:bg-[#F7F8FA]";
+                        const activeCls = variant === "dark" ? "text-[#A5A0F0] bg-white/[0.06]" : "text-[#1976D2] bg-[#F3F9FE]";
+                        const idleCls = variant === "dark" ? "text-[#BDBDBD] hover:bg-white/[0.06]" : "text-[#424242] hover:bg-[#FAFAFA]";
                         return (
                             <button
                                 key={l}
                                 onClick={() => { setLocale(l); setOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-[8px] text-[13px] font-semibold ${locale === l ? activeCls : idleCls}`}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-[4px] text-[13px] font-semibold ${locale === l ? activeCls : idleCls}`}
                             >
                                 {LOCALE_LABELS[l]}
                                 {locale === l && <Check className="w-4 h-4" />}

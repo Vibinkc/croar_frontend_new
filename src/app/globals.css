@@ -24,49 +24,49 @@
   --radius-2xl: 0.375rem;  /* 6px */
   --radius-3xl: 0.5rem;    /* 8px */
 
-  /* Croar Design System typefaces — Hanken Grotesk (UI) + JetBrains Mono (figures) */
-  --font-sans: var(--font-hanken), 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-  --font-mono: var(--font-jetbrains), 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+  /* Typefaces — Roboto (UI) + Roboto Mono (figures), matching Manatal. */
+  --font-sans: var(--font-hanken), 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  --font-mono: var(--font-jetbrains), 'Roboto Mono', ui-monospace, 'SFMono-Regular', monospace;
 }
 
 :root {
   /* Brand Colors - Updated to match new design */
-  --color-primary: #6366F1;
+  --color-primary: #1976D2;
   /* Indigo/Purple accent */
   --color-primary-dark: #4f46e5;
   --color-primary-light: #818cf8;
 
   --color-background-light: #FFFFFF;
-  --color-background-dark: #0F172A;
+  --color-background-dark: #263238;
 
-  --color-secondary: #8B5CF6;
+  --color-secondary: #42A5F5;
   /* Purple/Violet */
-  --color-secondary-dark: #7c3aed;
+  --color-secondary-dark: #1E88E5;
   --color-secondary-light: #a78bfa;
 
   --color-accent: #FFD300;
   /* Yellow accent */
 
   /* Neutral Colors */
-  --color-background: #f8fafc;
-  --color-background-dark: #0f172a;
-  --color-foreground: #0f172a;
-  --color-gray-50: #f8fafc;
-  --color-gray-100: #f1f5f9;
-  --color-gray-200: #e2e8f0;
+  --color-background: #FAFAFA;
+  --color-background-dark: #263238;
+  --color-foreground: #263238;
+  --color-gray-50: #FAFAFA;
+  --color-gray-100: #EEEEEE;
+  --color-gray-200: #E0E0E0;
   --color-gray-300: #cbd5e1;
   --color-gray-400: #94a3b8;
-  --color-gray-500: #64748b;
+  --color-gray-500: #616161;
   --color-gray-600: #475569;
   --color-gray-700: #334155;
-  --color-gray-800: #1e293b;
-  --color-gray-900: #0f172a;
+  --color-gray-800: #37474F;
+  --color-gray-900: #263238;
 
   /* Semantic Colors */
-  --color-success: #10B981;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-  --color-info: #3b82f6;
+  --color-success: #43A047;
+  --color-warning: #FB8C00;
+  --color-error: #E53935;
+  --color-info: #1E88E5;
 
   /* Spacing */
   --spacing-xs: 0.5rem;
@@ -92,15 +92,15 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-background: #0f172a;
-    --color-foreground: #f1f5f9;
+    --color-background: #263238;
+    --color-foreground: #EEEEEE;
   }
 }
 
 body {
   background: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-hanken), 'Hanken Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-family: var(--font-hanken), 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
@@ -151,7 +151,7 @@ button, a, span, p, label {
 }
 
 .gradient-mesh {
-  background-color: #f8fafc;
+  background-color: #FAFAFA;
   background-image: radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
     radial-gradient(at 50% 0%, hsla(225, 39%, 30%, 1) 0, transparent 50%),
     radial-gradient(at 100% 0%, hsla(339, 49%, 30%, 1) 0, transparent 50%);
@@ -159,7 +159,7 @@ button, a, span, p, label {
 
 /* Hero Gradient */
 .hero-gradient {
-  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #1E88E5 100%);
 }
 
 .hero-glass {
@@ -204,12 +204,12 @@ button, a, span, p, label {
 }
 
 .gradient-bg {
-  background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.05), transparent),
-    radial-gradient(circle at bottom right, rgba(99, 102, 241, 0.05), transparent);
+  background: radial-gradient(circle at top left, rgba(25,118,210, 0.05), transparent),
+    radial-gradient(circle at bottom right, rgba(25,118,210, 0.05), transparent);
 }
 
 .tag-gradient {
-  background: linear-gradient(135deg, #7C3AED 0%, #3B82F6 100%);
+  background: linear-gradient(135deg, #1E88E5 0%, #1E88E5 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -217,7 +217,7 @@ button, a, span, p, label {
 }
 
 .ai-text-gradient {
-  background: linear-gradient(90deg, #8B5CF6 0%, #06B6D4 100%);
+  background: linear-gradient(90deg, #42A5F5 0%, #06B6D4 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -259,7 +259,7 @@ button, a, span, p, label {
 /* contentEditable placeholder */
 [contenteditable][data-placeholder]:empty::before {
   content: attr(data-placeholder);
-  color: #9AA3AF;
+  color: #9E9E9E;
   pointer-events: none;
 }
 
@@ -387,19 +387,19 @@ button, a, span, p, label {
    content (which mounts on <body>) still resolves these variables.
    ===================================================================== */
 .payroll-scope {
-  --color-bg: #f8fafc;
+  --color-bg: #FAFAFA;
   --color-surface: #ffffff;
   --color-card: #ffffff;
-  --color-hover: #f1f5f9;
-  --color-border: #e2e8f0;
-  --color-primary: #7c3aed; /* Croar enterprise violet (matches sidebar/core pages) */
-  --color-primary-hover: #6d28d9;
-  --color-accent: #10b981;
-  --color-danger: #ef4444;
-  --color-warn: #f59e0b;
+  --color-hover: #EEEEEE;
+  --color-border: #E0E0E0;
+  --color-primary: #1E88E5; /* Croar enterprise violet (matches sidebar/core pages) */
+  --color-primary-hover: #1565C0;
+  --color-accent: #43A047;
+  --color-danger: #E53935;
+  --color-warn: #FB8C00;
   --color-info: #0ea5e9;
-  --color-text: #0f172a;
-  --color-muted: #64748b;
+  --color-text: #263238;
+  --color-muted: #616161;
   --color-dim: #94a3b8;
   color: var(--color-text);
 }
@@ -421,7 +421,7 @@ button, a, span, p, label {
   height: 2.75rem;
   width: 100%;
   border-radius: var(--radius-xl); /* match Croar's sharp input radius */
-  border: 1px solid #e2e8f0;
+  border: 1px solid #E0E0E0;
   background-color: #ffffff;
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
@@ -438,8 +438,8 @@ button, a, span, p, label {
 }
 .payroll-scope .input:focus,
 .payroll-scope .input:focus-visible {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #6366f1;
+  border-color: #1976D2;
+  box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #1976D2;
 }
 .payroll-scope .input:disabled {
   cursor: not-allowed;
@@ -473,12 +473,12 @@ button, a, span, p, label {
   pointer-events: none;
 }
 .payroll-scope .btn-primary {
-  background-color: #7c3aed; /* Croar enterprise violet */
+  background-color: #1E88E5; /* Croar enterprise violet */
   color: #fff;
   box-shadow: 0 10px 15px -3px rgb(124 58 237 / 0.2), 0 4px 6px -4px rgb(124 58 237 / 0.2);
 }
 .payroll-scope .btn-primary:hover:not(:disabled) {
-  background-color: #6d28d9;
+  background-color: #1565C0;
 }
 .payroll-scope .btn-accent {
   background-color: #059669; /* emerald-600 */
@@ -490,11 +490,11 @@ button, a, span, p, label {
 }
 .payroll-scope .btn-ghost {
   background-color: transparent;
-  color: #64748b; /* slate-500 */
+  color: #616161; /* slate-500 */
 }
 .payroll-scope .btn-ghost:hover:not(:disabled) {
-  background-color: #f1f5f9; /* slate-100 */
-  color: #1e293b; /* slate-800 */
+  background-color: #EEEEEE; /* slate-100 */
+  color: #37474F; /* slate-800 */
 }
 
 /* Chip — mirror Croar's outline <Badge>. */
@@ -503,7 +503,7 @@ button, a, span, p, label {
   align-items: center;
   gap: 0.3rem;
   border-radius: 9999px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #E0E0E0;
   background-color: #ffffff;
   padding: 0.15rem 0.625rem;
   font-size: 0.75rem;
@@ -526,18 +526,18 @@ button, a, span, p, label {
 .payroll-scope h1 {
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: #0f172a;
+  color: #263238;
 }
 .payroll-scope h2,
 .payroll-scope h3 {
   font-weight: 700;
-  color: #0f172a;
+  color: #263238;
 }
 .payroll-scope thead {
-  background-color: #f8fafc;
+  background-color: #FAFAFA;
 }
 .payroll-scope thead th {
-  color: #64748b;
+  color: #616161;
   font-weight: 700;
   letter-spacing: 0.03em;
 }
@@ -557,7 +557,7 @@ button, a, span, p, label {
    The app is built on the design system's hardcoded neutral palette, so we
    remap those specific values (surfaces / text / borders) here. Accent
    colours (indigo, status tints) and intentionally-dark surfaces
-   (sidebar #090A0C, hero #0E1014) are left untouched.
+   (sidebar #090A0C, hero #1E2A38) are left untouched.
    ═══════════════════════════════════════════════════════════════════════ */
 :root[data-theme="dark"] {
   color-scheme: dark;
@@ -567,52 +567,52 @@ button, a, span, p, label {
 :root[data-theme="dark"] .bg-white {
   background-color: #16191f;
 }
-:root[data-theme="dark"] .bg-\[\#F4F5F7\] {
+:root[data-theme="dark"] .bg-\[\#F5F6F8\] {
   background-color: #0b0c0f;
 }
-:root[data-theme="dark"] .bg-\[\#F4F5F7\]\/95 {
+:root[data-theme="dark"] .bg-\[\#F5F6F8\]\/95 {
   background-color: rgba(11, 12, 15, 0.95);
 }
-:root[data-theme="dark"] .bg-\[\#F7F7F8\],
-:root[data-theme="dark"] .bg-\[\#F7F8FA\],
-:root[data-theme="dark"] .bg-\[\#F8FAFC\],
-:root[data-theme="dark"] .bg-\[\#F9FAFB\],
-:root[data-theme="dark"] .bg-\[\#F1F2F5\] {
+:root[data-theme="dark"] .bg-\[\#FAFAFA\],
+:root[data-theme="dark"] .bg-\[\#FAFAFA\],
+:root[data-theme="dark"] .bg-\[\#FAFAFA\],
+:root[data-theme="dark"] .bg-\[\#FAFAFA\],
+:root[data-theme="dark"] .bg-\[\#EEEEEE\] {
   background-color: #1b1f27;
 }
-:root[data-theme="dark"] .hover\:bg-\[\#F4F5F7\]:hover,
-:root[data-theme="dark"] .hover\:bg-\[\#F7F7F8\]:hover,
-:root[data-theme="dark"] .hover\:bg-\[\#F7F8FA\]:hover,
-:root[data-theme="dark"] .hover\:bg-\[\#F1F2F5\]:hover {
+:root[data-theme="dark"] .hover\:bg-\[\#F5F6F8\]:hover,
+:root[data-theme="dark"] .hover\:bg-\[\#FAFAFA\]:hover,
+:root[data-theme="dark"] .hover\:bg-\[\#FAFAFA\]:hover,
+:root[data-theme="dark"] .hover\:bg-\[\#EEEEEE\]:hover {
   background-color: #20252f;
 }
 
 /* Text */
-:root[data-theme="dark"] .text-\[\#15171C\] {
+:root[data-theme="dark"] .text-\[\#212121\] {
   color: #eceef1;
 }
-:root[data-theme="dark"] .text-\[\#374151\] {
-  color: #c7ccd4;
+:root[data-theme="dark"] .text-\[\#424242\] {
+  color: #BDBDBD;
 }
-:root[data-theme="dark"] .text-\[\#4B5563\] {
+:root[data-theme="dark"] .text-\[\#4F4F4F\] {
   color: #aeb4be;
 }
 
 /* Borders */
-:root[data-theme="dark"] .border-\[\#E8EAED\],
-:root[data-theme="dark"] .border-\[\#E1E4E8\],
-:root[data-theme="dark"] .border-\[\#F0F0F1\],
-:root[data-theme="dark"] .border-\[\#F1F2F5\],
+:root[data-theme="dark"] .border-\[\#E0E0E0\],
+:root[data-theme="dark"] .border-\[\#E0E0E0\],
+:root[data-theme="dark"] .border-\[\#EEEEEE\],
+:root[data-theme="dark"] .border-\[\#EEEEEE\],
 :root[data-theme="dark"] .border-\[\#D9DCE1\] {
   border-color: #272c36;
 }
-:root[data-theme="dark"] .hover\:border-\[\#D4D7DC\]:hover {
+:root[data-theme="dark"] .hover\:border-\[\#E0E0E0\]:hover {
   border-color: #333a45;
 }
 
 /* Row separators (divide-*) */
-:root[data-theme="dark"] .divide-\[\#F0F0F1\] > :not([hidden]) ~ :not([hidden]),
-:root[data-theme="dark"] .divide-\[\#E8EAED\] > :not([hidden]) ~ :not([hidden]) {
+:root[data-theme="dark"] .divide-\[\#EEEEEE\] > :not([hidden]) ~ :not([hidden]),
+:root[data-theme="dark"] .divide-\[\#E0E0E0\] > :not([hidden]) ~ :not([hidden]) {
   border-color: #272c36;
 }
 

@@ -234,7 +234,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
 
     if (loading) return (
         <div className="min-h-[60vh] flex items-center justify-center p-8">
-            <div className="w-10 h-10 border-4 border-[#5B53E0] border-t-transparent rounded-full animate-spin"></div>
+            <div className="w-10 h-10 border-4 border-[#1976D2] border-t-transparent rounded-full animate-spin"></div>
         </div>
     );
 
@@ -276,7 +276,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                     <option value="">{tr("forms2.selectTargetType")}</option>
                                     {types.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                                 </Select>
-                                <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] pointer-events-none text-[20px]">expand_more</span>
+                                <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] pointer-events-none text-[20px]">expand_more</span>
                             </div>
                         </Field>
 
@@ -323,7 +323,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                     icon="psychology"
                                     onClick={() => setIsAiModalOpen(true)}
                                     disabled={!formData.survey_type_id}
-                                    className="bg-[#15171C] text-white border-transparent hover:bg-[#4A43C9]"
+                                    className="bg-[#212121] text-white border-transparent hover:bg-[#1565C0]"
                                 >
                                     {tr("forms2.aiWizard")}
                                 </Button>
@@ -341,12 +341,12 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                     />
 
                     {formData.questions.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-14 text-center border border-dashed border-[#E8EAED] rounded-[14px] bg-[#F7F8FA]/50">
-                            <div className="w-14 h-14 rounded-[16px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center mb-4">
+                        <div className="flex flex-col items-center justify-center py-14 text-center border border-dashed border-[#E0E0E0] rounded-[4px] bg-[#FAFAFA]/50">
+                            <div className="w-14 h-14 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center mb-4">
                                 <span className="material-symbols-rounded text-[28px]">help_center</span>
                             </div>
-                            <h3 className="text-[15px] font-bold text-[#15171C] mb-1">{tr("forms2.noQuestionsYet")}</h3>
-                            <p className="text-[13px] text-[#8A929E] max-w-xs mx-auto">{tr("forms2.noQuestionsHint")}</p>
+                            <h3 className="text-[15px] font-bold text-[#212121] mb-1">{tr("forms2.noQuestionsYet")}</h3>
+                            <p className="text-[13px] text-[#757575] max-w-xs mx-auto">{tr("forms2.noQuestionsHint")}</p>
                         </div>
                     ) : (
                         <div className="space-y-4">
@@ -356,7 +356,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                         <button
                                             type="button"
                                             onClick={() => removeQuestion(i)}
-                                            className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:text-[#C0383C] hover:bg-[#FDECEC] transition-colors"
+                                            className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:text-[#C62828] hover:bg-[#FFEBEE] transition-colors"
                                             aria-label={tr("forms2.removeQuestion")}
                                         >
                                             <span className="material-symbols-rounded text-[20px]">delete</span>
@@ -364,10 +364,10 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                     </div>
 
                                     <div className="flex gap-4 items-start">
-                                        <div className={`w-10 h-10 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] font-bold flex items-center justify-center shrink-0 ${jetbrainsMono.className}`}>{i+1}</div>
+                                        <div className={`w-10 h-10 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] font-bold flex items-center justify-center shrink-0 ${jetbrainsMono.className}`}>{i+1}</div>
                                         <div className="flex-1 min-w-0 space-y-4 pr-10">
                                             <input
-                                                className="w-full bg-transparent border-none focus:ring-0 text-[#15171C] font-bold text-[17px] placeholder:text-[#C7CCD4] p-0 outline-none"
+                                                className="w-full bg-transparent border-none focus:ring-0 text-[#212121] font-bold text-[17px] placeholder:text-[#BDBDBD] p-0 outline-none"
                                                 value={q.text}
                                                 onChange={(e) => updateQuestion(i, "text", e.target.value)}
                                                 placeholder={tr("forms2.questionTextPlaceholder")}
@@ -379,7 +379,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                                         key={type}
                                                         type="button"
                                                         onClick={() => updateQuestion(i, "type", type)}
-                                                        className={`px-4 py-1.5 rounded-[8px] text-[12px] font-semibold transition-all border ${q.type === type ? 'bg-[#5B53E0] border-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.24)]' : 'bg-white border-[#E1E4E8] text-[#8A929E] hover:text-[#374151] hover:border-[#9AA3AF]'}`}
+                                                        className={`px-4 py-1.5 rounded-[4px] text-[12px] font-semibold transition-all border ${q.type === type ? 'bg-[#1976D2] border-[#1976D2] text-white shadow-[0_4px_12px_rgba(25,118,210,0.24)]' : 'bg-white border-[#E0E0E0] text-[#757575] hover:text-[#424242] hover:border-[#9E9E9E]'}`}
                                                     >
                                                         {type === 'RATING' ? tr("forms2.typeRating") : type === 'TEXT' ? tr("forms2.typeDescriptive") : tr("forms2.typeMultiChoice")}
                                                     </button>
@@ -393,7 +393,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                 {safeOptions(q.options).map((opt: string, optIdx: number) => (
                                                     <div key={optIdx} className="flex gap-2 items-center group/opt">
-                                                        <div className={`w-8 h-8 rounded-[8px] bg-[#F1F2F5] flex items-center justify-center text-[11px] font-bold text-[#8A929E] group-hover/opt:bg-[#ECEBFB] group-hover/opt:text-[#5B53E0] transition-colors shrink-0 ${jetbrainsMono.className}`}>{String.fromCodePoint(65 + optIdx)}</div>
+                                                        <div className={`w-8 h-8 rounded-[4px] bg-[#EEEEEE] flex items-center justify-center text-[11px] font-bold text-[#757575] group-hover/opt:bg-[#E3F2FD] group-hover/opt:text-[#1976D2] transition-colors shrink-0 ${jetbrainsMono.className}`}>{String.fromCodePoint(65 + optIdx)}</div>
                                                         <Input
                                                             className="h-10 flex-1"
                                                             value={opt}
@@ -403,7 +403,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                                         <button
                                                             type="button"
                                                             onClick={() => removeOption(i, optIdx)}
-                                                            className="w-8 h-8 flex items-center justify-center rounded-[8px] text-[#C7CCD4] hover:text-[#C0383C] hover:bg-[#FDECEC] transition-colors shrink-0"
+                                                            className="w-8 h-8 flex items-center justify-center rounded-[4px] text-[#BDBDBD] hover:text-[#C62828] hover:bg-[#FFEBEE] transition-colors shrink-0"
                                                             aria-label={tr("forms2.removeOption")}
                                                         >
                                                             <span className="material-symbols-rounded text-[18px]">close</span>
@@ -413,7 +413,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                                 <button
                                                     type="button"
                                                     onClick={() => addOption(i)}
-                                                    className="h-10 px-4 border border-dashed border-[#E1E4E8] rounded-[10px] text-[12px] font-semibold text-[#8A929E] hover:border-[#5B53E0] hover:text-[#5B53E0] transition-all flex items-center justify-center gap-1.5"
+                                                    className="h-10 px-4 border border-dashed border-[#E0E0E0] rounded-[4px] text-[12px] font-semibold text-[#757575] hover:border-[#1976D2] hover:text-[#1976D2] transition-all flex items-center justify-center gap-1.5"
                                                 >
                                                     <span className="material-symbols-rounded text-[18px]">add_circle</span>
                                                     <span>{tr("forms2.addChoice")}</span>
@@ -441,18 +441,18 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
 
             {/* AI Wizard Modal */}
             {isAiModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#15171C]/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                    <Card padding="none" className="w-full max-w-md shadow-[0_24px_60px_rgba(15,23,42,0.22)] overflow-hidden animate-in zoom-in-95 duration-200">
-                        <div className="p-5 border-b border-[#E8EAED] flex justify-between items-center bg-[#F7F8FA]">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#212121]/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+                    <Card padding="none" className="w-full max-w-md shadow-[0_24px_60px_rgba(0,0,0,0.22)] overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-5 border-b border-[#E0E0E0] flex justify-between items-center bg-[#FAFAFA]">
                             <div className="flex items-center gap-2.5">
-                                <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
+                                <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center">
                                     <span className="material-symbols-rounded text-[20px]">psychology</span>
                                 </span>
-                                <h2 className="text-[16px] font-bold text-[#15171C]">{tr("forms2.aiStrategyWizard")}</h2>
+                                <h2 className="text-[16px] font-bold text-[#212121]">{tr("forms2.aiStrategyWizard")}</h2>
                             </div>
                             <button
                                 onClick={() => setIsAiModalOpen(false)}
-                                className="w-8 h-8 rounded-[8px] flex items-center justify-center text-[#8A929E] hover:text-[#374151] hover:bg-[#F1F2F5] transition-colors"
+                                className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#424242] hover:bg-[#EEEEEE] transition-colors"
                                 aria-label={tr("common.close")}
                             >
                                 <span className="material-symbols-rounded text-[20px]">close</span>
@@ -477,7 +477,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                 fullWidth
                                 onClick={generateWithAi}
                                 disabled={generatingAi || !industryNature}
-                                className="bg-[#15171C] text-white border-transparent hover:bg-[#4A43C9]"
+                                className="bg-[#212121] text-white border-transparent hover:bg-[#1565C0]"
                             >
                                 {generatingAi ? (
                                     <>

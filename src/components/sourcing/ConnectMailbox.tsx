@@ -85,13 +85,13 @@ export default function ConnectMailbox({ onConnected, onLater, showLater = false
     if (!provider) {
         return (
             <div className="w-full max-w-md mx-auto">
-                <h3 className="text-[20px] font-bold text-[#15171C] text-center leading-snug">{tr("sharedUi.connectYourMailbox")}<br />{tr("sharedUi.toStartSequencing")}</h3>
+                <h3 className="text-[20px] font-bold text-[#212121] text-center leading-snug">{tr("sharedUi.connectYourMailbox")}<br />{tr("sharedUi.toStartSequencing")}</h3>
                 <div className="mt-6 space-y-3">
-                    <button onClick={() => choose("gmail")} disabled={redirecting} className="w-full h-12 rounded-[12px] bg-[#F4F5F7] hover:bg-[#ECEEF1] flex items-center justify-center gap-2.5 text-[14px] font-semibold text-[#15171C] disabled:opacity-60">{redirecting ? <Loader2 className="w-5 h-5 animate-spin text-[#5B53E0]" /> : <GmailIcon />} {redirecting ? tr("sharedUi.redirectingToGoogle") : tr("sharedUi.connectGmail")}</button>
-                    <button onClick={connectMicrosoft} disabled={redirecting} className="w-full h-12 rounded-[12px] bg-[#F4F5F7] hover:bg-[#ECEEF1] flex items-center justify-center gap-2.5 text-[14px] font-semibold text-[#15171C] disabled:opacity-60"><OutlookIcon /> {tr("sharedUi.connectM365")}</button>
+                    <button onClick={() => choose("gmail")} disabled={redirecting} className="w-full h-12 rounded-[4px] bg-[#F5F6F8] hover:bg-[#ECEEF1] flex items-center justify-center gap-2.5 text-[14px] font-semibold text-[#212121] disabled:opacity-60">{redirecting ? <Loader2 className="w-5 h-5 animate-spin text-[#1976D2]" /> : <GmailIcon />} {redirecting ? tr("sharedUi.redirectingToGoogle") : tr("sharedUi.connectGmail")}</button>
+                    <button onClick={connectMicrosoft} disabled={redirecting} className="w-full h-12 rounded-[4px] bg-[#F5F6F8] hover:bg-[#ECEEF1] flex items-center justify-center gap-2.5 text-[14px] font-semibold text-[#212121] disabled:opacity-60"><OutlookIcon /> {tr("sharedUi.connectM365")}</button>
                 </div>
-                {error && <p className="text-[12.5px] text-[#C0383C] bg-rose-50 border border-rose-100 rounded-[10px] px-3 py-2 mt-4">{error}</p>}
-                <p className="text-center text-[12px] text-[#9AA3AF] mt-5">{tr("sharedUi.manageMailboxPre")} <span className="font-semibold text-[#6B6F76]">{tr("sharedUi.integrations")}</span> {tr("sharedUi.page")}</p>
+                {error && <p className="text-[12.5px] text-[#C62828] bg-rose-50 border border-rose-100 rounded-[4px] px-3 py-2 mt-4">{error}</p>}
+                <p className="text-center text-[12px] text-[#9E9E9E] mt-5">{tr("sharedUi.manageMailboxPre")} <span className="font-semibold text-[#616161]">{tr("sharedUi.integrations")}</span> {tr("sharedUi.page")}</p>
             </div>
         );
     }
@@ -99,43 +99,43 @@ export default function ConnectMailbox({ onConnected, onLater, showLater = false
     const d = PROVIDERS[provider];
     return (
         <div className="w-full max-w-md mx-auto">
-            <button onClick={() => { setProvider(null); setError(""); }} className="flex items-center gap-1 text-[13px] font-semibold text-[#6B6F76] hover:text-[#5B53E0] mb-3"><ChevronLeft className="w-4 h-4" /> {tr("sharedUi.back")}</button>
-            <h3 className="text-[18px] font-bold text-[#15171C]">{tr("sharedUi.connectProvider", { provider: d.label })}</h3>
-            <div className="mt-2 flex items-start gap-2 rounded-[10px] bg-[#F4F3FD] border border-[#E4E1F7] px-3 py-2.5">
-                <ShieldCheck className="w-4 h-4 text-[#5B53E0] mt-0.5 shrink-0" />
-                <p className="text-[12px] text-[#5B53E0] leading-relaxed">{provider === "gmail" ? tr("sharedUi.gmailHint") : provider === "outlook" ? tr("sharedUi.outlookHint") : tr("sharedUi.imapHint")}</p>
+            <button onClick={() => { setProvider(null); setError(""); }} className="flex items-center gap-1 text-[13px] font-semibold text-[#616161] hover:text-[#1976D2] mb-3"><ChevronLeft className="w-4 h-4" /> {tr("sharedUi.back")}</button>
+            <h3 className="text-[18px] font-bold text-[#212121]">{tr("sharedUi.connectProvider", { provider: d.label })}</h3>
+            <div className="mt-2 flex items-start gap-2 rounded-[4px] bg-[#F3F9FE] border border-[#D6E9FA] px-3 py-2.5">
+                <ShieldCheck className="w-4 h-4 text-[#1976D2] mt-0.5 shrink-0" />
+                <p className="text-[12px] text-[#1976D2] leading-relaxed">{provider === "gmail" ? tr("sharedUi.gmailHint") : provider === "outlook" ? tr("sharedUi.outlookHint") : tr("sharedUi.imapHint")}</p>
             </div>
 
             <div className="mt-4 space-y-3">
                 <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wide text-[#8A929E] mb-1.5">{tr("sharedUi.emailAddress")}</label>
-                    <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@company.com" className="w-full h-10 px-3 rounded-[10px] border border-[#E1E4E8] text-[13px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15" />
+                    <label className="block text-[11px] font-bold uppercase tracking-wide text-[#757575] mb-1.5">{tr("sharedUi.emailAddress")}</label>
+                    <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@company.com" className="w-full h-10 px-3 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15" />
                 </div>
                 <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wide text-[#8A929E] mb-1.5">{provider === "imap" ? tr("sharedUi.password") : tr("sharedUi.appPassword")}</label>
-                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••••••" className="w-full h-10 px-3 rounded-[10px] border border-[#E1E4E8] text-[13px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15" />
+                    <label className="block text-[11px] font-bold uppercase tracking-wide text-[#757575] mb-1.5">{provider === "imap" ? tr("sharedUi.password") : tr("sharedUi.appPassword")}</label>
+                    <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••••••" className="w-full h-10 px-3 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15" />
                 </div>
                 <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wide text-[#8A929E] mb-1.5">{tr("sharedUi.senderName")} <span className="text-[#B4BAC2] normal-case font-normal">{tr("sharedUi.optional")}</span></label>
-                    <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder={tr("sharedUi.senderNamePlaceholder")} className="w-full h-10 px-3 rounded-[10px] border border-[#E1E4E8] text-[13px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15" />
+                    <label className="block text-[11px] font-bold uppercase tracking-wide text-[#757575] mb-1.5">{tr("sharedUi.senderName")} <span className="text-[#B4BAC2] normal-case font-normal">{tr("sharedUi.optional")}</span></label>
+                    <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder={tr("sharedUi.senderNamePlaceholder")} className="w-full h-10 px-3 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15" />
                 </div>
 
                 {provider !== "imap" && (
-                    <button onClick={() => setAdvanced((v) => !v)} className="text-[12.5px] font-semibold text-[#5B53E0] hover:underline">{advanced ? tr("sharedUi.hideAdvanced") : tr("sharedUi.showAdvanced")}</button>
+                    <button onClick={() => setAdvanced((v) => !v)} className="text-[12.5px] font-semibold text-[#1976D2] hover:underline">{advanced ? tr("sharedUi.hideAdvanced") : tr("sharedUi.showAdvanced")}</button>
                 )}
                 {advanced && (
                     <div className="grid grid-cols-2 gap-3">
-                        <div><label className="block text-[11px] font-bold uppercase tracking-wide text-[#8A929E] mb-1.5">{tr("sharedUi.smtpHost")}</label><input value={smtpHost} onChange={(e) => setSmtpHost(e.target.value)} placeholder="smtp.provider.com" className="w-full h-10 px-3 rounded-[10px] border border-[#E1E4E8] text-[13px] outline-none focus:border-[#5B53E0]" /></div>
-                        <div><label className="block text-[11px] font-bold uppercase tracking-wide text-[#8A929E] mb-1.5">{tr("sharedUi.smtpPort")}</label><input type="number" value={smtpPort} onChange={(e) => setSmtpPort(Number(e.target.value))} className="w-full h-10 px-3 rounded-[10px] border border-[#E1E4E8] text-[13px] outline-none focus:border-[#5B53E0]" /></div>
-                        <div><label className="block text-[11px] font-bold uppercase tracking-wide text-[#8A929E] mb-1.5">{tr("sharedUi.imapHost")}</label><input value={imapHost} onChange={(e) => setImapHost(e.target.value)} placeholder="imap.provider.com" className="w-full h-10 px-3 rounded-[10px] border border-[#E1E4E8] text-[13px] outline-none focus:border-[#5B53E0]" /></div>
-                        <div><label className="block text-[11px] font-bold uppercase tracking-wide text-[#8A929E] mb-1.5">{tr("sharedUi.imapPort")}</label><input type="number" value={imapPort} onChange={(e) => setImapPort(Number(e.target.value))} className="w-full h-10 px-3 rounded-[10px] border border-[#E1E4E8] text-[13px] outline-none focus:border-[#5B53E0]" /></div>
+                        <div><label className="block text-[11px] font-bold uppercase tracking-wide text-[#757575] mb-1.5">{tr("sharedUi.smtpHost")}</label><input value={smtpHost} onChange={(e) => setSmtpHost(e.target.value)} placeholder="smtp.provider.com" className="w-full h-10 px-3 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2]" /></div>
+                        <div><label className="block text-[11px] font-bold uppercase tracking-wide text-[#757575] mb-1.5">{tr("sharedUi.smtpPort")}</label><input type="number" value={smtpPort} onChange={(e) => setSmtpPort(Number(e.target.value))} className="w-full h-10 px-3 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2]" /></div>
+                        <div><label className="block text-[11px] font-bold uppercase tracking-wide text-[#757575] mb-1.5">{tr("sharedUi.imapHost")}</label><input value={imapHost} onChange={(e) => setImapHost(e.target.value)} placeholder="imap.provider.com" className="w-full h-10 px-3 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2]" /></div>
+                        <div><label className="block text-[11px] font-bold uppercase tracking-wide text-[#757575] mb-1.5">{tr("sharedUi.imapPort")}</label><input type="number" value={imapPort} onChange={(e) => setImapPort(Number(e.target.value))} className="w-full h-10 px-3 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2]" /></div>
                     </div>
                 )}
 
-                {error && <p className="text-[12.5px] text-[#C0383C] bg-rose-50 border border-rose-100 rounded-[10px] px-3 py-2">{error}</p>}
+                {error && <p className="text-[12.5px] text-[#C62828] bg-rose-50 border border-rose-100 rounded-[4px] px-3 py-2">{error}</p>}
 
-                <button onClick={connect} disabled={saving} className="w-full h-11 rounded-[12px] bg-[#5B53E0] text-white text-[14px] font-bold hover:bg-[#4A43C9] disabled:opacity-60 flex items-center justify-center gap-2">{saving && <Loader2 className="w-4 h-4 animate-spin" />} {saving ? tr("sharedUi.verifying") : tr("sharedUi.connectMailbox")}</button>
-                {showLater && <button onClick={onLater} className="block mx-auto text-[13px] font-bold text-[#8A929E] hover:text-[#5B53E0]">{tr("sharedUi.doThisLater")}</button>}
+                <button onClick={connect} disabled={saving} className="w-full h-11 rounded-[4px] bg-[#1976D2] text-white text-[14px] font-bold hover:bg-[#1565C0] disabled:opacity-60 flex items-center justify-center gap-2">{saving && <Loader2 className="w-4 h-4 animate-spin" />} {saving ? tr("sharedUi.verifying") : tr("sharedUi.connectMailbox")}</button>
+                {showLater && <button onClick={onLater} className="block mx-auto text-[13px] font-bold text-[#757575] hover:text-[#1976D2]">{tr("sharedUi.doThisLater")}</button>}
             </div>
         </div>
     );

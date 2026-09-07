@@ -281,7 +281,7 @@ export default function ScreeningAutomationPage() {
   const templateName = (id: string) => templates.find((t) => t.id === id)?.name ?? "—";
 
   return (
-    <div className="min-h-screen bg-[#FDFDFF] p-4 md:p-6 lg:p-8 pt-4 animate-in fade-in duration-500">
+    <div className="min-h-screen bg-[#FDFEFF] p-4 md:p-6 lg:p-8 pt-4 animate-in fade-in duration-500">
       {/* Toast */}
       <AnimatePresence>
         {toast && (
@@ -328,7 +328,7 @@ export default function ScreeningAutomationPage() {
         {canAccess("communications:moderate") && (
           <button
             onClick={openCreate}
-            className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3 bg-[#0F172A] text-white rounded-xl text-[10px] font-black   hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
+            className="w-full sm:w-auto flex items-center justify-center gap-2.5 px-6 py-3 bg-[#263238] text-white rounded-xl text-[10px] font-black   hover:bg-slate-800 transition-all active:scale-95 shadow-lg shadow-slate-200"
           >
             <span className="material-symbols-rounded text-lg">add_circle</span>
             {tr("automation.addRule")}
@@ -522,7 +522,7 @@ export default function ScreeningAutomationPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="w-full py-4 bg-[#0F172A] text-white rounded-xl text-[11px] font-black  tracking-[0.2em] hover:bg-slate-800 transition-all active:scale-95 disabled:opacity-50 shadow-xl shadow-slate-200"
+                  className="w-full py-4 bg-[#263238] text-white rounded-xl text-[11px] font-black  tracking-[0.2em] hover:bg-slate-800 transition-all active:scale-95 disabled:opacity-50 shadow-xl shadow-slate-200"
                 >
                   {saving ? tr("automation.savingCaps") : editingId ? tr("automation.updateRule") : tr("automation.saveRule")}
                 </button>

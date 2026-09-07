@@ -32,29 +32,29 @@ export default function PublishJobModal({ isOpen, onClose, jobId, jobTitle, toke
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-[#0E1014]/50 backdrop-blur-sm"
+                        className="absolute inset-0 bg-[#1E2A38]/50 backdrop-blur-sm"
                         onClick={onClose}
                     />
                     <motion.div
                         initial={{ scale: 0.96, opacity: 0, y: 12 }}
                         animate={{ scale: 1, opacity: 1, y: 0 }}
                         exit={{ scale: 0.96, opacity: 0, y: 12 }}
-                        className="bg-white w-full max-w-[460px] max-h-[88vh] overflow-y-auto rounded-[16px] shadow-[0_22px_60px_rgba(15,23,42,0.24)] relative z-10 border border-[#E8EAED]"
+                        className="bg-white w-full max-w-[460px] max-h-[88vh] overflow-y-auto rounded-[4px] shadow-[0_22px_60px_rgba(0,0,0,0.24)] relative z-10 border border-[#E0E0E0]"
                     >
-                        <div className="px-5 py-4 border-b border-[#E8EAED] flex items-center justify-between sticky top-0 bg-white z-10">
+                        <div className="px-5 py-4 border-b border-[#E0E0E0] flex items-center justify-between sticky top-0 bg-white z-10">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-9 h-9 rounded-[10px] bg-[#5B53E0] text-white flex items-center justify-center shadow-[0_4px_12px_rgba(91,83,224,0.28)]">
+                                <div className="w-9 h-9 rounded-[4px] bg-[#1976D2] text-white flex items-center justify-center shadow-[0_4px_12px_rgba(25,118,210,0.28)]">
                                     <Globe className="w-4.5 h-4.5" />
                                 </div>
                                 <div>
-                                    <h3 className="text-[15px] font-bold text-[#15171C] leading-tight">{tr("forms2.publishJob")}</h3>
-                                    <p className="text-[12px] text-[#8A929E] mt-0.5">{tr("forms2.distributePortals")}</p>
+                                    <h3 className="text-[15px] font-bold text-[#212121] leading-tight">{tr("forms2.publishJob")}</h3>
+                                    <p className="text-[12px] text-[#757575] mt-0.5">{tr("forms2.distributePortals")}</p>
                                 </div>
                             </div>
                             <button
                                 onClick={onClose}
                                 aria-label={tr("common.cancel")}
-                                className="w-7 h-7 rounded-[8px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors"
+                                className="w-7 h-7 rounded-[4px] hover:bg-[#F5F6F8] text-[#757575] hover:text-[#424242] flex items-center justify-center transition-colors"
                             >
                                 <X className="w-4 h-4" />
                             </button>

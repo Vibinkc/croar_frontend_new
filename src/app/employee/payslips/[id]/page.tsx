@@ -15,11 +15,11 @@ function LineTable({ title, lines, currency }: { title: string; lines: ResolvedL
   return (
     <Card padding="none" className="overflow-hidden">
       <CardHeader className="px-6 pt-6" title={title} />
-      <div className="divide-y divide-[#F0F0F1]">
+      <div className="divide-y divide-[#EEEEEE]">
         {lines.map((l, i) => (
           <div key={`${l.code}-${i}`} className="flex items-center justify-between px-6 py-3">
-            <span className="text-[13px] text-[#374151]">{l.label}</span>
-            <span className={`text-[13px] font-semibold text-[#15171C] ${jetbrainsMono.className}`}>{money(l.amount, currency)}</span>
+            <span className="text-[13px] text-[#424242]">{l.label}</span>
+            <span className={`text-[13px] font-semibold text-[#212121] ${jetbrainsMono.className}`}>{money(l.amount, currency)}</span>
           </div>
         ))}
       </div>
@@ -51,22 +51,22 @@ export default function MyPayslipDetailPage({ params }: { params: Promise<{ id: 
       />
 
       {error && (
-        <div className="flex items-center gap-2.5 rounded-[12px] border border-[#FBD5D5] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
+        <div className="flex items-center gap-2.5 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[13px] font-medium text-[#C62828]">
           <span className="material-symbols-rounded text-[18px]">error</span> {error}
         </div>
       )}
 
       {!ps && !error ? (
         <div className="space-y-6">
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">{[1, 2, 3].map((i) => <div key={i} className="h-24 rounded-[14px] bg-[#F4F5F7] border border-[#E8EAED] animate-pulse" />)}</div>
-          <div className="h-48 rounded-[14px] bg-[#F4F5F7] border border-[#E8EAED] animate-pulse" />
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">{[1, 2, 3].map((i) => <div key={i} className="h-24 rounded-[4px] bg-[#F5F6F8] border border-[#E0E0E0] animate-pulse" />)}</div>
+          <div className="h-48 rounded-[4px] bg-[#F5F6F8] border border-[#E0E0E0] animate-pulse" />
         </div>
       ) : ps ? (
         <>
           <StatGrid className="lg:grid-cols-3">
-            <StatCard label={t("employee.grossEarnings")} value={money(ps.gross_earnings, currency)} icon="trending_up" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-            <StatCard label={t("employee.totalDeductions")} value={money(ps.total_deductions, currency)} icon="trending_down" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
-            <StatCard label={t("employee.netPay")} value={money(ps.net_pay, currency)} icon="payments" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
+            <StatCard label={t("employee.grossEarnings")} value={money(ps.gross_earnings, currency)} icon="trending_up" gradient="linear-gradient(135deg,#66BB6A,#2E7D32)" glow="rgba(46,125,50,0.25)" />
+            <StatCard label={t("employee.totalDeductions")} value={money(ps.total_deductions, currency)} icon="trending_down" gradient="linear-gradient(135deg,#FFB74D,#EF6C00)" glow="rgba(239,108,0,0.25)" />
+            <StatCard label={t("employee.netPay")} value={money(ps.net_pay, currency)} icon="payments" gradient="linear-gradient(135deg,#42A5F5,#1976D2)" glow="rgba(25,118,210,0.28)" />
           </StatGrid>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">

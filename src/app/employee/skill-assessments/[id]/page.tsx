@@ -107,7 +107,7 @@ export default function EmployeeSkillAssessmentTake() {
 
   if (phase === "LOADING") {
     return (
-      <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center">
+      <div className="min-h-screen bg-[#1E2A38] flex items-center justify-center">
         <div className="w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
       </div>
     );
@@ -116,7 +116,7 @@ export default function EmployeeSkillAssessmentTake() {
   if (phase === "ERROR") {
     const linked = !isNoEmployeeLink(error);
     return (
-      <div className="min-h-screen bg-[#0A0A0B] flex flex-col items-center justify-center p-6 text-slate-300">
+      <div className="min-h-screen bg-[#1E2A38] flex flex-col items-center justify-center p-6 text-slate-300">
         <div className="w-full max-w-md bg-slate-900/50 border border-slate-800 rounded-3xl p-10 text-center">
           <AlertCircle className="w-10 h-10 text-red-500 mx-auto mb-6" />
           <h2 className="text-xl font-black text-white mb-3">{t("employee.couldNotLoadAssessment")}</h2>
@@ -131,7 +131,7 @@ export default function EmployeeSkillAssessmentTake() {
 
   if (phase === "INTRO" && test) {
     return (
-      <div className="min-h-screen bg-[#0A0A0B] flex flex-col items-center justify-center p-6 text-slate-300">
+      <div className="min-h-screen bg-[#1E2A38] flex flex-col items-center justify-center p-6 text-slate-300">
         <div className="w-full max-w-2xl space-y-8">
           <div className="text-center space-y-4">
             <div className="w-16 h-16 bg-indigo-600/10 rounded-2xl flex items-center justify-center mx-auto border border-indigo-500/20">
@@ -186,7 +186,7 @@ export default function EmployeeSkillAssessmentTake() {
     const q = test.questions[currentIdx];
     if (!q) {
       return (
-        <div className="min-h-screen bg-[#0A0A0B] flex items-center justify-center text-slate-500">
+        <div className="min-h-screen bg-[#1E2A38] flex items-center justify-center text-slate-500">
           <div className="flex flex-col items-center gap-4">
             <AlertCircle className="w-12 h-12 text-slate-800" />
             <p className="text-sm font-black">{t("employee.noQuestionsInAssessment")}</p>
@@ -198,7 +198,7 @@ export default function EmployeeSkillAssessmentTake() {
     const answered = test.questions.filter((x) => (answers[x.id] || "").trim()).length;
 
     return (
-      <div className="h-screen bg-[#0A0A0B] flex flex-col text-slate-300 font-sans selection:bg-indigo-500/30">
+      <div className="h-screen bg-[#1E2A38] flex flex-col text-slate-300 font-sans selection:bg-indigo-500/30">
         {/* Header */}
         <header className="h-16 border-b border-slate-800 flex items-center justify-between px-6 bg-slate-950/50 backdrop-blur-md shrink-0">
           <div className="flex items-center gap-5">
@@ -334,7 +334,7 @@ export default function EmployeeSkillAssessmentTake() {
         <style jsx global>{`
           .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
           .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-          .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+          .custom-scrollbar::-webkit-scrollbar-thumb { background: #37474F; border-radius: 10px; }
           .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #334155; }
         `}</style>
       </div>
@@ -343,7 +343,7 @@ export default function EmployeeSkillAssessmentTake() {
 
   // COMPLETED
   return (
-    <div className="min-h-screen bg-[#0A0A0B] flex flex-col items-center justify-center p-6 text-slate-300">
+    <div className="min-h-screen bg-[#1E2A38] flex flex-col items-center justify-center p-6 text-slate-300">
       <div className="w-full max-w-md bg-slate-900/50 border border-slate-800 rounded-3xl p-10 text-center shadow-2xl backdrop-blur-xl">
         <div className="w-20 h-20 bg-emerald-500/10 text-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-8 border border-emerald-500/20">
           <CheckCircle2 className="w-10 h-10" />

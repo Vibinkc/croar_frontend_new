@@ -328,7 +328,7 @@ export default function JobDetailPage() {
             case "Awaiting Confirmation": return "bg-amber-50 text-amber-600 border-amber-100";
             case "Completed": return "bg-emerald-50 text-emerald-600 border-emerald-100";
             case "Discontinued": return "bg-rose-50 text-rose-600 border-rose-100";
-            default: return "bg-[#F7F8FA] text-[#4B5563] border-[#E8EAED]";
+            default: return "bg-[#FAFAFA] text-[#4F4F4F] border-[#E0E0E0]";
         }
     };
 
@@ -347,18 +347,18 @@ export default function JobDetailPage() {
     if (isLoading) {
         return (
             <div className="px-4 sm:px-5 md:px-7 pb-20 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
-                <div className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED]">
-                    <div className="h-7 w-48 bg-[#E8EAED] rounded-[8px] animate-pulse" />
-                    <div className="h-3.5 w-32 bg-[#F0F0F1] rounded-[6px] animate-pulse mt-2" />
+                <div className="sticky top-0 z-20 py-3 bg-[#F5F6F8]/95 backdrop-blur-sm border-b border-[#E0E0E0]">
+                    <div className="h-7 w-48 bg-[#E0E0E0] rounded-[4px] animate-pulse" />
+                    <div className="h-3.5 w-32 bg-[#EEEEEE] rounded-[3px] animate-pulse mt-2" />
                 </div>
                 <StatGrid className="lg:grid-cols-5">
                     {[1, 2, 3, 4, 5].map(i => (
-                        <div key={i} className="h-[104px] bg-white border border-[#E8EAED] rounded-[14px] animate-pulse" />
+                        <div key={i} className="h-[104px] bg-white border border-[#E0E0E0] rounded-[4px] animate-pulse" />
                     ))}
                 </StatGrid>
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div className="lg:col-span-2 h-[380px] bg-white border border-[#E8EAED] rounded-[14px] animate-pulse" />
-                    <div className="h-[380px] bg-white border border-[#E8EAED] rounded-[14px] animate-pulse" />
+                    <div className="lg:col-span-2 h-[380px] bg-white border border-[#E0E0E0] rounded-[4px] animate-pulse" />
+                    <div className="h-[380px] bg-white border border-[#E0E0E0] rounded-[4px] animate-pulse" />
                 </div>
             </div>
         );
@@ -368,12 +368,12 @@ export default function JobDetailPage() {
         return (
             <div className="px-4 sm:px-5 md:px-7 pb-20 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
                 <Card className="flex flex-col items-center justify-center text-center py-20 mt-6">
-                    <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5 text-[#C7CCD4]">
+                    <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5 text-[#BDBDBD]">
                         <span className="material-symbols-rounded text-3xl">work_off</span>
                     </div>
-                    <h1 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("jobDetail.jobNotFound")}</h1>
-                    <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-6">{tr("jobDetail.jobNotFoundDesc")}</p>
-                    <Link href="/enterprise/jobs" className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-colors">
+                    <h1 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("jobDetail.jobNotFound")}</h1>
+                    <p className="text-[#757575] text-[14px] max-w-xs mx-auto mb-6">{tr("jobDetail.jobNotFoundDesc")}</p>
+                    <Link href="/enterprise/jobs" className="inline-flex items-center gap-2 h-[42px] px-4 rounded-[4px] bg-[#1976D2] text-white text-[13.5px] font-semibold hover:bg-[#1565C0] shadow-[0_6px_16px_rgba(25,118,210,0.28)] transition-colors">
                         <span className="material-symbols-rounded text-[19px]">arrow_back</span>
                         {tr("jobDetail.backToJobs")}
                     </Link>
@@ -417,10 +417,10 @@ export default function JobDetailPage() {
 
     // Match-score distribution (donut)
     const scoreBuckets = [
-        { name: "Strong (80+)", value: applications.filter(a => (a.ai_match_score ?? 0) >= 80).length, color: "#15803D" },
-        { name: "Good (60–79)", value: applications.filter(a => (a.ai_match_score ?? 0) >= 60 && (a.ai_match_score ?? 0) < 80).length, color: "#5B53E0" },
-        { name: "Low (<60)", value: applications.filter(a => (a.ai_match_score ?? 0) > 0 && (a.ai_match_score ?? 0) < 60).length, color: "#D97706" },
-        { name: "Unscored", value: applications.filter(a => !a.ai_match_score).length, color: "#C7CCD4" },
+        { name: "Strong (80+)", value: applications.filter(a => (a.ai_match_score ?? 0) >= 80).length, color: "#2E7D32" },
+        { name: "Good (60–79)", value: applications.filter(a => (a.ai_match_score ?? 0) >= 60 && (a.ai_match_score ?? 0) < 80).length, color: "#1976D2" },
+        { name: "Low (<60)", value: applications.filter(a => (a.ai_match_score ?? 0) > 0 && (a.ai_match_score ?? 0) < 60).length, color: "#EF6C00" },
+        { name: "Unscored", value: applications.filter(a => !a.ai_match_score).length, color: "#BDBDBD" },
     ].filter(b => b.value > 0);
     const scoreTotal = scoreBuckets.reduce((s, b) => s + b.value, 0);
 
@@ -446,27 +446,27 @@ export default function JobDetailPage() {
     return (
         <div className="px-4 sm:px-5 md:px-7 pb-20 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
             {/* Header (sticky) */}
-            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <header className="sticky top-0 z-20 py-3 bg-[#F5F6F8]/95 backdrop-blur-sm border-b border-[#E0E0E0] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3.5 min-w-0">
                     <button
                         onClick={() => router.back()}
-                        className="w-10 h-10 flex items-center justify-center rounded-[10px] border border-[#E1E4E8] bg-white text-[#4B5563] hover:bg-[#F7F8FA] transition-all shrink-0"
+                        className="w-10 h-10 flex items-center justify-center rounded-[4px] border border-[#E0E0E0] bg-white text-[#4F4F4F] hover:bg-[#FAFAFA] transition-all shrink-0"
                         aria-label={tr("jobDetail.goBack")}
                     >
                         <span className="material-symbols-rounded text-xl">arrow_back</span>
                     </button>
                     <div className="min-w-0">
-                        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#9AA3AF] mb-0.5">
-                            <Link href="/enterprise/jobs" className="hover:text-[#5B53E0] transition-colors">{tr("jobDetail.jobsBreadcrumb")}</Link>
+                        <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#9E9E9E] mb-0.5">
+                            <Link href="/enterprise/jobs" className="hover:text-[#1976D2] transition-colors">{tr("jobDetail.jobsBreadcrumb")}</Link>
                             <span>/</span>
                             <span className={jetbrainsMono.className}>{job.id.slice(0, 8)}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#212121] leading-tight flex flex-wrap items-center gap-x-2.5 gap-y-1">
                                 <span className="truncate">{job.title}</span>
                                 <Badge tone={statusMeta(job.status_id).tone} dot>{getStatusLabel(job.status_id)}</Badge>
                                 {job.location && (
-                                    <span className="inline-flex items-center gap-1 text-[12.5px] font-medium text-[#8A929E]">
+                                    <span className="inline-flex items-center gap-1 text-[12.5px] font-medium text-[#757575]">
                                         <span className="material-symbols-rounded text-[15px]">location_on</span>
                                         {job.location}
                                     </span>
@@ -491,11 +491,11 @@ export default function JobDetailPage() {
             {/* Metric Cards */}
             <StatGrid className="lg:grid-cols-5">
                 {[
-                    { label: tr("jobDetail.statPipeline"), value: metrics?.pipeline || 0, icon: "account_tree", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" },
-                    { label: tr("jobDetail.statSubmitted"), value: metrics?.submitted || 0, icon: "assignment_ind", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
-                    { label: tr("jobDetail.statInterviews"), value: metrics?.interviews || 0, icon: "groups", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
+                    { label: tr("jobDetail.statPipeline"), value: metrics?.pipeline || 0, icon: "account_tree", grad: "linear-gradient(135deg,#42A5F5,#1976D2)", glow: "rgba(25,118,210,0.28)" },
+                    { label: tr("jobDetail.statSubmitted"), value: metrics?.submitted || 0, icon: "assignment_ind", grad: "linear-gradient(135deg,#42A5F5,#1565C0)", glow: "rgba(21,101,192,0.25)" },
+                    { label: tr("jobDetail.statInterviews"), value: metrics?.interviews || 0, icon: "groups", grad: "linear-gradient(135deg,#FFB74D,#EF6C00)", glow: "rgba(239,108,0,0.25)" },
                     { label: tr("jobDetail.statRejected"), value: metrics?.rejected || 0, icon: "block", grad: "linear-gradient(135deg,#F08C8C,#E5484D)", glow: "rgba(229,72,77,0.22)" },
-                    { label: tr("jobDetail.statOnboarded"), value: metrics?.onboarded || 0, icon: "person_add", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
+                    { label: tr("jobDetail.statOnboarded"), value: metrics?.onboarded || 0, icon: "person_add", grad: "linear-gradient(135deg,#66BB6A,#2E7D32)", glow: "rgba(46,125,50,0.25)" },
                 ].map((card, i) => (
                     <StatCard key={i} label={card.label} value={card.value} icon={card.icon} gradient={card.grad} glow={card.glow} />
                 ))}
@@ -504,14 +504,14 @@ export default function JobDetailPage() {
             {/* Tabs & Content */}
             <div className="space-y-6">
                     {/* Tabs Navigation — scrolls horizontally, with arrows for the overflow. */}
-                    <div className="relative border-b border-[#E1E4E8]">
+                    <div className="relative border-b border-[#E0E0E0]">
                         {canScrollTabsLeft && (
                             <>
                                 <button
                                     type="button"
                                     onClick={() => scrollTabs(-1)}
                                     aria-label={tr("jobDetail.scrollTabsLeft")}
-                                    className="absolute left-0 top-0 bottom-[4px] z-20 w-8 flex items-center justify-center bg-white text-[#6B6F76] hover:text-[#5B53E0] transition-colors"
+                                    className="absolute left-0 top-0 bottom-[4px] z-20 w-8 flex items-center justify-center bg-white text-[#616161] hover:text-[#1976D2] transition-colors"
                                 >
                                     <span className="material-symbols-rounded text-[22px]">chevron_left</span>
                                 </button>
@@ -551,7 +551,7 @@ export default function JobDetailPage() {
                                 key={tab.id}
                                 onClick={() => setActiveTab(tab.id)}
                                 className={`pb-4 px-1 text-sm font-bold whitespace-nowrap transition-all relative ${
-                                    activeTab === tab.id ? "text-[#5B53E0]" : "text-[#6B6F76] hover:text-[#374151]"
+                                    activeTab === tab.id ? "text-[#1976D2]" : "text-[#616161] hover:text-[#424242]"
                                 }`}
                             >
                                 {({
@@ -571,7 +571,7 @@ export default function JobDetailPage() {
                                 } as Record<string, string>)[tab.id] ?? tab.label}
                                 {tab.count !== undefined && <span className="ml-1 text-xs">({tab.count})</span>}
                                 {activeTab === tab.id && (
-                                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#5B53E0] rounded-full"></div>
+                                    <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#1976D2] rounded-full"></div>
                                 )}
                             </button>
                         ))}
@@ -584,7 +584,7 @@ export default function JobDetailPage() {
                                     type="button"
                                     onClick={() => scrollTabs(1)}
                                     aria-label={tr("jobDetail.scrollTabsRight")}
-                                    className="absolute right-0 top-0 bottom-[4px] z-20 w-8 flex items-center justify-center bg-white text-[#6B6F76] hover:text-[#5B53E0] transition-colors"
+                                    className="absolute right-0 top-0 bottom-[4px] z-20 w-8 flex items-center justify-center bg-white text-[#616161] hover:text-[#1976D2] transition-colors"
                                 >
                                     <span className="material-symbols-rounded text-[22px]">chevron_right</span>
                                 </button>
@@ -601,38 +601,38 @@ export default function JobDetailPage() {
                                 <Card className="lg:col-span-2 overflow-hidden">
                                      <div className="flex items-center justify-between mb-8">
                                         <div>
-                                            <h3 className="text-sm font-bold text-[#15171C]  tracking-tight">{tr("jobDetail.recruitmentPipeline")}</h3>
-                                            <p className="text-[10px] font-bold text-[#9AA3AF]   mt-0.5">{tr("jobDetail.distRounds")}</p>
+                                            <h3 className="text-sm font-bold text-[#212121]  tracking-tight">{tr("jobDetail.recruitmentPipeline")}</h3>
+                                            <p className="text-[10px] font-bold text-[#9E9E9E]   mt-0.5">{tr("jobDetail.distRounds")}</p>
                                         </div>
-                                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#F7F8FA] border border-[#E8EAED] rounded-[10px]">
-                                            <span className="w-2 h-2 rounded-full bg-[#5B53E0]"></span>
-                                            <span className="text-[10px] font-bold text-[#4B5563]  tracking-tight">{totalCandidates} {tr("jobDetail.total")}</span>
+                                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#FAFAFA] border border-[#E0E0E0] rounded-[4px]">
+                                            <span className="w-2 h-2 rounded-full bg-[#1976D2]"></span>
+                                            <span className="text-[10px] font-bold text-[#4F4F4F]  tracking-tight">{totalCandidates} {tr("jobDetail.total")}</span>
                                         </div>
                                     </div>
 
                                     <div className="h-[300px] w-full">
                                         <ResponsiveContainer width="100%" height="100%">
                                             <BarChart data={pipelineData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E8EAED" />
+                                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E0E0E0" />
                                                 <XAxis 
                                                     dataKey="name" 
                                                     axisLine={false} 
                                                     tickLine={false} 
-                                                    tick={{ fontSize: 10, fontWeight: 700, fill: '#8A929E' }} 
+                                                    tick={{ fontSize: 10, fontWeight: 700, fill: '#757575' }} 
                                                     dy={10}
                                                 />
                                                 <YAxis 
                                                     axisLine={false} 
                                                     tickLine={false} 
-                                                    tick={{ fontSize: 10, fontWeight: 700, fill: '#C7CCD4' }}
+                                                    tick={{ fontSize: 10, fontWeight: 700, fill: '#BDBDBD' }}
                                                 />
                                                 <RechartsTooltip 
-                                                    cursor={{ fill: '#F7F8FA' }}
+                                                    cursor={{ fill: '#FAFAFA' }}
                                                     content={({ active, payload }) => {
                                                         if (active && payload && payload.length) {
                                                             return (
-                                                                <div className="bg-[#15171C] border border-[#1F2127] rounded-[10px] p-3 shadow-xl">
-                                                                    <p className="text-[10px] font-bold text-[#9AA3AF]   leading-none mb-1">{payload[0].payload.name}</p>
+                                                                <div className="bg-[#212121] border border-[#263238] rounded-[4px] p-3 shadow-xl">
+                                                                    <p className="text-[10px] font-bold text-[#9E9E9E]   leading-none mb-1">{payload[0].payload.name}</p>
                                                                     <p className="text-xs font-bold text-white">{tr("jobDetail.nCandidates", { count: payload[0].value as number })}</p>
                                                                 </div>
                                                             );
@@ -642,7 +642,7 @@ export default function JobDetailPage() {
                                                 />
                                                 <Bar dataKey="count" radius={[6, 6, 0, 0]} barSize={40}>
                                                     {pipelineData.map((entry, index) => (
-                                                        <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "#5B53E0" : "#8B7DFF"} fillOpacity={1 - (index * 0.1)} />
+                                                        <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "#1976D2" : "#42A5F5"} fillOpacity={1 - (index * 0.1)} />
                                                     ))}
                                                 </Bar>
                                             </BarChart>
@@ -662,17 +662,17 @@ export default function JobDetailPage() {
                                         />
                                     )}
                                     <Card>
-                                        <h3 className="text-[13px] font-bold text-[#15171C] mb-4">{tr("jobDetail.stageEfficiency")}</h3>
+                                        <h3 className="text-[13px] font-bold text-[#212121] mb-4">{tr("jobDetail.stageEfficiency")}</h3>
                                         <div className="space-y-4">
                                             {pipelineData.map((stage, i) => (
                                                 <div key={i} className="flex flex-col gap-1.5">
                                                     <div className="flex items-center justify-between">
-                                                        <span className="text-[10px] font-bold text-[#6B6F76]  tracking-tight">{stage.name}</span>
-                                                        <span className="text-[10px] font-bold text-[#15171C] ">{Math.round((stage.count / (totalCandidates || 1)) * 100)}%</span>
+                                                        <span className="text-[10px] font-bold text-[#616161]  tracking-tight">{stage.name}</span>
+                                                        <span className="text-[10px] font-bold text-[#212121] ">{Math.round((stage.count / (totalCandidates || 1)) * 100)}%</span>
                                                     </div>
-                                                    <div className="w-full h-1.5 bg-[#F7F8FA] rounded-full overflow-hidden border border-[#E8EAED]">
+                                                    <div className="w-full h-1.5 bg-[#FAFAFA] rounded-full overflow-hidden border border-[#E0E0E0]">
                                                         <div 
-                                                            className="h-full bg-[#5B53E0] transition-all duration-1000"
+                                                            className="h-full bg-[#1976D2] transition-all duration-1000"
                                                             style={{ width: `${(stage.count / (totalCandidates || 1)) * 100}%`, opacity: 1 - (i * 0.15) }}
                                                         ></div>
                                                     </div>
@@ -681,8 +681,8 @@ export default function JobDetailPage() {
                                         </div>
                                     </Card>
 
-                                    <div className="rounded-[14px] p-6 shadow-[0_10px_24px_rgba(91,83,224,0.3)]" style={{ background: "linear-gradient(135deg,#6E63E6,#4A43C9)" }}>
-                                        <div className="w-10 h-10 rounded-[11px] bg-white/15 flex items-center justify-center text-white mb-4">
+                                    <div className="rounded-[4px] p-6 shadow-[0_10px_24px_rgba(25,118,210,0.3)]" style={{ background: "linear-gradient(135deg,#6E63E6,#1565C0)" }}>
+                                        <div className="w-10 h-10 rounded-[4px] bg-white/15 flex items-center justify-center text-white mb-4">
                                             <span className="material-symbols-rounded text-white">trending_up</span>
                                         </div>
                                         <h4 className="text-[15px] font-bold text-white tracking-tight">{tr("jobDetail.quickInsight")}</h4>
@@ -697,14 +697,14 @@ export default function JobDetailPage() {
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 {/* Match-score distribution donut */}
                                 <Card>
-                                    <h3 className="text-[15px] font-bold text-[#15171C]">{tr("jobDetail.matchScoreMix")}</h3>
-                                    <p className="text-[12.5px] text-[#8A929E] mt-0.5 mb-3">{tr("jobDetail.aiFitPipeline")}</p>
+                                    <h3 className="text-[15px] font-bold text-[#212121]">{tr("jobDetail.matchScoreMix")}</h3>
+                                    <p className="text-[12.5px] text-[#757575] mt-0.5 mb-3">{tr("jobDetail.aiFitPipeline")}</p>
                                     {scoreTotal === 0 ? (
                                         <div className="flex flex-col items-center justify-center text-center py-10">
-                                            <div className="w-12 h-12 rounded-[12px] bg-[#F4F5F7] text-[#8A929E] flex items-center justify-center mb-3">
+                                            <div className="w-12 h-12 rounded-[4px] bg-[#F5F6F8] text-[#757575] flex items-center justify-center mb-3">
                                                 <span className="material-symbols-rounded text-2xl">donut_large</span>
                                             </div>
-                                            <p className="text-[13px] text-[#8A929E]">{tr("jobDetail.noScoredCandidates")}</p>
+                                            <p className="text-[13px] text-[#757575]">{tr("jobDetail.noScoredCandidates")}</p>
                                         </div>
                                     ) : (
                                         <>
@@ -717,16 +717,16 @@ export default function JobDetailPage() {
                                                     </PieChart>
                                                 </ResponsiveContainer>
                                                 <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                                    <span className={`text-[26px] font-semibold text-[#15171C] leading-none ${jetbrainsMono.className}`}>{scoreTotal}</span>
-                                                    <span className="text-[11px] text-[#8A929E] mt-1">{tr("jobDetail.candidatesLower")}</span>
+                                                    <span className={`text-[26px] font-semibold text-[#212121] leading-none ${jetbrainsMono.className}`}>{scoreTotal}</span>
+                                                    <span className="text-[11px] text-[#757575] mt-1">{tr("jobDetail.candidatesLower")}</span>
                                                 </div>
                                             </div>
                                             <div className="mt-4 space-y-2">
                                                 {scoreBuckets.map((b) => (
                                                     <div key={b.name} className="flex items-center gap-2">
                                                         <span className="w-2.5 h-2.5 rounded-[3px]" style={{ background: b.color }} />
-                                                        <span className="text-[12.5px] text-[#374151] flex-1">{b.name}</span>
-                                                        <span className={`text-[12.5px] font-semibold text-[#15171C] ${jetbrainsMono.className}`}>{b.value}</span>
+                                                        <span className="text-[12.5px] text-[#424242] flex-1">{b.name}</span>
+                                                        <span className={`text-[12.5px] font-semibold text-[#212121] ${jetbrainsMono.className}`}>{b.value}</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -736,14 +736,14 @@ export default function JobDetailPage() {
 
                                 {/* Applications over time (area) */}
                                 <Card className="lg:col-span-2">
-                                    <h3 className="text-[15px] font-bold text-[#15171C]">{tr("jobDetail.applicationsOverTime")}</h3>
-                                    <p className="text-[12.5px] text-[#8A929E] mt-0.5 mb-3">{tr("jobDetail.last14Days")}</p>
+                                    <h3 className="text-[15px] font-bold text-[#212121]">{tr("jobDetail.applicationsOverTime")}</h3>
+                                    <p className="text-[12.5px] text-[#757575] mt-0.5 mb-3">{tr("jobDetail.last14Days")}</p>
                                     {!hasTimeData ? (
                                         <div className="flex flex-col items-center justify-center text-center py-14">
-                                            <div className="w-12 h-12 rounded-[12px] bg-[#F4F5F7] text-[#8A929E] flex items-center justify-center mb-3">
+                                            <div className="w-12 h-12 rounded-[4px] bg-[#F5F6F8] text-[#757575] flex items-center justify-center mb-3">
                                                 <span className="material-symbols-rounded text-2xl">show_chart</span>
                                             </div>
-                                            <p className="text-[13px] text-[#8A929E]">{tr("jobDetail.noApplicationsWindow")}</p>
+                                            <p className="text-[13px] text-[#757575]">{tr("jobDetail.noApplicationsWindow")}</p>
                                         </div>
                                     ) : (
                                         <div className="h-[200px] w-full">
@@ -751,20 +751,20 @@ export default function JobDetailPage() {
                                                 <AreaChart data={appsByDay} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                                     <defs>
                                                         <linearGradient id="appsArea" x1="0" y1="0" x2="0" y2="1">
-                                                            <stop offset="0%" stopColor="#5B53E0" stopOpacity={0.28} />
-                                                            <stop offset="100%" stopColor="#5B53E0" stopOpacity={0} />
+                                                            <stop offset="0%" stopColor="#1976D2" stopOpacity={0.28} />
+                                                            <stop offset="100%" stopColor="#1976D2" stopOpacity={0} />
                                                         </linearGradient>
                                                     </defs>
-                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E8EAED" />
-                                                    <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 600, fill: '#8A929E' }} interval={1} dy={8} />
-                                                    <YAxis axisLine={false} tickLine={false} allowDecimals={false} tick={{ fontSize: 10, fontWeight: 600, fill: '#C7CCD4' }} />
+                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E0E0E0" />
+                                                    <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 600, fill: '#757575' }} interval={1} dy={8} />
+                                                    <YAxis axisLine={false} tickLine={false} allowDecimals={false} tick={{ fontSize: 10, fontWeight: 600, fill: '#BDBDBD' }} />
                                                     <RechartsTooltip
-                                                        cursor={{ stroke: '#5B53E0', strokeWidth: 1, strokeDasharray: '4 4' }}
+                                                        cursor={{ stroke: '#1976D2', strokeWidth: 1, strokeDasharray: '4 4' }}
                                                         content={({ active, payload }) => {
                                                             if (active && payload && payload.length) {
                                                                 return (
-                                                                    <div className="bg-[#0E1014] rounded-[10px] px-3 py-2 shadow-xl">
-                                                                        <p className="text-[10px] font-semibold text-[#9AA3AF] leading-none mb-1">{payload[0].payload.label}</p>
+                                                                    <div className="bg-[#1E2A38] rounded-[4px] px-3 py-2 shadow-xl">
+                                                                        <p className="text-[10px] font-semibold text-[#9E9E9E] leading-none mb-1">{payload[0].payload.label}</p>
                                                                         <p className="text-[12.5px] font-semibold text-white">{tr("jobDetail.nApplicants", { count: payload[0].value as number })}</p>
                                                                     </div>
                                                                 );
@@ -772,7 +772,7 @@ export default function JobDetailPage() {
                                                             return null;
                                                         }}
                                                     />
-                                                    <Area type="monotone" dataKey="count" stroke="#5B53E0" strokeWidth={2.5} fill="url(#appsArea)" dot={false} activeDot={{ r: 4, fill: '#5B53E0' }} />
+                                                    <Area type="monotone" dataKey="count" stroke="#1976D2" strokeWidth={2.5} fill="url(#appsArea)" dot={false} activeDot={{ r: 4, fill: '#1976D2' }} />
                                                 </AreaChart>
                                             </ResponsiveContainer>
                                         </div>
@@ -785,13 +785,13 @@ export default function JobDetailPage() {
                     {/* Active Tab Content (Info) */}
                     {activeTab === "info" && (
                         <Card padding="none" className="overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="flex items-center gap-3 px-6 py-4 border-b border-[#F0F0F1]">
-                                <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                            <div className="flex items-center gap-3 px-6 py-4 border-b border-[#EEEEEE]">
+                                <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
                                     <span className="material-symbols-rounded text-[20px]">info</span>
                                 </span>
                                 <div>
-                                    <h3 className="text-[15px] font-bold text-[#15171C]">{tr("jobDetail.jobDetailsTitle")}</h3>
-                                    <p className="text-[12px] text-[#8A929E]">{tr("jobDetail.requisitionInfo")}</p>
+                                    <h3 className="text-[15px] font-bold text-[#212121]">{tr("jobDetail.jobDetailsTitle")}</h3>
+                                    <p className="text-[12px] text-[#757575]">{tr("jobDetail.requisitionInfo")}</p>
                                 </div>
                             </div>
 
@@ -820,28 +820,28 @@ export default function JobDetailPage() {
                                         },
                                         { label: tr("jobDetail.infoWorkMode"), value: job.work_mode || tr("jobDetail.onSite"), icon: "home_work" },
                                     ].map((d) => (
-                                        <div key={d.label} className="flex items-start gap-3 p-4 rounded-[12px] bg-[#F7F8FA] border border-[#E8EAED]">
-                                            <span className="w-9 h-9 rounded-[10px] bg-white border border-[#E8EAED] text-[#5B53E0] flex items-center justify-center shrink-0">
+                                        <div key={d.label} className="flex items-start gap-3 p-4 rounded-[4px] bg-[#FAFAFA] border border-[#E0E0E0]">
+                                            <span className="w-9 h-9 rounded-[4px] bg-white border border-[#E0E0E0] text-[#1976D2] flex items-center justify-center shrink-0">
                                                 <span className="material-symbols-rounded text-[19px]">{d.icon}</span>
                                             </span>
                                             <div className="min-w-0">
-                                                <p className="text-[11px] font-semibold uppercase tracking-wide text-[#9AA3AF]">{d.label}</p>
-                                                <p className="text-[14px] font-semibold text-[#15171C] mt-0.5 break-words">{d.value}</p>
+                                                <p className="text-[11px] font-semibold uppercase tracking-wide text-[#9E9E9E]">{d.label}</p>
+                                                <p className="text-[14px] font-semibold text-[#212121] mt-0.5 break-words">{d.value}</p>
                                             </div>
                                         </div>
                                     ))}
                                 </div>
 
-                                <div className="mt-5 pt-5 border-t border-[#F0F0F1]">
-                                    <p className="text-[11px] font-semibold uppercase tracking-wide text-[#9AA3AF] mb-3">{tr("jobDetail.requiredSkills")}</p>
+                                <div className="mt-5 pt-5 border-t border-[#EEEEEE]">
+                                    <p className="text-[11px] font-semibold uppercase tracking-wide text-[#9E9E9E] mb-3">{tr("jobDetail.requiredSkills")}</p>
                                     <div className="flex flex-wrap gap-2">
                                         {job.required_skills?.map((skill, i) => (
-                                            <span key={i} className="px-3 py-1.5 bg-[#ECEBFB] text-[#5B53E0] text-[12px] font-medium rounded-[8px]">
+                                            <span key={i} className="px-3 py-1.5 bg-[#E3F2FD] text-[#1976D2] text-[12px] font-medium rounded-[4px]">
                                                 {skill.trim()}
                                             </span>
                                         ))}
                                         {(!job.required_skills || job.required_skills.length === 0) && (
-                                            <span className="text-[13px] text-[#9AA3AF]">{tr("jobDetail.noSkills")}</span>
+                                            <span className="text-[13px] text-[#9E9E9E]">{tr("jobDetail.noSkills")}</span>
                                         )}
                                     </div>
                                 </div>
@@ -852,22 +852,22 @@ export default function JobDetailPage() {
                     {/* Candidate Bank Tab Content — bank candidates whose skills fit THIS job. */}
                     {activeTab === "candidate_bank" && (
                         <Card padding="none" className="overflow-hidden min-h-[400px] animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="px-6 py-4 border-b border-[#E8EAED] flex items-center gap-2">
-                                <h3 className="text-sm font-bold text-[#15171C] tracking-tight">{tr("jobDetail.candidateBankMatches")}</h3>
+                            <div className="px-6 py-4 border-b border-[#E0E0E0] flex items-center gap-2">
+                                <h3 className="text-sm font-bold text-[#212121] tracking-tight">{tr("jobDetail.candidateBankMatches")}</h3>
                                 <PageHelp title={tr("jobDetail.helpTitleCandidateBank")}><p>{tr("jobDetail.helpCandidateBank")}</p></PageHelp>
                             </div>
                             {isMatchingLoading ? (
-                                <div className="p-10 text-center text-[13px] text-[#8A929E]">{tr("jobDetail.findingCandidates")}</div>
+                                <div className="p-10 text-center text-[13px] text-[#757575]">{tr("jobDetail.findingCandidates")}</div>
                             ) : matchingCands.length === 0 ? (
                                 <div className="p-12 text-center">
-                                    <p className="text-sm font-bold text-[#15171C]">{tr("jobDetail.noBankMatches")}</p>
-                                    <p className="text-xs text-[#6B6F76] font-semibold mt-1 max-w-md mx-auto">{tr("jobDetail.noBankMatchesDesc")}</p>
+                                    <p className="text-sm font-bold text-[#212121]">{tr("jobDetail.noBankMatches")}</p>
+                                    <p className="text-xs text-[#616161] font-semibold mt-1 max-w-md mx-auto">{tr("jobDetail.noBankMatchesDesc")}</p>
                                 </div>
                             ) : (
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left border-collapse">
                                         <thead>
-                                            <tr className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] border-b border-[#E8EAED]">
+                                            <tr className="text-[11px] font-bold text-[#757575] uppercase tracking-[0.06em] border-b border-[#E0E0E0]">
                                                 <th className="px-6 py-3">{tr("jobDetail.colCandidate")}</th>
                                                 <th className="px-6 py-3">{tr("jobDetail.colSkillMatch")}</th>
                                                 <th className="px-6 py-3">{tr("jobDetail.colMatchedSkills")}</th>
@@ -876,33 +876,33 @@ export default function JobDetailPage() {
                                         </thead>
                                         <tbody>
                                             {matchingCands.map((c, idx: number) => (
-                                                <tr key={idx} className="border-b border-[#F0F0F1] hover:bg-[#F7F8FA]/60 transition-colors">
+                                                <tr key={idx} className="border-b border-[#EEEEEE] hover:bg-[#FAFAFA]/60 transition-colors">
                                                     <td className="px-6 py-3.5">
-                                                        <div className="font-bold text-[13px] text-[#15171C]">{c.full_name || tr("jobDetail.unknown")}</div>
-                                                        {c.email && <div className="text-[11.5px] text-[#8A929E]">{c.email}</div>}
+                                                        <div className="font-bold text-[13px] text-[#212121]">{c.full_name || tr("jobDetail.unknown")}</div>
+                                                        {c.email && <div className="text-[11.5px] text-[#757575]">{c.email}</div>}
                                                     </td>
                                                     <td className="px-6 py-3.5">
-                                                        <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-[#ECEBFB] text-[#5B53E0] text-[11px] font-bold">{c.match_pct}% · {c.match_count} skills</span>
+                                                        <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-[#E3F2FD] text-[#1976D2] text-[11px] font-bold">{c.match_pct}% · {c.match_count} skills</span>
                                                     </td>
                                                     <td className="px-6 py-3.5">
                                                         <div className="flex flex-wrap gap-1.5 max-w-[280px]">
                                                             {(c.matched_skills || []).slice(0, 4).map((s: string, i: number) => (
-                                                                <span key={i} className="px-2 py-0.5 rounded-[7px] bg-white border border-[#E8EAED] text-[11px] text-[#374151] font-semibold">{s}</span>
+                                                                <span key={i} className="px-2 py-0.5 rounded-[4px] bg-white border border-[#E0E0E0] text-[11px] text-[#424242] font-semibold">{s}</span>
                                                             ))}
-                                                            {(c.matched_skills || []).length > 4 && <span className="text-[11px] text-[#9AA3AF] font-semibold self-center">+{c.matched_skills.length - 4}</span>}
+                                                            {(c.matched_skills || []).length > 4 && <span className="text-[11px] text-[#9E9E9E] font-semibold self-center">+{c.matched_skills.length - 4}</span>}
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-3.5 text-right">
                                                         {c.already_applied ? (
-                                                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#15803D]"><span className="material-icons-outlined text-[14px]">how_to_reg</span>{tr("jobDetail.applied")}</span>
+                                                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#2E7D32]"><span className="material-icons-outlined text-[14px]">how_to_reg</span>{tr("jobDetail.applied")}</span>
                                                         ) : c.already_invited ? (
-                                                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#5B53E0]"><span className="material-icons-outlined text-[14px]">mark_email_read</span>{tr("jobDetail.invited")}</span>
+                                                            <span className="inline-flex items-center gap-1 text-[11px] font-bold text-[#1976D2]"><span className="material-icons-outlined text-[14px]">mark_email_read</span>{tr("jobDetail.invited")}</span>
                                                         ) : (
                                                             <button
                                                                 onClick={() => inviteFromBank(c.id)}
                                                                 disabled={invitingCandId === c.id || !c.email}
                                                                 title={!c.email ? tr("jobDetail.noEmailOnRecord") : tr("jobDetail.emailToApply")}
-                                                                className="h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[12px] font-semibold hover:bg-[#4A43C9] disabled:opacity-50 transition-colors inline-flex items-center gap-1.5"
+                                                                className="h-9 px-4 rounded-[4px] bg-[#1976D2] text-white text-[12px] font-semibold hover:bg-[#1565C0] disabled:opacity-50 transition-colors inline-flex items-center gap-1.5"
                                                             >
                                                                 <span className="material-icons-outlined text-[15px]">mail</span>
                                                                 {invitingCandId === c.id ? tr("jobDetail.sending") : tr("jobDetail.invite")}
@@ -935,7 +935,7 @@ export default function JobDetailPage() {
                         <>
                             <button
                                 onClick={() => setSourcingView("hub")}
-                                className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[#5B53E0] hover:text-[#4840C4] transition-colors mb-4"
+                                className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[#1976D2] hover:text-[#1565C0] transition-colors mb-4"
                             >
                                 <span className="material-symbols-rounded text-[18px]">arrow_back</span>
                                 {tr("jobSourcing.backToChannels")}
@@ -954,7 +954,7 @@ export default function JobDetailPage() {
                     {activeTab === "sourcing" && sourcingView === "profile" && (
                         <button
                             onClick={() => setSourcingView("hub")}
-                            className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[#5B53E0] hover:text-[#4840C4] transition-colors mb-4"
+                            className="flex items-center gap-1.5 text-[12.5px] font-semibold text-[#1976D2] hover:text-[#1565C0] transition-colors mb-4"
                         >
                             <span className="material-symbols-rounded text-[18px]">arrow_back</span>
                             {tr("jobSourcing.backToChannels")}
@@ -964,32 +964,32 @@ export default function JobDetailPage() {
                     {/* Profile Sourcing Tab Content */}
                     {activeTab === "sourcing" && sourcingView === "profile" && (
                         <Card padding="none" className="overflow-hidden min-h-[400px] animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="px-6 py-4 border-b border-[#E8EAED] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div className="px-6 py-4 border-b border-[#E0E0E0] flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                 <div className="flex items-center gap-2">
-                                    <h3 className="text-sm font-bold text-[#15171C] tracking-tight">{tr("jobDetail.profileSourcing")}</h3>
+                                    <h3 className="text-sm font-bold text-[#212121] tracking-tight">{tr("jobDetail.profileSourcing")}</h3>
                                     <PageHelp title={tr("jobDetail.profileSourcing")}><p>{tr("jobDetail.helpProfileSourcing")}</p></PageHelp>
                                 </div>
                                 {sourced?.summary && (
                                     <div className="flex flex-wrap items-center gap-2 text-[11px] font-semibold">
-                                        <span className="px-2.5 py-1 rounded-full bg-[#ECEBFB] text-[#5B53E0]">{tr("jobDetail.nSourced", { count: sourced.summary.invited ?? 0 })}</span>
-                                        <span className="px-2.5 py-1 rounded-full bg-[#E7ECFB] text-[#3559C7]">{tr("jobDetail.nMailSent", { count: sourced.summary.mail_sent ?? 0 })}</span>
-                                        <span className="px-2.5 py-1 rounded-full bg-[#E6F4EA] text-[#15803D]">{tr("jobDetail.nApplied", { count: sourced.summary.applied ?? 0 })}</span>
-                                        <span className="px-2.5 py-1 rounded-full bg-[#FEF3E2] text-[#D97706]">{tr("jobDetail.nAwaiting", { count: sourced.summary.awaiting ?? 0 })}</span>
+                                        <span className="px-2.5 py-1 rounded-full bg-[#E3F2FD] text-[#1976D2]">{tr("jobDetail.nSourced", { count: sourced.summary.invited ?? 0 })}</span>
+                                        <span className="px-2.5 py-1 rounded-full bg-[#E3F2FD] text-[#1565C0]">{tr("jobDetail.nMailSent", { count: sourced.summary.mail_sent ?? 0 })}</span>
+                                        <span className="px-2.5 py-1 rounded-full bg-[#E8F5E9] text-[#2E7D32]">{tr("jobDetail.nApplied", { count: sourced.summary.applied ?? 0 })}</span>
+                                        <span className="px-2.5 py-1 rounded-full bg-[#FFF3E0] text-[#EF6C00]">{tr("jobDetail.nAwaiting", { count: sourced.summary.awaiting ?? 0 })}</span>
                                     </div>
                                 )}
                             </div>
                             {isSourcedLoading ? (
-                                <div className="p-10 text-center text-[13px] text-[#8A929E]">{tr("jobDetail.loadingSourced")}</div>
+                                <div className="p-10 text-center text-[13px] text-[#757575]">{tr("jobDetail.loadingSourced")}</div>
                             ) : !sourced?.candidates?.length ? (
                                 <div className="p-12 text-center">
-                                    <p className="text-sm font-bold text-[#15171C]">{tr("jobDetail.noSourced")}</p>
-                                    <p className="text-xs text-[#6B6F76] font-semibold mt-1 max-w-md mx-auto">{tr("jobDetail.noSourcedDesc")}</p>
+                                    <p className="text-sm font-bold text-[#212121]">{tr("jobDetail.noSourced")}</p>
+                                    <p className="text-xs text-[#616161] font-semibold mt-1 max-w-md mx-auto">{tr("jobDetail.noSourcedDesc")}</p>
                                 </div>
                             ) : (
                                 <div className="overflow-x-auto">
                                     <table className="w-full text-left border-collapse">
                                         <thead>
-                                            <tr className="text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] border-b border-[#E8EAED]">
+                                            <tr className="text-[11px] font-bold text-[#757575] uppercase tracking-[0.06em] border-b border-[#E0E0E0]">
                                                 <th className="px-6 py-3">{tr("jobDetail.colCandidate")}</th>
                                                 <th className="px-6 py-3">{tr("jobDetail.colSource")}</th>
                                                 <th className="px-6 py-3">{tr("jobDetail.colInviteEmail")}</th>
@@ -999,45 +999,45 @@ export default function JobDetailPage() {
                                         </thead>
                                         <tbody>
                                             {sourced.candidates.map((c, idx: number) => (
-                                                <tr key={idx} className="border-b border-[#F0F0F1] hover:bg-[#F7F8FA]/60 transition-colors">
+                                                <tr key={idx} className="border-b border-[#EEEEEE] hover:bg-[#FAFAFA]/60 transition-colors">
                                                     <td className="px-6 py-3.5">
-                                                        <div className="font-bold text-[13px] text-[#15171C]">{c.full_name || tr("jobDetail.unknown")}</div>
-                                                        {c.email && <div className="text-[11.5px] text-[#8A929E]">{c.email}</div>}
+                                                        <div className="font-bold text-[13px] text-[#212121]">{c.full_name || tr("jobDetail.unknown")}</div>
+                                                        {c.email && <div className="text-[11.5px] text-[#757575]">{c.email}</div>}
                                                     </td>
                                                     <td className="px-6 py-3.5">
                                                         {c.profile_url ? (
-                                                            <a href={c.profile_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[12px] font-semibold text-[#5B53E0] hover:underline">
+                                                            <a href={c.profile_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-[12px] font-semibold text-[#1976D2] hover:underline">
                                                                 {c.platform || tr("jobDetail.profile")} <span className="material-icons-outlined text-[14px]">open_in_new</span>
                                                             </a>
                                                         ) : (
-                                                            <span className="text-[12px] font-semibold text-[#6B6F76]">{c.platform || "—"}</span>
+                                                            <span className="text-[12px] font-semibold text-[#616161]">{c.platform || "—"}</span>
                                                         )}
                                                     </td>
                                                     <td className="px-6 py-3.5">
                                                         {c.invite_status === "sent" ? (
-                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#E6F4EA] text-[#15803D] text-[11px] font-semibold"><span className="material-icons-outlined text-[14px]">mark_email_read</span>{tr("jobDetail.sent")}</span>
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#E8F5E9] text-[#2E7D32] text-[11px] font-semibold"><span className="material-icons-outlined text-[14px]">mark_email_read</span>{tr("jobDetail.sent")}</span>
                                                         ) : c.invite_status === "failed" ? (
-                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FDECEC] text-[#C0383C] text-[11px] font-semibold"><span className="material-icons-outlined text-[14px]">error</span>{tr("jobDetail.failed")}</span>
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FFEBEE] text-[#C62828] text-[11px] font-semibold"><span className="material-icons-outlined text-[14px]">error</span>{tr("jobDetail.failed")}</span>
                                                         ) : (
-                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FEF3E2] text-[#D97706] text-[11px] font-semibold"><span className="material-icons-outlined text-[14px]">drafts</span>{tr("jobDetail.notEmailed")}</span>
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#FFF3E0] text-[#EF6C00] text-[11px] font-semibold"><span className="material-icons-outlined text-[14px]">drafts</span>{tr("jobDetail.notEmailed")}</span>
                                                         )}
                                                     </td>
                                                     <td className="px-6 py-3.5">
                                                         {c.applied ? (
-                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#ECEBFB] text-[#5B53E0] text-[11px] font-semibold"><span className="material-icons-outlined text-[14px]">how_to_reg</span>{tr("jobDetail.appliedInPipeline")}</span>
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#E3F2FD] text-[#1976D2] text-[11px] font-semibold"><span className="material-icons-outlined text-[14px]">how_to_reg</span>{tr("jobDetail.appliedInPipeline")}</span>
                                                         ) : (
-                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#F1F2F5] text-[#6B6F76] text-[11px] font-semibold"><span className="material-icons-outlined text-[14px]">hourglass_empty</span>{tr("jobDetail.awaiting")}</span>
+                                                            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#EEEEEE] text-[#616161] text-[11px] font-semibold"><span className="material-icons-outlined text-[14px]">hourglass_empty</span>{tr("jobDetail.awaiting")}</span>
                                                         )}
                                                     </td>
                                                     <td className="px-6 py-3.5 text-right">
                                                         {c.invite_status === "sent" ? (
-                                                            <span className="text-[11.5px] font-semibold text-[#8A929E]">—</span>
+                                                            <span className="text-[11.5px] font-semibold text-[#757575]">—</span>
                                                         ) : (
                                                             <button
                                                                 onClick={() => sendSourcedInvite(c)}
                                                                 disabled={sendingInviteKey === (c.email || c.profile_url || "").toLowerCase()}
                                                                 title={c.email ? tr("jobDetail.sendInviteTo", { email: c.email }) : tr("jobDetail.noEmailTestInbox")}
-                                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[8px] bg-[#5B53E0] text-white text-[11.5px] font-bold hover:bg-[#4A43C9] transition-colors disabled:opacity-60"
+                                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-[#1976D2] text-white text-[11.5px] font-bold hover:bg-[#1565C0] transition-colors disabled:opacity-60"
                                                             >
                                                                 <span className="material-icons-outlined text-[15px]">send</span>
                                                                 {sendingInviteKey === (c.email || c.profile_url || "").toLowerCase()
@@ -1058,37 +1058,37 @@ export default function JobDetailPage() {
                     {/* Onboarding Tab Content */}
                     {activeTab === "onboarding_tab" && (
                         <Card padding="none" className="overflow-hidden min-h-[400px] animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="px-6 py-4 border-b border-[#E8EAED] flex items-center justify-between">
-                                <h3 className="text-[13px] font-bold text-[#15171C]">{tr("jobDetail.onboardingCandidates")}</h3>
+                            <div className="px-6 py-4 border-b border-[#E0E0E0] flex items-center justify-between">
+                                <h3 className="text-[13px] font-bold text-[#212121]">{tr("jobDetail.onboardingCandidates")}</h3>
                             </div>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
-                                        <tr className="bg-[#F7F8FA] border-b border-[#E8EAED]">
-                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("jobDetail.colCode")}</th>
-                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("jobDetail.colCandidate")}</th>
-                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-center">{tr("jobDetail.colStatus")}</th>
-                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("jobDetail.colActions")}</th>
+                                        <tr className="bg-[#FAFAFA] border-b border-[#E0E0E0]">
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("jobDetail.colCode")}</th>
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("jobDetail.colCandidate")}</th>
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-center">{tr("jobDetail.colStatus")}</th>
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("jobDetail.colActions")}</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-[#F0F0F1]">
+                                    <tbody className="divide-y divide-[#EEEEEE]">
                                         {onboardings.map((ob) => (
-                                            <tr key={ob.id} className="hover:bg-[#F7F8FA]/60 transition-colors group cursor-pointer" onClick={() => router.push(`/enterprise/onboarding/${ob.id}`)}>
+                                            <tr key={ob.id} className="hover:bg-[#FAFAFA]/60 transition-colors group cursor-pointer" onClick={() => router.push(`/enterprise/onboarding/${ob.id}`)}>
                                                 <td className="px-6 py-4">
-                                                    <span className={`text-[11px] font-semibold text-[#5B53E0] bg-[#ECEBFB] px-2 py-1 rounded-[8px] ${jetbrainsMono.className}`}>
+                                                    <span className={`text-[11px] font-semibold text-[#1976D2] bg-[#E3F2FD] px-2 py-1 rounded-[4px] ${jetbrainsMono.className}`}>
                                                         {ob.onboarding_code}
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="w-9 h-9 rounded-[10px] bg-[#E8EAED] text-[#8A929E] flex items-center justify-center font-extrabold text-[12px] uppercase">
+                                                        <div className="w-9 h-9 rounded-[4px] bg-[#E0E0E0] text-[#757575] flex items-center justify-center font-extrabold text-[12px] uppercase">
                                                             {ob.application?.candidate?.full_name?.charAt(0)}
                                                         </div>
                                                         <div className="min-w-0">
-                                                            <p className="text-[13.5px] font-bold text-[#15171C] leading-tight group-hover:text-[#5B53E0] transition-colors">
+                                                            <p className="text-[13.5px] font-bold text-[#212121] leading-tight group-hover:text-[#1976D2] transition-colors">
                                                                 {ob.application?.candidate?.full_name}
                                                             </p>
-                                                            <p className="text-[12px] text-[#8A929E]">
+                                                            <p className="text-[12px] text-[#757575]">
                                                                 {ob.application?.candidate?.email}
                                                             </p>
                                                         </div>
@@ -1096,7 +1096,7 @@ export default function JobDetailPage() {
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
                                                     {ob.status && (
-                                                        <span className={`inline-flex items-center text-[11px] font-semibold px-2.5 py-0.5 rounded-[20px] border ${getOnboardingStatusColor(ob.status.name)}`}>
+                                                        <span className={`inline-flex items-center text-[11px] font-semibold px-2.5 py-0.5 rounded-[4px] border ${getOnboardingStatusColor(ob.status.name)}`}>
                                                             {ob.status.name}
                                                         </span>
                                                     )}
@@ -1110,10 +1110,10 @@ export default function JobDetailPage() {
                                             <tr>
                                                 <td colSpan={4} className="px-6 py-20 text-center">
                                                     <div className="flex flex-col items-center gap-3">
-                                                        <div className="w-14 h-14 rounded-[16px] bg-[#F4F5F7] flex items-center justify-center text-[#C7CCD4]">
+                                                        <div className="w-14 h-14 rounded-[4px] bg-[#F5F6F8] flex items-center justify-center text-[#BDBDBD]">
                                                             <span className="material-symbols-rounded text-2xl">person_add</span>
                                                         </div>
-                                                        <p className="text-[14px] text-[#8A929E]">{tr("jobDetail.noOnboardingProcesses")}</p>
+                                                        <p className="text-[14px] text-[#757575]">{tr("jobDetail.noOnboardingProcesses")}</p>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -1179,53 +1179,53 @@ export default function JobDetailPage() {
                         render this list underneath Notes, Reports and every other trailing tab. */}
                     {!STATIC_TAB_IDS.has(activeTab) && (
                         <Card padding="none" className="overflow-hidden min-h-[400px]">
-                            <div className="px-6 py-4 border-b border-[#E8EAED] flex items-center justify-between gap-3">
-                                <h3 className="text-[13px] font-bold text-[#15171C]">{tr("jobDetail.candidates")}</h3>
+                            <div className="px-6 py-4 border-b border-[#E0E0E0] flex items-center justify-between gap-3">
+                                <h3 className="text-[13px] font-bold text-[#212121]">{tr("jobDetail.candidates")}</h3>
                                 <Input icon="search" type="text" placeholder={tr("jobDetail.searchPlaceholder")} className="h-9 w-44 sm:w-56" />
                             </div>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left">
                                     <thead>
-                                        <tr className="bg-[#F7F8FA] border-b border-[#E8EAED]">
-                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("jobDetail.colCandidate")}</th>
-                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-center">{tr("jobDetail.colMatchScore")}</th>
-                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("jobDetail.colStatus")}</th>
-                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("jobDetail.applied")}</th>
-                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]"></th>
+                                        <tr className="bg-[#FAFAFA] border-b border-[#E0E0E0]">
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("jobDetail.colCandidate")}</th>
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-center">{tr("jobDetail.colMatchScore")}</th>
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("jobDetail.colStatus")}</th>
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("jobDetail.applied")}</th>
+                                            <th className="px-6 py-3 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]"></th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-[#F0F0F1]">
+                                    <tbody className="divide-y divide-[#EEEEEE]">
                                         {applications
                                             .filter(app => {
                                                 const stage = job.stages?.find(s => s.name.toLowerCase().replace(/\s+/g, '_') === activeTab);
                                                 return stage ? app.current_stage === stage.id : false;
                                             })
                                             .map((app) => (
-                                                <tr key={app.id} className="hover:bg-[#F7F8FA]/60 transition-colors group cursor-pointer">
+                                                <tr key={app.id} className="hover:bg-[#FAFAFA]/60 transition-colors group cursor-pointer">
                                                     <td className="px-6 py-4">
                                                         <div className="flex items-center gap-3">
-                                                            <div className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center font-extrabold text-[12px] uppercase">
+                                                            <div className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center font-extrabold text-[12px] uppercase">
                                                                 {app.candidate?.full_name?.charAt(0)}
                                                             </div>
                                                             <div className="min-w-0">
-                                                                <p className="text-[13.5px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors">{app.candidate?.full_name}</p>
-                                                                <p className="text-[12px] text-[#8A929E]">{app.candidate?.email}</p>
+                                                                <p className="text-[13.5px] font-bold text-[#212121] group-hover:text-[#1976D2] transition-colors">{app.candidate?.full_name}</p>
+                                                                <p className="text-[12px] text-[#757575]">{app.candidate?.email}</p>
                                                             </div>
                                                         </div>
                                                     </td>
                                                     <td className="px-6 py-4">
                                                         <div className="flex flex-col items-center">
                                                             <div className={`text-[13px] font-bold ${jetbrainsMono.className} ${
-                                                                (app.ai_match_score || 0) > 80 ? "text-[#15803D]" :
-                                                                (app.ai_match_score || 0) > 60 ? "text-[#5B53E0]" : "text-[#6B6F76]"
+                                                                (app.ai_match_score || 0) > 80 ? "text-[#2E7D32]" :
+                                                                (app.ai_match_score || 0) > 60 ? "text-[#1976D2]" : "text-[#616161]"
                                                             }`}>
                                                                 {app.ai_match_score ? `${Math.round(app.ai_match_score)}%` : "-"}
                                                             </div>
-                                                            <div className="w-16 h-1 bg-[#E8EAED] rounded-full mt-1 overflow-hidden">
+                                                            <div className="w-16 h-1 bg-[#E0E0E0] rounded-full mt-1 overflow-hidden">
                                                                 <div
                                                                     className={`h-full rounded-full ${
-                                                                        (app.ai_match_score || 0) > 80 ? "bg-[#15803D]" :
-                                                                        (app.ai_match_score || 0) > 60 ? "bg-[#5B53E0]" : "bg-[#D4D7DC]"
+                                                                        (app.ai_match_score || 0) > 80 ? "bg-[#2E7D32]" :
+                                                                        (app.ai_match_score || 0) > 60 ? "bg-[#1976D2]" : "bg-[#E0E0E0]"
                                                                     }`}
                                                                     style={{ width: `${app.ai_match_score || 0}%` }}
                                                                 ></div>
@@ -1235,11 +1235,11 @@ export default function JobDetailPage() {
                                                     <td className="px-6 py-4">
                                                         <Badge tone="indigo">{tr("jobDetail.inProgress")}</Badge>
                                                     </td>
-                                                    <td className={`px-6 py-4 text-[12.5px] text-[#6B6F76] ${jetbrainsMono.className}`}>
+                                                    <td className={`px-6 py-4 text-[12.5px] text-[#616161] ${jetbrainsMono.className}`}>
                                                         {new Date(app.applied_at).toLocaleDateString()}
                                                     </td>
                                                     <td className="px-6 py-4 text-right">
-                                                        <button className="text-[#D4D7DC] hover:text-[#5B53E0] transition-colors">
+                                                        <button className="text-[#E0E0E0] hover:text-[#1976D2] transition-colors">
                                                             <span className="material-symbols-rounded text-lg">arrow_forward</span>
                                                         </button>
                                                     </td>
@@ -1252,10 +1252,10 @@ export default function JobDetailPage() {
                                             <tr>
                                                 <td colSpan={5} className="px-6 py-20 text-center">
                                                     <div className="flex flex-col items-center gap-3">
-                                                        <div className="w-14 h-14 rounded-[16px] bg-[#F4F5F7] flex items-center justify-center text-[#C7CCD4]">
+                                                        <div className="w-14 h-14 rounded-[4px] bg-[#F5F6F8] flex items-center justify-center text-[#BDBDBD]">
                                                             <span className="material-symbols-rounded text-2xl">person_search</span>
                                                         </div>
-                                                        <p className="text-[14px] text-[#8A929E]">{tr("jobDetail.noCandidatesStage")}</p>
+                                                        <p className="text-[14px] text-[#757575]">{tr("jobDetail.noCandidatesStage")}</p>
                                                     </div>
                                                 </td>
                                             </tr>

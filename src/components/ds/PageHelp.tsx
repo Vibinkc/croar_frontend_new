@@ -46,7 +46,7 @@ export function PageHelp({ title = "About this page", children, className }: Pag
                 aria-expanded={open}
                 className={cn(
                     "inline-flex items-center justify-center shrink-0 -my-1 transition-colors",
-                    open ? "text-[#5B53E0]" : "text-[#B5BCC6] hover:text-[#5B53E0]"
+                    open ? "text-[#1976D2]" : "text-[#B5BCC6] hover:text-[#1976D2]"
                 )}
             >
                 <span
@@ -58,9 +58,9 @@ export function PageHelp({ title = "About this page", children, className }: Pag
             </button>
 
             {open && (
-                <div className="absolute left-0 top-7 z-50 w-[280px] bg-white rounded-[12px] border border-[#E8EAED] shadow-[0_16px_40px_rgba(15,23,42,0.18)] p-4 animate-in fade-in zoom-in-95 duration-150">
-                    <h4 className="text-[13px] font-bold text-[#15171C] mb-1">{title}</h4>
-                    <div className="text-[12.5px] leading-relaxed text-[#374151] [&_a]:text-[#5B53E0] [&_a]:font-semibold [&_strong]:text-[#15171C] space-y-1.5">
+                <div className="absolute left-0 top-7 z-50 w-[280px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_16px_40px_rgba(0,0,0,0.18)] p-4 animate-in fade-in zoom-in-95 duration-150">
+                    <h4 className="text-[13px] font-bold text-[#212121] mb-1">{title}</h4>
+                    <div className="text-[12.5px] leading-relaxed text-[#424242] [&_a]:text-[#1976D2] [&_a]:font-semibold [&_strong]:text-[#212121] space-y-1.5">
                         {children}
                     </div>
                 </div>

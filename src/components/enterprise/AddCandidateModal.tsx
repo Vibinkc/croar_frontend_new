@@ -206,7 +206,7 @@ export default function AddCandidateModal({
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-[110] flex items-start justify-center bg-[#0E1014]/50 backdrop-blur-sm p-6 pt-[8vh]"
+                    className="fixed inset-0 z-[110] flex items-start justify-center bg-[#1E2A38]/50 backdrop-blur-sm p-6 pt-[8vh]"
                     onClick={onClose}
                 >
                     <motion.div
@@ -214,16 +214,16 @@ export default function AddCandidateModal({
                         animate={{ scale: 1, opacity: 1 }}
                         exit={{ scale: 0.97, opacity: 0 }}
                         onClick={e => e.stopPropagation()}
-                        className="bg-white w-full max-w-lg rounded-[16px] shadow-[0_14px_34px_rgba(15,23,42,0.16)] border border-[#E8EAED] overflow-hidden flex flex-col max-h-[76vh]"
+                        className="bg-white w-full max-w-lg rounded-[4px] shadow-[0_14px_34px_rgba(0,0,0,0.16)] border border-[#E0E0E0] overflow-hidden flex flex-col max-h-[76vh]"
                     >
-                        <div className="px-6 pt-5 pb-4 border-b border-[#F0F0F1]">
+                        <div className="px-6 pt-5 pb-4 border-b border-[#EEEEEE]">
                             <div className="flex items-start justify-between gap-4 mb-1">
                                 <div className="min-w-0">
-                                    <h2 className="text-[17px] font-extrabold text-[#15171C] tracking-[-0.3px]">
+                                    <h2 className="text-[17px] font-extrabold text-[#212121] tracking-[-0.3px]">
                                         {tr("addCandidate.title")}
                                     </h2>
                                     {jobTitle && (
-                                        <p className="text-[12.5px] text-[#8A929E] truncate">
+                                        <p className="text-[12.5px] text-[#757575] truncate">
                                             {tr("addCandidate.toJob", { job: jobTitle })}
                                         </p>
                                     )}
@@ -231,13 +231,13 @@ export default function AddCandidateModal({
                                 <button
                                     onClick={onClose}
                                     aria-label={tr("common.cancel")}
-                                    className="w-8 h-8 shrink-0 rounded-[10px] text-[#8A929E] hover:text-[#15171C] hover:bg-[#F7F8FA] transition-colors flex items-center justify-center"
+                                    className="w-8 h-8 shrink-0 rounded-[4px] text-[#757575] hover:text-[#212121] hover:bg-[#FAFAFA] transition-colors flex items-center justify-center"
                                 >
                                     <span className="material-symbols-rounded text-[20px]">close</span>
                                 </button>
                             </div>
 
-                            <div className="flex gap-5 mt-3 border-b border-[#F0F0F1] -mb-4">
+                            <div className="flex gap-5 mt-3 border-b border-[#EEEEEE] -mb-4">
                                 {([
                                     ["search", "person_search", tr("addCandidate.tabSearch")],
                                     ["upload", "upload_file", tr("addCandidate.tabUpload")],
@@ -248,12 +248,12 @@ export default function AddCandidateModal({
                                         onClick={() => { setMode(id); setError(""); }}
                                         className={cn(
                                             "relative pb-2.5 flex items-center gap-1.5 text-[13px] font-bold transition-colors",
-                                            mode === id ? "text-[#5B53E0]" : "text-[#8A929E] hover:text-[#374151]"
+                                            mode === id ? "text-[#1976D2]" : "text-[#757575] hover:text-[#424242]"
                                         )}
                                     >
                                         <span className="material-symbols-rounded text-[17px]">{icon}</span>
                                         {label}
-                                        {mode === id && <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-[#5B53E0] rounded-full" />}
+                                        {mode === id && <span className="absolute left-0 right-0 bottom-0 h-0.5 bg-[#1976D2] rounded-full" />}
                                     </button>
                                 ))}
                             </div>
@@ -275,40 +275,40 @@ export default function AddCandidateModal({
 
                         <div className="flex-1 overflow-y-auto">
                             {error && (
-                                <div className="mx-6 mt-4 rounded-[10px] border border-[#F5C6C7] bg-[#FDECEC] px-3.5 py-2.5 text-[12.5px] text-[#C0383C]">
+                                <div className="mx-6 mt-4 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-3.5 py-2.5 text-[12.5px] text-[#C62828]">
                                     {error}
                                 </div>
                             )}
 
                             {mode !== "search" ? null : isSearching && results.length === 0 ? (
-                                <p className="py-12 text-center text-[13px] text-[#8A929E]">
+                                <p className="py-12 text-center text-[13px] text-[#757575]">
                                     {tr("addCandidate.searching")}
                                 </p>
                             ) : results.length === 0 ? (
                                 <div className="py-12 px-6 text-center">
-                                    <span className="material-symbols-rounded text-[32px] text-[#C7CCD4]">person_search</span>
-                                    <p className="text-[13.5px] font-bold text-[#15171C] mt-2">
+                                    <span className="material-symbols-rounded text-[32px] text-[#BDBDBD]">person_search</span>
+                                    <p className="text-[13.5px] font-bold text-[#212121] mt-2">
                                         {query ? tr("addCandidate.noMatches") : tr("addCandidate.poolEmpty")}
                                     </p>
-                                    <p className="text-[12px] text-[#8A929E] mt-1 leading-relaxed max-w-xs mx-auto">
+                                    <p className="text-[12px] text-[#757575] mt-1 leading-relaxed max-w-xs mx-auto">
                                         {query ? tr("addCandidate.noMatchesHint") : tr("addCandidate.poolEmptyHint")}
                                     </p>
                                 </div>
                             ) : (
-                                <ul className="divide-y divide-[#F0F0F1]">
+                                <ul className="divide-y divide-[#EEEEEE]">
                                     {results.map(c => {
                                         const alreadyOn = (c.applied_jobs || []).some(j => j.id === jobId);
                                         const added = addedIds.has(c.id) || alreadyOn;
                                         return (
                                             <li key={c.id} className="flex items-center gap-3 px-6 py-3">
-                                                <span className="w-9 h-9 shrink-0 rounded-full bg-[#ECEBFB] text-[#5B53E0] text-[12px] font-bold flex items-center justify-center">
+                                                <span className="w-9 h-9 shrink-0 rounded-full bg-[#E3F2FD] text-[#1976D2] text-[12px] font-bold flex items-center justify-center">
                                                     {initials(c.full_name)}
                                                 </span>
                                                 <div className="min-w-0 flex-1">
-                                                    <p className="text-[13.5px] font-bold text-[#15171C] truncate">
+                                                    <p className="text-[13.5px] font-bold text-[#212121] truncate">
                                                         {c.full_name || tr("addCandidate.unnamed")}
                                                     </p>
-                                                    <p className="text-[11.5px] text-[#8A929E] truncate">
+                                                    <p className="text-[11.5px] text-[#757575] truncate">
                                                         {c.email || (c.skills || []).slice(0, 4).join(" · ") || tr("addCandidate.noDetails")}
                                                     </p>
                                                 </div>
@@ -355,18 +355,18 @@ export default function AddCandidateModal({
                                         }}
                                         disabled={isUploading}
                                         className={cn(
-                                            "w-full rounded-[12px] border-2 border-dashed px-6 py-10 text-center transition-colors",
-                                            isDragging ? "border-[#5B53E0] bg-[#F5F4FE]" : "border-[#DDE0E5] bg-[#FAFBFC] hover:border-[#5B53E0]/50 hover:bg-[#F7F8FA]",
+                                            "w-full rounded-[4px] border-2 border-dashed px-6 py-10 text-center transition-colors",
+                                            isDragging ? "border-[#1976D2] bg-[#F5F4FE]" : "border-[#DDE0E5] bg-[#FAFAFA] hover:border-[#1976D2]/50 hover:bg-[#FAFAFA]",
                                             isUploading && "opacity-60 cursor-wait"
                                         )}
                                     >
-                                        <span className="material-symbols-rounded text-[32px] text-[#5B53E0]">
+                                        <span className="material-symbols-rounded text-[32px] text-[#1976D2]">
                                             {isUploading ? "progress_activity" : "cloud_upload"}
                                         </span>
-                                        <p className="text-[13.5px] font-bold text-[#15171C] mt-2">
+                                        <p className="text-[13.5px] font-bold text-[#212121] mt-2">
                                             {isUploading ? tr("addCandidate.cvReading") : tr("addCandidate.cvDrop")}
                                         </p>
-                                        <p className="text-[11.5px] text-[#8A929E] mt-1">{tr("addCandidate.cvHint")}</p>
+                                        <p className="text-[11.5px] text-[#757575] mt-1">{tr("addCandidate.cvHint")}</p>
                                     </button>
                                     <input
                                         ref={fileRef}
@@ -377,11 +377,11 @@ export default function AddCandidateModal({
                                     />
 
                                     {uploadResult && (
-                                        <div className="mt-4 rounded-[12px] border border-[#BFE3CC] bg-[#E6F4EA] p-4">
+                                        <div className="mt-4 rounded-[4px] border border-[#BFE3CC] bg-[#E8F5E9] p-4">
                                             <div className="flex items-start gap-2.5">
-                                                <span className="material-symbols-rounded text-[20px] text-[#15803D]">check_circle</span>
+                                                <span className="material-symbols-rounded text-[20px] text-[#2E7D32]">check_circle</span>
                                                 <div className="min-w-0">
-                                                    <p className="text-[13px] font-bold text-[#15171C]">
+                                                    <p className="text-[13px] font-bold text-[#212121]">
                                                         {uploadResult.already_on_job
                                                             ? tr("addCandidate.cvAlreadyOnJob", { name: uploadResult.full_name })
                                                             : uploadResult.created_candidate
@@ -402,7 +402,7 @@ export default function AddCandidateModal({
 
                             {mode === "invite" && (
                                 <div className="p-6 space-y-4">
-                                    <p className="text-[12.5px] text-[#6B6F76] leading-relaxed">
+                                    <p className="text-[12.5px] text-[#616161] leading-relaxed">
                                         {tr("addCandidate.formIntro")}
                                     </p>
                                     <div className="space-y-2.5">
@@ -433,22 +433,22 @@ export default function AddCandidateModal({
                                     </div>
 
                                     {inviteDone && (
-                                        <div className="rounded-[12px] border border-[#BFE3CC] bg-[#E6F4EA] px-4 py-3 text-[12.5px] text-[#15803D] flex items-center gap-2">
+                                        <div className="rounded-[4px] border border-[#BFE3CC] bg-[#E8F5E9] px-4 py-3 text-[12.5px] text-[#2E7D32] flex items-center gap-2">
                                             <span className="material-symbols-rounded text-[18px]">check_circle</span>
                                             {inviteDone}
                                         </div>
                                     )}
 
-                                    <div className="rounded-[12px] border border-[#E8EAED] bg-[#F7F8FA] p-4">
-                                        <p className="text-[12px] font-bold text-[#15171C] mb-1">{tr("addCandidate.shareLink")}</p>
-                                        <p className="text-[11.5px] text-[#8A929E] leading-relaxed mb-2.5">{tr("addCandidate.shareLinkHint")}</p>
+                                    <div className="rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] p-4">
+                                        <p className="text-[12px] font-bold text-[#212121] mb-1">{tr("addCandidate.shareLink")}</p>
+                                        <p className="text-[11.5px] text-[#757575] leading-relaxed mb-2.5">{tr("addCandidate.shareLinkHint")}</p>
                                         <div className="flex gap-2">
                                             <input
                                                 readOnly
                                                 value={applyLink}
                                                 onFocus={e => e.currentTarget.select()}
                                                 aria-label={tr("addCandidate.shareLink")}
-                                                className={cn("flex-1 min-w-0 h-10 px-3 rounded-[10px] border border-[#E8EAED] bg-white text-[12px] text-[#374151]", jetbrainsMono.className)}
+                                                className={cn("flex-1 min-w-0 h-10 px-3 rounded-[4px] border border-[#E0E0E0] bg-white text-[12px] text-[#424242]", jetbrainsMono.className)}
                                             />
                                             <Button
                                                 variant="secondary"
@@ -462,8 +462,8 @@ export default function AddCandidateModal({
                                 </div>
                             )}
 
-                        <div className="px-6 py-3.5 border-t border-[#F0F0F1] bg-[#FBFBFC] flex items-center justify-between gap-3">
-                            <p className="text-[11.5px] text-[#8A929E]">{mode === "search" ? tr("addCandidate.searchFirstHint") : mode === "upload" ? tr("addCandidate.uploadHint") : tr("addCandidate.inviteHint")}</p>
+                        <div className="px-6 py-3.5 border-t border-[#EEEEEE] bg-[#FAFAFA] flex items-center justify-between gap-3">
+                            <p className="text-[11.5px] text-[#757575]">{mode === "search" ? tr("addCandidate.searchFirstHint") : mode === "upload" ? tr("addCandidate.uploadHint") : tr("addCandidate.inviteHint")}</p>
                             <Button variant="secondary" size="sm" onClick={onClose}>
                                 {tr("common.done")}
                             </Button>

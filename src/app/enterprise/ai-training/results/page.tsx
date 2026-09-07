@@ -242,8 +242,8 @@ export default function ResultsDashboard() {
                                                         animate={{ width: `${res.overall_score * 10}%` }}
                                                         transition={{ duration: 1, delay: 0.5 }}
                                                         className={`h-full rounded-full ${
-                                                            res.overall_score >= 8 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 
-                                                            res.overall_score >= 5 ? 'bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.4)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.4)]'
+                                                            res.overall_score >= 8 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(67,160,71,0.4)]' : 
+                                                            res.overall_score >= 5 ? 'bg-indigo-500 shadow-[0_0_8px_rgba(25,118,210,0.4)]' : 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.4)]'
                                                         }`}
                                                     ></motion.div>
                                                 </div>

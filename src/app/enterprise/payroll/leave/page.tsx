@@ -34,7 +34,7 @@ const num = (v: number | string) =>
 const empName = (e: Employee) => `${e.first_name} ${e.last_name}`.trim() || e.email;
 
 const selectCls =
-  "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
+  "appearance-none bg-white border border-[#E0E0E0] rounded-[4px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#424242] outline-none cursor-pointer hover:bg-[#FAFAFA] focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all";
 
 export default function LeavePage() {
   const { can } = useAuth();
@@ -200,7 +200,7 @@ export default function LeavePage() {
       />
 
       {error && (
-        <div className="rounded-[10px] border border-[#FADADA] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
+        <div className="rounded-[4px] border border-[#FADADA] bg-[#FFEBEE] px-4 py-3 text-[13px] font-medium text-[#C62828]">
           {error}
         </div>
       )}
@@ -211,29 +211,29 @@ export default function LeavePage() {
           label={tr("payroll.pendingRequests")}
           value={pending.length}
           icon="pending_actions"
-          gradient="linear-gradient(135deg,#F6B65C,#D97706)"
-          glow="rgba(217,119,6,0.25)"
+          gradient="linear-gradient(135deg,#FFB74D,#EF6C00)"
+          glow="rgba(239,108,0,0.25)"
         />
         <StatCard
           label={tr("payroll.daysEntitled")}
           value={num(totalEntitled)}
           icon="event_available"
-          gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)"
-          glow="rgba(91,83,224,0.28)"
+          gradient="linear-gradient(135deg,#42A5F5,#1976D2)"
+          glow="rgba(25,118,210,0.28)"
         />
         <StatCard
           label={tr("payroll.daysUsed")}
           value={num(totalUsed)}
           icon="event_busy"
-          gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
-          glow="rgba(53,89,199,0.25)"
+          gradient="linear-gradient(135deg,#42A5F5,#1565C0)"
+          glow="rgba(21,101,192,0.25)"
         />
         <StatCard
           label={tr("payroll.daysRemaining")}
           value={num(totalRemaining)}
           icon="account_balance_wallet"
-          gradient="linear-gradient(135deg,#34D399,#0E8A6E)"
-          glow="rgba(14,138,110,0.25)"
+          gradient="linear-gradient(135deg,#66BB6A,#2E7D32)"
+          glow="rgba(46,125,50,0.25)"
         />
       </StatGrid>
 
@@ -287,12 +287,12 @@ export default function LeavePage() {
             </Field>
           </div>
           <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-            <label className="flex items-center gap-2 text-[13px] font-medium text-[#374151] cursor-pointer">
+            <label className="flex items-center gap-2 text-[13px] font-medium text-[#424242] cursor-pointer">
               <input
                 type="checkbox"
                 checked={reqForm.half_day}
                 onChange={(e) => setReqForm({ ...reqForm, half_day: e.target.checked })}
-                className="h-4 w-4 rounded accent-[#5B53E0]"
+                className="h-4 w-4 rounded accent-[#1976D2]"
               />
               {tr("payroll.halfDay")}
             </label>
@@ -306,18 +306,18 @@ export default function LeavePage() {
       {/* Toolbar: search + type filter */}
       <div className="flex flex-col md:flex-row md:items-center gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9E9E9E]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={tr("payroll.searchRequestsPlaceholder")}
-            className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
+            className="w-full h-10 bg-white border border-[#E0E0E0] rounded-[4px] pl-10 pr-4 text-[14px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all"
           />
         </div>
         <div className="flex items-center gap-2.5">
           <div className="relative flex-1 md:flex-none">
-            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
@@ -330,52 +330,52 @@ export default function LeavePage() {
                 </option>
               ))}
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
           </div>
         </div>
       </div>
 
       {/* Pending requests */}
       <section className="space-y-3">
-        <h2 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.pendingApprovals")}</h2>
-        <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden">
+        <h2 className="text-[15px] font-bold text-[#212121]">{tr("payroll.pendingApprovals")}</h2>
+        <div className="bg-white rounded-[4px] border border-[#E0E0E0] overflow-hidden">
           {loading ? (
             <div className="p-4 space-y-2.5">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-14 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+                <div key={i} className="h-14 bg-[#F5F6F8] rounded-[4px] animate-pulse" />
               ))}
             </div>
           ) : pendingShown.length === 0 ? (
             <div className="flex flex-col items-center justify-center p-12 md:p-16 text-center">
-              <div className="w-14 h-14 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-4">
-                <span className="material-symbols-rounded text-[28px] text-[#C7CCD4]">pending_actions</span>
+              <div className="w-14 h-14 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-4">
+                <span className="material-symbols-rounded text-[28px] text-[#BDBDBD]">pending_actions</span>
               </div>
-              <h3 className="text-[16px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-1.5">{tr("payroll.noPendingLeave")}</h3>
-              <p className="text-[#8A929E] text-[13.5px] max-w-xs mx-auto">{tr("payroll.pendingLeaveEmpty")}</p>
+              <h3 className="text-[16px] font-extrabold tracking-[-0.3px] text-[#212121] mb-1.5">{tr("payroll.noPendingLeave")}</h3>
+              <p className="text-[#757575] text-[13.5px] max-w-xs mx-auto">{tr("payroll.pendingLeaveEmpty")}</p>
             </div>
           ) : (
             <>
               {/* Column header (desktop) */}
-              <div className="hidden md:grid grid-cols-[2fr_1.2fr_1.4fr_0.7fr_180px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.employee")}</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.type")}</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.dates")}</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.days")}</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.actions")}</span>
+              <div className="hidden md:grid grid-cols-[2fr_1.2fr_1.4fr_0.7fr_180px] gap-4 px-5 py-3 bg-[#FAFAFA] border-b border-[#E0E0E0]">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.employee")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.type")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.dates")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.days")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.actions")}</span>
               </div>
-              <div className="divide-y divide-[#F0F0F1]">
+              <div className="divide-y divide-[#EEEEEE]">
                 {pendingShown.map((r) => (
                   <div
                     key={r.id}
-                    className="grid grid-cols-[1fr_auto] md:grid-cols-[2fr_1.2fr_1.4fr_0.7fr_180px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors"
+                    className="grid grid-cols-[1fr_auto] md:grid-cols-[2fr_1.2fr_1.4fr_0.7fr_180px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#FAFAFA] transition-colors"
                   >
                     {/* Employee */}
                     <div className="min-w-0">
-                      <span className="block text-[14px] font-bold text-[#15171C] truncate">
+                      <span className="block text-[14px] font-bold text-[#212121] truncate">
                         {r.employee_name || r.employee_id.slice(0, 8)}
                       </span>
                       {/* mobile-only meta */}
-                      <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[12px] text-[#8A929E] md:hidden">
+                      <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[12px] text-[#757575] md:hidden">
                         <span>{r.leave_type_name || r.leave_type_code}</span>
                         <span className={jetbrainsMono.className}>
                           {r.start_date}
@@ -387,19 +387,19 @@ export default function LeavePage() {
                     </div>
 
                     {/* Type (desktop) */}
-                    <div className="hidden md:block text-[13px] text-[#374151] truncate">
+                    <div className="hidden md:block text-[13px] text-[#424242] truncate">
                       {r.leave_type_name || r.leave_type_code}
                     </div>
 
                     {/* Dates (desktop) */}
-                    <div className={`hidden md:block text-[13px] text-[#374151] ${jetbrainsMono.className}`}>
+                    <div className={`hidden md:block text-[13px] text-[#424242] ${jetbrainsMono.className}`}>
                       {r.start_date}
                       {r.start_date !== r.end_date && <> → {r.end_date}</>}
                       {r.half_day && " (½)"}
                     </div>
 
                     {/* Days (desktop) */}
-                    <div className={`hidden md:block text-[13px] text-[#374151] text-right ${jetbrainsMono.className}`}>
+                    <div className={`hidden md:block text-[13px] text-[#424242] text-right ${jetbrainsMono.className}`}>
                       {num(r.days)}
                     </div>
 
@@ -412,7 +412,7 @@ export default function LeavePage() {
                             disabled={busy}
                             size="sm"
                             variant="primary"
-                            className="bg-[#16A34A] hover:bg-[#15803D] shadow-[0_6px_16px_rgba(22,163,74,0.22)]"
+                            className="bg-[#2E7D32] hover:bg-[#2E7D32] shadow-[0_6px_16px_rgba(22,163,74,0.22)]"
                           >
                             {tr("payroll.approve")}
                           </Button>
@@ -447,63 +447,63 @@ export default function LeavePage() {
 
       {/* Balances */}
       <section className="space-y-3">
-        <h2 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.leaveBalances")}</h2>
-        <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden">
+        <h2 className="text-[15px] font-bold text-[#212121]">{tr("payroll.leaveBalances")}</h2>
+        <div className="bg-white rounded-[4px] border border-[#E0E0E0] overflow-hidden">
           {loading ? (
             <div className="p-4 space-y-2.5">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-14 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+                <div key={i} className="h-14 bg-[#F5F6F8] rounded-[4px] animate-pulse" />
               ))}
             </div>
           ) : balances.length === 0 ? (
             <div className="flex flex-col items-center justify-center p-12 md:p-16 text-center">
-              <div className="w-14 h-14 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-4">
-                <span className="material-symbols-rounded text-[28px] text-[#C7CCD4]">account_balance_wallet</span>
+              <div className="w-14 h-14 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-4">
+                <span className="material-symbols-rounded text-[28px] text-[#BDBDBD]">account_balance_wallet</span>
               </div>
-              <h3 className="text-[16px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-1.5">{tr("payroll.noBalances")}</h3>
-              <p className="text-[#8A929E] text-[13.5px] max-w-xs mx-auto">{tr("payroll.balancesEmpty")}</p>
+              <h3 className="text-[16px] font-extrabold tracking-[-0.3px] text-[#212121] mb-1.5">{tr("payroll.noBalances")}</h3>
+              <p className="text-[#757575] text-[13.5px] max-w-xs mx-auto">{tr("payroll.balancesEmpty")}</p>
             </div>
           ) : (
             <>
               {/* Column header (desktop) */}
-              <div className="hidden md:grid grid-cols-[2fr_1fr_repeat(4,0.8fr)] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.employee")}</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.type")}</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.entitled")}</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.accrued")}</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.used")}</span>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.balance")}</span>
+              <div className="hidden md:grid grid-cols-[2fr_1fr_repeat(4,0.8fr)] gap-4 px-5 py-3 bg-[#FAFAFA] border-b border-[#E0E0E0]">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.employee")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.type")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.entitled")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.accrued")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.used")}</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.balance")}</span>
               </div>
-              <div className="divide-y divide-[#F0F0F1]">
+              <div className="divide-y divide-[#EEEEEE]">
                 {balances.map((b) => (
                   <div
                     key={b.id}
-                    className="grid grid-cols-2 md:grid-cols-[2fr_1fr_repeat(4,0.8fr)] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors"
+                    className="grid grid-cols-2 md:grid-cols-[2fr_1fr_repeat(4,0.8fr)] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#FAFAFA] transition-colors"
                   >
                     {/* Employee */}
                     <div className="min-w-0 col-span-2 md:col-span-1">
-                      <span className="block text-[14px] font-bold text-[#15171C] truncate">
+                      <span className="block text-[14px] font-bold text-[#212121] truncate">
                         {b.employee_name || b.employee_id.slice(0, 8)}
                       </span>
-                      <span className="block text-[12px] text-[#8A929E] md:hidden">{b.leave_type_code || b.leave_type_name}</span>
+                      <span className="block text-[12px] text-[#757575] md:hidden">{b.leave_type_code || b.leave_type_name}</span>
                     </div>
 
                     {/* Type (desktop) */}
-                    <div className="hidden md:block text-[13px] text-[#374151] truncate">
+                    <div className="hidden md:block text-[13px] text-[#424242] truncate">
                       {b.leave_type_code || b.leave_type_name}
                     </div>
 
-                    <div className="md:hidden text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.entitled")}</div>
-                    <div className={`text-[13px] text-[#374151] md:text-right text-right ${jetbrainsMono.className}`}>{num(b.entitled)}</div>
+                    <div className="md:hidden text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.entitled")}</div>
+                    <div className={`text-[13px] text-[#424242] md:text-right text-right ${jetbrainsMono.className}`}>{num(b.entitled)}</div>
 
-                    <div className="md:hidden text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.accrued")}</div>
-                    <div className={`text-[13px] text-[#374151] md:text-right text-right ${jetbrainsMono.className}`}>{num(b.accrued)}</div>
+                    <div className="md:hidden text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.accrued")}</div>
+                    <div className={`text-[13px] text-[#424242] md:text-right text-right ${jetbrainsMono.className}`}>{num(b.accrued)}</div>
 
-                    <div className="md:hidden text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.used")}</div>
-                    <div className={`text-[13px] text-[#374151] md:text-right text-right ${jetbrainsMono.className}`}>{num(b.used)}</div>
+                    <div className="md:hidden text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.used")}</div>
+                    <div className={`text-[13px] text-[#424242] md:text-right text-right ${jetbrainsMono.className}`}>{num(b.used)}</div>
 
-                    <div className="md:hidden text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.balance")}</div>
-                    <div className={`text-[13px] font-bold text-[#15171C] md:text-right text-right ${jetbrainsMono.className}`}>{num(b.balance)}</div>
+                    <div className="md:hidden text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.balance")}</div>
+                    <div className={`text-[13px] font-bold text-[#212121] md:text-right text-right ${jetbrainsMono.className}`}>{num(b.balance)}</div>
                   </div>
                 ))}
               </div>
@@ -524,12 +524,12 @@ export default function LeavePage() {
             {types.map((t) => (
               <li
                 key={t.id}
-                className="flex items-center justify-between gap-3 rounded-[10px] border border-[#E8EAED] bg-[#F7F8FA] px-3.5 py-2.5"
+                className="flex items-center justify-between gap-3 rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] px-3.5 py-2.5"
               >
                 <div className="flex flex-wrap items-center gap-2 min-w-0">
-                  <span className="text-[14px] font-bold text-[#15171C]">{t.name}</span>
+                  <span className="text-[14px] font-bold text-[#212121]">{t.name}</span>
                   <Badge tone="neutral" className={jetbrainsMono.className}>{t.code}</Badge>
-                  <span className="text-[12.5px] text-[#8A929E]">
+                  <span className="text-[12.5px] text-[#757575]">
                     {t.is_paid ? `${num(t.annual_quota)} ${tr("payroll.daysPerYear")} · ${t.accrual.toLowerCase()}` : tr("payroll.unpaidLop")}
                   </span>
                   {!t.is_active && <Badge tone="danger">{tr("payroll.inactiveLower")}</Badge>}
@@ -537,7 +537,7 @@ export default function LeavePage() {
                 {canEdit && (
                   <button
                     onClick={() => run(() => leaveApi.updateType(t.id, { is_active: !t.is_active }))}
-                    className="text-[12.5px] font-semibold text-[#5B53E0] hover:text-[#4A43C9] hover:underline shrink-0"
+                    className="text-[12.5px] font-semibold text-[#1976D2] hover:text-[#1565C0] hover:underline shrink-0"
                   >
                     {t.is_active ? tr("payroll.deactivate") : tr("payroll.activate")}
                   </button>
@@ -548,7 +548,7 @@ export default function LeavePage() {
         )}
 
         {canEdit && (
-          <div className="rounded-[10px] border border-dashed border-[#E1E4E8] bg-[#FBFBFC] p-4">
+          <div className="rounded-[4px] border border-dashed border-[#E0E0E0] bg-[#FAFAFA] p-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <Field label={tr("payroll.name")}>
                 <Input
@@ -593,12 +593,12 @@ export default function LeavePage() {
               )}
             </div>
             <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-              <label className="flex items-center gap-2 text-[13px] font-medium text-[#374151] cursor-pointer">
+              <label className="flex items-center gap-2 text-[13px] font-medium text-[#424242] cursor-pointer">
                 <input
                   type="checkbox"
                   checked={typeForm.is_paid}
                   onChange={(e) => setTypeForm({ ...typeForm, is_paid: e.target.checked })}
-                  className="h-4 w-4 rounded accent-[#5B53E0]"
+                  className="h-4 w-4 rounded accent-[#1976D2]"
                 />
                 {tr("payroll.paid")}
               </label>
@@ -613,29 +613,29 @@ export default function LeavePage() {
       {/* History */}
       {historyShown.length > 0 && (
         <section className="space-y-3">
-          <h2 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.recentDecisions")}</h2>
-          <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden">
+          <h2 className="text-[15px] font-bold text-[#212121]">{tr("payroll.recentDecisions")}</h2>
+          <div className="bg-white rounded-[4px] border border-[#E0E0E0] overflow-hidden">
             {/* Column header (desktop) */}
-            <div className="hidden md:grid grid-cols-[2fr_1fr_1.4fr_0.7fr_1fr] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.employee")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.type")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.dates")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.days")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.status")}</span>
+            <div className="hidden md:grid grid-cols-[2fr_1fr_1.4fr_0.7fr_1fr] gap-4 px-5 py-3 bg-[#FAFAFA] border-b border-[#E0E0E0]">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.employee")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.type")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.dates")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.days")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.status")}</span>
             </div>
-            <div className="divide-y divide-[#F0F0F1]">
+            <div className="divide-y divide-[#EEEEEE]">
               {historyShown.slice(0, 20).map((r) => (
                 <div
                   key={r.id}
-                  className="grid grid-cols-[1fr_auto] md:grid-cols-[2fr_1fr_1.4fr_0.7fr_1fr] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors"
+                  className="grid grid-cols-[1fr_auto] md:grid-cols-[2fr_1fr_1.4fr_0.7fr_1fr] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#FAFAFA] transition-colors"
                 >
                   {/* Employee */}
                   <div className="min-w-0">
-                    <span className="block text-[14px] font-bold text-[#15171C] truncate">
+                    <span className="block text-[14px] font-bold text-[#212121] truncate">
                       {r.employee_name || r.employee_id.slice(0, 8)}
                     </span>
                     {/* mobile-only meta */}
-                    <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[12px] text-[#8A929E] md:hidden">
+                    <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[12px] text-[#757575] md:hidden">
                       <span>{r.leave_type_code}</span>
                       <span className={jetbrainsMono.className}>
                         {r.start_date}
@@ -646,16 +646,16 @@ export default function LeavePage() {
                   </div>
 
                   {/* Type (desktop) */}
-                  <div className="hidden md:block text-[13px] text-[#374151] truncate">{r.leave_type_code}</div>
+                  <div className="hidden md:block text-[13px] text-[#424242] truncate">{r.leave_type_code}</div>
 
                   {/* Dates (desktop) */}
-                  <div className={`hidden md:block text-[13px] text-[#374151] ${jetbrainsMono.className}`}>
+                  <div className={`hidden md:block text-[13px] text-[#424242] ${jetbrainsMono.className}`}>
                     {r.start_date}
                     {r.start_date !== r.end_date && <> → {r.end_date}</>}
                   </div>
 
                   {/* Days (desktop) */}
-                  <div className={`hidden md:block text-[13px] text-[#374151] text-right ${jetbrainsMono.className}`}>
+                  <div className={`hidden md:block text-[13px] text-[#424242] text-right ${jetbrainsMono.className}`}>
                     {num(r.days)}
                   </div>
 

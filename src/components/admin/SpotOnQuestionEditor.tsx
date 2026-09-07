@@ -27,7 +27,7 @@ export default function SpotOnQuestionEditor({ target, options, correctIndex, on
         if (!Array.isArray(lines)) return null;
         return (
             <svg viewBox="0 0 100 100" className="w-full h-full" style={{ maxWidth: size, maxHeight: size }}>
-                <circle cx="50" cy="50" r="48" fill="none" stroke="#e2e8f0" strokeWidth="1" />
+                <circle cx="50" cy="50" r="48" fill="none" stroke="#E0E0E0" strokeWidth="1" />
                 {lines.map((line, i) => (
                     <line
                         key={i}
@@ -35,7 +35,7 @@ export default function SpotOnQuestionEditor({ target, options, correctIndex, on
                         y1={line.y1}
                         x2={line.x2}
                         y2={line.y2}
-                        stroke="#1e293b"
+                        stroke="#37474F"
                         strokeWidth="2"
                         strokeLinecap="round"
                     />

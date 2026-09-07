@@ -35,11 +35,11 @@ export default function CareerPageEmbed() {
             {loading ? (
                 <Spinner />
             ) : !slug ? (
-                <div className="p-4 rounded-[12px] border border-[#F3DDBA] bg-[#FEF3E2]">
-                    <p className="text-[12.5px] font-bold text-[#8A5B08]">{tr("careerPage.noCompany")}</p>
+                <div className="p-4 rounded-[4px] border border-[#FFE0B2] bg-[#FFF3E0]">
+                    <p className="text-[12.5px] font-bold text-[#E65100]">{tr("careerPage.noCompany")}</p>
                 </div>
             ) : (
-                <div className="rounded-[12px] border border-[#E8EAED] bg-white p-4 space-y-4">
+                <div className="rounded-[4px] border border-[#E0E0E0] bg-white p-4 space-y-4">
                     <Field label={tr("careerPage.embedLink")} hint={tr("careerPage.embedLinkHint")}>
                         <CopyRow
                             value={linkSnippet}

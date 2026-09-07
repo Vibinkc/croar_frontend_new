@@ -126,7 +126,7 @@ export default function JobNotesTab({ jobId, onCountChange }: { jobId: string; o
                     aria-label={tr("jobNotes.placeholder")}
                 />
                 <div className="flex items-center justify-between gap-3 mt-3">
-                    <p className="text-[11.5px] text-[#8A929E]">{tr("jobNotes.visibleToTeam")}</p>
+                    <p className="text-[11.5px] text-[#757575]">{tr("jobNotes.visibleToTeam")}</p>
                     <Button onClick={addNote} disabled={!draft.trim() || isSaving}>
                         <span className="material-symbols-rounded text-[18px]">add_comment</span>
                         {isSaving ? tr("jobNotes.saving") : tr("jobNotes.addNote")}
@@ -135,14 +135,14 @@ export default function JobNotesTab({ jobId, onCountChange }: { jobId: string; o
             </Card>
 
             {error && (
-                <div className="rounded-[12px] border border-[#F5C6C7] bg-[#FDECEC] px-4 py-3 text-[12.5px] text-[#C0383C]">
+                <div className="rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[12.5px] text-[#C62828]">
                     {error}
                 </div>
             )}
 
             {isLoading ? (
                 <Card padding="sm">
-                    <p className="py-10 text-center text-[13px] text-[#8A929E]">{tr("jobNotes.loading")}</p>
+                    <p className="py-10 text-center text-[13px] text-[#757575]">{tr("jobNotes.loading")}</p>
                 </Card>
             ) : notes.length === 0 ? (
                 <Card padding="none">
@@ -158,25 +158,25 @@ export default function JobNotesTab({ jobId, onCountChange }: { jobId: string; o
                         <Card
                             key={note.id}
                             padding="sm"
-                            className={cn(note.is_pinned && "border-[#5B53E0]/35 bg-[#FBFBFE]")}
+                            className={cn(note.is_pinned && "border-[#1976D2]/35 bg-[#FBFBFE]")}
                         >
                             <div className="flex items-start gap-3">
-                                <span className="w-9 h-9 shrink-0 rounded-full bg-[#ECEBFB] text-[#5B53E0] text-[12px] font-bold flex items-center justify-center">
+                                <span className="w-9 h-9 shrink-0 rounded-full bg-[#E3F2FD] text-[#1976D2] text-[12px] font-bold flex items-center justify-center">
                                     {initials(note.author_name)}
                                 </span>
                                 <div className="min-w-0 flex-1">
                                     <div className="flex flex-wrap items-center gap-2 mb-1">
-                                        <span className="text-[13px] font-bold text-[#15171C]">
+                                        <span className="text-[13px] font-bold text-[#212121]">
                                             {note.author_name || tr("jobNotes.someone")}
                                         </span>
-                                        <span className="text-[11.5px] text-[#8A929E]">
+                                        <span className="text-[11.5px] text-[#757575]">
                                             {new Date(note.created_at).toLocaleString()}
                                         </span>
                                         {note.updated_at && (
-                                            <span className="text-[11px] text-[#8A929E] italic">{tr("jobNotes.edited")}</span>
+                                            <span className="text-[11px] text-[#757575] italic">{tr("jobNotes.edited")}</span>
                                         )}
                                         {note.is_pinned && (
-                                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#5B53E0]">
+                                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#1976D2]">
                                                 <span className="material-symbols-rounded text-[14px]">push_pin</span>
                                                 {tr("jobNotes.pinned")}
                                             </span>
@@ -202,7 +202,7 @@ export default function JobNotesTab({ jobId, onCountChange }: { jobId: string; o
                                             </div>
                                         </div>
                                     ) : (
-                                        <p className="text-[13px] text-[#374151] leading-relaxed whitespace-pre-wrap break-words">
+                                        <p className="text-[13px] text-[#424242] leading-relaxed whitespace-pre-wrap break-words">
                                             {note.body}
                                         </p>
                                     )}
@@ -215,8 +215,8 @@ export default function JobNotesTab({ jobId, onCountChange }: { jobId: string; o
                                             title={note.is_pinned ? tr("jobNotes.unpin") : tr("jobNotes.pin")}
                                             aria-label={note.is_pinned ? tr("jobNotes.unpin") : tr("jobNotes.pin")}
                                             className={cn(
-                                                "w-8 h-8 rounded-[9px] flex items-center justify-center transition-colors hover:bg-[#F7F8FA]",
-                                                note.is_pinned ? "text-[#5B53E0]" : "text-[#8A929E] hover:text-[#15171C]"
+                                                "w-8 h-8 rounded-[4px] flex items-center justify-center transition-colors hover:bg-[#FAFAFA]",
+                                                note.is_pinned ? "text-[#1976D2]" : "text-[#757575] hover:text-[#212121]"
                                             )}
                                         >
                                             <span className="material-symbols-rounded text-[18px]">push_pin</span>
@@ -230,7 +230,7 @@ export default function JobNotesTab({ jobId, onCountChange }: { jobId: string; o
                                                     }}
                                                     title={tr("common.edit")}
                                                     aria-label={tr("common.edit")}
-                                                    className="w-8 h-8 rounded-[9px] flex items-center justify-center text-[#8A929E] hover:text-[#15171C] hover:bg-[#F7F8FA] transition-colors"
+                                                    className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#212121] hover:bg-[#FAFAFA] transition-colors"
                                                 >
                                                     <span className="material-symbols-rounded text-[18px]">edit</span>
                                                 </button>
@@ -238,7 +238,7 @@ export default function JobNotesTab({ jobId, onCountChange }: { jobId: string; o
                                                     onClick={() => removeNote(note.id)}
                                                     title={tr("common.delete")}
                                                     aria-label={tr("common.delete")}
-                                                    className="w-8 h-8 rounded-[9px] flex items-center justify-center text-[#8A929E] hover:text-[#C0383C] hover:bg-[#FDECEC] transition-colors"
+                                                    className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#C62828] hover:bg-[#FFEBEE] transition-colors"
                                                 >
                                                     <span className="material-symbols-rounded text-[18px]">delete</span>
                                                 </button>

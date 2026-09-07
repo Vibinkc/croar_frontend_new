@@ -54,12 +54,12 @@ export default function AutomationHubPage() {
     ].filter(m => canAccess(m.permission));
 
     return (
-        <div className="p-6 space-y-8 animate-in fade-in duration-500 bg-[#F8FAFC] min-h-screen">
+        <div className="p-6 space-y-8 animate-in fade-in duration-500 bg-[#FAFAFA] min-h-screen">
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
                 <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-[#7C3AED]/10 flex items-center justify-center shrink-0 shadow-sm shadow-[#7C3AED]/5">
-                        <span className="material-symbols-rounded text-[#7C3AED] text-2xl">settings_suggest</span>
+                    <div className="w-12 h-12 rounded-xl bg-[#1E88E5]/10 flex items-center justify-center shrink-0 shadow-sm shadow-[#1E88E5]/5">
+                        <span className="material-symbols-rounded text-[#1E88E5] text-2xl">settings_suggest</span>
                     </div>
                     <div>
                         <div className="flex items-center gap-1.5">
@@ -124,7 +124,7 @@ export default function AutomationHubPage() {
                                     <td className="px-6 py-4 text-right">
                                         <Link 
                                             href={module.path}
-                                            className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg text-xs font-black hover:border-[#7C3AED] hover:text-[#7C3AED] transition-all shadow-sm active:scale-95 group-hover:shadow-indigo-100 group-hover:shadow-md"
+                                            className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg text-xs font-black hover:border-[#1E88E5] hover:text-[#1E88E5] transition-all shadow-sm active:scale-95 group-hover:shadow-indigo-100 group-hover:shadow-md"
                                         >
                                             {tr("automation.openModule")}
                                             <span className="material-symbols-rounded text-base">arrow_forward</span>

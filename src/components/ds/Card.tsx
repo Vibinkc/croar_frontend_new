@@ -21,9 +21,9 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
         <div
             ref={ref}
             className={cn(
-                "bg-white border border-[#E8EAED] rounded-[14px]",
+                "bg-white border border-[#E0E0E0] rounded-[4px]",
                 pads[padding],
-                interactive && "transition-colors hover:border-[#D4D7DC]",
+                interactive && "transition-colors hover:border-[#E0E0E0]",
                 className
             )}
             {...props}
@@ -38,8 +38,8 @@ export function CardHeader({ title, subtitle, action, className }: { title: Reac
     return (
         <div className={cn("flex items-start justify-between gap-3 mb-5", className)}>
             <div>
-                <h3 className="text-[15px] font-bold text-[#15171C]">{title}</h3>
-                {subtitle && <p className="text-[12.5px] text-[#8A929E] mt-0.5">{subtitle}</p>}
+                <h3 className="text-[15px] font-bold text-[#212121]">{title}</h3>
+                {subtitle && <p className="text-[12.5px] text-[#757575] mt-0.5">{subtitle}</p>}
             </div>
             {action}
         </div>

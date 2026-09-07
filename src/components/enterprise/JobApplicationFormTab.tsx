@@ -127,8 +127,8 @@ export default function JobApplicationFormTab({
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                    <h3 className="text-[15px] font-bold text-[#15171C]">{tr("appForm.title")}</h3>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5 max-w-xl leading-relaxed">
+                    <h3 className="text-[15px] font-bold text-[#212121]">{tr("appForm.title")}</h3>
+                    <p className="text-[12.5px] text-[#757575] mt-0.5 max-w-xl leading-relaxed">
                         {tr("appForm.subtitle")}
                     </p>
                 </div>
@@ -137,7 +137,7 @@ export default function JobApplicationFormTab({
                         href={`/jobs/${jobId}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 h-9 px-3 rounded-[10px] border border-[#E8EAED] bg-white text-[12.5px] font-semibold text-[#374151] hover:border-[#5B53E0]/50 hover:text-[#5B53E0] transition-colors"
+                        className="inline-flex items-center gap-1.5 h-9 px-3 rounded-[4px] border border-[#E0E0E0] bg-white text-[12.5px] font-semibold text-[#424242] hover:border-[#1976D2]/50 hover:text-[#1976D2] transition-colors"
                     >
                         <span className="material-symbols-rounded text-[17px]">visibility</span>
                         {tr("appForm.preview")}
@@ -149,23 +149,23 @@ export default function JobApplicationFormTab({
             </div>
 
             {error && (
-                <div className="rounded-[12px] border border-[#F5C6C7] bg-[#FDECEC] px-4 py-3 text-[12.5px] text-[#C0383C]">
+                <div className="rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[12.5px] text-[#C62828]">
                     {error}
                 </div>
             )}
             {savedAt && !isDirty && !error && (
-                <div className="rounded-[12px] border border-[#BFE3CC] bg-[#E6F4EA] px-4 py-3 text-[12.5px] text-[#15803D] flex items-center gap-2">
+                <div className="rounded-[4px] border border-[#BFE3CC] bg-[#E8F5E9] px-4 py-3 text-[12.5px] text-[#2E7D32] flex items-center gap-2">
                     <span className="material-symbols-rounded text-[18px]">check_circle</span>
                     {tr("appForm.saved")}
                 </div>
             )}
 
             <Card padding="none" className="overflow-hidden">
-                <ul className="divide-y divide-[#F0F0F1]">
+                <ul className="divide-y divide-[#EEEEEE]">
                     {draft.map((f, i) => (
                         <li key={f.id} className="p-4 sm:px-5">
                             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-                                <span className="w-9 h-9 shrink-0 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
+                                <span className="w-9 h-9 shrink-0 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center">
                                     <span className="material-symbols-rounded text-[19px]">{f.icon || ICON_FOR[f.type]}</span>
                                 </span>
 
@@ -195,10 +195,10 @@ export default function JobApplicationFormTab({
 
                                 <label
                                     className={cn(
-                                        "shrink-0 inline-flex items-center gap-1.5 h-11 px-3 rounded-[10px] border cursor-pointer transition-colors select-none",
+                                        "shrink-0 inline-flex items-center gap-1.5 h-11 px-3 rounded-[4px] border cursor-pointer transition-colors select-none",
                                         f.is_required
-                                            ? "border-[#5B53E0]/40 bg-[#ECEBFB] text-[#5B53E0]"
-                                            : "border-[#E8EAED] bg-white text-[#8A929E] hover:text-[#374151]"
+                                            ? "border-[#1976D2]/40 bg-[#E3F2FD] text-[#1976D2]"
+                                            : "border-[#E0E0E0] bg-white text-[#757575] hover:text-[#424242]"
                                     )}
                                 >
                                     <input
@@ -219,7 +219,7 @@ export default function JobApplicationFormTab({
                                         disabled={i === 0}
                                         title={tr("appForm.moveUp")}
                                         aria-label={tr("appForm.moveUp")}
-                                        className="w-8 h-8 rounded-[9px] flex items-center justify-center text-[#8A929E] hover:text-[#15171C] hover:bg-[#F7F8FA] disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                                        className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#212121] hover:bg-[#FAFAFA] disabled:opacity-30 disabled:pointer-events-none transition-colors"
                                     >
                                         <span className="material-symbols-rounded text-[18px]">arrow_upward</span>
                                     </button>
@@ -228,7 +228,7 @@ export default function JobApplicationFormTab({
                                         disabled={i === draft.length - 1}
                                         title={tr("appForm.moveDown")}
                                         aria-label={tr("appForm.moveDown")}
-                                        className="w-8 h-8 rounded-[9px] flex items-center justify-center text-[#8A929E] hover:text-[#15171C] hover:bg-[#F7F8FA] disabled:opacity-30 disabled:pointer-events-none transition-colors"
+                                        className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#212121] hover:bg-[#FAFAFA] disabled:opacity-30 disabled:pointer-events-none transition-colors"
                                     >
                                         <span className="material-symbols-rounded text-[18px]">arrow_downward</span>
                                     </button>
@@ -236,7 +236,7 @@ export default function JobApplicationFormTab({
                                         onClick={() => remove(f.id)}
                                         title={tr("appForm.removeField")}
                                         aria-label={tr("appForm.removeField")}
-                                        className="w-8 h-8 rounded-[9px] flex items-center justify-center text-[#8A929E] hover:text-[#C0383C] hover:bg-[#FDECEC] transition-colors"
+                                        className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#C62828] hover:bg-[#FFEBEE] transition-colors"
                                     >
                                         <span className="material-symbols-rounded text-[18px]">delete</span>
                                     </button>
@@ -247,17 +247,17 @@ export default function JobApplicationFormTab({
 
                     {draft.length === 0 && (
                         <li className="px-5 py-12 text-center">
-                            <span className="material-symbols-rounded text-[30px] text-[#C7CCD4]">list_alt</span>
-                            <p className="text-[13.5px] font-bold text-[#15171C] mt-2">{tr("appForm.emptyTitle")}</p>
-                            <p className="text-[12px] text-[#8A929E] mt-1">{tr("appForm.emptyDesc")}</p>
+                            <span className="material-symbols-rounded text-[30px] text-[#BDBDBD]">list_alt</span>
+                            <p className="text-[13.5px] font-bold text-[#212121] mt-2">{tr("appForm.emptyTitle")}</p>
+                            <p className="text-[12px] text-[#757575] mt-1">{tr("appForm.emptyDesc")}</p>
                         </li>
                     )}
                 </ul>
 
-                <div className="px-4 sm:px-5 py-3.5 border-t border-[#F0F0F1] bg-[#FBFBFC]">
+                <div className="px-4 sm:px-5 py-3.5 border-t border-[#EEEEEE] bg-[#FAFAFA]">
                     <button
                         onClick={addField}
-                        className="inline-flex items-center gap-1.5 text-[12.5px] font-bold text-[#5B53E0] hover:text-[#4840C4] transition-colors"
+                        className="inline-flex items-center gap-1.5 text-[12.5px] font-bold text-[#1976D2] hover:text-[#1565C0] transition-colors"
                     >
                         <span className="material-symbols-rounded text-[18px]">add_circle</span>
                         {tr("appForm.addField")}
@@ -265,7 +265,7 @@ export default function JobApplicationFormTab({
                 </div>
             </Card>
 
-            <p className="text-[11.5px] text-[#8A929E] leading-relaxed">{tr("appForm.footnote")}</p>
+            <p className="text-[11.5px] text-[#757575] leading-relaxed">{tr("appForm.footnote")}</p>
         </div>
     );
 }

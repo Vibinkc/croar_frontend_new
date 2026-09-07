@@ -585,8 +585,8 @@ export default function ProjectDetailPage() {
         } catch { /* ignore */ } finally { setSourcing(false); }
     };
 
-    if (loading) return <div className="min-h-[60vh] flex items-center justify-center"><Loader2 className="w-6 h-6 text-[#5B53E0] animate-spin" /></div>;
-    if (!project) return <div className="p-10 text-center text-[#8A929E]">{tr("agent.projectNotFound")}</div>;
+    if (loading) return <div className="min-h-[60vh] flex items-center justify-center"><Loader2 className="w-6 h-6 text-[#1976D2] animate-spin" /></div>;
+    if (!project) return <div className="p-10 text-center text-[#757575]">{tr("agent.projectNotFound")}</div>;
 
     // ---------------- Agent 3-step flow ----------------
     if (agentTab) {
@@ -595,31 +595,31 @@ export default function ProjectDetailPage() {
         return (
             <div className="px-3 sm:px-4 md:px-5 py-4 max-w-[1320px] mx-auto w-full">
                 <div className="flex items-center gap-2 mb-5">
-                    <span className={`w-8 h-8 rounded-[9px] text-white flex items-center justify-center ${paused ? "bg-[#9AA3AF]" : "bg-[#5B53E0]"}`}><Bot className="w-4 h-4" /></span>
-                    <span className="text-[13px] font-bold text-[#15171C]">{status}</span>
-                    <span className={`inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full ${paused ? "bg-[#F1F2F5] text-[#8A929E]" : "bg-[#EAF7EE] text-[#16A34A]"}`}><span className={`w-1.5 h-1.5 rounded-full ${paused ? "bg-[#9AA3AF]" : "bg-[#16A34A]"}`} />{paused ? tr("projects.inactive") : tr("projects.active")}</span>
-                    <button onClick={() => setAgentTab(null)} className="ml-2 text-[12.5px] font-semibold text-[#5B53E0] hover:underline">← {tr("agent.backToProject")}</button>
-                    <button onClick={() => patch({ paused: !paused })} className={`ml-auto h-9 px-4 rounded-[10px] text-[13px] font-bold flex items-center gap-1.5 ${paused ? "bg-[#5B53E0] text-white hover:bg-[#4A43C9]" : "border border-[#E1E4E8] bg-white text-[#374151] hover:bg-[#F7F8FA]"}`}>{paused ? <><Play className="w-3.5 h-3.5" /> {tr("agent.activateAgent")}</> : <><Pause className="w-3.5 h-3.5" /> {tr("agent.deactivateAgent")}</>}</button>
+                    <span className={`w-8 h-8 rounded-[4px] text-white flex items-center justify-center ${paused ? "bg-[#9E9E9E]" : "bg-[#1976D2]"}`}><Bot className="w-4 h-4" /></span>
+                    <span className="text-[13px] font-bold text-[#212121]">{status}</span>
+                    <span className={`inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full ${paused ? "bg-[#EEEEEE] text-[#757575]" : "bg-[#EAF7EE] text-[#2E7D32]"}`}><span className={`w-1.5 h-1.5 rounded-full ${paused ? "bg-[#9E9E9E]" : "bg-[#2E7D32]"}`} />{paused ? tr("projects.inactive") : tr("projects.active")}</span>
+                    <button onClick={() => setAgentTab(null)} className="ml-2 text-[12.5px] font-semibold text-[#1976D2] hover:underline">← {tr("agent.backToProject")}</button>
+                    <button onClick={() => patch({ paused: !paused })} className={`ml-auto h-9 px-4 rounded-[4px] text-[13px] font-bold flex items-center gap-1.5 ${paused ? "bg-[#1976D2] text-white hover:bg-[#1565C0]" : "border border-[#E0E0E0] bg-white text-[#424242] hover:bg-[#FAFAFA]"}`}>{paused ? <><Play className="w-3.5 h-3.5" /> {tr("agent.activateAgent")}</> : <><Pause className="w-3.5 h-3.5" /> {tr("agent.deactivateAgent")}</>}</button>
                 </div>
                 {slaOverdue > 0 && (
-                    <div className="mb-4 flex items-center gap-3 rounded-[12px] border border-[#F5C6A5] bg-[#FEF6EE] px-4 py-3">
-                        <span className="w-2 h-2 rounded-full bg-[#B93815] shrink-0" />
+                    <div className="mb-4 flex items-center gap-3 rounded-[4px] border border-[#F5C6A5] bg-[#FEF6EE] px-4 py-3">
+                        <span className="w-2 h-2 rounded-full bg-[#D84315] shrink-0" />
                         <p className="text-[13px] font-semibold text-[#92400E] flex-1">{tr("agent.slaOverdueBanner", { n: slaOverdue })}</p>
-                        <button onClick={() => setAgentTab("calibrate")} className="h-9 px-4 rounded-[10px] bg-[#B93815] text-white text-[12.5px] font-bold hover:bg-[#9A2E12] whitespace-nowrap">{tr("agent.sourceReplacements")}</button>
+                        <button onClick={() => setAgentTab("calibrate")} className="h-9 px-4 rounded-[4px] bg-[#D84315] text-white text-[12.5px] font-bold hover:bg-[#9A2E12] whitespace-nowrap">{tr("agent.sourceReplacements")}</button>
                     </div>
                 )}
                 <div className="grid grid-cols-1 lg:grid-cols-[150px_minmax(0,1fr)] gap-4">
                     {/* Left tabs */}
                     <div className="space-y-1">
                         {([["calibrate", tr("agent.calibrate"), SlidersHorizontal], ["settings", tr("agent.settings"), Filter], ["sourcing", tr("agent.sourcing"), Radar], ["candidates", tr("agent.candidates"), Users]] as const).map(([key, label, Icon]) => (
-                            <button key={key} onClick={() => setAgentTab(key)} className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-[10px] text-[13px] font-semibold transition-colors ${agentTab === key ? "bg-[#F4F3FD] text-[#5B53E0]" : "text-[#4B5563] hover:bg-[#F7F8FA]"}`}>
+                            <button key={key} onClick={() => setAgentTab(key)} className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-[4px] text-[13px] font-semibold transition-colors ${agentTab === key ? "bg-[#F3F9FE] text-[#1976D2]" : "text-[#4F4F4F] hover:bg-[#FAFAFA]"}`}>
                                 <Icon className="w-4 h-4" /> {label}
                             </button>
                         ))}
-                        <div className="mt-4 rounded-[12px] border border-[#DAD7F6] bg-[#F4F3FD]/60 p-4 text-center">
-                            <span className="inline-block px-2.5 py-1 rounded-full bg-[#5B53E0] text-white text-[10px] font-bold uppercase tracking-wider mb-2">{tr("agent.agent")}</span>
-                            <p className="text-[13px] font-bold text-[#15171C]">{tr("agent.automateSourcing")}</p>
-                            <p className="text-[11.5px] text-[#8A929E] mt-1">{tr("agent.agentDesc")}</p>
+                        <div className="mt-4 rounded-[4px] border border-[#BBDEFB] bg-[#F3F9FE]/60 p-4 text-center">
+                            <span className="inline-block px-2.5 py-1 rounded-full bg-[#1976D2] text-white text-[10px] font-bold uppercase tracking-wider mb-2">{tr("agent.agent")}</span>
+                            <p className="text-[13px] font-bold text-[#212121]">{tr("agent.automateSourcing")}</p>
+                            <p className="text-[11.5px] text-[#757575] mt-1">{tr("agent.agentDesc")}</p>
                         </div>
                     </div>
 
@@ -630,70 +630,70 @@ export default function ProjectDetailPage() {
                                 <div className="flex flex-col min-w-0">
                                     <div className="flex flex-col min-w-0" style={{ height: "78vh", maxHeight: "78vh" }}>
                                         <div className="flex-1 overflow-y-auto overflow-x-hidden p-4 space-y-3.5 min-w-0 no-scrollbar">
-                                            {chatMsgs.length === 0 && chatBusy && <div className="text-center text-[12.5px] text-[#8A929E] py-10 flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> {tr("agent.buildingSearch")}</div>}
+                                            {chatMsgs.length === 0 && chatBusy && <div className="text-center text-[12.5px] text-[#757575] py-10 flex items-center justify-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> {tr("agent.buildingSearch")}</div>}
                                             {chatMsgs.map((m, mi) => (
                                                 m.role === "user" ? (
                                                     <div key={mi} className="flex justify-end">
-                                                        <div className="max-w-[85%] bg-white border border-[#E8EAED] shadow-sm rounded-[14px] px-4 py-2.5 text-[13px] text-[#1F2127]">{m.content}</div>
+                                                        <div className="max-w-[85%] bg-white border border-[#E0E0E0] shadow-sm rounded-[4px] px-4 py-2.5 text-[13px] text-[#263238]">{m.content}</div>
                                                     </div>
                                                 ) : (
                                                     <div key={mi} className="space-y-2.5 min-w-0">
-                                                        <p className="text-[13px] text-[#374151] leading-relaxed break-words">{m.content}</p>
+                                                        <p className="text-[13px] text-[#424242] leading-relaxed break-words">{m.content}</p>
                                                         {typeof m.total === "number" && (
-                                                            <div className="flex items-center justify-between text-[12px] text-[#8A929E] border-b border-[#F0F0F1] pb-1.5">
-                                                                <span className="font-bold text-[#15171C]">{tr("agent.searchResults")}</span>
+                                                            <div className="flex items-center justify-between text-[12px] text-[#757575] border-b border-[#EEEEEE] pb-1.5">
+                                                                <span className="font-bold text-[#212121]">{tr("agent.searchResults")}</span>
                                                                 <span>{tr("agent.totalMatches", { count: m.total.toLocaleString() })}</span>
                                                             </div>
                                                         )}
                                                         {(m.profiles || []).map((p, pi) => (
-                                                            <div key={pi} className="rounded-[12px] border border-[#E8EAED] p-3.5 hover:bg-[#F7F8FA]/50 transition-colors overflow-hidden">
+                                                            <div key={pi} className="rounded-[4px] border border-[#E0E0E0] p-3.5 hover:bg-[#FAFAFA]/50 transition-colors overflow-hidden">
                                                                 <div className="flex items-start justify-between gap-3 min-w-0">
                                                                     <div className="cursor-pointer min-w-0 flex-1" onClick={() => openReview(m.profiles || [], pi)}>
                                                                         <div className="flex items-center gap-2 min-w-0">
-                                                                            <span className="text-[13px] font-bold text-[#15171C] truncate">{p.full_name}</span>
-                                                                            {p.profile_url && <a href={p.profile_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="text-[#5B53E0] text-[11.5px] font-semibold inline-flex items-center gap-0.5 shrink-0">{(p.platform || "").toLowerCase().includes("linkedin") ? "LinkedIn" : tr("agent.profile")}<ExternalLink className="w-3 h-3" /></a>}
+                                                                            <span className="text-[13px] font-bold text-[#212121] truncate">{p.full_name}</span>
+                                                                            {p.profile_url && <a href={p.profile_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="text-[#1976D2] text-[11.5px] font-semibold inline-flex items-center gap-0.5 shrink-0">{(p.platform || "").toLowerCase().includes("linkedin") ? "LinkedIn" : tr("agent.profile")}<ExternalLink className="w-3 h-3" /></a>}
                                                                         </div>
-                                                                        <p className="text-[12px] text-[#6B6F76] mt-0.5 truncate">{p.headline || tr("agent.professional")}{p.company ? ` ${tr("agent.at")} ${p.company}` : ""}</p>
-                                                                        {p.location && <p className="text-[11px] text-[#9AA3AF] mt-0.5">{p.location}</p>}
+                                                                        <p className="text-[12px] text-[#616161] mt-0.5 truncate">{p.headline || tr("agent.professional")}{p.company ? ` ${tr("agent.at")} ${p.company}` : ""}</p>
+                                                                        {p.location && <p className="text-[11px] text-[#9E9E9E] mt-0.5">{p.location}</p>}
                                                                     </div>
-                                                                    <button onClick={() => { const r = window.prompt(tr("agent.whyGoodFit", { name: p.full_name }), "good"); if (r !== null) approveProfile(p, r); }} disabled={chatBusy} className="shrink-0 px-3 py-1.5 rounded-[8px] bg-[#5B53E0] text-white text-[11.5px] font-bold hover:bg-[#4A43C9] disabled:opacity-50 flex items-center gap-1">{approvingUrl === (p.profile_url || p.full_name) ? <Loader2 className="w-3 h-3 animate-spin" /> : <ThumbsUp className="w-3 h-3" />} {tr("agent.approve")}</button>
+                                                                    <button onClick={() => { const r = window.prompt(tr("agent.whyGoodFit", { name: p.full_name }), "good"); if (r !== null) approveProfile(p, r); }} disabled={chatBusy} className="shrink-0 px-3 py-1.5 rounded-[4px] bg-[#1976D2] text-white text-[11.5px] font-bold hover:bg-[#1565C0] disabled:opacity-50 flex items-center gap-1">{approvingUrl === (p.profile_url || p.full_name) ? <Loader2 className="w-3 h-3 animate-spin" /> : <ThumbsUp className="w-3 h-3" />} {tr("agent.approve")}</button>
                                                                 </div>
                                                             </div>
                                                         ))}
                                                     </div>
                                                 )
                                             ))}
-                                            {chatBusy && chatMsgs.length > 0 && <div className="text-[12px] text-[#8A929E] flex items-center gap-2"><Loader2 className="w-3.5 h-3.5 animate-spin" /> {tr("agent.thinking")}</div>}
+                                            {chatBusy && chatMsgs.length > 0 && <div className="text-[12px] text-[#757575] flex items-center gap-2"><Loader2 className="w-3.5 h-3.5 animate-spin" /> {tr("agent.thinking")}</div>}
                                         </div>
-                                        <div className="border-t border-[#E8EAED] p-3">
-                                            <div className="flex items-end gap-2 rounded-[12px] border border-[#E1E4E8] px-3 py-2 focus-within:border-[#5B53E0]">
-                                                <textarea value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendCalibrateChat(); } }} rows={1} placeholder={tr("agent.tellMePlaceholder")} className="flex-1 resize-none bg-transparent outline-none text-[13px] text-[#1F2127] placeholder:text-[#9AA3AF]" />
-                                                <button onClick={sendCalibrateChat} disabled={!chatInput.trim() || chatBusy} className="w-8 h-8 rounded-full bg-[#5B53E0] text-white flex items-center justify-center disabled:opacity-40 shrink-0"><ArrowRight className="w-4 h-4" /></button>
+                                        <div className="border-t border-[#E0E0E0] p-3">
+                                            <div className="flex items-end gap-2 rounded-[4px] border border-[#E0E0E0] px-3 py-2 focus-within:border-[#1976D2]">
+                                                <textarea value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendCalibrateChat(); } }} rows={1} placeholder={tr("agent.tellMePlaceholder")} className="flex-1 resize-none bg-transparent outline-none text-[13px] text-[#263238] placeholder:text-[#9E9E9E]" />
+                                                <button onClick={sendCalibrateChat} disabled={!chatInput.trim() || chatBusy} className="w-8 h-8 rounded-full bg-[#1976D2] text-white flex items-center justify-center disabled:opacity-40 shrink-0"><ArrowRight className="w-4 h-4" /></button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div className="space-y-4">
-                                    <button onClick={openFilterEdit} className="w-full text-left rounded-[14px] border border-[#E8EAED] bg-white p-4 shadow-sm hover:border-[#DAD7F6] transition-colors">
-                                        <div className="flex items-center gap-1.5 mb-2"><Filter className="w-3.5 h-3.5 text-[#5B53E0]" /><span className="text-[13px] font-bold text-[#15171C]">{tr("agent.filters")}</span></div>
+                                    <button onClick={openFilterEdit} className="w-full text-left rounded-[4px] border border-[#E0E0E0] bg-white p-4 shadow-sm hover:border-[#BBDEFB] transition-colors">
+                                        <div className="flex items-center gap-1.5 mb-2"><Filter className="w-3.5 h-3.5 text-[#1976D2]" /><span className="text-[13px] font-bold text-[#212121]">{tr("agent.filters")}</span></div>
                                         <div className="flex flex-wrap gap-1.5">
                                             {filters.length ? filters.map((f: string, i: number) => (
-                                                <span key={i} className="px-2.5 py-1 rounded-full bg-[#F4F3FD] text-[#4B4794] text-[11.5px] font-semibold">{f}</span>
-                                            )) : <span className="text-[12px] text-[#9AA3AF]">{tr("agent.addFilters")}</span>}
+                                                <span key={i} className="px-2.5 py-1 rounded-full bg-[#F3F9FE] text-[#0D47A1] text-[11.5px] font-semibold">{f}</span>
+                                            )) : <span className="text-[12px] text-[#9E9E9E]">{tr("agent.addFilters")}</span>}
                                         </div>
                                     </button>
-                                    <button onClick={() => setShowCriteriaEdit(true)} className="w-full text-left rounded-[14px] border border-[#E8EAED] bg-white p-4 shadow-sm hover:border-[#DAD7F6] transition-colors">
-                                        <div className="flex items-center gap-1.5 mb-2"><Sparkles className="w-3.5 h-3.5 text-[#5B53E0]" /><span className="text-[13px] font-bold text-[#15171C]">{tr("agent.criteria")}</span></div>
+                                    <button onClick={() => setShowCriteriaEdit(true)} className="w-full text-left rounded-[4px] border border-[#E0E0E0] bg-white p-4 shadow-sm hover:border-[#BBDEFB] transition-colors">
+                                        <div className="flex items-center gap-1.5 mb-2"><Sparkles className="w-3.5 h-3.5 text-[#1976D2]" /><span className="text-[13px] font-bold text-[#212121]">{tr("agent.criteria")}</span></div>
                                         <div className="flex flex-wrap gap-1.5">
-                                            {criteria.map((c, i) => <span key={i} className="px-2.5 py-1 rounded-full bg-[#F4F3FD] text-[#4B4794] text-[11.5px] font-semibold">{criterionShort(c)}</span>)}
-                                            {criteria.length === 0 && <span className="text-[12px] text-[#9AA3AF]">{tr("agent.addCriteria")}</span>}
+                                            {criteria.map((c, i) => <span key={i} className="px-2.5 py-1 rounded-full bg-[#F3F9FE] text-[#0D47A1] text-[11.5px] font-semibold">{criterionShort(c)}</span>)}
+                                            {criteria.length === 0 && <span className="text-[12px] text-[#9E9E9E]">{tr("agent.addCriteria")}</span>}
                                         </div>
                                     </button>
-                                    <div className="rounded-[14px] border border-[#E8EAED] bg-white p-4 shadow-sm">
-                                        <p className="text-[12px] font-semibold text-[#8A929E]">{tr("agent.potentialLeads")}</p>
-                                        <p className="text-[26px] font-extrabold text-[#15171C] mt-1">{(() => { const t = [...chatMsgs].reverse().find((m) => typeof m.total === "number")?.total; return t != null ? shortNum(t) : "—"; })()}</p>
-                                        <p className="text-[11.5px] text-[#8A929E] mt-1 mb-3">{tr("agent.qualifiedLeadsNote")}</p>
-                                        <button onClick={openInsights} className="w-full h-9 rounded-[10px] border border-[#E1E4E8] bg-white text-[13px] font-semibold text-[#374151] hover:bg-[#F7F8FA]">{tr("agent.viewInsights")}</button>
+                                    <div className="rounded-[4px] border border-[#E0E0E0] bg-white p-4 shadow-sm">
+                                        <p className="text-[12px] font-semibold text-[#757575]">{tr("agent.potentialLeads")}</p>
+                                        <p className="text-[26px] font-extrabold text-[#212121] mt-1">{(() => { const t = [...chatMsgs].reverse().find((m) => typeof m.total === "number")?.total; return t != null ? shortNum(t) : "—"; })()}</p>
+                                        <p className="text-[11.5px] text-[#757575] mt-1 mb-3">{tr("agent.qualifiedLeadsNote")}</p>
+                                        <button onClick={openInsights} className="w-full h-9 rounded-[4px] border border-[#E0E0E0] bg-white text-[13px] font-semibold text-[#424242] hover:bg-[#FAFAFA]">{tr("agent.viewInsights")}</button>
                                     </div>
                                 </div>
                             </div>
@@ -702,89 +702,89 @@ export default function ProjectDetailPage() {
                         {agentTab === "settings" && (
                             <div className="max-w-2xl space-y-7">
                                 <div>
-                                    <h3 className="text-[15px] font-bold text-[#15171C]">{tr("agent.dailyTarget")}</h3>
-                                    <p className="text-[12.5px] text-[#8A929E] mb-3">{tr("agent.dailyTargetDesc")}</p>
+                                    <h3 className="text-[15px] font-bold text-[#212121]">{tr("agent.dailyTarget")}</h3>
+                                    <p className="text-[12.5px] text-[#757575] mb-3">{tr("agent.dailyTargetDesc")}</p>
                                     <div className="grid grid-cols-5 gap-3">
                                         {TARGETS.map((t) => (
-                                            <button key={t} onClick={() => setDailyTarget(t)} className={`rounded-[12px] border px-3 py-5 text-center transition-all ${dailyTarget === t ? "border-[#5B53E0] bg-[#F4F3FD] ring-2 ring-[#5B53E0]/15" : "border-[#E1E4E8] bg-white hover:border-[#DAD7F6]"}`}>
-                                                <div className="text-[22px] font-extrabold text-[#15171C]">{t}</div>
-                                                <div className="text-[11px] text-[#8A929E] font-semibold">{tr("agent.leads")}</div>
-                                                {t >= 50 && <div className="text-[10px] text-[#5B53E0] font-bold mt-0.5">x{t === 50 ? 2 : 3} {tr("agent.agents")}</div>}
+                                            <button key={t} onClick={() => setDailyTarget(t)} className={`rounded-[4px] border px-3 py-5 text-center transition-all ${dailyTarget === t ? "border-[#1976D2] bg-[#F3F9FE] ring-2 ring-[#1976D2]/15" : "border-[#E0E0E0] bg-white hover:border-[#BBDEFB]"}`}>
+                                                <div className="text-[22px] font-extrabold text-[#212121]">{t}</div>
+                                                <div className="text-[11px] text-[#757575] font-semibold">{tr("agent.leads")}</div>
+                                                {t >= 50 && <div className="text-[10px] text-[#1976D2] font-bold mt-0.5">x{t === 50 ? 2 : 3} {tr("agent.agents")}</div>}
                                             </button>
                                         ))}
                                     </div>
                                 </div>
 
                                 <div>
-                                    <h3 className="text-[15px] font-bold text-[#15171C]">{tr("agent.outreach")}</h3>
-                                    <p className="text-[12.5px] text-[#8A929E] mb-3">{tr("agent.outreachDesc")}</p>
+                                    <h3 className="text-[15px] font-bold text-[#212121]">{tr("agent.outreach")}</h3>
+                                    <p className="text-[12.5px] text-[#757575] mb-3">{tr("agent.outreachDesc")}</p>
                                     <div className="space-y-2.5">
                                         {/* AI sequence */}
-                                        <div className={`rounded-[12px] border p-4 transition-all ${outreach === "ai_sequence" ? "border-[#5B53E0] bg-[#F4F3FD]/50" : "border-[#E1E4E8] bg-white"}`}>
+                                        <div className={`rounded-[4px] border p-4 transition-all ${outreach === "ai_sequence" ? "border-[#1976D2] bg-[#F3F9FE]/50" : "border-[#E0E0E0] bg-white"}`}>
                                             <button onClick={() => setOutreach("ai_sequence")} className="w-full flex items-start gap-3 text-left">
-                                                <span className={`w-4 h-4 rounded-full border-2 mt-0.5 shrink-0 ${outreach === "ai_sequence" ? "border-[#5B53E0] bg-[#5B53E0]" : "border-[#C4C9D0]"}`} />
+                                                <span className={`w-4 h-4 rounded-full border-2 mt-0.5 shrink-0 ${outreach === "ai_sequence" ? "border-[#1976D2] bg-[#1976D2]" : "border-[#BDBDBD]"}`} />
                                                 <div>
-                                                    <p className="text-[13px] font-bold text-[#15171C] flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5 text-[#5B53E0]" />{tr("agent.aiSequence")}</p>
-                                                    <p className="text-[12px] text-[#8A929E] mt-0.5 italic">{tr("agent.aiSequenceDesc")}</p>
+                                                    <p className="text-[13px] font-bold text-[#212121] flex items-center gap-1.5"><Sparkles className="w-3.5 h-3.5 text-[#1976D2]" />{tr("agent.aiSequence")}</p>
+                                                    <p className="text-[12px] text-[#757575] mt-0.5 italic">{tr("agent.aiSequenceDesc")}</p>
                                                 </div>
                                             </button>
                                             {outreach === "ai_sequence" && (
                                                 <div className="mt-3 pl-7">
                                                     {agent?.outreach_sequence_id ? (
-                                                        <div className="flex items-center justify-between gap-3 rounded-[10px] border border-[#E8EAED] bg-white px-3 py-2.5">
-                                                            <span className="flex items-center gap-2 text-[13px] font-semibold text-[#374151] truncate"><Mail className="w-4 h-4 text-[#8A929E]" /> {agent.outreach_sequence_name || tr("agent.aiSequence")}</span>
+                                                        <div className="flex items-center justify-between gap-3 rounded-[4px] border border-[#E0E0E0] bg-white px-3 py-2.5">
+                                                            <span className="flex items-center gap-2 text-[13px] font-semibold text-[#424242] truncate"><Mail className="w-4 h-4 text-[#757575]" /> {agent.outreach_sequence_name || tr("agent.aiSequence")}</span>
                                                             <span className="flex items-center gap-2 shrink-0">
-                                                                <span className="text-[12px] text-[#8A929E]">{sequences.find((s) => s.sequence_id === agent.outreach_sequence_id)?.steps?.length ?? "—"} {tr("agent.stepsSuffix")}</span>
-                                                                <button onClick={() => router.push(`/enterprise/sourcing/sequences/${agent.outreach_sequence_id}`)} className="h-8 px-3 rounded-[8px] border border-[#E1E4E8] text-[12.5px] font-bold text-[#374151] hover:bg-[#F7F8FA]">{tr("common.edit")}</button>
+                                                                <span className="text-[12px] text-[#757575]">{sequences.find((s) => s.sequence_id === agent.outreach_sequence_id)?.steps?.length ?? "—"} {tr("agent.stepsSuffix")}</span>
+                                                                <button onClick={() => router.push(`/enterprise/sourcing/sequences/${agent.outreach_sequence_id}`)} className="h-8 px-3 rounded-[4px] border border-[#E0E0E0] text-[12.5px] font-bold text-[#424242] hover:bg-[#FAFAFA]">{tr("common.edit")}</button>
                                                             </span>
                                                         </div>
                                                     ) : (
-                                                        <button onClick={generateAiSequence} disabled={generatingSeq} className="h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[12.5px] font-bold hover:bg-[#4A43C9] disabled:opacity-60 flex items-center gap-2">{generatingSeq ? <><Loader2 className="w-4 h-4 animate-spin" /> {tr("agent.drafting")}</> : <><Sparkles className="w-4 h-4" /> {tr("agent.generateDraftSequence")}</>}</button>
+                                                        <button onClick={generateAiSequence} disabled={generatingSeq} className="h-9 px-4 rounded-[4px] bg-[#1976D2] text-white text-[12.5px] font-bold hover:bg-[#1565C0] disabled:opacity-60 flex items-center gap-2">{generatingSeq ? <><Loader2 className="w-4 h-4 animate-spin" /> {tr("agent.drafting")}</> : <><Sparkles className="w-4 h-4" /> {tr("agent.generateDraftSequence")}</>}</button>
                                                     )}
                                                 </div>
                                             )}
                                         </div>
 
                                         {/* Use existing sequence */}
-                                        <div className={`rounded-[12px] border p-4 transition-all ${outreach === "existing" ? "border-[#5B53E0] bg-[#F4F3FD]/50" : "border-[#E1E4E8] bg-white"}`}>
+                                        <div className={`rounded-[4px] border p-4 transition-all ${outreach === "existing" ? "border-[#1976D2] bg-[#F3F9FE]/50" : "border-[#E0E0E0] bg-white"}`}>
                                             <button onClick={() => setOutreach("existing")} className="w-full flex items-start gap-3 text-left">
-                                                <span className={`w-4 h-4 rounded-full border-2 mt-0.5 shrink-0 ${outreach === "existing" ? "border-[#5B53E0] bg-[#5B53E0]" : "border-[#C4C9D0]"}`} />
-                                                <div><p className="text-[13px] font-bold text-[#15171C]">{tr("agent.useExisting")}</p><p className="text-[12px] text-[#8A929E] mt-0.5">{tr("agent.useExistingDesc")}</p></div>
+                                                <span className={`w-4 h-4 rounded-full border-2 mt-0.5 shrink-0 ${outreach === "existing" ? "border-[#1976D2] bg-[#1976D2]" : "border-[#BDBDBD]"}`} />
+                                                <div><p className="text-[13px] font-bold text-[#212121]">{tr("agent.useExisting")}</p><p className="text-[12px] text-[#757575] mt-0.5">{tr("agent.useExistingDesc")}</p></div>
                                             </button>
                                             {outreach === "existing" && (
                                                 <div className="mt-3 pl-7">
                                                     <select
                                                         value={agent?.outreach_sequence_id || ""}
                                                         onChange={(e) => { const s = sequences.find((x) => x.sequence_id === e.target.value); patch({ outreach_mode: "existing", outreach_sequence_id: e.target.value, outreach_sequence_name: s?.name || "" }); }}
-                                                        className="w-full h-10 px-3 rounded-[10px] border border-[#E1E4E8] text-[13px] text-[#374151] bg-white outline-none focus:border-[#5B53E0]"
+                                                        className="w-full h-10 px-3 rounded-[4px] border border-[#E0E0E0] text-[13px] text-[#424242] bg-white outline-none focus:border-[#1976D2]"
                                                     >
                                                         <option value="">{tr("agent.selectSequence")}</option>
                                                         {sequences.map((s) => <option key={s.sequence_id} value={s.sequence_id}>{s.name}</option>)}
                                                     </select>
-                                                    {sequences.length === 0 && <p className="text-[11.5px] text-[#9AA3AF] mt-1.5">{tr("agent.noSequencesYet")}</p>}
+                                                    {sequences.length === 0 && <p className="text-[11.5px] text-[#9E9E9E] mt-1.5">{tr("agent.noSequencesYet")}</p>}
                                                 </div>
                                             )}
                                         </div>
 
                                         {/* Add to shortlist */}
-                                        <button onClick={() => setOutreach("shortlist")} className={`w-full flex items-start gap-3 text-left rounded-[12px] border p-4 transition-all ${outreach === "shortlist" ? "border-[#5B53E0] bg-[#F4F3FD]/50" : "border-[#E1E4E8] bg-white hover:border-[#DAD7F6]"}`}>
-                                            <span className={`w-4 h-4 rounded-full border-2 mt-0.5 shrink-0 ${outreach === "shortlist" ? "border-[#5B53E0] bg-[#5B53E0]" : "border-[#C4C9D0]"}`} />
-                                            <div><p className="text-[13px] font-bold text-[#15171C]">{tr("agent.addToShortlist")}</p><p className="text-[12px] text-[#8A929E] mt-0.5">{tr("agent.addToShortlistDesc")}</p></div>
+                                        <button onClick={() => setOutreach("shortlist")} className={`w-full flex items-start gap-3 text-left rounded-[4px] border p-4 transition-all ${outreach === "shortlist" ? "border-[#1976D2] bg-[#F3F9FE]/50" : "border-[#E0E0E0] bg-white hover:border-[#BBDEFB]"}`}>
+                                            <span className={`w-4 h-4 rounded-full border-2 mt-0.5 shrink-0 ${outreach === "shortlist" ? "border-[#1976D2] bg-[#1976D2]" : "border-[#BDBDBD]"}`} />
+                                            <div><p className="text-[13px] font-bold text-[#212121]">{tr("agent.addToShortlist")}</p><p className="text-[12px] text-[#757575] mt-0.5">{tr("agent.addToShortlistDesc")}</p></div>
                                         </button>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <h3 className="text-[15px] font-bold text-[#15171C]">{tr("agent.approvalType")}</h3>
-                                    <p className="text-[12.5px] text-[#8A929E] mb-3">{tr("agent.approvalDesc")}</p>
+                                    <h3 className="text-[15px] font-bold text-[#212121]">{tr("agent.approvalType")}</h3>
+                                    <p className="text-[12.5px] text-[#757575] mb-3">{tr("agent.approvalDesc")}</p>
                                     <div className="space-y-2.5">
                                         {([["automatic", tr("agent.automatic"), tr("agent.automaticDesc")],
                                            ["manual", tr("agent.manual"), tr("agent.manualDesc")]] as const).map(([key, label, desc]) => (
-                                            <button key={key} onClick={() => setApproval(key)} className={`w-full flex items-start gap-3 text-left rounded-[12px] border p-4 transition-all ${approval === key ? "border-[#5B53E0] bg-[#F4F3FD]/50" : "border-[#E1E4E8] bg-white hover:border-[#DAD7F6]"}`}>
-                                                <span className={`w-4 h-4 rounded-full border-2 mt-0.5 shrink-0 ${approval === key ? "border-[#5B53E0] bg-[#5B53E0]" : "border-[#C4C9D0]"}`} />
+                                            <button key={key} onClick={() => setApproval(key)} className={`w-full flex items-start gap-3 text-left rounded-[4px] border p-4 transition-all ${approval === key ? "border-[#1976D2] bg-[#F3F9FE]/50" : "border-[#E0E0E0] bg-white hover:border-[#BBDEFB]"}`}>
+                                                <span className={`w-4 h-4 rounded-full border-2 mt-0.5 shrink-0 ${approval === key ? "border-[#1976D2] bg-[#1976D2]" : "border-[#BDBDBD]"}`} />
                                                 <div>
-                                                    <p className="text-[13px] font-bold text-[#15171C]">{label}</p>
-                                                    <p className="text-[12px] text-[#8A929E] mt-0.5">{desc}</p>
+                                                    <p className="text-[13px] font-bold text-[#212121]">{label}</p>
+                                                    <p className="text-[12px] text-[#757575] mt-0.5">{desc}</p>
                                                 </div>
                                             </button>
                                         ))}
@@ -792,15 +792,15 @@ export default function ProjectDetailPage() {
                                 </div>
 
                                 <div className="mb-8">
-                                    <h3 className="text-[15px] font-bold text-[#15171C]">{tr("agent.responseWindowTitle")}</h3>
-                                    <p className="text-[12.5px] text-[#8A929E] mb-3">{tr("agent.responseWindowDesc")}</p>
+                                    <h3 className="text-[15px] font-bold text-[#212121]">{tr("agent.responseWindowTitle")}</h3>
+                                    <p className="text-[12.5px] text-[#757575] mb-3">{tr("agent.responseWindowDesc")}</p>
                                     <div className="grid grid-cols-6 gap-2">
                                         {[{ v: 0, l: tr("agent.responseOff") }, { v: 1, l: "1d" }, { v: 2, l: "2d" }, { v: 3, l: "3d" }, { v: 5, l: "5d" }, { v: 7, l: "7d" }].map((o) => (
-                                            <button key={o.v} onClick={() => setResponseWindow(o.v)} className={`rounded-[12px] border px-2 py-4 text-center text-[13px] font-bold transition-all ${responseWindow === o.v ? "border-[#5B53E0] bg-[#F4F3FD] ring-2 ring-[#5B53E0]/15 text-[#5B53E0]" : "border-[#E1E4E8] bg-white text-[#374151] hover:border-[#DAD7F6]"}`}>{o.l}</button>
+                                            <button key={o.v} onClick={() => setResponseWindow(o.v)} className={`rounded-[4px] border px-2 py-4 text-center text-[13px] font-bold transition-all ${responseWindow === o.v ? "border-[#1976D2] bg-[#F3F9FE] ring-2 ring-[#1976D2]/15 text-[#1976D2]" : "border-[#E0E0E0] bg-white text-[#424242] hover:border-[#BBDEFB]"}`}>{o.l}</button>
                                         ))}
                                     </div>
                                     <div className="mt-3 flex items-center gap-2.5">
-                                        <span className="text-[12.5px] text-[#8A929E]">{tr("agent.customWindowLabel")}</span>
+                                        <span className="text-[12.5px] text-[#757575]">{tr("agent.customWindowLabel")}</span>
                                         <input
                                             type="number"
                                             min={1}
@@ -808,14 +808,14 @@ export default function ProjectDetailPage() {
                                             value={responseWindow > 0 ? responseWindow : ""}
                                             onChange={(e) => { const n = parseInt(e.target.value, 10); setResponseWindow(Number.isFinite(n) && n > 0 ? Math.min(365, n) : 0); }}
                                             placeholder={tr("agent.customWindowPlaceholder")}
-                                            className={`w-24 h-9 rounded-[10px] border px-3 text-[13px] font-semibold text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 ${responseWindow > 0 && ![1, 2, 3, 5, 7].includes(responseWindow) ? "border-[#5B53E0] bg-[#F4F3FD]" : "border-[#E1E4E8] bg-white"}`}
+                                            className={`w-24 h-9 rounded-[4px] border px-3 text-[13px] font-semibold text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15 ${responseWindow > 0 && ![1, 2, 3, 5, 7].includes(responseWindow) ? "border-[#1976D2] bg-[#F3F9FE]" : "border-[#E0E0E0] bg-white"}`}
                                         />
-                                        <span className="text-[12.5px] text-[#8A929E]">{tr("agent.daysUnit")}</span>
+                                        <span className="text-[12.5px] text-[#757575]">{tr("agent.daysUnit")}</span>
                                     </div>
                                     {responseWindow > 0 && (
                                         <label className="mt-3 flex items-center gap-2.5 cursor-pointer">
-                                            <input type="checkbox" checked={autoResource} onChange={(e) => setAutoResource(e.target.checked)} className="w-4 h-4 accent-[#5B53E0]" />
-                                            <span className="text-[13px] text-[#374151]">{tr("agent.autoResourceLabel")}</span>
+                                            <input type="checkbox" checked={autoResource} onChange={(e) => setAutoResource(e.target.checked)} className="w-4 h-4 accent-[#1976D2]" />
+                                            <span className="text-[13px] text-[#424242]">{tr("agent.autoResourceLabel")}</span>
                                         </label>
                                     )}
                                 </div>
@@ -823,7 +823,7 @@ export default function ProjectDetailPage() {
                                 <div className="flex justify-end">
                                     <button
                                         onClick={async () => { await patch({ daily_target: dailyTarget, outreach_mode: outreach, approval_type: approval, response_window_days: responseWindow, auto_resource: autoResource }); setAgentTab("sourcing"); }}
-                                        className="h-11 px-6 rounded-[10px] bg-[#5B53E0] text-white text-[14px] font-bold hover:bg-[#4A43C9] flex items-center gap-2"
+                                        className="h-11 px-6 rounded-[4px] bg-[#1976D2] text-white text-[14px] font-bold hover:bg-[#1565C0] flex items-center gap-2"
                                     >
                                         {tr("agent.continue")} <ArrowRight className="w-4 h-4" />
                                     </button>
@@ -833,33 +833,33 @@ export default function ProjectDetailPage() {
 
                         {agentTab === "sourcing" && (
                             <div className="flex flex-col items-center justify-center text-center py-20 max-w-md mx-auto">
-                                <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 ${paused ? "bg-[#F1F2F5] text-[#9AA3AF]" : "bg-[#F4F3FD] text-[#5B53E0]"}`}>{paused ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}</div>
-                                <h3 className="text-[17px] font-bold text-[#15171C]">{paused ? tr("agent.agentDeactivated") : agent?.status === "sourcing" ? tr("agent.agentSourcing") : tr("agent.readyToSource")}</h3>
-                                <p className="text-[13px] text-[#8A929E] mt-1.5">{paused ? tr("agent.pausedDesc") : tr("agent.readyDesc", { count: dailyTarget })}</p>
+                                <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 ${paused ? "bg-[#EEEEEE] text-[#9E9E9E]" : "bg-[#F3F9FE] text-[#1976D2]"}`}>{paused ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}</div>
+                                <h3 className="text-[17px] font-bold text-[#212121]">{paused ? tr("agent.agentDeactivated") : agent?.status === "sourcing" ? tr("agent.agentSourcing") : tr("agent.readyToSource")}</h3>
+                                <p className="text-[13px] text-[#757575] mt-1.5">{paused ? tr("agent.pausedDesc") : tr("agent.readyDesc", { count: dailyTarget })}</p>
                                 {paused ? (
-                                    <button onClick={() => patch({ paused: false })} className="mt-6 h-11 px-6 rounded-[10px] bg-[#5B53E0] text-white text-[14px] font-bold hover:bg-[#4A43C9] flex items-center gap-2"><Play className="w-4 h-4" /> {tr("agent.activateAgent")}</button>
+                                    <button onClick={() => patch({ paused: false })} className="mt-6 h-11 px-6 rounded-[4px] bg-[#1976D2] text-white text-[14px] font-bold hover:bg-[#1565C0] flex items-center gap-2"><Play className="w-4 h-4" /> {tr("agent.activateAgent")}</button>
                                 ) : (
-                                    <button onClick={startSourcing} disabled={sourcing} className="mt-6 h-11 px-6 rounded-[10px] bg-[#5B53E0] text-white text-[14px] font-bold hover:bg-[#4A43C9] disabled:opacity-60 flex items-center gap-2">
+                                    <button onClick={startSourcing} disabled={sourcing} className="mt-6 h-11 px-6 rounded-[4px] bg-[#1976D2] text-white text-[14px] font-bold hover:bg-[#1565C0] disabled:opacity-60 flex items-center gap-2">
                                         {sourcing ? <><Loader2 className="w-4 h-4 animate-spin" /> {tr("agent.sourcingProgress")}</> : <><Radar className="w-4 h-4" /> {tr("agent.startSourcing")}</>}
                                     </button>
                                 )}
-                                {project.stats?.shortlisted ? <p className="text-[12.5px] text-[#15803D] font-semibold mt-4">{tr("agent.shortlistedSoFar", { count: project.stats.shortlisted })}</p> : null}
+                                {project.stats?.shortlisted ? <p className="text-[12.5px] text-[#2E7D32] font-semibold mt-4">{tr("agent.shortlistedSoFar", { count: project.stats.shortlisted })}</p> : null}
                             </div>
                         )}
 
                         {agentTab === "candidates" && (() => {
                             const srcMeta = (s: string) => {
                                 const v = (s || "").toLowerCase();
-                                if (v.includes("manual") || v.includes("approv")) return { label: tr("agent.approved"), cls: "bg-[#E6F4EA] text-[#15803D]" };
+                                if (v.includes("manual") || v.includes("approv")) return { label: tr("agent.approved"), cls: "bg-[#E8F5E9] text-[#2E7D32]" };
                                 if (v.includes("direct")) return { label: tr("agent.direct"), cls: "bg-[#EEF0FB] text-[#4B4FD6]" };
-                                return { label: tr("agent.aiSourced"), cls: "bg-[#F4F3FD] text-[#5B53E0]" };
+                                return { label: tr("agent.aiSourced"), cls: "bg-[#F3F9FE] text-[#1976D2]" };
                             };
                             const statusCls = (st: string) => {
                                 const v = (st || "").toLowerCase();
-                                if (v.includes("interest") || v.includes("respond") || v.includes("hired")) return "bg-[#E6F4EA] text-[#15803D]";
-                                if (v.includes("contact") || v.includes("sent")) return "bg-[#FEF3E2] text-[#B45309]";
+                                if (v.includes("interest") || v.includes("respond") || v.includes("hired")) return "bg-[#E8F5E9] text-[#2E7D32]";
+                                if (v.includes("contact") || v.includes("sent")) return "bg-[#FFF3E0] text-[#E65100]";
                                 if (v.includes("approv")) return "bg-[#EEF0FB] text-[#4B4FD6]";
-                                return "bg-[#F1F2F5] text-[#6B6F76]";
+                                return "bg-[#EEEEEE] text-[#616161]";
                             };
                             const isAi = (s: string) => { const v = (s || "").toLowerCase(); return !(v.includes("manual") || v.includes("approv") || v.includes("direct")); };
                             const aiList = projCands.filter((c) => isAi(c.source));
@@ -870,28 +870,28 @@ export default function ProjectDetailPage() {
                                 <div>
                                     <div className="flex items-center justify-between gap-3 mb-3">
                                         <div>
-                                            <h3 className="text-[16px] font-bold text-[#15171C]">{tr("agent.candidates")}</h3>
-                                            <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("agent.candidatesDesc")}</p>
+                                            <h3 className="text-[16px] font-bold text-[#212121]">{tr("agent.candidates")}</h3>
+                                            <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("agent.candidatesDesc")}</p>
                                         </div>
-                                        <button onClick={fetchProjectCandidates} className="h-9 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[12.5px] font-semibold text-[#374151] hover:bg-[#F7F8FA]">{tr("agent.refresh")}</button>
+                                        <button onClick={fetchProjectCandidates} className="h-9 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[12.5px] font-semibold text-[#424242] hover:bg-[#FAFAFA]">{tr("agent.refresh")}</button>
                                     </div>
-                                    <div className="flex items-center gap-1 mb-3 border-b border-[#E8EAED]">
+                                    <div className="flex items-center gap-1 mb-3 border-b border-[#E0E0E0]">
                                         {subTabs.map(([k, label, n]) => (
-                                            <button key={k} onClick={() => setCandSubTab(k)} className={`px-3.5 py-2 text-[12.5px] font-semibold border-b-2 -mb-px transition-colors ${candSubTab === k ? "border-[#5B53E0] text-[#5B53E0]" : "border-transparent text-[#8A929E] hover:text-[#374151]"}`}>{label}<span className={`ml-1.5 text-[11px] font-bold px-1.5 py-0.5 rounded-full ${candSubTab === k ? "bg-[#ECEBFB] text-[#5B53E0]" : "bg-[#F1F2F5] text-[#8A929E]"}`}>{n}</span></button>
+                                            <button key={k} onClick={() => setCandSubTab(k)} className={`px-3.5 py-2 text-[12.5px] font-semibold border-b-2 -mb-px transition-colors ${candSubTab === k ? "border-[#1976D2] text-[#1976D2]" : "border-transparent text-[#757575] hover:text-[#424242]"}`}>{label}<span className={`ml-1.5 text-[11px] font-bold px-1.5 py-0.5 rounded-full ${candSubTab === k ? "bg-[#E3F2FD] text-[#1976D2]" : "bg-[#EEEEEE] text-[#757575]"}`}>{n}</span></button>
                                         ))}
                                     </div>
                                     {candsLoading ? (
-                                        <div className="py-16 flex justify-center"><Loader2 className="w-5 h-5 text-[#5B53E0] animate-spin" /></div>
+                                        <div className="py-16 flex justify-center"><Loader2 className="w-5 h-5 text-[#1976D2] animate-spin" /></div>
                                     ) : view.length === 0 ? (
-                                        <div className="rounded-[14px] border border-dashed border-[#D8DBE0] bg-[#FBFBFC] py-14 text-center">
-                                            <p className="text-[14px] font-bold text-[#15171C]">{tr("agent.noCandidatesYet")}</p>
-                                            <p className="text-[12.5px] text-[#8A929E] mt-1">{tr("agent.noCandidatesDesc")}</p>
+                                        <div className="rounded-[4px] border border-dashed border-[#D8DBE0] bg-[#FAFAFA] py-14 text-center">
+                                            <p className="text-[14px] font-bold text-[#212121]">{tr("agent.noCandidatesYet")}</p>
+                                            <p className="text-[12.5px] text-[#757575] mt-1">{tr("agent.noCandidatesDesc")}</p>
                                         </div>
                                     ) : (
-                                        <div className="rounded-[14px] border border-[#E8EAED] bg-white overflow-x-auto">
+                                        <div className="rounded-[4px] border border-[#E0E0E0] bg-white overflow-x-auto">
                                             <table className="w-full text-left border-collapse min-w-[720px]">
                                                 <thead>
-                                                    <tr className="bg-[#F7F8FA] text-[10.5px] uppercase tracking-[0.04em] text-[#8A929E]">
+                                                    <tr className="bg-[#FAFAFA] text-[10.5px] uppercase tracking-[0.04em] text-[#757575]">
                                                         <th className="px-4 py-2.5 font-bold">{tr("agent.colCandidate")}</th>
                                                         <th className="px-4 py-2.5 font-bold">{tr("agent.colSource")}</th>
                                                         <th className="px-4 py-2.5 font-bold">{tr("agent.colId")}</th>
@@ -904,24 +904,24 @@ export default function ProjectDetailPage() {
                                                         const p = c.profile || {};
                                                         const sm = srcMeta(c.source);
                                                         return (
-                                                            <tr key={c.shortlist_id} className="border-t border-[#F0F0F1] hover:bg-[#F7F8FA]/50">
+                                                            <tr key={c.shortlist_id} className="border-t border-[#EEEEEE] hover:bg-[#FAFAFA]/50">
                                                                 <td className="px-4 py-3">
                                                                     <div className="min-w-0 cursor-pointer" onClick={() => openReview([p], 0)}>
                                                                         <div className="flex items-center gap-2 min-w-0">
-                                                                            <span className="text-[13.5px] font-bold text-[#15171C] truncate">{p.full_name || "Unknown"}</span>
-                                                                            {p.profile_url && <a href={p.profile_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="text-[#5B53E0] text-[11px] font-semibold inline-flex items-center gap-0.5 shrink-0">{tr("agent.profile")}<ExternalLink className="w-3 h-3" /></a>}
+                                                                            <span className="text-[13.5px] font-bold text-[#212121] truncate">{p.full_name || "Unknown"}</span>
+                                                                            {p.profile_url && <a href={p.profile_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="text-[#1976D2] text-[11px] font-semibold inline-flex items-center gap-0.5 shrink-0">{tr("agent.profile")}<ExternalLink className="w-3 h-3" /></a>}
                                                                         </div>
-                                                                        <p className="text-[12px] text-[#8A929E] truncate mt-0.5">{p.headline || p.company || p.location || "—"}</p>
+                                                                        <p className="text-[12px] text-[#757575] truncate mt-0.5">{p.headline || p.company || p.location || "—"}</p>
                                                                     </div>
                                                                 </td>
                                                                 <td className="px-4 py-3"><span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${sm.cls}`}>{sm.label}</span></td>
-                                                                <td className="px-4 py-3"><span className="text-[11.5px] font-mono text-[#8A929E]" title={c.shortlist_id}>{(c.shortlist_id || "").slice(0, 8)}</span></td>
+                                                                <td className="px-4 py-3"><span className="text-[11.5px] font-mono text-[#757575]" title={c.shortlist_id}>{(c.shortlist_id || "").slice(0, 8)}</span></td>
                                                                 <td className="px-4 py-3"><span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full whitespace-nowrap ${statusCls(c.status)}`}>{c.status || tr("agent.notContacted")}</span></td>
                                                                 <td className="px-4 py-3">
                                                                     <div className="flex items-center gap-1.5 justify-end">
-                                                                        {(c.sent_body || c.reply_body) && <button onClick={() => setReplyView(c)} title={tr("agent.viewThread")} className="w-8 h-8 rounded-[8px] flex items-center justify-center text-[#5B53E0] hover:bg-[#F4F3FD]"><Mail className="w-4 h-4" /></button>}
-                                                                        <button onClick={() => setCandidateStatus(c, "Interested")} title={tr("agent.markVerified")} className="w-8 h-8 rounded-[8px] flex items-center justify-center text-[#15803D] hover:bg-[#E6F4EA]"><CheckCircle2 className="w-4 h-4" /></button>
-                                                                        <button onClick={() => removeCandidate(c)} title={tr("agent.remove")} className="w-8 h-8 rounded-[8px] flex items-center justify-center text-[#9AA3AF] hover:text-[#C0383C] hover:bg-rose-50"><X className="w-4 h-4" /></button>
+                                                                        {(c.sent_body || c.reply_body) && <button onClick={() => setReplyView(c)} title={tr("agent.viewThread")} className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#1976D2] hover:bg-[#F3F9FE]"><Mail className="w-4 h-4" /></button>}
+                                                                        <button onClick={() => setCandidateStatus(c, "Interested")} title={tr("agent.markVerified")} className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#2E7D32] hover:bg-[#E8F5E9]"><CheckCircle2 className="w-4 h-4" /></button>
+                                                                        <button onClick={() => removeCandidate(c)} title={tr("agent.remove")} className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#9E9E9E] hover:text-[#C62828] hover:bg-rose-50"><X className="w-4 h-4" /></button>
                                                                     </div>
                                                                 </td>
                                                             </tr>
@@ -941,37 +941,37 @@ export default function ProjectDetailPage() {
                 {replyView && (() => {
                     const c = replyView; const p = c.profile || {};
                     return (
-                    <div className="fixed inset-0 bg-[#15171C]/40 backdrop-blur-sm z-50 flex items-start justify-center px-4 py-10 overflow-y-auto no-scrollbar" onClick={() => setReplyView(null)}>
-                        <div className="bg-white rounded-[16px] border border-[#E8EAED] shadow-[0_14px_34px_rgba(15,23,42,0.16)] max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
-                            <div className="p-5 border-b border-[#E8EAED] flex items-center justify-between gap-3">
+                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-start justify-center px-4 py-10 overflow-y-auto no-scrollbar" onClick={() => setReplyView(null)}>
+                        <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
+                            <div className="p-5 border-b border-[#E0E0E0] flex items-center justify-between gap-3">
                                 <div className="min-w-0">
-                                    <h3 className="text-[16px] font-bold text-[#15171C] truncate">{tr("agent.conversation")}</h3>
-                                    <p className="text-[12.5px] text-[#8A929E] mt-0.5 truncate">{p.full_name || "—"}{p.email ? ` · ${p.email}` : ""}</p>
+                                    <h3 className="text-[16px] font-bold text-[#212121] truncate">{tr("agent.conversation")}</h3>
+                                    <p className="text-[12.5px] text-[#757575] mt-0.5 truncate">{p.full_name || "—"}{p.email ? ` · ${p.email}` : ""}</p>
                                 </div>
-                                <button onClick={() => setReplyView(null)} className="w-8 h-8 rounded-[8px] border border-[#E1E4E8] flex items-center justify-center text-[#4B5563] hover:bg-[#F7F8FA] shrink-0"><X className="w-4 h-4" /></button>
+                                <button onClick={() => setReplyView(null)} className="w-8 h-8 rounded-[4px] border border-[#E0E0E0] flex items-center justify-center text-[#4F4F4F] hover:bg-[#FAFAFA] shrink-0"><X className="w-4 h-4" /></button>
                             </div>
                             <div className="p-5 space-y-4 max-h-[65vh] overflow-y-auto">
                                 {c.sent_body && (
-                                    <div className="rounded-[12px] border border-[#E1E4E8] bg-[#F7F8FA] p-4">
+                                    <div className="rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] p-4">
                                         <div className="flex items-center justify-between mb-1.5">
-                                            <span className="text-[10.5px] font-bold uppercase tracking-wide text-[#5B53E0]">{tr("agent.sentLabel")}</span>
-                                            <span className="text-[11px] text-[#8A929E]">{c.sent_at ? new Date(c.sent_at).toLocaleString() : ""}</span>
+                                            <span className="text-[10.5px] font-bold uppercase tracking-wide text-[#1976D2]">{tr("agent.sentLabel")}</span>
+                                            <span className="text-[11px] text-[#757575]">{c.sent_at ? new Date(c.sent_at).toLocaleString() : ""}</span>
                                         </div>
-                                        {c.sent_subject && <p className="text-[13px] font-bold text-[#15171C] mb-1">{c.sent_subject}</p>}
-                                        <div className="text-[13px] text-[#374151] leading-relaxed break-words [&_*]:!m-0 [&_p]:mb-2" dangerouslySetInnerHTML={{ __html: c.sent_body }} />
+                                        {c.sent_subject && <p className="text-[13px] font-bold text-[#212121] mb-1">{c.sent_subject}</p>}
+                                        <div className="text-[13px] text-[#424242] leading-relaxed break-words [&_*]:!m-0 [&_p]:mb-2" dangerouslySetInnerHTML={{ __html: c.sent_body }} />
                                     </div>
                                 )}
                                 {c.reply_body ? (
-                                    <div className="rounded-[12px] border border-[#C7D7FE] bg-[#EFF4FF] p-4">
+                                    <div className="rounded-[4px] border border-[#C7D7FE] bg-[#EFF4FF] p-4">
                                         <div className="flex items-center justify-between mb-1.5">
                                             <span className="text-[10.5px] font-bold uppercase tracking-wide text-[#3538CD]">{tr("agent.candidateReply")}</span>
-                                            <span className="text-[11px] text-[#8A929E]">{c.reply_at ? new Date(c.reply_at).toLocaleString() : ""}</span>
+                                            <span className="text-[11px] text-[#757575]">{c.reply_at ? new Date(c.reply_at).toLocaleString() : ""}</span>
                                         </div>
-                                        {c.reply_subject && <p className="text-[13px] font-bold text-[#15171C] mb-1">{c.reply_subject}</p>}
-                                        <p className="text-[13px] text-[#374151] leading-relaxed whitespace-pre-wrap break-words">{c.reply_body}</p>
+                                        {c.reply_subject && <p className="text-[13px] font-bold text-[#212121] mb-1">{c.reply_subject}</p>}
+                                        <p className="text-[13px] text-[#424242] leading-relaxed whitespace-pre-wrap break-words">{c.reply_body}</p>
                                     </div>
                                 ) : (
-                                    <p className="text-[12.5px] text-[#8A929E] text-center py-4 rounded-[12px] border border-dashed border-[#D8DBE0] bg-[#FBFBFC]">{tr("agent.noReplyYet")}</p>
+                                    <p className="text-[12.5px] text-[#757575] text-center py-4 rounded-[4px] border border-dashed border-[#D8DBE0] bg-[#FAFAFA]">{tr("agent.noReplyYet")}</p>
                                 )}
                             </div>
                         </div>
@@ -986,74 +986,74 @@ export default function ProjectDetailPage() {
                     const bio = p.ai_summary || "";
                     const skills: string[] = p.skills || [];
                     const edu = p.raw_data?.education || p.raw_data?.school || null;
-                    const verdictBadge = (v: string) => v === "Good Match" ? "bg-[#E6F4EA] text-[#15803D]" : v === "Partial Match" ? "bg-[#FEF3E2] text-[#B45309]" : "bg-[#F1F2F5] text-[#8A929E]";
+                    const verdictBadge = (v: string) => v === "Good Match" ? "bg-[#E8F5E9] text-[#2E7D32]" : v === "Partial Match" ? "bg-[#FFF3E0] text-[#E65100]" : "bg-[#EEEEEE] text-[#757575]";
                     return (
-                    <div className="fixed inset-0 bg-[#15171C]/40 backdrop-blur-sm z-50 flex items-start justify-center px-4 py-8 overflow-y-auto no-scrollbar" onClick={() => setReviewList(null)}>
-                        <div className="bg-white rounded-[16px] border border-[#E8EAED] shadow-[0_14px_34px_rgba(15,23,42,0.16)] max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
+                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-start justify-center px-4 py-8 overflow-y-auto no-scrollbar" onClick={() => setReviewList(null)}>
+                        <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
                             {/* Header */}
-                            <div className="p-5 border-b border-[#E8EAED] flex items-center justify-between">
-                                <h3 className="text-[17px] font-bold text-[#15171C]">{tr("agent.reviewProfiles")}</h3>
+                            <div className="p-5 border-b border-[#E0E0E0] flex items-center justify-between">
+                                <h3 className="text-[17px] font-bold text-[#212121]">{tr("agent.reviewProfiles")}</h3>
                                 <div className="flex items-center gap-3">
                                     <div className="flex items-center gap-1.5">
-                                        <button onClick={() => reviewNav(-1)} disabled={reviewIdx === 0} className="w-8 h-8 rounded-[8px] border border-[#E1E4E8] flex items-center justify-center text-[#4B5563] hover:bg-[#F7F8FA] disabled:opacity-40"><ChevronLeft className="w-4 h-4" /></button>
-                                        <span className="text-[13px] font-semibold text-[#4B5563]">{tr("agent.ofCount", { current: reviewIdx + 1, total: reviewList.length })}</span>
-                                        <button onClick={() => reviewNav(1)} disabled={reviewIdx === reviewList.length - 1} className="w-8 h-8 rounded-[8px] border border-[#E1E4E8] flex items-center justify-center text-[#4B5563] hover:bg-[#F7F8FA] disabled:opacity-40"><ChevronRight className="w-4 h-4" /></button>
+                                        <button onClick={() => reviewNav(-1)} disabled={reviewIdx === 0} className="w-8 h-8 rounded-[4px] border border-[#E0E0E0] flex items-center justify-center text-[#4F4F4F] hover:bg-[#FAFAFA] disabled:opacity-40"><ChevronLeft className="w-4 h-4" /></button>
+                                        <span className="text-[13px] font-semibold text-[#4F4F4F]">{tr("agent.ofCount", { current: reviewIdx + 1, total: reviewList.length })}</span>
+                                        <button onClick={() => reviewNav(1)} disabled={reviewIdx === reviewList.length - 1} className="w-8 h-8 rounded-[4px] border border-[#E0E0E0] flex items-center justify-center text-[#4F4F4F] hover:bg-[#FAFAFA] disabled:opacity-40"><ChevronRight className="w-4 h-4" /></button>
                                     </div>
-                                    <button onClick={() => setReviewList(null)} className="h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-bold hover:bg-[#4A43C9]">{tr("agent.finishReview")}</button>
+                                    <button onClick={() => setReviewList(null)} className="h-9 px-4 rounded-[4px] bg-[#1976D2] text-white text-[13px] font-bold hover:bg-[#1565C0]">{tr("agent.finishReview")}</button>
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-1 lg:grid-cols-2">
                                 {/* Left: profile */}
-                                <div className="p-6 border-r border-[#E8EAED]">
+                                <div className="p-6 border-r border-[#E0E0E0]">
                                     <div className="flex items-start justify-between gap-3">
                                         <div>
                                             <div className="flex items-center gap-2">
-                                                <h4 className="text-[19px] font-extrabold text-[#15171C]">{p.full_name || tr("agent.candidate")}</h4>
-                                                {p.profile_url && <a href={p.profile_url} target="_blank" rel="noreferrer" className="text-[12px] font-semibold text-[#374151] border border-[#E1E4E8] rounded-full px-2.5 py-1 hover:bg-[#F7F8FA]">{tr("agent.fullProfile")}</a>}
+                                                <h4 className="text-[19px] font-extrabold text-[#212121]">{p.full_name || tr("agent.candidate")}</h4>
+                                                {p.profile_url && <a href={p.profile_url} target="_blank" rel="noreferrer" className="text-[12px] font-semibold text-[#424242] border border-[#E0E0E0] rounded-full px-2.5 py-1 hover:bg-[#FAFAFA]">{tr("agent.fullProfile")}</a>}
                                             </div>
-                                            <p className="text-[13px] text-[#8A929E] mt-1">{p.location || "—"}</p>
+                                            <p className="text-[13px] text-[#757575] mt-1">{p.location || "—"}</p>
                                         </div>
                                         <div className="flex items-center gap-1.5">
-                                            {(p.platform || "").toLowerCase().includes("linkedin") && <span className="w-7 h-7 rounded-[7px] bg-[#0A66C2] text-white flex items-center justify-center"><Linkedin className="w-4 h-4" /></span>}
-                                            {(p.platform || "").toLowerCase().includes("github") && <span className="w-7 h-7 rounded-[7px] bg-[#15171C] text-white flex items-center justify-center"><Github className="w-4 h-4" /></span>}
+                                            {(p.platform || "").toLowerCase().includes("linkedin") && <span className="w-7 h-7 rounded-[4px] bg-[#0A66C2] text-white flex items-center justify-center"><Linkedin className="w-4 h-4" /></span>}
+                                            {(p.platform || "").toLowerCase().includes("github") && <span className="w-7 h-7 rounded-[4px] bg-[#212121] text-white flex items-center justify-center"><Github className="w-4 h-4" /></span>}
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-4 mt-3 text-[13px] text-[#374151]">
-                                        {p.company && <span className="inline-flex items-center gap-1.5"><span className="w-4 h-4 rounded-[4px] bg-[#F4F3FD] inline-flex items-center justify-center text-[#5B53E0] text-[9px] font-bold">{(p.company || "?").charAt(0)}</span>{p.company}</span>}
-                                        {edu && <span className="inline-flex items-center gap-1.5 text-[#6B6F76]">🎓 {edu}</span>}
+                                    <div className="flex items-center gap-4 mt-3 text-[13px] text-[#424242]">
+                                        {p.company && <span className="inline-flex items-center gap-1.5"><span className="w-4 h-4 rounded-[4px] bg-[#F3F9FE] inline-flex items-center justify-center text-[#1976D2] text-[9px] font-bold">{(p.company || "?").charAt(0)}</span>{p.company}</span>}
+                                        {edu && <span className="inline-flex items-center gap-1.5 text-[#616161]">🎓 {edu}</span>}
                                     </div>
 
                                     {/* Real fetched data only */}
-                                    <div className="pt-5 mt-5 border-t border-[#E8EAED] space-y-5">
+                                    <div className="pt-5 mt-5 border-t border-[#E0E0E0] space-y-5">
                                         {p.headline && (
-                                            <div className="flex items-start gap-2 text-[13px] text-[#374151]">
-                                                <span className="w-6 h-6 rounded-[7px] bg-[#F4F3FD] text-[#5B53E0] flex items-center justify-center shrink-0"><SlidersHorizontal className="w-3.5 h-3.5" /></span>
+                                            <div className="flex items-start gap-2 text-[13px] text-[#424242]">
+                                                <span className="w-6 h-6 rounded-[4px] bg-[#F3F9FE] text-[#1976D2] flex items-center justify-center shrink-0"><SlidersHorizontal className="w-3.5 h-3.5" /></span>
                                                 <span className="font-semibold">{p.headline}</span>
                                             </div>
                                         )}
                                         {bio && (
                                             <div>
-                                                <p className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-1.5">{tr("agent.summary")}</p>
-                                                <p className="text-[13px] text-[#4B5563] leading-relaxed">{bioExpanded || bio.length <= 240 ? bio : bio.slice(0, 240) + "…"}{bio.length > 240 && <button onClick={() => setBioExpanded(!bioExpanded)} className="text-[#5B53E0] font-semibold ml-1">{bioExpanded ? tr("agent.readLess") : tr("agent.readMore")}</button>}</p>
+                                                <p className="text-[11px] font-bold uppercase tracking-wider text-[#757575] mb-1.5">{tr("agent.summary")}</p>
+                                                <p className="text-[13px] text-[#4F4F4F] leading-relaxed">{bioExpanded || bio.length <= 240 ? bio : bio.slice(0, 240) + "…"}{bio.length > 240 && <button onClick={() => setBioExpanded(!bioExpanded)} className="text-[#1976D2] font-semibold ml-1">{bioExpanded ? tr("agent.readLess") : tr("agent.readMore")}</button>}</p>
                                             </div>
                                         )}
                                         {skills.length > 0 && (
                                             <div>
-                                                <p className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-2">{tr("agent.skills")}</p>
-                                                <div className="flex flex-wrap gap-1.5">{skills.map((s, i) => <span key={i} className="px-2.5 py-1 rounded-full bg-[#F4F3FD] text-[#4B4794] text-[12px] font-semibold">{s}</span>)}</div>
+                                                <p className="text-[11px] font-bold uppercase tracking-wider text-[#757575] mb-2">{tr("agent.skills")}</p>
+                                                <div className="flex flex-wrap gap-1.5">{skills.map((s, i) => <span key={i} className="px-2.5 py-1 rounded-full bg-[#F3F9FE] text-[#0D47A1] text-[12px] font-semibold">{s}</span>)}</div>
                                             </div>
                                         )}
                                         {(p.email || p.raw_data?.phone || p.platform) && (
                                             <div>
-                                                <p className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-2">{tr("agent.contactSource")}</p>
-                                                <div className="space-y-1.5 text-[13px] text-[#374151]">
-                                                    {p.email && <p className="flex items-center gap-2"><Mail className="w-4 h-4 text-[#8A929E]" /> {p.email}</p>}
-                                                    {p.raw_data?.phone && <p className="flex items-center gap-2"><Phone className="w-4 h-4 text-[#8A929E]" /> {p.raw_data.phone}</p>}
+                                                <p className="text-[11px] font-bold uppercase tracking-wider text-[#757575] mb-2">{tr("agent.contactSource")}</p>
+                                                <div className="space-y-1.5 text-[13px] text-[#424242]">
+                                                    {p.email && <p className="flex items-center gap-2"><Mail className="w-4 h-4 text-[#757575]" /> {p.email}</p>}
+                                                    {p.raw_data?.phone && <p className="flex items-center gap-2"><Phone className="w-4 h-4 text-[#757575]" /> {p.raw_data.phone}</p>}
                                                     {p.platform && (
-                                                        <p className="text-[#6B6F76] flex items-center gap-1.5">{tr("agent.sourceLabel")}
+                                                        <p className="text-[#616161] flex items-center gap-1.5">{tr("agent.sourceLabel")}
                                                             <img src={`https://www.google.com/s2/favicons?sz=64&domain=${platformDomain(p.platform)}`} alt={p.platform} className="w-4 h-4 rounded-sm object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
-                                                            <span className="capitalize font-semibold text-[#374151]">{p.platform}</span>
+                                                            <span className="capitalize font-semibold text-[#424242]">{p.platform}</span>
                                                         </p>
                                                     )}
                                                 </div>
@@ -1061,33 +1061,33 @@ export default function ProjectDetailPage() {
                                         )}
                                         {(p.followers != null || p.public_repos != null) && (
                                             <div className="flex gap-6">
-                                                {p.followers != null && <div><p className="text-[18px] font-extrabold text-[#15171C]">{p.followers}</p><p className="text-[11px] text-[#8A929E]">{tr("agent.followers")}</p></div>}
-                                                {p.public_repos != null && <div><p className="text-[18px] font-extrabold text-[#15171C]">{p.public_repos}</p><p className="text-[11px] text-[#8A929E]">{tr("agent.repos")}</p></div>}
+                                                {p.followers != null && <div><p className="text-[18px] font-extrabold text-[#212121]">{p.followers}</p><p className="text-[11px] text-[#757575]">{tr("agent.followers")}</p></div>}
+                                                {p.public_repos != null && <div><p className="text-[18px] font-extrabold text-[#212121]">{p.public_repos}</p><p className="text-[11px] text-[#757575]">{tr("agent.repos")}</p></div>}
                                             </div>
                                         )}
-                                        {!p.headline && !bio && skills.length === 0 && !p.email && <p className="text-[12.5px] text-[#9AA3AF]">{tr("agent.noAdditionalDetails")}</p>}
+                                        {!p.headline && !bio && skills.length === 0 && !p.email && <p className="text-[12.5px] text-[#9E9E9E]">{tr("agent.noAdditionalDetails")}</p>}
                                     </div>
                                 </div>
 
                                 {/* Right: criteria analysis */}
                                 <div className="p-6 flex flex-col">
-                                    <div className="flex items-center gap-2 mb-4"><Sparkles className="w-4 h-4 text-[#5B53E0]" /><h4 className="text-[15px] font-bold text-[#15171C]">{tr("agent.criteriaAnalysis")}</h4></div>
+                                    <div className="flex items-center gap-2 mb-4"><Sparkles className="w-4 h-4 text-[#1976D2]" /><h4 className="text-[15px] font-bold text-[#212121]">{tr("agent.criteriaAnalysis")}</h4></div>
                                     <div className="flex-1 space-y-5 overflow-y-auto no-scrollbar max-h-[46vh]">
                                         {analyzing && analysis.length === 0 ? (
-                                            <div className="flex items-center gap-2 text-[12.5px] text-[#8A929E]"><Loader2 className="w-4 h-4 animate-spin" /> {tr("agent.analyzingCriteria")}</div>
+                                            <div className="flex items-center gap-2 text-[12.5px] text-[#757575]"><Loader2 className="w-4 h-4 animate-spin" /> {tr("agent.analyzingCriteria")}</div>
                                         ) : analysis.length === 0 ? (
-                                            <p className="text-[12.5px] text-[#9AA3AF]">{tr("agent.addRankingCriteria")}</p>
+                                            <p className="text-[12.5px] text-[#9E9E9E]">{tr("agent.addRankingCriteria")}</p>
                                         ) : analysis.map((a: any, i: number) => (
                                             <div key={i}>
                                                 <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[12px] font-bold ${verdictBadge(a.verdict)}`}><ThumbsUp className="w-3.5 h-3.5" /> {a.verdict || tr("agent.noSignal")}</span>
-                                                <p className="text-[13.5px] font-bold text-[#15171C] mt-2">{a.criterion}</p>
-                                                <p className="text-[12.5px] text-[#6B6F76] mt-1 leading-relaxed">{a.explanation}</p>
+                                                <p className="text-[13.5px] font-bold text-[#212121] mt-2">{a.criterion}</p>
+                                                <p className="text-[12.5px] text-[#616161] mt-1 leading-relaxed">{a.explanation}</p>
                                             </div>
                                         ))}
                                     </div>
-                                    <div className="flex items-center justify-end gap-2.5 pt-4 mt-2 border-t border-[#E8EAED]">
-                                        <button onClick={() => reviewIdx < reviewList.length - 1 ? reviewNav(1) : setReviewList(null)} className="h-10 px-5 rounded-[10px] bg-[#FDECEC] text-[#C0383C] text-[13px] font-bold hover:bg-[#FADBDB]">{tr("agent.notAFit")}</button>
-                                        <button onClick={() => { const cur = p; if (reviewIdx < reviewList.length - 1) reviewNav(1); else setReviewList(null); approveProfile(cur, "looks good"); }} className="h-10 px-5 rounded-[10px] bg-[#E6F4EA] text-[#15803D] text-[13px] font-bold hover:bg-[#D6EFDD]">{tr("agent.looksGood")}</button>
+                                    <div className="flex items-center justify-end gap-2.5 pt-4 mt-2 border-t border-[#E0E0E0]">
+                                        <button onClick={() => reviewIdx < reviewList.length - 1 ? reviewNav(1) : setReviewList(null)} className="h-10 px-5 rounded-[4px] bg-[#FFEBEE] text-[#C62828] text-[13px] font-bold hover:bg-[#FADBDB]">{tr("agent.notAFit")}</button>
+                                        <button onClick={() => { const cur = p; if (reviewIdx < reviewList.length - 1) reviewNav(1); else setReviewList(null); approveProfile(cur, "looks good"); }} className="h-10 px-5 rounded-[4px] bg-[#E8F5E9] text-[#2E7D32] text-[13px] font-bold hover:bg-[#D6EFDD]">{tr("agent.looksGood")}</button>
                                     </div>
                                 </div>
                             </div>
@@ -1098,42 +1098,42 @@ export default function ProjectDetailPage() {
 
                 {/* Criteria editor modal — ranked, most→least important */}
                 {showCriteriaEdit && (
-                    <div className="fixed inset-0 bg-[#15171C]/40 backdrop-blur-sm z-50 flex items-center justify-center px-4" onClick={() => setShowCriteriaEdit(false)}>
-                        <div className="bg-white rounded-[14px] border border-[#E8EAED] shadow-[0_14px_34px_rgba(15,23,42,0.16)] max-w-2xl w-full max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-center justify-center px-4" onClick={() => setShowCriteriaEdit(false)}>
+                        <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-2xl w-full max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
                             <div className="p-6 pb-3 flex items-center justify-between">
-                                <h3 className="text-[17px] font-bold text-[#15171C] flex items-center gap-2"><Sparkles className="w-4 h-4 text-[#5B53E0]" /> {tr("agent.criteria")}</h3>
-                                <button onClick={() => setShowCriteriaEdit(false)} className="p-1.5 hover:bg-[#F0F0F1] text-[#9AA3AF] rounded-lg"><X className="w-4 h-4" /></button>
+                                <h3 className="text-[17px] font-bold text-[#212121] flex items-center gap-2"><Sparkles className="w-4 h-4 text-[#1976D2]" /> {tr("agent.criteria")}</h3>
+                                <button onClick={() => setShowCriteriaEdit(false)} className="p-1.5 hover:bg-[#EEEEEE] text-[#9E9E9E] rounded-lg"><X className="w-4 h-4" /></button>
                             </div>
                             <div className="px-6 pb-4 overflow-y-auto no-scrollbar">
-                                <p className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mb-2">{tr("agent.mostImportant")}</p>
+                                <p className="text-[11px] font-bold uppercase tracking-wider text-[#757575] mb-2">{tr("agent.mostImportant")}</p>
                                 <div className="space-y-2.5">
                                     {(criteria || []).map((c, i) => (
                                         <div key={i} className="flex items-start gap-2.5">
                                             <div className="flex flex-col pt-2">
-                                                <button disabled={i === 0} onClick={() => moveCriterion(i, -1)} className="text-[#C4C9D0] hover:text-[#5B53E0] disabled:opacity-30"><ChevronUp className="w-3.5 h-3.5" /></button>
-                                                <button disabled={i === (criteria || []).length - 1} onClick={() => moveCriterion(i, 1)} className="text-[#C4C9D0] hover:text-[#5B53E0] disabled:opacity-30"><ChevronDown className="w-3.5 h-3.5" /></button>
+                                                <button disabled={i === 0} onClick={() => moveCriterion(i, -1)} className="text-[#BDBDBD] hover:text-[#1976D2] disabled:opacity-30"><ChevronUp className="w-3.5 h-3.5" /></button>
+                                                <button disabled={i === (criteria || []).length - 1} onClick={() => moveCriterion(i, 1)} className="text-[#BDBDBD] hover:text-[#1976D2] disabled:opacity-30"><ChevronDown className="w-3.5 h-3.5" /></button>
                                             </div>
-                                            <span className="w-5 text-center text-[13px] font-bold text-[#8A929E] pt-2">{i + 1}</span>
+                                            <span className="w-5 text-center text-[13px] font-bold text-[#757575] pt-2">{i + 1}</span>
                                             <textarea
                                                 value={c}
                                                 onChange={(e) => editCriterion(i, e.target.value)}
                                                 rows={Math.min(3, Math.ceil((c.length || 20) / 60))}
-                                                className="flex-1 resize-none px-3 py-2 rounded-[10px] border border-[#E1E4E8] text-[13px] text-[#1F2127] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 leading-relaxed"
+                                                className="flex-1 resize-none px-3 py-2 rounded-[4px] border border-[#E0E0E0] text-[13px] text-[#263238] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15 leading-relaxed"
                                             />
-                                            <button onClick={() => removeCriterion(c)} className="mt-2 w-6 h-6 rounded-full border border-[#F3C6C6] text-[#EF4444] hover:bg-rose-50 flex items-center justify-center shrink-0"><X className="w-3.5 h-3.5" /></button>
+                                            <button onClick={() => removeCriterion(c)} className="mt-2 w-6 h-6 rounded-full border border-[#F3C6C6] text-[#E53935] hover:bg-rose-50 flex items-center justify-center shrink-0"><X className="w-3.5 h-3.5" /></button>
                                         </div>
                                     ))}
-                                    {(criteria || []).length === 0 && <p className="text-[12.5px] text-[#9AA3AF] py-4 text-center">{tr("agent.noCriteriaYet")}</p>}
+                                    {(criteria || []).length === 0 && <p className="text-[12.5px] text-[#9E9E9E] py-4 text-center">{tr("agent.noCriteriaYet")}</p>}
                                 </div>
-                                <p className="text-[11px] font-bold uppercase tracking-wider text-[#8A929E] mt-3">{tr("agent.leastImportant")}</p>
+                                <p className="text-[11px] font-bold uppercase tracking-wider text-[#757575] mt-3">{tr("agent.leastImportant")}</p>
 
                                 <div className="flex items-center gap-2 mt-4">
-                                    <input value={newCriterion} onChange={(e) => setNewCriterion(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") addCriterion(); }} placeholder={tr("agent.criterionPlaceholder")} className="flex-1 h-10 px-3 rounded-[10px] border border-[#E1E4E8] text-[13px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15" />
+                                    <input value={newCriterion} onChange={(e) => setNewCriterion(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") addCriterion(); }} placeholder={tr("agent.criterionPlaceholder")} className="flex-1 h-10 px-3 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15" />
                                 </div>
                             </div>
-                            <div className="p-5 border-t border-[#E8EAED] flex items-center justify-end gap-2.5">
-                                <button onClick={addCriterion} disabled={!newCriterion.trim()} className="h-10 px-4 rounded-[10px] border border-[#E1E4E8] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F7F8FA] disabled:opacity-50 flex items-center gap-1.5"><Plus className="w-4 h-4" /> {tr("agent.addCriterion")}</button>
-                                <button onClick={() => { setShowCriteriaEdit(false); appendFreshPicks(tr("agent.updatedCriteria")); }} className="h-10 px-6 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-bold hover:bg-[#4A43C9] flex items-center gap-1.5">{tr("agent.update")} <ArrowRight className="w-4 h-4" /></button>
+                            <div className="p-5 border-t border-[#E0E0E0] flex items-center justify-end gap-2.5">
+                                <button onClick={addCriterion} disabled={!newCriterion.trim()} className="h-10 px-4 rounded-[4px] border border-[#E0E0E0] bg-white text-[#424242] text-[13px] font-semibold hover:bg-[#FAFAFA] disabled:opacity-50 flex items-center gap-1.5"><Plus className="w-4 h-4" /> {tr("agent.addCriterion")}</button>
+                                <button onClick={() => { setShowCriteriaEdit(false); appendFreshPicks(tr("agent.updatedCriteria")); }} className="h-10 px-6 rounded-[4px] bg-[#1976D2] text-white text-[13px] font-bold hover:bg-[#1565C0] flex items-center gap-1.5">{tr("agent.update")} <ArrowRight className="w-4 h-4" /></button>
                             </div>
                         </div>
                     </div>
@@ -1141,41 +1141,41 @@ export default function ProjectDetailPage() {
 
                 {/* Filters editor modal — titles + location + keywords */}
                 {showFilterEdit && (
-                    <div className="fixed inset-0 bg-[#15171C]/40 backdrop-blur-sm z-50 flex items-center justify-center px-4" onClick={() => setShowFilterEdit(false)}>
-                        <div className="bg-white rounded-[14px] border border-[#E8EAED] shadow-[0_14px_34px_rgba(15,23,42,0.16)] max-w-lg w-full max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-center justify-center px-4" onClick={() => setShowFilterEdit(false)}>
+                        <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-lg w-full max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
                             <div className="p-6 pb-3 flex items-center justify-between">
-                                <h3 className="text-[17px] font-bold text-[#15171C] flex items-center gap-2"><Filter className="w-4 h-4 text-[#5B53E0]" /> {tr("agent.filters")}</h3>
-                                <button onClick={() => setShowFilterEdit(false)} className="p-1.5 hover:bg-[#F0F0F1] text-[#9AA3AF] rounded-lg"><X className="w-4 h-4" /></button>
+                                <h3 className="text-[17px] font-bold text-[#212121] flex items-center gap-2"><Filter className="w-4 h-4 text-[#1976D2]" /> {tr("agent.filters")}</h3>
+                                <button onClick={() => setShowFilterEdit(false)} className="p-1.5 hover:bg-[#EEEEEE] text-[#9E9E9E] rounded-lg"><X className="w-4 h-4" /></button>
                             </div>
                             <div className="px-6 pb-4 overflow-y-auto no-scrollbar space-y-5">
                                 <div>
-                                    <p className="text-[13px] font-bold text-[#15171C] mb-1.5">{tr("agent.jobTitles")}</p>
+                                    <p className="text-[13px] font-bold text-[#212121] mb-1.5">{tr("agent.jobTitles")}</p>
                                     <div className="flex flex-wrap gap-1.5 mb-2">
                                         {fTitles.map((t, i) => (
-                                            <span key={i} className="inline-flex items-center gap-1 pl-2.5 pr-1 py-1 rounded-full bg-[#F4F3FD] text-[#4B4794] text-[12px] font-semibold">{t}<button onClick={() => setFTitles(fTitles.filter((_, j) => j !== i))} className="w-4 h-4 rounded-full hover:bg-[#E4E1F7] flex items-center justify-center"><X className="w-3 h-3" /></button></span>
+                                            <span key={i} className="inline-flex items-center gap-1 pl-2.5 pr-1 py-1 rounded-full bg-[#F3F9FE] text-[#0D47A1] text-[12px] font-semibold">{t}<button onClick={() => setFTitles(fTitles.filter((_, j) => j !== i))} className="w-4 h-4 rounded-full hover:bg-[#D6E9FA] flex items-center justify-center"><X className="w-3 h-3" /></button></span>
                                         ))}
-                                        {fTitles.length === 0 && <span className="text-[12px] text-[#9AA3AF]">{tr("agent.noTitlesYet")}</span>}
+                                        {fTitles.length === 0 && <span className="text-[12px] text-[#9E9E9E]">{tr("agent.noTitlesYet")}</span>}
                                     </div>
-                                    <input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && newTitle.trim()) { setFTitles([...fTitles, newTitle.trim()]); setNewTitle(""); } }} placeholder={tr("agent.titlePlaceholder")} className="w-full h-10 px-3 rounded-[10px] border border-[#E1E4E8] text-[13px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15" />
+                                    <input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && newTitle.trim()) { setFTitles([...fTitles, newTitle.trim()]); setNewTitle(""); } }} placeholder={tr("agent.titlePlaceholder")} className="w-full h-10 px-3 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15" />
                                 </div>
                                 <div>
-                                    <p className="text-[13px] font-bold text-[#15171C] mb-1.5">{tr("agent.location")}</p>
-                                    <input value={fLocation} onChange={(e) => setFLocation(e.target.value)} placeholder={tr("agent.locationPlaceholder")} className="w-full h-10 px-3 rounded-[10px] border border-[#E1E4E8] text-[13px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15" />
+                                    <p className="text-[13px] font-bold text-[#212121] mb-1.5">{tr("agent.location")}</p>
+                                    <input value={fLocation} onChange={(e) => setFLocation(e.target.value)} placeholder={tr("agent.locationPlaceholder")} className="w-full h-10 px-3 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15" />
                                 </div>
                                 <div>
-                                    <p className="text-[13px] font-bold text-[#15171C] mb-1.5">{tr("agent.keywords")}</p>
+                                    <p className="text-[13px] font-bold text-[#212121] mb-1.5">{tr("agent.keywords")}</p>
                                     <div className="flex flex-wrap gap-1.5 mb-2">
                                         {fKeywords.map((k, i) => (
-                                            <span key={i} className="inline-flex items-center gap-1 pl-2.5 pr-1 py-1 rounded-full bg-[#F4F3FD] text-[#4B4794] text-[12px] font-semibold">{k}<button onClick={() => setFKeywords(fKeywords.filter((_, j) => j !== i))} className="w-4 h-4 rounded-full hover:bg-[#E4E1F7] flex items-center justify-center"><X className="w-3 h-3" /></button></span>
+                                            <span key={i} className="inline-flex items-center gap-1 pl-2.5 pr-1 py-1 rounded-full bg-[#F3F9FE] text-[#0D47A1] text-[12px] font-semibold">{k}<button onClick={() => setFKeywords(fKeywords.filter((_, j) => j !== i))} className="w-4 h-4 rounded-full hover:bg-[#D6E9FA] flex items-center justify-center"><X className="w-3 h-3" /></button></span>
                                         ))}
-                                        {fKeywords.length === 0 && <span className="text-[12px] text-[#9AA3AF]">{tr("agent.noKeywords")}</span>}
+                                        {fKeywords.length === 0 && <span className="text-[12px] text-[#9E9E9E]">{tr("agent.noKeywords")}</span>}
                                     </div>
-                                    <input value={newKeyword} onChange={(e) => setNewKeyword(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && newKeyword.trim()) { setFKeywords([...fKeywords, newKeyword.trim()]); setNewKeyword(""); } }} placeholder={tr("agent.keywordPlaceholder")} className="w-full h-10 px-3 rounded-[10px] border border-[#E1E4E8] text-[13px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15" />
+                                    <input value={newKeyword} onChange={(e) => setNewKeyword(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && newKeyword.trim()) { setFKeywords([...fKeywords, newKeyword.trim()]); setNewKeyword(""); } }} placeholder={tr("agent.keywordPlaceholder")} className="w-full h-10 px-3 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15" />
                                 </div>
                             </div>
-                            <div className="p-5 border-t border-[#E8EAED] flex items-center justify-end gap-2.5">
-                                <button onClick={() => setShowFilterEdit(false)} className="h-10 px-4 rounded-[10px] border border-[#E1E4E8] bg-white text-[#374151] text-[13px] font-semibold hover:bg-[#F7F8FA]">{tr("common.cancel")}</button>
-                                <button onClick={saveFilters} className="h-10 px-6 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-bold hover:bg-[#4A43C9] flex items-center gap-1.5">{tr("agent.saveChanges")} <ArrowRight className="w-4 h-4" /></button>
+                            <div className="p-5 border-t border-[#E0E0E0] flex items-center justify-end gap-2.5">
+                                <button onClick={() => setShowFilterEdit(false)} className="h-10 px-4 rounded-[4px] border border-[#E0E0E0] bg-white text-[#424242] text-[13px] font-semibold hover:bg-[#FAFAFA]">{tr("common.cancel")}</button>
+                                <button onClick={saveFilters} className="h-10 px-6 rounded-[4px] bg-[#1976D2] text-white text-[13px] font-bold hover:bg-[#1565C0] flex items-center gap-1.5">{tr("agent.saveChanges")} <ArrowRight className="w-4 h-4" /></button>
                             </div>
                         </div>
                     </div>
@@ -1183,20 +1183,20 @@ export default function ProjectDetailPage() {
 
                 {/* Talent Insights modal */}
                 {showInsights && (
-                    <div className="fixed inset-0 bg-[#15171C]/40 backdrop-blur-sm z-50 flex items-start justify-center px-4 py-8 overflow-y-auto no-scrollbar" onClick={() => setShowInsights(false)}>
-                        <div className="bg-white rounded-[16px] border border-[#E8EAED] shadow-[0_14px_34px_rgba(15,23,42,0.16)] max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
-                            <div className="p-6 border-b border-[#E8EAED] flex items-center justify-between sticky top-0 bg-white rounded-t-[16px]">
-                                <h3 className="text-[17px] font-bold text-[#15171C]">{tr("agent.talentInsights")} <span className="text-[#8A929E] font-semibold text-[14px]">({talent ? shortNum(talent.total) : "…"} matches)</span></h3>
-                                <button onClick={() => setShowInsights(false)} className="p-1.5 hover:bg-[#F0F0F1] text-[#9AA3AF] rounded-lg"><X className="w-4 h-4" /></button>
+                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-start justify-center px-4 py-8 overflow-y-auto no-scrollbar" onClick={() => setShowInsights(false)}>
+                        <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
+                            <div className="p-6 border-b border-[#E0E0E0] flex items-center justify-between sticky top-0 bg-white rounded-t-[16px]">
+                                <h3 className="text-[17px] font-bold text-[#212121]">{tr("agent.talentInsights")} <span className="text-[#757575] font-semibold text-[14px]">({talent ? shortNum(talent.total) : "…"} matches)</span></h3>
+                                <button onClick={() => setShowInsights(false)} className="p-1.5 hover:bg-[#EEEEEE] text-[#9E9E9E] rounded-lg"><X className="w-4 h-4" /></button>
                             </div>
                             <div className="p-6">
                                 {insightsLoading || !talent ? (
-                                    <div className="flex flex-col items-center justify-center py-20 gap-3"><Loader2 className="w-6 h-6 text-[#5B53E0] animate-spin" /><p className="text-[12.5px] text-[#8A929E]">{tr("agent.analyzingPool")}</p></div>
+                                    <div className="flex flex-col items-center justify-center py-20 gap-3"><Loader2 className="w-6 h-6 text-[#1976D2] animate-spin" /><p className="text-[12.5px] text-[#757575]">{tr("agent.analyzingPool")}</p></div>
                                 ) : (talent.skills.length === 0 && talent.titles.length === 0 && talent.employers.length === 0 && talent.locations.length === 0 && talent.sources.length === 0) ? (
                                     <div className="flex flex-col items-center justify-center py-20 gap-2 text-center">
-                                        <div className="w-12 h-12 rounded-[14px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center"><Sparkles className="w-6 h-6" /></div>
-                                        <p className="text-[14px] font-bold text-[#15171C]">{tr("agent.notEnoughData")}</p>
-                                        <p className="text-[12.5px] text-[#8A929E] max-w-sm">{tr("agent.notEnoughDataDesc")}</p>
+                                        <div className="w-12 h-12 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center"><Sparkles className="w-6 h-6" /></div>
+                                        <p className="text-[14px] font-bold text-[#212121]">{tr("agent.notEnoughData")}</p>
+                                        <p className="text-[12.5px] text-[#757575] max-w-sm">{tr("agent.notEnoughDataDesc")}</p>
                                     </div>
                                 ) : (
                                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -1206,23 +1206,23 @@ export default function ProjectDetailPage() {
                                         {talent.titles.length > 0 && <BarList title={tr("agent.jobTitlesTitle")} subtitle={tr("agent.jobTitlesSub")} empty="" items={talent.titles} />}
                                         {talent.employers.length > 0 && <BarList title={tr("agent.employersTitle")} subtitle={tr("agent.employersSub")} empty="" items={talent.employers} />}
                                         {talent.locations.length > 0 && (
-                                            <div className="rounded-[14px] border border-[#E8EAED] bg-[#FAFBFC] p-5">
-                                                <h3 className="text-[15px] font-bold text-[#15171C]">{tr("agent.topLocations")}</h3>
-                                                <p className="text-[12px] text-[#8A929E] mb-4">{tr("agent.topCitiesPool")}</p>
+                                            <div className="rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] p-5">
+                                                <h3 className="text-[15px] font-bold text-[#212121]">{tr("agent.topLocations")}</h3>
+                                                <p className="text-[12px] text-[#757575] mb-4">{tr("agent.topCitiesPool")}</p>
                                                 <div className="grid grid-cols-1 sm:grid-cols-[1fr_1.1fr] gap-4 items-start">
                                                     <div className="space-y-1">
                                                         {talent.locations.map((l) => (
                                                             <div key={l.label} className="flex items-center justify-between gap-2 py-1 border-b border-[#EEF0F3] last:border-0">
-                                                                <span className="text-[12.5px] font-semibold text-[#374151] truncate" title={l.label}>{l.label}</span>
-                                                                <span className="text-[12.5px] font-bold text-[#15171C]">{shortNum(l.count)}</span>
+                                                                <span className="text-[12.5px] font-semibold text-[#424242] truncate" title={l.label}>{l.label}</span>
+                                                                <span className="text-[12.5px] font-bold text-[#212121]">{shortNum(l.count)}</span>
                                                             </div>
                                                         ))}
                                                     </div>
                                                     {talent.countryMap.length > 0 && (
-                                                        <div className="rounded-[10px] overflow-hidden border border-[#E8EAED] bg-white min-h-[220px] flex items-center justify-center">
+                                                        <div className="rounded-[4px] overflow-hidden border border-[#E0E0E0] bg-white min-h-[220px] flex items-center justify-center">
                                                             <Chart chartType="GeoChart" width="100%" height="240px"
                                                                 data={[[tr("agent.country"), tr("agent.candidates")], ...talent.countryMap.map(([code, count]) => [code, count] as [string, number])]}
-                                                                options={{ region: "world", displayMode: "regions", colorAxis: { colors: ["#DAD7F6", "#5B53E0"] }, backgroundColor: "transparent", datalessRegionColor: "#EEF0F3", defaultColor: "#F1F5F9", legend: "none", keepAspectRatio: true }}
+                                                                options={{ region: "world", displayMode: "regions", colorAxis: { colors: ["#BBDEFB", "#1976D2"] }, backgroundColor: "transparent", datalessRegionColor: "#EEF0F3", defaultColor: "#EEEEEE", legend: "none", keepAspectRatio: true }}
                                                             />
                                                         </div>
                                                     )}
@@ -1242,67 +1242,67 @@ export default function ProjectDetailPage() {
     // ---------------- Project workspace ----------------
     return (
         <div className="px-4 sm:px-6 md:px-7 py-6 max-w-[1320px] mx-auto w-full">
-            <div className="flex items-center gap-2 text-[12.5px] text-[#8A929E] mb-4">
-                <button onClick={() => router.push("/enterprise/sourcing/projects")} className="hover:text-[#5B53E0] font-semibold">{tr("agent.projects")}</button>
-                <span>›</span><span className="font-bold text-[#15171C]">{project.name}</span>
+            <div className="flex items-center gap-2 text-[12.5px] text-[#757575] mb-4">
+                <button onClick={() => router.push("/enterprise/sourcing/projects")} className="hover:text-[#1976D2] font-semibold">{tr("agent.projects")}</button>
+                <span>›</span><span className="font-bold text-[#212121]">{project.name}</span>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-6">
                 {/* Search hero */}
                 <div>
                     <div className="flex items-center gap-3 mb-5">
-                        <span className="w-11 h-11 rounded-[12px] bg-[#F4F3FD] text-[#5B53E0] flex items-center justify-center"><FolderOpen className="w-6 h-6" /></span>
-                        <h1 className="text-[24px] font-extrabold tracking-[-0.5px] text-[#15171C]">{project.name}</h1>
+                        <span className="w-11 h-11 rounded-[4px] bg-[#F3F9FE] text-[#1976D2] flex items-center justify-center"><FolderOpen className="w-6 h-6" /></span>
+                        <h1 className="text-[24px] font-extrabold tracking-[-0.5px] text-[#212121]">{project.name}</h1>
                     </div>
 
-                    <div className="rounded-[16px] border border-[#E1E4E8] bg-white p-4 shadow-sm">
+                    <div className="rounded-[4px] border border-[#E0E0E0] bg-white p-4 shadow-sm">
                         <textarea
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
                             onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submit(); } }}
                             placeholder={tr("agent.searchHeroPlaceholder")}
                             rows={2}
-                            className="w-full resize-none bg-transparent outline-none text-[14px] text-[#1F2127] placeholder:text-[#9AA3AF]"
+                            className="w-full resize-none bg-transparent outline-none text-[14px] text-[#263238] placeholder:text-[#9E9E9E]"
                         />
                         <div className="flex items-center justify-between mt-2">
-                            <div className="flex items-center bg-[#F4F5F7] border border-[#E8EAED] rounded-full p-0.5">
-                                <button onClick={() => setMode("search")} className={`px-3 py-1.5 rounded-full text-[12.5px] font-semibold flex items-center gap-1.5 transition-all ${mode === "search" ? "bg-white text-[#5B53E0] shadow-sm" : "text-[#6B6F76]"}`}><Search className="w-3.5 h-3.5" /> {tr("common.search")}</button>
-                                <button onClick={() => setMode("agent")} className={`px-3 py-1.5 rounded-full text-[12.5px] font-semibold flex items-center gap-1.5 transition-all ${mode === "agent" ? "bg-white text-[#5B53E0] shadow-sm" : "text-[#6B6F76]"}`}><Sparkles className="w-3.5 h-3.5" /> {tr("agent.agent")}</button>
+                            <div className="flex items-center bg-[#F5F6F8] border border-[#E0E0E0] rounded-full p-0.5">
+                                <button onClick={() => setMode("search")} className={`px-3 py-1.5 rounded-full text-[12.5px] font-semibold flex items-center gap-1.5 transition-all ${mode === "search" ? "bg-white text-[#1976D2] shadow-sm" : "text-[#616161]"}`}><Search className="w-3.5 h-3.5" /> {tr("common.search")}</button>
+                                <button onClick={() => setMode("agent")} className={`px-3 py-1.5 rounded-full text-[12.5px] font-semibold flex items-center gap-1.5 transition-all ${mode === "agent" ? "bg-white text-[#1976D2] shadow-sm" : "text-[#616161]"}`}><Sparkles className="w-3.5 h-3.5" /> {tr("agent.agent")}</button>
                             </div>
-                            <button onClick={submit} disabled={!query.trim()} className="w-9 h-9 rounded-full bg-[#F4F3FD] text-[#5B53E0] hover:bg-[#E4E1F7] flex items-center justify-center disabled:opacity-40 transition-colors"><ArrowRight className="w-4 h-4" /></button>
+                            <button onClick={submit} disabled={!query.trim()} className="w-9 h-9 rounded-full bg-[#F3F9FE] text-[#1976D2] hover:bg-[#D6E9FA] flex items-center justify-center disabled:opacity-40 transition-colors"><ArrowRight className="w-4 h-4" /></button>
                         </div>
                     </div>
-                    <p className="text-[11px] text-[#9AA3AF] mt-2 px-1">
+                    <p className="text-[11px] text-[#9E9E9E] mt-2 px-1">
                         {mode === "agent" ? tr("agent.agentModeHint") : tr("agent.searchModeHint")}
                     </p>
 
                     <div className="mt-4 space-y-2">
                         {SUGGESTIONS.map((s) => (
-                            <button key={s} onClick={() => { setQuery(s); }} className="block w-full text-left text-[13px] text-[#4B5563] hover:text-[#5B53E0] py-1.5 transition-colors">{s}</button>
+                            <button key={s} onClick={() => { setQuery(s); }} className="block w-full text-left text-[13px] text-[#4F4F4F] hover:text-[#1976D2] py-1.5 transition-colors">{s}</button>
                         ))}
                     </div>
 
                     {/* Agent status card */}
                     <div className="mt-8">
-                        <h3 className="text-[14px] font-bold text-[#15171C] mb-2">{tr("agent.agentStatus")}</h3>
-                        <div className="rounded-[14px] border border-[#E8EAED] bg-white p-4 shadow-sm flex items-center justify-between gap-4">
+                        <h3 className="text-[14px] font-bold text-[#212121] mb-2">{tr("agent.agentStatus")}</h3>
+                        <div className="rounded-[4px] border border-[#E0E0E0] bg-white p-4 shadow-sm flex items-center justify-between gap-4">
                             <div className="flex items-center gap-3">
-                                <span className={`w-9 h-9 rounded-[10px] text-white flex items-center justify-center ${agent?.paused ? "bg-[#9AA3AF]" : "bg-[#5B53E0]"}`}><Bot className="w-5 h-5" /></span>
+                                <span className={`w-9 h-9 rounded-[4px] text-white flex items-center justify-center ${agent?.paused ? "bg-[#9E9E9E]" : "bg-[#1976D2]"}`}><Bot className="w-5 h-5" /></span>
                                 <div>
-                                    <p className="text-[13px] font-bold text-[#15171C] flex items-center gap-2">
+                                    <p className="text-[13px] font-bold text-[#212121] flex items-center gap-2">
                                         {agent?.paused ? tr("agent.deactivated") : agent?.status === "sourcing" ? tr("projects.sourcing") : agent?.status === "calibrating" ? tr("projects.calibrating") : tr("agent.noAgentYet")}
-                                        {agent?.status && agent.status !== "none" && <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${agent?.paused ? "bg-[#F1F2F5] text-[#8A929E]" : "bg-[#EAF7EE] text-[#16A34A]"}`}><span className={`w-1.5 h-1.5 rounded-full ${agent?.paused ? "bg-[#9AA3AF]" : "bg-[#16A34A]"}`} />{agent?.paused ? tr("projects.inactive") : tr("projects.active")}</span>}
+                                        {agent?.status && agent.status !== "none" && <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${agent?.paused ? "bg-[#EEEEEE] text-[#757575]" : "bg-[#EAF7EE] text-[#2E7D32]"}`}><span className={`w-1.5 h-1.5 rounded-full ${agent?.paused ? "bg-[#9E9E9E]" : "bg-[#2E7D32]"}`} />{agent?.paused ? tr("projects.inactive") : tr("projects.active")}</span>}
                                     </p>
-                                    <p className="text-[11.5px] text-[#8A929E]">{agent?.paused ? tr("agent.pausedShort") : agent?.status && agent.status !== "none" ? tr("agent.automatingOutreach") : tr("agent.setupAgentHint")}</p>
+                                    <p className="text-[11.5px] text-[#757575]">{agent?.paused ? tr("agent.pausedShort") : agent?.status && agent.status !== "none" ? tr("agent.automatingOutreach") : tr("agent.setupAgentHint")}</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
                                 {agent?.status && agent.status !== "none" && (
-                                    <button onClick={() => patch({ paused: !agent?.paused })} className={`h-9 px-3.5 rounded-[10px] text-[13px] font-semibold flex items-center gap-1.5 ${agent?.paused ? "bg-[#5B53E0] text-white hover:bg-[#4A43C9]" : "border border-[#E1E4E8] bg-white text-[#374151] hover:bg-[#F7F8FA]"}`}>{agent?.paused ? <><Play className="w-3.5 h-3.5" /> {tr("agent.activate")}</> : <><Pause className="w-3.5 h-3.5" /> {tr("agent.deactivate")}</>}</button>
+                                    <button onClick={() => patch({ paused: !agent?.paused })} className={`h-9 px-3.5 rounded-[4px] text-[13px] font-semibold flex items-center gap-1.5 ${agent?.paused ? "bg-[#1976D2] text-white hover:bg-[#1565C0]" : "border border-[#E0E0E0] bg-white text-[#424242] hover:bg-[#FAFAFA]"}`}>{agent?.paused ? <><Play className="w-3.5 h-3.5" /> {tr("agent.activate")}</> : <><Pause className="w-3.5 h-3.5" /> {tr("agent.deactivate")}</>}</button>
                                 )}
                                 <button
                                     onClick={() => { if (!agent?.status || agent.status === "none") { if (!query.trim()) setMode("agent"); else submit(); } else setAgentTab("calibrate"); }}
-                                    className="h-9 px-4 rounded-[10px] border border-[#E1E4E8] bg-white text-[13px] font-semibold text-[#374151] hover:bg-[#F7F8FA]"
+                                    className="h-9 px-4 rounded-[4px] border border-[#E0E0E0] bg-white text-[13px] font-semibold text-[#424242] hover:bg-[#FAFAFA]"
                                 >
                                     {agent?.status && agent.status !== "none" ? tr("agent.openAgent") : tr("agent.setupAgent")}
                                 </button>
@@ -1313,17 +1313,17 @@ export default function ProjectDetailPage() {
 
                 {/* Right config + shortlist */}
                 <div className="space-y-5">
-                    <div className="rounded-[14px] border border-[#E8EAED] bg-white p-5 shadow-sm">
-                        <p className="text-[12px] font-semibold text-[#8A929E] mb-3">{tr("agent.configuration")}</p>
-                        <ConfigRow label={tr("agent.owner")} value={<span className="inline-flex items-center gap-1.5"><span className="w-5 h-5 rounded-full bg-[#ECEBFB] text-[#5B53E0] text-[9px] font-extrabold flex items-center justify-center uppercase">{(project.owner || "?").charAt(0)}</span>{project.owner}</span>} />
+                    <div className="rounded-[4px] border border-[#E0E0E0] bg-white p-5 shadow-sm">
+                        <p className="text-[12px] font-semibold text-[#757575] mb-3">{tr("agent.configuration")}</p>
+                        <ConfigRow label={tr("agent.owner")} value={<span className="inline-flex items-center gap-1.5"><span className="w-5 h-5 rounded-full bg-[#E3F2FD] text-[#1976D2] text-[9px] font-extrabold flex items-center justify-center uppercase">{(project.owner || "?").charAt(0)}</span>{project.owner}</span>} />
                         <ConfigRow label={tr("agent.collaborators")} value={
                             <div className="flex flex-col items-end gap-1">
                                 {(project.collaborators || []).length > 0 && (
                                     <div className="flex flex-wrap gap-1 justify-end">
                                         {(project.collaborators || []).map((c, i) => (
-                                            <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#F4F3FD] text-[#4B4794] text-[11px] font-semibold">
+                                            <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#F3F9FE] text-[#0D47A1] text-[11px] font-semibold">
                                                 {c}
-                                                <button onClick={() => patch({ collaborators: (project.collaborators || []).filter((x) => x !== c) })} className="hover:text-[#5B53E0]">×</button>
+                                                <button onClick={() => patch({ collaborators: (project.collaborators || []).filter((x) => x !== c) })} className="hover:text-[#1976D2]">×</button>
                                             </span>
                                         ))}
                                     </div>
@@ -1333,27 +1333,27 @@ export default function ProjectDetailPage() {
                                     onChange={(e) => setCollabInput(e.target.value)}
                                     onKeyDown={(e) => { if (e.key === "Enter" && collabInput.trim()) { patch({ collaborators: [...(project.collaborators || []), collabInput.trim()] }); setCollabInput(""); } }}
                                     placeholder={tr("agent.addCollaborator")}
-                                    className="text-[12.5px] text-right bg-transparent outline-none placeholder:text-[#9AA3AF] w-32"
+                                    className="text-[12.5px] text-right bg-transparent outline-none placeholder:text-[#9E9E9E] w-32"
                                 />
                             </div>
                         } />
                         <ConfigRow label={tr("agent.visibility")} value={
-                            <select value={project.visibility || "Shared"} onChange={(e) => patch({ visibility: e.target.value })} className="text-[13px] font-semibold text-[#374151] bg-transparent outline-none cursor-pointer">
+                            <select value={project.visibility || "Shared"} onChange={(e) => patch({ visibility: e.target.value })} className="text-[13px] font-semibold text-[#424242] bg-transparent outline-none cursor-pointer">
                                 <option value="Shared">{tr("agent.shared")}</option><option value="Private">{tr("agent.private")}</option>
                             </select>
                         } />
                         <ConfigRow label={tr("agent.atsJob")} value={
                             <div className="relative">
-                                <button onClick={() => setShowAtsMenu((v) => !v)} className="text-[13px] font-semibold text-[#374151] hover:text-[#5B53E0] inline-flex items-center gap-1">
-                                    {project.ats_job_title || <span className="text-[#9AA3AF]">{tr("agent.linkAtsJob")}</span>} <ChevronDown className="w-3.5 h-3.5" />
+                                <button onClick={() => setShowAtsMenu((v) => !v)} className="text-[13px] font-semibold text-[#424242] hover:text-[#1976D2] inline-flex items-center gap-1">
+                                    {project.ats_job_title || <span className="text-[#9E9E9E]">{tr("agent.linkAtsJob")}</span>} <ChevronDown className="w-3.5 h-3.5" />
                                 </button>
                                 {showAtsMenu && (
                                     <>
                                         <div className="fixed inset-0 z-40" onClick={() => setShowAtsMenu(false)} />
-                                        <div className="absolute right-0 top-7 z-50 w-56 max-h-64 overflow-y-auto bg-white rounded-[10px] border border-[#E8EAED] shadow-[0_12px_30px_rgba(15,23,42,0.16)] p-1.5">
-                                            {project.ats_job_id && <button onClick={() => { patch({ ats_job_id: "", ats_job_title: "" }); setShowAtsMenu(false); }} className="w-full text-left px-2.5 py-1.5 rounded-[8px] text-[12.5px] font-semibold text-[#C0383C] hover:bg-rose-50">{tr("agent.unlink")}</button>}
-                                            {jobs.length === 0 ? <p className="px-2.5 py-2 text-[12px] text-[#9AA3AF]">{tr("agent.noJobsFound")}</p> : jobs.map((j) => (
-                                                <button key={j.id} onClick={() => { patch({ ats_job_id: j.id, ats_job_title: j.title }); setShowAtsMenu(false); }} className="w-full text-left px-2.5 py-1.5 rounded-[8px] text-[12.5px] font-semibold text-[#374151] hover:bg-[#F7F8FA] truncate">{j.title}</button>
+                                        <div className="absolute right-0 top-7 z-50 w-56 max-h-64 overflow-y-auto bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_12px_30px_rgba(0,0,0,0.16)] p-1.5">
+                                            {project.ats_job_id && <button onClick={() => { patch({ ats_job_id: "", ats_job_title: "" }); setShowAtsMenu(false); }} className="w-full text-left px-2.5 py-1.5 rounded-[4px] text-[12.5px] font-semibold text-[#C62828] hover:bg-rose-50">{tr("agent.unlink")}</button>}
+                                            {jobs.length === 0 ? <p className="px-2.5 py-2 text-[12px] text-[#9E9E9E]">{tr("agent.noJobsFound")}</p> : jobs.map((j) => (
+                                                <button key={j.id} onClick={() => { patch({ ats_job_id: j.id, ats_job_title: j.title }); setShowAtsMenu(false); }} className="w-full text-left px-2.5 py-1.5 rounded-[4px] text-[12.5px] font-semibold text-[#424242] hover:bg-[#FAFAFA] truncate">{j.title}</button>
                                             ))}
                                         </div>
                                     </>
@@ -1361,22 +1361,22 @@ export default function ProjectDetailPage() {
                             </div>
                         } />
                         <ConfigRow label={tr("agent.department")} value={
-                            <input defaultValue={project.department || ""} onBlur={(e) => e.target.value !== (project.department || "") && patch({ department: e.target.value })} placeholder={tr("agent.select")} className="text-[13px] font-semibold text-[#374151] bg-transparent outline-none text-right w-28 placeholder:text-[#9AA3AF]" />
+                            <input defaultValue={project.department || ""} onBlur={(e) => e.target.value !== (project.department || "") && patch({ department: e.target.value })} placeholder={tr("agent.select")} className="text-[13px] font-semibold text-[#424242] bg-transparent outline-none text-right w-28 placeholder:text-[#9E9E9E]" />
                         } last />
                     </div>
 
-                    <div className="rounded-[14px] border border-[#E8EAED] bg-white p-5 shadow-sm">
-                        <p className="text-[12px] font-semibold text-[#8A929E] mb-3">{tr("agent.shortlist")}</p>
+                    <div className="rounded-[4px] border border-[#E0E0E0] bg-white p-5 shadow-sm">
+                        <p className="text-[12px] font-semibold text-[#757575] mb-3">{tr("agent.shortlist")}</p>
                         {project.stats?.shortlisted ? (
                             <div className="text-center py-2">
-                                <p className="text-[28px] font-extrabold text-[#15171C]">{project.stats.shortlisted}</p>
-                                <p className="text-[12px] text-[#8A929E]">{tr("agent.candidatesShortlisted")}</p>
-                                <button onClick={() => router.push("/enterprise/sourcing/shortlisted")} className="mt-3 text-[12.5px] font-bold text-[#5B53E0] hover:underline">{tr("agent.viewShortlist")} →</button>
+                                <p className="text-[28px] font-extrabold text-[#212121]">{project.stats.shortlisted}</p>
+                                <p className="text-[12px] text-[#757575]">{tr("agent.candidatesShortlisted")}</p>
+                                <button onClick={() => router.push("/enterprise/sourcing/shortlisted")} className="mt-3 text-[12.5px] font-bold text-[#1976D2] hover:underline">{tr("agent.viewShortlist")} →</button>
                             </div>
                         ) : (
                             <div className="space-y-2 py-2">
-                                {[0, 1, 2].map((i) => <div key={i} className="h-9 rounded-[8px] bg-[#F4F5F7]" />)}
-                                <p className="text-[12px] text-[#9AA3AF] text-center pt-2">{tr("agent.noProfilesShortlisted")}</p>
+                                {[0, 1, 2].map((i) => <div key={i} className="h-9 rounded-[4px] bg-[#F5F6F8]" />)}
+                                <p className="text-[12px] text-[#9E9E9E] text-center pt-2">{tr("agent.noProfilesShortlisted")}</p>
                             </div>
                         )}
                     </div>
@@ -1388,20 +1388,20 @@ export default function ProjectDetailPage() {
 
 function BarList({ title, subtitle, items, empty }: { title: string; subtitle: string; items: StatItem[]; empty: string }) {
     return (
-        <div className="rounded-[14px] border border-[#E8EAED] bg-[#FAFBFC] p-5">
-            <h3 className="text-[15px] font-bold text-[#15171C]">{title}</h3>
-            <p className="text-[12px] text-[#8A929E] mb-4">{subtitle}</p>
+        <div className="rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] p-5">
+            <h3 className="text-[15px] font-bold text-[#212121]">{title}</h3>
+            <p className="text-[12px] text-[#757575] mb-4">{subtitle}</p>
             {items.length === 0 ? (
-                <p className="text-[13px] text-[#9AA3AF] py-6 text-center">{empty}</p>
+                <p className="text-[13px] text-[#9E9E9E] py-6 text-center">{empty}</p>
             ) : (
                 <div className="space-y-2.5">
                     {items.map((it) => (
                         <div key={it.label} className="flex items-center gap-3">
-                            <span className="w-32 sm:w-40 shrink-0 text-[12.5px] font-semibold text-[#374151] truncate" title={it.label}>{it.label}</span>
-                            <div className="flex-1 h-6 bg-white rounded-[6px] overflow-hidden border border-[#EEF0F3]">
-                                <div className="h-full rounded-[6px] bg-[#7C6CF6]" style={{ width: `${Math.max(it.pct, 3)}%` }} />
+                            <span className="w-32 sm:w-40 shrink-0 text-[12.5px] font-semibold text-[#424242] truncate" title={it.label}>{it.label}</span>
+                            <div className="flex-1 h-6 bg-white rounded-[3px] overflow-hidden border border-[#EEF0F3]">
+                                <div className="h-full rounded-[3px] bg-[#7C6CF6]" style={{ width: `${Math.max(it.pct, 3)}%` }} />
                             </div>
-                            <span className="w-20 shrink-0 text-right text-[12px] font-bold text-[#374151]">{it.count} ({it.pct}%)</span>
+                            <span className="w-20 shrink-0 text-right text-[12px] font-bold text-[#424242]">{it.count} ({it.pct}%)</span>
                         </div>
                     ))}
                 </div>
@@ -1412,9 +1412,9 @@ function BarList({ title, subtitle, items, empty }: { title: string; subtitle: s
 
 function ConfigRow({ label, value, last }: { label: string; value: React.ReactNode; last?: boolean }) {
     return (
-        <div className={`flex items-center justify-between gap-3 py-2.5 ${last ? "" : "border-b border-[#F4F5F7]"}`}>
-            <span className="text-[12.5px] text-[#8A929E]">{label}</span>
-            <span className="text-[13px] font-semibold text-[#374151]">{value}</span>
+        <div className={`flex items-center justify-between gap-3 py-2.5 ${last ? "" : "border-b border-[#F5F6F8]"}`}>
+            <span className="text-[12.5px] text-[#757575]">{label}</span>
+            <span className="text-[13px] font-semibold text-[#424242]">{value}</span>
         </div>
     );
 }

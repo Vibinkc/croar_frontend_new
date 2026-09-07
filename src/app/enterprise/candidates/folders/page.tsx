@@ -38,12 +38,12 @@ interface Member {
 }
 
 const TONES: [string, string][] = [
-    ["#ECEBFB", "#5B53E0"],
-    ["#E3F4EF", "#0E8A6E"],
-    ["#FEF3E2", "#B26B08"],
-    ["#E7ECFB", "#3559C7"],
-    ["#FDECEC", "#C0383C"],
-    ["#F1F2F5", "#4B5563"],
+    ["#E3F2FD", "#1976D2"],
+    ["#E8F5E9", "#2E7D32"],
+    ["#FFF3E0", "#EF6C00"],
+    ["#E3F2FD", "#1565C0"],
+    ["#FFEBEE", "#C62828"],
+    ["#EEEEEE", "#4F4F4F"],
 ];
 function toneFor(seed: string): [string, string] {
     let h = 0;
@@ -64,7 +64,7 @@ function Avatar({ name, size = 38 }: { name: string; size?: number }) {
 }
 
 const INPUT =
-    "w-full h-9 px-3 rounded-[9px] border border-[#E1E4E8] bg-white text-[13px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
+    "w-full h-9 px-3 rounded-[4px] border border-[#E0E0E0] bg-white text-[13px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all";
 
 export default function FoldersPage() {
     const { t: tr } = useI18n();
@@ -222,19 +222,19 @@ export default function FoldersPage() {
             </div>
 
             {error && (
-                <p className="mx-6 mt-4 text-[12.5px] text-[#C0383C] bg-[#FDECEC] rounded-[9px] px-3 py-2">{error}</p>
+                <p className="mx-6 mt-4 text-[12.5px] text-[#C62828] bg-[#FFEBEE] rounded-[4px] px-3 py-2">{error}</p>
             )}
 
             <div className="flex-1 flex gap-4 px-6 py-4 min-h-0">
                 {/* ── folder list ──────────────────────────────────────────────── */}
-                <aside className="w-[300px] shrink-0 flex flex-col rounded-[14px] border border-[#E8EAED] bg-white overflow-hidden">
-                    <div className="px-4 py-3 border-b border-[#E8EAED] flex items-center justify-between">
-                        <span className="text-[13.5px] font-bold text-[#15171C]">{tr("folders.allFolders")}</span>
-                        <span className="text-[12px] text-[#9AA3AF] tabular-nums">{folders.length}</span>
+                <aside className="w-[300px] shrink-0 flex flex-col rounded-[4px] border border-[#E0E0E0] bg-white overflow-hidden">
+                    <div className="px-4 py-3 border-b border-[#E0E0E0] flex items-center justify-between">
+                        <span className="text-[13.5px] font-bold text-[#212121]">{tr("folders.allFolders")}</span>
+                        <span className="text-[12px] text-[#9E9E9E] tabular-nums">{folders.length}</span>
                     </div>
 
                     {creating && (
-                        <div className="p-3 border-b border-[#E8EAED] flex flex-col gap-2 bg-[#F9FAFB]">
+                        <div className="p-3 border-b border-[#E0E0E0] flex flex-col gap-2 bg-[#FAFAFA]">
                             <input
                                 autoFocus
                                 className={INPUT}
@@ -260,10 +260,10 @@ export default function FoldersPage() {
                     <div className="flex-1 overflow-y-auto">
                         {loading ? (
                             <div className="flex justify-center py-10">
-                                <div className="w-5 h-5 border-2 border-[#5B53E0]/30 border-t-[#5B53E0] rounded-full animate-spin" />
+                                <div className="w-5 h-5 border-2 border-[#1976D2]/30 border-t-[#1976D2] rounded-full animate-spin" />
                             </div>
                         ) : folders.length === 0 ? (
-                            <p className="px-4 py-8 text-center text-[12.5px] text-[#8A929E] leading-relaxed">
+                            <p className="px-4 py-8 text-center text-[12.5px] text-[#757575] leading-relaxed">
                                 {tr("folders.noFoldersYet")}
                             </p>
                         ) : (
@@ -271,8 +271,8 @@ export default function FoldersPage() {
                                 <div
                                     key={f.id}
                                     className={cn(
-                                        "border-b border-[#F1F2F5] last:border-b-0 transition-colors",
-                                        activeId === f.id ? "bg-[#ECEBFB]" : "hover:bg-[#F9FAFB]"
+                                        "border-b border-[#EEEEEE] last:border-b-0 transition-colors",
+                                        activeId === f.id ? "bg-[#E3F2FD]" : "hover:bg-[#FAFAFA]"
                                     )}
                                 >
                                     {renamingId === f.id ? (
@@ -295,7 +295,7 @@ export default function FoldersPage() {
                                             </div>
                                         </div>
                                     ) : confirmDelete === f.id ? (
-                                        <div className="p-3 flex flex-col gap-2 bg-[#FDECEC]">
+                                        <div className="p-3 flex flex-col gap-2 bg-[#FFEBEE]">
                                             {/* Says what survives, not just what is destroyed — the fear here is
                                                 losing the people, and they are never touched. */}
                                             <p className="text-[12px] text-[#8A2B2E] leading-relaxed">
@@ -319,18 +319,18 @@ export default function FoldersPage() {
                                             >
                                                 <span className={cn(
                                                     "material-symbols-rounded text-[20px]",
-                                                    activeId === f.id ? "text-[#5B53E0]" : "text-[#9AA3AF]"
+                                                    activeId === f.id ? "text-[#1976D2]" : "text-[#9E9E9E]"
                                                 )}>
                                                     folder
                                                 </span>
                                                 <span className="min-w-0 flex-1">
                                                     <span className={cn(
                                                         "block text-[13.5px] font-semibold truncate",
-                                                        activeId === f.id ? "text-[#5B53E0]" : "text-[#15171C]"
+                                                        activeId === f.id ? "text-[#1976D2]" : "text-[#212121]"
                                                     )}>
                                                         {f.name}
                                                     </span>
-                                                    <span className="block text-[11.5px] text-[#9AA3AF]">
+                                                    <span className="block text-[11.5px] text-[#9E9E9E]">
                                                         {tr("folders.candidateCount", { count: f.candidate_count })}
                                                     </span>
                                                 </span>
@@ -340,7 +340,7 @@ export default function FoldersPage() {
                                                 aria-label={tr("folders.rename")}
                                                 title={tr("folders.rename")}
                                                 onClick={() => { setRenamingId(f.id); setRenameDraft(f.name); }}
-                                                className="w-7 h-7 rounded-[7px] flex items-center justify-center text-[#9AA3AF] hover:text-[#5B53E0] hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                                className="w-7 h-7 rounded-[4px] flex items-center justify-center text-[#9E9E9E] hover:text-[#1976D2] hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity"
                                             >
                                                 <span className="material-symbols-rounded text-[17px]">edit</span>
                                             </button>
@@ -349,7 +349,7 @@ export default function FoldersPage() {
                                                 aria-label={tr("folders.delete")}
                                                 title={tr("folders.delete")}
                                                 onClick={() => setConfirmDelete(f.id)}
-                                                className="w-7 h-7 rounded-[7px] flex items-center justify-center text-[#9AA3AF] hover:text-[#C0383C] hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                                className="w-7 h-7 rounded-[4px] flex items-center justify-center text-[#9E9E9E] hover:text-[#C62828] hover:bg-white opacity-0 group-hover:opacity-100 transition-opacity"
                                             >
                                                 <span className="material-symbols-rounded text-[17px]">delete</span>
                                             </button>
@@ -362,7 +362,7 @@ export default function FoldersPage() {
                 </aside>
 
                 {/* ── the chosen folder's people ───────────────────────────────── */}
-                <main className="flex-1 min-w-0 rounded-[14px] border border-[#E8EAED] bg-white flex flex-col overflow-hidden">
+                <main className="flex-1 min-w-0 rounded-[4px] border border-[#E0E0E0] bg-white flex flex-col overflow-hidden">
                     {!active ? (
                         <EmptyState
                             icon="folder_open"
@@ -373,17 +373,17 @@ export default function FoldersPage() {
                         />
                     ) : (
                         <>
-                            <div className="px-4 py-3 border-b border-[#E8EAED] flex items-center gap-3 flex-wrap">
-                                <h2 className="text-[15px] font-bold text-[#15171C]">{active.name}</h2>
+                            <div className="px-4 py-3 border-b border-[#E0E0E0] flex items-center gap-3 flex-wrap">
+                                <h2 className="text-[15px] font-bold text-[#212121]">{active.name}</h2>
                                 <Badge tone="indigo">{tr("folders.candidateCount", { count: active.candidate_count })}</Badge>
                                 {active.description && (
-                                    <span className="text-[12.5px] text-[#8A929E]">{active.description}</span>
+                                    <span className="text-[12.5px] text-[#757575]">{active.description}</span>
                                 )}
                             </div>
 
                             {loadingMembers ? (
                                 <div className="flex-1 flex items-center justify-center py-16">
-                                    <div className="w-5 h-5 border-2 border-[#5B53E0]/30 border-t-[#5B53E0] rounded-full animate-spin" />
+                                    <div className="w-5 h-5 border-2 border-[#1976D2]/30 border-t-[#1976D2] rounded-full animate-spin" />
                                 </div>
                             ) : members.length === 0 ? (
                                 <EmptyState
@@ -394,21 +394,21 @@ export default function FoldersPage() {
                                     className="flex-1"
                                 />
                             ) : (
-                                <div className="flex-1 overflow-y-auto divide-y divide-[#F1F2F5]">
+                                <div className="flex-1 overflow-y-auto divide-y divide-[#EEEEEE]">
                                     {members.map((m) => {
                                         const name = m.full_name || tr("folders.unnamed");
                                         return (
-                                            <div key={m.id} className="p-4 flex items-start gap-3 hover:bg-[#F9FAFB] transition-colors">
+                                            <div key={m.id} className="p-4 flex items-start gap-3 hover:bg-[#FAFAFA] transition-colors">
                                                 <Avatar name={name} />
                                                 <div className="min-w-0 flex-1">
                                                     <div className="flex items-center gap-2 flex-wrap">
-                                                        <span className="text-[14px] font-bold text-[#15171C]">{name}</span>
+                                                        <span className="text-[14px] font-bold text-[#212121]">{name}</span>
                                                         {m.source_platform && <Badge tone="neutral">{m.source_platform}</Badge>}
                                                     </div>
-                                                    {m.headline && <p className="text-[12.5px] text-[#4B5563] mt-0.5">{m.headline}</p>}
-                                                    <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1.5 text-[12px] text-[#8A929E]">
+                                                    {m.headline && <p className="text-[12.5px] text-[#4F4F4F] mt-0.5">{m.headline}</p>}
+                                                    <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1.5 text-[12px] text-[#757575]">
                                                         {m.email && (
-                                                            <a href={`mailto:${m.email}`} className="inline-flex items-center gap-1 text-[#0E8A6E] hover:underline">
+                                                            <a href={`mailto:${m.email}`} className="inline-flex items-center gap-1 text-[#2E7D32] hover:underline">
                                                                 <span className="material-symbols-rounded text-[15px]">mail</span>
                                                                 {m.email}
                                                             </a>
@@ -429,12 +429,12 @@ export default function FoldersPage() {
                                                     {m.skills && m.skills.length > 0 && (
                                                         <div className="flex flex-wrap gap-1.5 mt-2">
                                                             {m.skills.slice(0, 8).map((s) => (
-                                                                <span key={s} className="text-[11.5px] font-semibold px-2 py-0.5 rounded-[6px] bg-[#E7ECFB] text-[#3559C7]">
+                                                                <span key={s} className="text-[11.5px] font-semibold px-2 py-0.5 rounded-[3px] bg-[#E3F2FD] text-[#1565C0]">
                                                                     {s}
                                                                 </span>
                                                             ))}
                                                             {m.skills.length > 8 && (
-                                                                <span className="text-[11.5px] text-[#9AA3AF] self-center">+{m.skills.length - 8}</span>
+                                                                <span className="text-[11.5px] text-[#9E9E9E] self-center">+{m.skills.length - 8}</span>
                                                             )}
                                                         </div>
                                                     )}
@@ -444,7 +444,7 @@ export default function FoldersPage() {
                                                     aria-label={tr("folders.removeFromFolder")}
                                                     title={tr("folders.removeFromFolder")}
                                                     onClick={() => void removeMember(m.id)}
-                                                    className="w-9 h-9 rounded-[10px] flex items-center justify-center text-[#9AA3AF] hover:text-[#C0383C] hover:bg-[#FDECEC] transition-colors shrink-0"
+                                                    className="w-9 h-9 rounded-[4px] flex items-center justify-center text-[#9E9E9E] hover:text-[#C62828] hover:bg-[#FFEBEE] transition-colors shrink-0"
                                                 >
                                                     <span className="material-symbols-rounded text-[20px]">folder_off</span>
                                                 </button>
@@ -459,7 +459,7 @@ export default function FoldersPage() {
             </div>
 
             {toast && (
-                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[220] px-4 py-2.5 rounded-[10px] bg-[#15171C] text-white text-[12.5px] font-semibold shadow-[0_14px_34px_rgba(15,23,42,0.16)]">
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[220] px-4 py-2.5 rounded-[4px] bg-[#212121] text-white text-[12.5px] font-semibold shadow-[0_14px_34px_rgba(0,0,0,0.16)]">
                     {toast}
                 </div>
             )}

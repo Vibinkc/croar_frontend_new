@@ -102,23 +102,23 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
     };
 
     if (loading) return (
-        <div className="min-h-screen flex items-center justify-center p-8 bg-[#F4F5F7]">
+        <div className="min-h-screen flex items-center justify-center p-8 bg-[#F5F6F8]">
             <div className="flex flex-col items-center gap-5">
-                <div className="w-12 h-12 border-[3px] border-[#5B53E0] border-t-transparent rounded-full animate-spin" />
-                <p className="text-[12px] font-semibold text-[#8A929E]">{tr("surveysExt.loadingSurvey")}</p>
+                <div className="w-12 h-12 border-[3px] border-[#1976D2] border-t-transparent rounded-full animate-spin" />
+                <p className="text-[12px] font-semibold text-[#757575]">{tr("surveysExt.loadingSurvey")}</p>
             </div>
         </div>
     );
 
     if (completed) return (
-        <div className="min-h-screen flex items-center justify-center bg-[#F4F5F7] px-4 py-8">
+        <div className="min-h-screen flex items-center justify-center bg-[#F5F6F8] px-4 py-8">
             <div className="w-full max-w-[480px] space-y-5 animate-in fade-in zoom-in-95 duration-500">
                 <Card padding="lg" className="text-center">
-                    <div className="w-16 h-16 rounded-[14px] bg-[#E6F4EA] text-[#15803D] flex items-center justify-center mx-auto mb-6">
+                    <div className="w-16 h-16 rounded-[4px] bg-[#E8F5E9] text-[#2E7D32] flex items-center justify-center mx-auto mb-6">
                         <span className="material-symbols-rounded text-[34px]">verified</span>
                     </div>
-                    <h1 className="text-[24px] font-extrabold text-[#15171C] tracking-[-0.3px] mb-2">{tr("surveysExt.thankYou")}</h1>
-                    <p className="text-[14px] text-[#374151] leading-relaxed">
+                    <h1 className="text-[24px] font-extrabold text-[#212121] tracking-[-0.3px] mb-2">{tr("surveysExt.thankYou")}</h1>
+                    <p className="text-[14px] text-[#424242] leading-relaxed">
                         {tr("surveysExt.feedbackRecorded")}
                     </p>
                 </Card>
@@ -127,11 +127,11 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                     <div className="flex items-center gap-3">
                         <CroarMark size={40} />
                         <div>
-                            <h3 className="text-[14px] font-bold text-[#15171C]">{tr("surveysExt.neuralCoachingLab")}</h3>
-                            <p className="text-[12px] text-[#8A929E]">{tr("surveysExt.behavioralIntelligence")}</p>
+                            <h3 className="text-[14px] font-bold text-[#212121]">{tr("surveysExt.neuralCoachingLab")}</h3>
+                            <p className="text-[12px] text-[#757575]">{tr("surveysExt.behavioralIntelligence")}</p>
                         </div>
                     </div>
-                    <p className="text-[13px] text-[#374151] leading-relaxed">
+                    <p className="text-[13px] text-[#424242] leading-relaxed">
                         {tr("surveysExt.neuralCoachingDesc")}
                     </p>
                     <Button
@@ -156,7 +156,7 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
     const questions = invite?.instance.template.questions ?? [];
 
     return (
-        <div className="min-h-screen bg-[#F4F5F7]">
+        <div className="min-h-screen bg-[#F5F6F8]">
             <div className="max-w-[720px] mx-auto px-4 py-8 space-y-6 animate-in fade-in duration-500">
                 {/* Brand */}
                 <div className="flex justify-center">
@@ -167,18 +167,18 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                 <Card padding="lg" className="space-y-4">
                     <div className="flex items-center justify-between gap-3">
                         <Badge tone="indigo">{invite?.instance.template.survey_type.name}</Badge>
-                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#8A929E]">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-[#757575]">
                             <span className="material-symbols-rounded text-[15px]">lock</span>
                             {tr("surveysExt.confidential")}
                         </span>
                     </div>
-                    <h1 className="text-[26px] leading-tight font-extrabold text-[#15171C] tracking-[-0.4px]">
+                    <h1 className="text-[26px] leading-tight font-extrabold text-[#212121] tracking-[-0.4px]">
                         {invite?.instance.name}
                     </h1>
-                    <p className="text-[14px] text-[#374151] leading-relaxed">
+                    <p className="text-[14px] text-[#424242] leading-relaxed">
                         {invite?.instance.template.description || tr("surveysExt.everyVoiceMatters")}
                     </p>
-                    <p className="inline-flex items-center gap-1.5 text-[12.5px] text-[#8A929E] leading-relaxed">
+                    <p className="inline-flex items-center gap-1.5 text-[12.5px] text-[#757575] leading-relaxed">
                         <span className="material-symbols-rounded text-[16px]">info</span>
                         {tr("surveysExt.answerAllConfidential")}
                     </p>
@@ -188,12 +188,12 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                     {questions.map((q: Question, i: number) => (
                         <Card key={q.id} padding="lg" className="space-y-6">
                             <div className="flex gap-3.5 items-start">
-                                <span className={`${jetbrainsMono.className} w-8 h-8 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] text-[13px] font-semibold flex items-center justify-center shrink-0`}>
+                                <span className={`${jetbrainsMono.className} w-8 h-8 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] text-[13px] font-semibold flex items-center justify-center shrink-0`}>
                                     {i + 1}
                                 </span>
                                 <div className="pt-1 space-y-1">
-                                    <h2 className="text-[16px] font-bold text-[#15171C] leading-snug">{q.text}</h2>
-                                    <p className="text-[12px] text-[#8A929E]">
+                                    <h2 className="text-[16px] font-bold text-[#212121] leading-snug">{q.text}</h2>
+                                    <p className="text-[12px] text-[#757575]">
                                         {q.type === 'MCQ'
                                             ? tr("surveysExt.selectOneOption")
                                             : q.type === 'RATING'
@@ -208,11 +208,11 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                             {q.type === 'RATING' && (
                                 <div className="space-y-5">
                                     <div className="flex justify-between items-center">
-                                        <span className="text-[11px] font-semibold text-[#8A929E]">{tr("surveysExt.leastAgree")}</span>
-                                        <div className={`${jetbrainsMono.className} text-[32px] font-bold text-[#5B53E0] leading-none`}>
+                                        <span className="text-[11px] font-semibold text-[#757575]">{tr("surveysExt.leastAgree")}</span>
+                                        <div className={`${jetbrainsMono.className} text-[32px] font-bold text-[#1976D2] leading-none`}>
                                             {responses[i]?.answer_value}
                                         </div>
-                                        <span className="text-[11px] font-semibold text-[#8A929E]">{tr("surveysExt.fullyAgree")}</span>
+                                        <span className="text-[11px] font-semibold text-[#757575]">{tr("surveysExt.fullyAgree")}</span>
                                     </div>
                                     <div className="relative">
                                         <input
@@ -220,13 +220,13 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                                             min={q.scale_min}
                                             max={q.scale_max}
                                             step="1"
-                                            className="w-full h-2 bg-[#E8EAED] rounded-full appearance-none cursor-pointer accent-[#5B53E0] outline-none"
+                                            className="w-full h-2 bg-[#E0E0E0] rounded-full appearance-none cursor-pointer accent-[#1976D2] outline-none"
                                             value={responses[i]?.answer_value || 3}
                                             onChange={(e) => updateResponse(i, "answer_value", Number.parseInt(e.target.value))}
                                         />
                                         <div className="flex justify-between mt-3 px-0.5">
                                             {[...new Array(q.scale_max - q.scale_min + 1)].map((_, idx) => (
-                                                <div key={idx} className={`w-1 rounded-full transition-all ${responses[i]?.answer_value === idx + q.scale_min ? 'h-4 bg-[#5B53E0]' : 'h-3 bg-[#E1E4E8]'}`} />
+                                                <div key={idx} className={`w-1 rounded-full transition-all ${responses[i]?.answer_value === idx + q.scale_min ? 'h-4 bg-[#1976D2]' : 'h-3 bg-[#E0E0E0]'}`} />
                                             ))}
                                         </div>
                                     </div>
@@ -240,7 +240,7 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                                             key={optIdx}
                                             type="button"
                                             onClick={() => updateResponse(i, "answer_value", optIdx)}
-                                            className={`w-full p-4 rounded-[10px] text-left font-medium text-[14px] transition-all flex items-center justify-between border ${responses[i]?.answer_value === optIdx ? 'border-[#5B53E0] bg-[#ECEBFB] text-[#5B53E0]' : 'border-[#E1E4E8] bg-white text-[#374151] hover:border-[#A7A0EE]'}`}
+                                            className={`w-full p-4 rounded-[4px] text-left font-medium text-[14px] transition-all flex items-center justify-between border ${responses[i]?.answer_value === optIdx ? 'border-[#1976D2] bg-[#E3F2FD] text-[#1976D2]' : 'border-[#E0E0E0] bg-white text-[#424242] hover:border-[#90CAF9]'}`}
                                         >
                                             {opt}
                                             {responses[i]?.answer_value === optIdx && (
@@ -274,7 +274,7 @@ export default function FillSurvey({ params }: { params: Promise<{ token: string
                         >
                             {submitting ? tr("surveysExt.submitting") : tr("surveysExt.completeEntry")}
                         </Button>
-                        <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#8A929E]">
+                        <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-[#757575]">
                             <span className="material-symbols-rounded text-[15px]">lock</span>
                             {tr("surveysExt.encryptedSubmission")}
                         </p>

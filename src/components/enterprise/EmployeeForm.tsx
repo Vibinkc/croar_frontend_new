@@ -303,7 +303,7 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
     ];
 
     if (isLoading && !formData.first_name) {
-        return <div className="p-10 text-center text-[13px] font-semibold text-[#8A929E] animate-pulse">{tr("forms.loadingForm")}</div>;
+        return <div className="p-10 text-center text-[13px] font-semibold text-[#757575] animate-pulse">{tr("forms.loadingForm")}</div>;
     }
 
     return (
@@ -321,16 +321,16 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
             />
 
             {/* Tab Navigation */}
-            <div className="flex flex-wrap gap-1 p-1 bg-[#E8EAED] rounded-[10px] w-fit border border-[#E8EAED]">
+            <div className="flex flex-wrap gap-1 p-1 bg-[#E0E0E0] rounded-[4px] w-fit border border-[#E0E0E0]">
                 {tabs.map(tab => (
                     <button
                         key={tab.id}
                         type="button"
                         onClick={() => setActiveTab(tab.id)}
-                        className={`flex items-center gap-2 h-9 px-4 rounded-[8px] text-[13px] font-semibold transition-all ${
+                        className={`flex items-center gap-2 h-9 px-4 rounded-[4px] text-[13px] font-semibold transition-all ${
                             activeTab === tab.id
-                            ? "bg-white text-[#5B53E0] shadow-sm"
-                            : "text-[#6B6F76] hover:text-[#374151]"
+                            ? "bg-white text-[#1976D2] shadow-sm"
+                            : "text-[#616161] hover:text-[#424242]"
                         }`}
                     >
                         <span className="material-symbols-rounded text-[18px]">{tab.icon}</span>
@@ -370,11 +370,11 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                         </Field>
                         <div className="w-full">
                             <div className="flex items-center justify-between mb-1.5">
-                                <label htmlFor="emp-department_id" className="block text-[12.5px] font-semibold text-[#374151]">{tr("forms.department")}</label>
+                                <label htmlFor="emp-department_id" className="block text-[12.5px] font-semibold text-[#424242]">{tr("forms.department")}</label>
                                 <button
                                     type="button"
                                     onClick={() => setIsDeptModalOpen(true)}
-                                    className="text-[11px] font-semibold text-[#5B53E0] hover:text-[#4A43C9] hover:underline"
+                                    className="text-[11px] font-semibold text-[#1976D2] hover:text-[#1565C0] hover:underline"
                                 >
                                     {tr("forms.addNew")}
                                 </button>
@@ -514,52 +514,52 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-3">
-                                <h3 className="text-[14px] font-bold text-[#15171C]">{tr("forms.skills")}</h3>
-                                <p className="text-[12.5px] text-[#8A929E]">{tr("forms.skillsManagedHere")}</p>
+                                <h3 className="text-[14px] font-bold text-[#212121]">{tr("forms.skills")}</h3>
+                                <p className="text-[12.5px] text-[#757575]">{tr("forms.skillsManagedHere")}</p>
                                 <div className="flex flex-wrap gap-1.5">
                                     {formData.skills.map((skill: string, idx: number) => (
                                         <Badge key={idx} tone="indigo">{skill}</Badge>
                                     ))}
-                                    {formData.skills.length === 0 && <span className="text-[12.5px] text-[#9AA3AF]">{tr("forms.noSkillsAdded")}</span>}
+                                    {formData.skills.length === 0 && <span className="text-[12.5px] text-[#9E9E9E]">{tr("forms.noSkillsAdded")}</span>}
                                 </div>
                             </div>
                             <div className="space-y-3">
-                                <h3 className="text-[14px] font-bold text-[#15171C]">{tr("forms.documents")}</h3>
-                                <p className="text-[12.5px] text-[#8A929E] leading-relaxed">{tr("forms.documentsSyncedNote")}</p>
+                                <h3 className="text-[14px] font-bold text-[#212121]">{tr("forms.documents")}</h3>
+                                <p className="text-[12.5px] text-[#757575] leading-relaxed">{tr("forms.documentsSyncedNote")}</p>
                                 <div className="space-y-2">
                                     {formData.documents.map((doc, idx) => (
-                                        <a key={idx} href={doc.file_path} target="_blank" className="flex items-center justify-between p-3 bg-[#F7F8FA] rounded-[10px] border border-[#E8EAED] hover:border-[#D4D7DC] hover:bg-white transition-all">
-                                            <span className="text-[13px] font-semibold text-[#374151]">{doc.name}</span>
-                                            <span className="material-symbols-rounded text-[18px] text-[#9AA3AF]">download</span>
+                                        <a key={idx} href={doc.file_path} target="_blank" className="flex items-center justify-between p-3 bg-[#FAFAFA] rounded-[4px] border border-[#E0E0E0] hover:border-[#E0E0E0] hover:bg-white transition-all">
+                                            <span className="text-[13px] font-semibold text-[#424242]">{doc.name}</span>
+                                            <span className="material-symbols-rounded text-[18px] text-[#9E9E9E]">download</span>
                                         </a>
                                     ))}
-                                    {formData.documents.length === 0 && <span className="text-[12.5px] text-[#9AA3AF]">{tr("forms.noDocumentsFound")}</span>}
+                                    {formData.documents.length === 0 && <span className="text-[12.5px] text-[#9E9E9E]">{tr("forms.noDocumentsFound")}</span>}
                                 </div>
                             </div>
                         </div>
                     </Card>
 
-                    <Card padding="lg" className="bg-[#F7F8FA] space-y-4">
+                    <Card padding="lg" className="bg-[#FAFAFA] space-y-4">
                         <div>
-                            <h3 className="text-[13px] font-bold text-[#15171C]">{tr("forms.otherRecords")}</h3>
-                            <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("forms.otherRecordsNote")}</p>
+                            <h3 className="text-[13px] font-bold text-[#212121]">{tr("forms.otherRecords")}</h3>
+                            <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("forms.otherRecordsNote")}</p>
                         </div>
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                            <div className="p-4 bg-white rounded-[12px] border border-[#E8EAED] text-center">
-                                <p className="text-[11px] font-semibold text-[#8A929E] uppercase tracking-[0.06em] mb-1">{tr("forms.dependents")}</p>
-                                <p className={`text-[18px] font-bold text-[#5B53E0] ${jetbrainsMono.className}`}>{formData.dependents.length}</p>
+                            <div className="p-4 bg-white rounded-[4px] border border-[#E0E0E0] text-center">
+                                <p className="text-[11px] font-semibold text-[#757575] uppercase tracking-[0.06em] mb-1">{tr("forms.dependents")}</p>
+                                <p className={`text-[18px] font-bold text-[#1976D2] ${jetbrainsMono.className}`}>{formData.dependents.length}</p>
                             </div>
-                            <div className="p-4 bg-white rounded-[12px] border border-[#E8EAED] text-center">
-                                <p className="text-[11px] font-semibold text-[#8A929E] uppercase tracking-[0.06em] mb-1">{tr("forms.education")}</p>
-                                <p className={`text-[18px] font-bold text-[#5B53E0] ${jetbrainsMono.className}`}>{formData.educational_details.length}</p>
+                            <div className="p-4 bg-white rounded-[4px] border border-[#E0E0E0] text-center">
+                                <p className="text-[11px] font-semibold text-[#757575] uppercase tracking-[0.06em] mb-1">{tr("forms.education")}</p>
+                                <p className={`text-[18px] font-bold text-[#1976D2] ${jetbrainsMono.className}`}>{formData.educational_details.length}</p>
                             </div>
-                            <div className="p-4 bg-white rounded-[12px] border border-[#E8EAED] text-center">
-                                <p className="text-[11px] font-semibold text-[#8A929E] uppercase tracking-[0.06em] mb-1">{tr("forms.emergency")}</p>
-                                <p className={`text-[18px] font-bold text-[#5B53E0] ${jetbrainsMono.className}`}>{formData.emergency_contacts.length}</p>
+                            <div className="p-4 bg-white rounded-[4px] border border-[#E0E0E0] text-center">
+                                <p className="text-[11px] font-semibold text-[#757575] uppercase tracking-[0.06em] mb-1">{tr("forms.emergency")}</p>
+                                <p className={`text-[18px] font-bold text-[#1976D2] ${jetbrainsMono.className}`}>{formData.emergency_contacts.length}</p>
                             </div>
-                            <div className="p-4 bg-white rounded-[12px] border border-[#E8EAED] text-center">
-                                <p className="text-[11px] font-semibold text-[#8A929E] uppercase tracking-[0.06em] mb-1">{tr("forms.paymentInfo")}</p>
-                                <p className="text-[15px] font-bold text-[#0E8A6E]">{formData.payment_information.length > 0 ? tr("forms.linked") : tr("forms.missing")}</p>
+                            <div className="p-4 bg-white rounded-[4px] border border-[#E0E0E0] text-center">
+                                <p className="text-[11px] font-semibold text-[#757575] uppercase tracking-[0.06em] mb-1">{tr("forms.paymentInfo")}</p>
+                                <p className="text-[15px] font-bold text-[#2E7D32]">{formData.payment_information.length > 0 ? tr("forms.linked") : tr("forms.missing")}</p>
                             </div>
                         </div>
                     </Card>
@@ -568,11 +568,11 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
 
             {/* Department Modal */}
             {isDeptModalOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#15171C]/40 backdrop-blur-sm animate-in fade-in duration-300">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm animate-in fade-in duration-300">
                     <Card padding="lg" className="w-full max-w-md shadow-xl animate-in zoom-in-95 duration-200">
                         <div className="mb-6">
-                            <h3 className="text-[16px] font-bold text-[#15171C]">{tr("forms.addDepartment")}</h3>
-                            <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("forms.addDepartmentSubtitle")}</p>
+                            <h3 className="text-[16px] font-bold text-[#212121]">{tr("forms.addDepartment")}</h3>
+                            <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("forms.addDepartmentSubtitle")}</p>
                         </div>
                         <div className="space-y-5">
                             <Field label={tr("forms.departmentName")} htmlFor="emp-new_dept_name">

@@ -123,7 +123,7 @@ export default function SendAssessmentModal({ isOpen, onClose, applicationIds, t
                             {template.question_count}{" "}{tr("sharedUi.questionsShort")}
                         </div>
                         {template.email_template_name && (
-                            <div className="flex items-center gap-1 text-[10px] font-bold text-[#7C3AED] bg-[#7C3AED]/5 border border-[#7C3AED]/10 px-2 py-0.5 rounded">
+                            <div className="flex items-center gap-1 text-[10px] font-bold text-[#1E88E5] bg-[#1E88E5]/5 border border-[#1E88E5]/10 px-2 py-0.5 rounded">
                                 <span className="material-icons text-[12px]">email</span>
                                 {""}{template.email_template_name}
                             </div>

@@ -390,7 +390,7 @@ export default function MailAutomationPage() {
       {toast && (
         <div
           className={`fixed top-5 right-5 z-[300] flex items-center gap-2.5 px-4 py-3 rounded-lg shadow-lg text-sm font-semibold transition-all duration-300 ${
-            toast.type === "success" ? "bg-[#5B53E0] text-white" : "bg-rose-600 text-white"
+            toast.type === "success" ? "bg-[#1976D2] text-white" : "bg-rose-600 text-white"
           }`}
         >
           {toast.type === "success" ? (
@@ -402,23 +402,23 @@ export default function MailAutomationPage() {
         </div>
       )}
 
-      <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-20 py-3 bg-[#F5F6F8]/95 backdrop-blur-sm border-b border-[#E0E0E0] flex items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-1.5">
-            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">
+            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#212121] leading-tight">
               {tr("automation.mailTitle")}
             </h1>
             <PageHelp title={tr("automation.mailTitle")}>
               <p>{tr("automation.mailHelp")}</p>
             </PageHelp>
           </div>
-          <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("automation.mailSubtitle")}</p>
+          <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("automation.mailSubtitle")}</p>
         </div>
         <div className="flex items-center gap-2.5 shrink-0">
           {canAccess("communications:moderate") && (
             <button
               onClick={openCreate}
-              className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-all whitespace-nowrap"
+              className="inline-flex items-center gap-2 h-9 px-4 rounded-[4px] bg-[#1976D2] text-white text-[13px] font-semibold hover:bg-[#1565C0] shadow-[0_4px_12px_rgba(25,118,210,0.28)] transition-all whitespace-nowrap"
             >
               <Plus className="w-3.5 h-3.5" />
               {tr("automation.newAutomation")}
@@ -430,22 +430,22 @@ export default function MailAutomationPage() {
       {/* Stats Section */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
         {[
-          { label: tr("automation.totalRules"), value: automations.length, Icon: Zap, grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.3)" },
-          { label: tr("automation.activeRules"), value: automations.filter(a => a.is_enabled).length, Icon: CheckCircle2, grad: "linear-gradient(135deg,#60A5FA,#3559C7)", glow: "rgba(53,89,199,0.3)" },
-          { label: tr("automation.immediateTrigger"), value: automations.filter(a => a.is_immediate).length, Icon: Clock, grad: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.3)" },
-          { label: tr("automation.autoMoveRules"), value: automations.filter(a => a.auto_move).length, Icon: ChevronRight, grad: "linear-gradient(135deg,#8B5CF6,#7C3AED)", glow: "rgba(124,58,237,0.3)" }
+          { label: tr("automation.totalRules"), value: automations.length, Icon: Zap, grad: "linear-gradient(135deg,#42A5F5,#1976D2)", glow: "rgba(25,118,210,0.3)" },
+          { label: tr("automation.activeRules"), value: automations.filter(a => a.is_enabled).length, Icon: CheckCircle2, grad: "linear-gradient(135deg,#60A5FA,#1565C0)", glow: "rgba(21,101,192,0.3)" },
+          { label: tr("automation.immediateTrigger"), value: automations.filter(a => a.is_immediate).length, Icon: Clock, grad: "linear-gradient(135deg,#FFB300,#EF6C00)", glow: "rgba(239,108,0,0.3)" },
+          { label: tr("automation.autoMoveRules"), value: automations.filter(a => a.auto_move).length, Icon: ChevronRight, grad: "linear-gradient(135deg,#42A5F5,#1E88E5)", glow: "rgba(124,58,237,0.3)" }
         ].map((stat, i) => (
           <div
             key={i}
-            className="relative bg-white border border-[#E8EAED] hover:border-[#D4D7DC] rounded-[14px] p-5 overflow-hidden transition-all duration-300 hover:shadow-sm"
+            className="relative bg-white border border-[#E0E0E0] hover:border-[#E0E0E0] rounded-[4px] p-5 overflow-hidden transition-all duration-300 hover:shadow-sm"
           >
             <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: stat.grad }} />
             <div className="flex items-start justify-between">
               <div>
-                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{stat.label}</span>
-                <div className="text-[30px] font-semibold tracking-[-1px] text-[#15171C] mt-2">{stat.value}</div>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{stat.label}</span>
+                <div className="text-[30px] font-semibold tracking-[-1px] text-[#212121] mt-2">{stat.value}</div>
               </div>
-              <span className="w-10 h-10 rounded-[11px] flex items-center justify-center text-white shrink-0" style={{ background: stat.grad, boxShadow: `0 6px 14px ${stat.glow}` }}>
+              <span className="w-10 h-10 rounded-[4px] flex items-center justify-center text-white shrink-0" style={{ background: stat.grad, boxShadow: `0 6px 14px ${stat.glow}` }}>
                 <stat.Icon className="w-[18px] h-[18px]" />
               </span>
             </div>
@@ -456,120 +456,120 @@ export default function MailAutomationPage() {
       {/* Interaction Bar */}
       <div className="flex flex-col md:flex-row md:items-center gap-3">
         <div className="flex-1 relative group">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] group-focus-within:text-[#5B53E0] transition-colors" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] group-focus-within:text-[#1976D2] transition-colors" />
           <input
             type="text"
             placeholder={tr("automation.searchRulesJobsTemplates")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full h-11 bg-white border rounded-[12px] pl-11 pr-4 text-sm font-semibold text-[#1F2127] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm border-[#E1E4E8]"
+            className="w-full h-11 bg-white border rounded-[4px] pl-11 pr-4 text-sm font-semibold text-[#263238] placeholder:text-[#9E9E9E] focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm border-[#E0E0E0]"
           />
         </div>
 
         <div className="relative">
-          <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF]">
+          <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E]">
             <Briefcase className="w-4 h-4" />
           </div>
           <select
             value={selectedJobId}
             onChange={(e) => setSelectedJobId(e.target.value)}
-            className="bg-white border border-[#E1E4E8] rounded-[12px] h-11 pl-9 pr-9 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] hover:bg-[#F7F8FA] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm min-w-[220px]"
+            className="bg-white border border-[#E0E0E0] rounded-[4px] h-11 pl-9 pr-9 text-[13.5px] font-semibold text-[#424242] hover:border-[#BBDEFB] hover:bg-[#FAFAFA] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm min-w-[220px]"
           >
             <option value="">{tr("automation.allJobRequirements")}</option>
             {jobs.map((j) => (
               <option key={j.id} value={j.id}>{j.title}</option>
             ))}
           </select>
-          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+          <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
         </div>
       </div>
 
       {/* List / Table */}
       {loading ? (
-        <div className="p-8 space-y-4 bg-white rounded-[14px] border border-[#E8EAED]">
+        <div className="p-8 space-y-4 bg-white rounded-[4px] border border-[#E0E0E0]">
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-16 bg-[#F7F8FA] rounded-[12px] animate-pulse" />
+            <div key={i} className="h-16 bg-[#FAFAFA] rounded-[4px] animate-pulse" />
           ))}
         </div>
       ) : filteredAutomations.length === 0 ? (
-        <div className="flex flex-col items-center justify-center p-20 bg-white rounded-[14px] border border-[#E8EAED] text-center shadow-sm">
+        <div className="flex flex-col items-center justify-center p-20 bg-white rounded-[4px] border border-[#E0E0E0] text-center shadow-sm">
           <div className="relative mb-6">
-            <div className="absolute -inset-3 rounded-full bg-[#5B53E0]/12 blur-2xl" />
-            <div className="relative w-16 h-16 rounded-[18px] flex items-center justify-center text-white" style={{ background: "linear-gradient(135deg,#8B7DFF,#5B53E0)", boxShadow: "0 12px 30px rgba(91,83,224,0.4)" }}>
+            <div className="absolute -inset-3 rounded-full bg-[#1976D2]/12 blur-2xl" />
+            <div className="relative w-16 h-16 rounded-[4px] flex items-center justify-center text-white" style={{ background: "linear-gradient(135deg,#42A5F5,#1976D2)", boxShadow: "0 12px 30px rgba(25,118,210,0.4)" }}>
               <Mail className="w-7 h-7" />
             </div>
           </div>
-          <h3 className="text-[18px] font-bold text-[#15171C] mb-1.5">{searchQuery ? tr("automation.noMatchingRules") : tr("automation.noAutomationsYet")}</h3>
-          <p className="text-[#8A929E] text-[14px] max-w-sm mx-auto mb-6">
+          <h3 className="text-[18px] font-bold text-[#212121] mb-1.5">{searchQuery ? tr("automation.noMatchingRules") : tr("automation.noAutomationsYet")}</h3>
+          <p className="text-[#757575] text-[14px] max-w-sm mx-auto mb-6">
             {searchQuery ? tr("automation.noResultsFor", { query: searchQuery }) : tr("automation.createFirstMail")}
           </p>
           {!searchQuery && canAccess("communications:moderate") && (
             <button
               onClick={openCreate}
-              className="px-6 h-11 bg-[#5B53E0] hover:bg-[#4A43C9] text-white rounded-[10px] font-semibold text-[13.5px] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-all active:scale-95"
+              className="px-6 h-11 bg-[#1976D2] hover:bg-[#1565C0] text-white rounded-[4px] font-semibold text-[13.5px] shadow-[0_6px_16px_rgba(25,118,210,0.28)] transition-all active:scale-95"
             >
               {tr("automation.createAutomation")}
             </button>
           )}
         </div>
       ) : (
-        <div className="bg-white rounded-[14px] border border-[#E8EAED] shadow-sm overflow-hidden min-h-[400px]">
+        <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-sm overflow-hidden min-h-[400px]">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead>
-                <tr className="bg-[#F7F8FA] border-b border-[#E8EAED]">
-                  <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.ruleConfiguration")}</th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.targetJobTemplate")}</th>
-                  <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.triggerSchedule")}</th>
+                <tr className="bg-[#FAFAFA] border-b border-[#E0E0E0]">
+                  <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#757575] uppercase tracking-[0.06em]">{tr("automation.ruleConfiguration")}</th>
+                  <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#757575] uppercase tracking-[0.06em]">{tr("automation.targetJobTemplate")}</th>
+                  <th className="px-6 py-3.5 text-left text-[11px] font-bold text-[#757575] uppercase tracking-[0.06em]">{tr("automation.triggerSchedule")}</th>
                   <th
-                    className="px-6 py-3.5 text-left text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em] cursor-help"
+                    className="px-6 py-3.5 text-left text-[11px] font-bold text-[#757575] uppercase tracking-[0.06em] cursor-help"
                     title={tr("automation.activeTooltip")}
                   >
                     {tr("automation.active")}
                   </th>
-                  <th className="px-6 py-3.5 text-right text-[11px] font-bold text-[#8A929E] uppercase tracking-[0.06em]">{tr("automation.actions")}</th>
+                  <th className="px-6 py-3.5 text-right text-[11px] font-bold text-[#757575] uppercase tracking-[0.06em]">{tr("automation.actions")}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F0F0F1]">
+              <tbody className="divide-y divide-[#EEEEEE]">
                 {filteredAutomations.map((a) => (
-                  <tr key={a.id} className="hover:bg-[#F7F8FA]/60 transition-colors group">
+                  <tr key={a.id} className="hover:bg-[#FAFAFA]/60 transition-colors group">
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1.5">
                         <div className="flex items-center gap-2">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-[6px] bg-[#ECEBFB] text-[#5B53E0] text-[10px] font-bold border border-[#DAD7F6]/60 uppercase">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-[3px] bg-[#E3F2FD] text-[#1976D2] text-[10px] font-bold border border-[#BBDEFB]/60 uppercase">
                             {tr("automation.round")} {a.stage_index}
                           </span>
                           {a.stage_name && (
-                            <span className="text-[12px] font-semibold text-[#8A929E]">{a.stage_name}</span>
+                            <span className="text-[12px] font-semibold text-[#757575]">{a.stage_name}</span>
                           )}
                         </div>
-                        <p className="text-[13.5px] font-semibold text-[#374151]">
-                          <span className="text-[#8A929E] font-medium italic mr-1">{tr("automation.ifLabel")}</span>
+                        <p className="text-[13.5px] font-semibold text-[#424242]">
+                          <span className="text-[#757575] font-medium italic mr-1">{tr("automation.ifLabel")}</span>
                           {a.criteria}
                         </p>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-1.5 text-[13px] font-semibold text-[#15171C]">
-                          <Briefcase className="w-4 h-4 text-[#8A929E]" />
+                        <div className="flex items-center gap-1.5 text-[13px] font-semibold text-[#212121]">
+                          <Briefcase className="w-4 h-4 text-[#757575]" />
                           {jobTitle(a.job_requirement_id)}
                         </div>
-                        <div className="flex items-center gap-1.5 text-[11.5px] font-medium text-[#8A929E]">
-                          <Mail className="w-3.5 h-3.5 text-[#C4C9D0]" />
+                        <div className="flex items-center gap-1.5 text-[11.5px] font-medium text-[#757575]">
+                          <Mail className="w-3.5 h-3.5 text-[#BDBDBD]" />
                           {templateName(a.template_id)}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-1">
-                        <div className="flex items-center gap-1.5 text-[13px] font-semibold text-[#374151]">
-                          <Clock className="w-4 h-4 text-[#8A929E]" />
+                        <div className="flex items-center gap-1.5 text-[13px] font-semibold text-[#424242]">
+                          <Clock className="w-4 h-4 text-[#757575]" />
                           {a.is_immediate ? tr("automation.immediate") : new Date(/[zZ]|[+-]\d\d:?\d\d$/.test(a.send_at!) ? a.send_at! : `${a.send_at!.replace(" ", "T")}Z`).toLocaleString()}
                         </div>
                         {a.auto_move && (
-                          <div className="flex items-center gap-1 mt-1 text-[10px] font-bold text-[#0E8A6E] uppercase tracking-wider">
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[6px] bg-[#E3F4EF]/80 text-[#0E8A6E] border border-[#BFF0E2]/60 uppercase tracking-wider shadow-sm">
+                          <div className="flex items-center gap-1 mt-1 text-[10px] font-bold text-[#2E7D32] uppercase tracking-wider">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[3px] bg-[#E8F5E9]/80 text-[#2E7D32] border border-[#C8E6C9]/60 uppercase tracking-wider shadow-sm">
                               {tr("automation.autoMove")}
                             </span>
                           </div>
@@ -580,7 +580,7 @@ export default function MailAutomationPage() {
                       <button
                         onClick={() => handleToggle(a)}
                         disabled={togglingId === a.id}
-                        className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"} ${togglingId === a.id ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+                        className={`relative w-9 h-5 rounded-full transition-colors duration-200 focus:outline-none ${a.is_enabled ? "bg-[#1976D2]" : "bg-[#E0E0E0]"} ${togglingId === a.id ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
                       >
                         <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${a.is_enabled ? "translate-x-4" : "translate-x-0"}`} />
                       </button>
@@ -590,7 +590,7 @@ export default function MailAutomationPage() {
                         {canAccess("communications:moderate") && (
                           <button
                             onClick={() => openEdit(a)}
-                            className="w-8 h-8 flex items-center justify-center rounded-[8px] border border-transparent hover:border-[#E8EAED] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#5B53E0] transition-colors"
+                            className="w-8 h-8 flex items-center justify-center rounded-[4px] border border-transparent hover:border-[#E0E0E0] hover:bg-[#F5F6F8] text-[#757575] hover:text-[#1976D2] transition-colors"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
@@ -601,7 +601,7 @@ export default function MailAutomationPage() {
                               setAutomationToDelete(a);
                               setIsDeleteModalOpen(true);
                             }}
-                            className="w-8 h-8 flex items-center justify-center rounded-[8px] border border-transparent hover:border-[#E8EAED] hover:bg-rose-50 text-[#8A929E] hover:text-rose-600 transition-colors"
+                            className="w-8 h-8 flex items-center justify-center rounded-[4px] border border-transparent hover:border-[#E0E0E0] hover:bg-rose-50 text-[#757575] hover:text-rose-600 transition-colors"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -624,7 +624,7 @@ export default function MailAutomationPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="absolute inset-0 bg-[#15171C]/40 backdrop-blur-sm"
+              className="absolute inset-0 bg-[#212121]/40 backdrop-blur-sm"
               onClick={closeModal}
             />
             <motion.div
@@ -632,24 +632,24 @@ export default function MailAutomationPage() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="relative h-full w-full max-w-md bg-white shadow-2xl flex flex-col border-l border-[#E8EAED]"
+              className="relative h-full w-full max-w-md bg-white shadow-2xl flex flex-col border-l border-[#E0E0E0]"
             >
               {/* Header */}
-              <div className="px-6 py-5 border-b border-[#E8EAED] flex items-center justify-between shrink-0">
+              <div className="px-6 py-5 border-b border-[#E0E0E0] flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-[10px] bg-[#ECEBFB] flex items-center justify-center border border-[#DAD7F6]/60 shadow-sm">
-                    <Mail className="w-5 h-5 text-[#5B53E0]" />
+                  <div className="w-10 h-10 rounded-[4px] bg-[#E3F2FD] flex items-center justify-center border border-[#BBDEFB]/60 shadow-sm">
+                    <Mail className="w-5 h-5 text-[#1976D2]" />
                   </div>
                   <div>
-                    <h2 className="text-[16px] font-extrabold text-[#15171C] leading-tight">
+                    <h2 className="text-[16px] font-extrabold text-[#212121] leading-tight">
                       {editingId ? tr("automation.editAutomation") : tr("automation.newAutomation")}
                     </h2>
-                    <p className="text-[12.5px] text-[#8A929E] font-medium mt-0.5">{tr("automation.mailConfiguration")}</p>
+                    <p className="text-[12.5px] text-[#757575] font-medium mt-0.5">{tr("automation.mailConfiguration")}</p>
                   </div>
                 </div>
                 <button
                   onClick={closeModal}
-                  className="p-1.5 hover:bg-[#F4F5F7] text-[#9AA3AF] hover:text-[#4B5563] rounded-lg transition-all"
+                  className="p-1.5 hover:bg-[#F5F6F8] text-[#9E9E9E] hover:text-[#4F4F4F] rounded-lg transition-all"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -659,7 +659,7 @@ export default function MailAutomationPage() {
               <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6 custom-scrollbar">
                 {/* Job */}
                 <div>
-                  <label htmlFor="mail-job-requirement" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                  <label htmlFor="mail-job-requirement" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                     {tr("automation.jobRequirement")} <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
@@ -667,20 +667,20 @@ export default function MailAutomationPage() {
                       id="mail-job-requirement"
                       value={form.job_requirement_id}
                       onChange={(e) => setForm((f) => ({ ...f, job_requirement_id: e.target.value, stage_index: 1, stage_name: "" }))}
-                      className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                      className="w-full bg-white border border-[#E0E0E0] rounded-[4px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#424242] hover:border-[#BBDEFB] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm"
                     >
                       <option value="">{tr("automation.selectJob")}</option>
                       {jobs.map((j) => (
                         <option key={j.id} value={j.id}>{j.title}</option>
                       ))}
                     </select>
-                    <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                    <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
                   </div>
                 </div>
 
                 {/* Round */}
                 <div>
-                  <label htmlFor="mail-hiring-round" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                  <label htmlFor="mail-hiring-round" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                     {tr("automation.hiringRound")} <span className="text-rose-500">*</span>
                   </label>
                   {jobRounds.length > 0 ? (
@@ -689,7 +689,7 @@ export default function MailAutomationPage() {
                         id="mail-hiring-round"
                         onChange={handleRoundSelect}
                         value={form.stage_name ? `${form.stage_index}|${form.stage_name}` : ""}
-                        className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                        className="w-full bg-white border border-[#E0E0E0] rounded-[4px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#424242] hover:border-[#BBDEFB] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm"
                       >
                         <option value="">{tr("automation.pickRound")}</option>
                         {jobRounds.map((r, i) => (
@@ -698,7 +698,7 @@ export default function MailAutomationPage() {
                           </option>
                         ))}
                       </select>
-                      <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                      <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
                     </div>
                   ) : (
                     <div className="grid grid-cols-5 gap-3">
@@ -707,22 +707,22 @@ export default function MailAutomationPage() {
                         min={1}
                         value={form.stage_index}
                         onChange={(e) => setForm((f) => ({ ...f, stage_index: e.target.value }))}
-                        className="col-span-2 bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#1F2127] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                        className="col-span-2 bg-white border border-[#E0E0E0] rounded-[4px] h-11 px-4 text-[13.5px] font-semibold text-[#263238] placeholder:text-[#9E9E9E] focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm"
                         placeholder={tr("automation.noAbbrev")}
                       />
                       <input
                         type="text"
                         value={form.stage_name}
                         onChange={(e) => setForm((f) => ({ ...f, stage_name: e.target.value }))}
-                        className="col-span-3 bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#1F2127] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                        className="col-span-3 bg-white border border-[#E0E0E0] rounded-[4px] h-11 px-4 text-[13.5px] font-semibold text-[#263238] placeholder:text-[#9E9E9E] focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm"
                         placeholder={tr("automation.labelPlaceholder")}
                       />
                     </div>
                   )}
                   {jobRounds.length > 0 && (form.stage_name || Number(form.stage_index) > 1) && (
-                    <div className="mt-2 flex items-center gap-2 px-3 py-1.5 bg-[#ECEBFB] rounded-lg border border-[#DAD7F6]/60">
-                      <CheckCircle2 className="w-4 h-4 text-[#5B53E0]" />
-                      <p className="text-[11.5px] text-[#5B53E0] font-semibold tracking-tight">
+                    <div className="mt-2 flex items-center gap-2 px-3 py-1.5 bg-[#E3F2FD] rounded-lg border border-[#BBDEFB]/60">
+                      <CheckCircle2 className="w-4 h-4 text-[#1976D2]" />
+                      <p className="text-[11.5px] text-[#1976D2] font-semibold tracking-tight">
                         {tr("automation.selectedRound", { index: form.stage_index, name: form.stage_name })}
                       </p>
                     </div>
@@ -731,7 +731,7 @@ export default function MailAutomationPage() {
 
                 {/* Criteria */}
                 <div>
-                  <label htmlFor="mail-trigger-criteria" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                  <label htmlFor="mail-trigger-criteria" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                     {tr("automation.triggerCriteria")} <span className="text-rose-500">*</span>
                   </label>
                   <textarea
@@ -739,23 +739,23 @@ export default function MailAutomationPage() {
                     rows={4}
                     value={form.criteria}
                     onChange={(e) => setForm((f) => ({ ...f, criteria: e.target.value }))}
-                    className="w-full bg-white border border-[#E1E4E8] rounded-[12px] p-4 text-[13.5px] font-semibold text-[#1F2127] placeholder:text-[#9AA3AF] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm resize-none"
+                    className="w-full bg-white border border-[#E0E0E0] rounded-[4px] p-4 text-[13.5px] font-semibold text-[#263238] placeholder:text-[#9E9E9E] focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm resize-none"
                     placeholder={tr("automation.criteriaPlaceholderCondition")}
                   />
-                  <p className="text-[11px] text-[#9AA3AF] mt-2 px-1">
+                  <p className="text-[11px] text-[#9E9E9E] mt-2 px-1">
                     {tr("automation.clearConditionsHelp")}
                   </p>
                 </div>
 
                 {/* Template */}
                 <div>
-                  <label htmlFor="mail-email-template" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                  <label htmlFor="mail-email-template" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                     {tr("automation.emailTemplate")} <span className="text-rose-500">*</span>
                   </label>
                   {templates.length === 0 ? (
-                    <div className="bg-[#F7F8FA] rounded-lg p-4 border border-dashed border-[#E8EAED]">
-                      <p className="text-xs text-[#8A929E] text-center">
-                        {tr("automation.noTemplatesFound")} <a href="/enterprise/templates/email-templates" className="text-[#5B53E0] font-bold hover:underline" target="_blank" rel="noreferrer">{tr("automation.createOne")}</a> {tr("automation.firstWord")}
+                    <div className="bg-[#FAFAFA] rounded-lg p-4 border border-dashed border-[#E0E0E0]">
+                      <p className="text-xs text-[#757575] text-center">
+                        {tr("automation.noTemplatesFound")} <a href="/enterprise/templates/email-templates" className="text-[#1976D2] font-bold hover:underline" target="_blank" rel="noreferrer">{tr("automation.createOne")}</a> {tr("automation.firstWord")}
                       </p>
                     </div>
                   ) : (
@@ -764,51 +764,51 @@ export default function MailAutomationPage() {
                         id="mail-email-template"
                         value={form.template_id}
                         onChange={(e) => setForm((f) => ({ ...f, template_id: e.target.value }))}
-                        className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                        className="w-full bg-white border border-[#E0E0E0] rounded-[4px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#424242] hover:border-[#BBDEFB] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm"
                       >
                         <option value="">{tr("automation.selectTemplate")}</option>
                         {templates.map((t) => (
                           <option key={t.id} value={t.id}>{t.name}</option>
                         ))}
                       </select>
-                      <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                      <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
                     </div>
                   )}
                 </div>
 
                 {/* Toggles Group */}
                 <div className="space-y-3 pt-2">
-                  <div className="flex items-center justify-between p-4 bg-[#F7F8FA]/50 border border-[#E8EAED] rounded-[12px] transition-all hover:border-[#DAD7F6]">
+                  <div className="flex items-center justify-between p-4 bg-[#FAFAFA]/50 border border-[#E0E0E0] rounded-[4px] transition-all hover:border-[#BBDEFB]">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center border border-[#E8EAED]">
+                      <div className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center border border-[#E0E0E0]">
                         <CheckCircle2 className="w-4 h-4 text-emerald-500" />
                       </div>
                       <div>
-                        <p className="text-[13px] font-bold text-[#15171C]">{tr("automation.enableAutomation")}</p>
-                        <p className="text-[11px] text-[#9AA3AF] font-medium">{tr("automation.turnRulesOnOff")}</p>
+                        <p className="text-[13px] font-bold text-[#212121]">{tr("automation.enableAutomation")}</p>
+                        <p className="text-[11px] text-[#9E9E9E] font-medium">{tr("automation.turnRulesOnOff")}</p>
                       </div>
                     </div>
                     <button
                       onClick={() => setForm((f) => ({ ...f, is_enabled: !f.is_enabled }))}
-                      className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.is_enabled ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"}`}
+                      className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.is_enabled ? "bg-[#1976D2]" : "bg-[#E0E0E0]"}`}
                     >
                       <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${form.is_enabled ? "translate-x-5" : "translate-x-0"}`} />
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between p-4 bg-[#F7F8FA]/50 border border-[#E8EAED] rounded-[12px] transition-all hover:border-[#DAD7F6]">
+                  <div className="flex items-center justify-between p-4 bg-[#FAFAFA]/50 border border-[#E0E0E0] rounded-[4px] transition-all hover:border-[#BBDEFB]">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center border border-[#E8EAED]">
+                      <div className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center border border-[#E0E0E0]">
                         <Zap className="w-4 h-4 text-amber-500" />
                       </div>
                       <div>
-                        <p className="text-[13px] font-bold text-[#15171C]">{tr("automation.sendImmediately")}</p>
-                        <p className="text-[11px] text-[#9AA3AF] font-medium">{tr("automation.autoSendRoundChange")}</p>
+                        <p className="text-[13px] font-bold text-[#212121]">{tr("automation.sendImmediately")}</p>
+                        <p className="text-[11px] text-[#9E9E9E] font-medium">{tr("automation.autoSendRoundChange")}</p>
                       </div>
                     </div>
                     <button
                       onClick={() => setForm((f) => ({ ...f, is_immediate: !f.is_immediate }))}
-                      className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.is_immediate ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"}`}
+                      className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.is_immediate ? "bg-[#1976D2]" : "bg-[#E0E0E0]"}`}
                     >
                       <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${form.is_immediate ? "translate-x-5" : "translate-x-0"}`} />
                     </button>
@@ -816,7 +816,7 @@ export default function MailAutomationPage() {
 
                   {!form.is_immediate && (
                     <div className="animate-in slide-in-from-top-2 duration-200 px-1">
-                      <label htmlFor="mail-scheduled-datetime" className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+                      <label htmlFor="mail-scheduled-datetime" className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
                         {tr("automation.scheduledDateTime")} <span className="text-rose-500">*</span>
                       </label>
                       <input
@@ -824,24 +824,24 @@ export default function MailAutomationPage() {
                         type="datetime-local"
                         value={form.send_at}
                         onChange={(e) => setForm((f) => ({ ...f, send_at: e.target.value }))}
-                        className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#1F2127] focus:outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                        className="w-full bg-white border border-[#E0E0E0] rounded-[4px] h-11 px-4 text-[13.5px] font-semibold text-[#263238] focus:outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm"
                       />
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between p-4 bg-[#F7F8FA]/50 border border-[#E8EAED] rounded-[12px] transition-all hover:border-[#DAD7F6]">
+                  <div className="flex items-center justify-between p-4 bg-[#FAFAFA]/50 border border-[#E0E0E0] rounded-[4px] transition-all hover:border-[#BBDEFB]">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center border border-[#E8EAED]">
+                      <div className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center border border-[#E0E0E0]">
                         <ChevronRight className="w-4 h-4 text-indigo-500" />
                       </div>
                       <div>
-                        <p className="text-[13px] font-bold text-[#15171C]">{tr("automation.autoMove")}</p>
-                        <p className="text-[11px] text-[#9AA3AF] font-medium">{tr("automation.advanceNextRound")}</p>
+                        <p className="text-[13px] font-bold text-[#212121]">{tr("automation.autoMove")}</p>
+                        <p className="text-[11px] text-[#9E9E9E] font-medium">{tr("automation.advanceNextRound")}</p>
                       </div>
                     </div>
                     <button
                       onClick={() => setForm((f) => ({ ...f, auto_move: !f.auto_move }))}
-                      className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.auto_move ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"}`}
+                      className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer ${form.auto_move ? "bg-[#1976D2]" : "bg-[#E0E0E0]"}`}
                     >
                       <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${form.auto_move ? "translate-x-5" : "translate-x-0"}`} />
                     </button>
@@ -850,9 +850,9 @@ export default function MailAutomationPage() {
               </div>
 
               {/* Footer */}
-              <div className="p-6 border-t border-[#E8EAED] bg-[#F7F8FA]/50 shrink-0 flex flex-col gap-3">
+              <div className="p-6 border-t border-[#E0E0E0] bg-[#FAFAFA]/50 shrink-0 flex flex-col gap-3">
                 {formError && (
-                  <div className="flex items-start gap-2.5 rounded-[10px] border border-rose-200 bg-rose-50 px-3.5 py-3">
+                  <div className="flex items-start gap-2.5 rounded-[4px] border border-rose-200 bg-rose-50 px-3.5 py-3">
                     <AlertCircle className="w-4 h-4 text-rose-500 mt-0.5 shrink-0" />
                     <p className="text-[12px] font-semibold text-rose-700 leading-relaxed">{formError}</p>
                   </div>
@@ -860,7 +860,7 @@ export default function MailAutomationPage() {
                 <button
                   onClick={handleSave}
                   disabled={saving}
-                  className="w-full flex items-center justify-center gap-2 h-12 bg-[#5B53E0] text-white rounded-[10px] text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-all active:scale-95 disabled:opacity-60"
+                  className="w-full flex items-center justify-center gap-2 h-12 bg-[#1976D2] text-white rounded-[4px] text-[13.5px] font-semibold hover:bg-[#1565C0] shadow-[0_6px_16px_rgba(25,118,210,0.28)] transition-all active:scale-95 disabled:opacity-60"
                 >
                   {saving ? (
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

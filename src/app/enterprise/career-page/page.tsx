@@ -29,25 +29,25 @@ export default function CareerPageJobPosts() {
             {loading ? (
                 <Spinner />
             ) : !slug ? (
-                <div className="p-4 rounded-[12px] border border-[#F3DDBA] bg-[#FEF3E2]">
-                    <p className="text-[12.5px] font-bold text-[#8A5B08]">{tr("careerPage.noCompany")}</p>
+                <div className="p-4 rounded-[4px] border border-[#FFE0B2] bg-[#FFF3E0]">
+                    <p className="text-[12.5px] font-bold text-[#E65100]">{tr("careerPage.noCompany")}</p>
                 </div>
             ) : (
-                <div className="rounded-[12px] border border-[#E8EAED] bg-white p-4 space-y-3">
+                <div className="rounded-[4px] border border-[#E0E0E0] bg-white p-4 space-y-3">
                     <div>
-                        <h2 className="text-[15px] font-bold text-[#15171C]">
+                        <h2 className="text-[15px] font-bold text-[#212121]">
                             {tr("careerPage.liveTitle")}{" "}
-                            <span className="text-[#A8AEB8] font-semibold">({jobs.length})</span>
+                            <span className="text-[#9E9E9E] font-semibold">({jobs.length})</span>
                         </h2>
                         {/* The single rule that decides what is on the page — and the same rule
                             that decides whether a job board can see it. */}
-                        <p className="text-[12px] text-[#8A929E] leading-relaxed mt-1">{tr("careerPage.liveDesc")}</p>
+                        <p className="text-[12px] text-[#757575] leading-relaxed mt-1">{tr("careerPage.liveDesc")}</p>
                     </div>
 
                     {jobs.length === 0 ? (
-                        <p className="text-[12.5px] text-[#8A929E] py-6 text-center">{tr("careerPage.noJobs")}</p>
+                        <p className="text-[12.5px] text-[#757575] py-6 text-center">{tr("careerPage.noJobs")}</p>
                     ) : (
-                        <div className="divide-y divide-[#F0F0F1]">
+                        <div className="divide-y divide-[#EEEEEE]">
                             {jobs.map((job) => (
                                 <a
                                     key={job.id}
@@ -55,14 +55,14 @@ export default function CareerPageJobPosts() {
                                     className="py-2.5 flex items-center gap-3 group"
                                 >
                                     <span className="min-w-0 flex-1">
-                                        <span className="block text-[13px] font-semibold text-[#15171C] group-hover:text-[#5B53E0] transition-colors">
+                                        <span className="block text-[13px] font-semibold text-[#212121] group-hover:text-[#1976D2] transition-colors">
                                             {job.title}
                                         </span>
-                                        <span className="block text-[11.5px] text-[#8A929E]">
+                                        <span className="block text-[11.5px] text-[#757575]">
                                             {[job.location, job.work_mode, job.job_type].filter(Boolean).join(" · ") || "—"}
                                         </span>
                                     </span>
-                                    <span className="material-symbols-rounded text-[18px] text-[#C3C7CE] group-hover:text-[#5B53E0] transition-colors">
+                                    <span className="material-symbols-rounded text-[18px] text-[#BDBDBD] group-hover:text-[#1976D2] transition-colors">
                                         chevron_right
                                     </span>
                                 </a>

@@ -112,16 +112,16 @@ export default function MyLeavePage() {
       />
 
       {error && (
-        <div className="flex items-center gap-2.5 rounded-[12px] border border-[#FBD5D5] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
+        <div className="flex items-center gap-2.5 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[13px] font-medium text-[#C62828]">
           <span className="material-symbols-rounded text-[18px]">error</span> {error}
         </div>
       )}
 
       <StatGrid>
-        <StatCard label={tr("employee.paidDaysavailable")} value={loading ? "—" : available} icon="event_available" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
-        <StatCard label={tr("employee.pendingRequests")} value={loading ? "—" : pending} icon="hourglass_top" gradient="linear-gradient(135deg,#F6B65C,#D97706)" glow="rgba(217,119,6,0.25)" />
-        <StatCard label={tr("employee.leaveTypes")} value={loading ? "—" : types.length} icon="category" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
-        <StatCard label={tr("employee.totalRequests")} value={loading ? "—" : requests.length} icon="fact_check" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
+        <StatCard label={tr("employee.paidDaysavailable")} value={loading ? "—" : available} icon="event_available" gradient="linear-gradient(135deg,#66BB6A,#2E7D32)" glow="rgba(46,125,50,0.25)" />
+        <StatCard label={tr("employee.pendingRequests")} value={loading ? "—" : pending} icon="hourglass_top" gradient="linear-gradient(135deg,#FFB74D,#EF6C00)" glow="rgba(239,108,0,0.25)" />
+        <StatCard label={tr("employee.leaveTypes")} value={loading ? "—" : types.length} icon="category" gradient="linear-gradient(135deg,#42A5F5,#1976D2)" glow="rgba(25,118,210,0.28)" />
+        <StatCard label={tr("employee.totalRequests")} value={loading ? "—" : requests.length} icon="fact_check" gradient="linear-gradient(135deg,#42A5F5,#1565C0)" glow="rgba(21,101,192,0.25)" />
       </StatGrid>
 
       {/* Balances */}
@@ -129,17 +129,17 @@ export default function MyLeavePage() {
         <CardHeader className="px-6 pt-6" title={tr("employee.leaveBalances")} subtitle={tr("employee.daysRemainingPerType")} />
         {loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 px-6 pb-6">
-            {[1, 2, 3].map((i) => <div key={i} className="h-20 rounded-[12px] bg-[#F4F5F7] animate-pulse" />)}
+            {[1, 2, 3].map((i) => <div key={i} className="h-20 rounded-[4px] bg-[#F5F6F8] animate-pulse" />)}
           </div>
         ) : balances.length === 0 ? (
-          <p className="px-6 pb-6 pt-1 text-center text-[13px] text-[#8A929E]">{tr("employee.noLeaveBalances")}</p>
+          <p className="px-6 pb-6 pt-1 text-center text-[13px] text-[#757575]">{tr("employee.noLeaveBalances")}</p>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 px-6 pb-6">
             {balances.map((b) => (
-              <div key={b.id} className="rounded-[12px] border border-[#E8EAED] bg-[#F8FAFC] p-4">
-                <div className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{b.leave_type_name || b.leave_type_code}</div>
-                <div className={`text-[24px] font-semibold text-[#15171C] mt-1 ${jetbrainsMono.className}`}>{Number(b.balance)}</div>
-                <div className="text-[11.5px] text-[#8A929E] mt-0.5">{tr("employee.usedOf", { used: Number(b.used), accrued: Number(b.accrued) })}</div>
+              <div key={b.id} className="rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] p-4">
+                <div className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{b.leave_type_name || b.leave_type_code}</div>
+                <div className={`text-[24px] font-semibold text-[#212121] mt-1 ${jetbrainsMono.className}`}>{Number(b.balance)}</div>
+                <div className="text-[11.5px] text-[#757575] mt-0.5">{tr("employee.usedOf", { used: Number(b.used), accrued: Number(b.accrued) })}</div>
               </div>
             ))}
           </div>
@@ -150,14 +150,14 @@ export default function MyLeavePage() {
       <Card padding="none" className="overflow-hidden">
         <CardHeader className="px-6 pt-6" title={tr("employee.myRequests")} subtitle={tr("employee.myRequestsSubtitle")} />
         {loading ? (
-          <div className="px-6 pb-6 space-y-2">{[1, 2, 3].map((i) => <div key={i} className="h-12 rounded-[10px] bg-[#F4F5F7] animate-pulse" />)}</div>
+          <div className="px-6 pb-6 space-y-2">{[1, 2, 3].map((i) => <div key={i} className="h-12 rounded-[4px] bg-[#F5F6F8] animate-pulse" />)}</div>
         ) : requests.length === 0 ? (
           <EmptyState tone="brand" icon="event_available" title={tr("employee.noLeaveRequests")} description={tr("employee.noLeaveRequestsDesc")} action={<Button icon="add" onClick={() => setOpen(true)}>{tr("employee.requestLeave")}</Button>} />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-[13px]">
               <thead>
-                <tr className="border-y border-[#E8EAED] bg-[#F7F8FA] text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">
+                <tr className="border-y border-[#E0E0E0] bg-[#FAFAFA] text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">
                   <th className="px-6 py-3">{tr("employee.colType")}</th>
                   <th className="px-6 py-3">{tr("employee.colDates")}</th>
                   <th className="px-6 py-3">{tr("employee.colDays")}</th>
@@ -165,18 +165,18 @@ export default function MyLeavePage() {
                   <th className="px-6 py-3 text-right">{tr("employee.colAction")}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F0F0F1]">
+              <tbody className="divide-y divide-[#EEEEEE]">
                 {requests.map((r) => (
-                  <tr key={r.id} className="hover:bg-[#F7F7F8] transition-colors">
-                    <td className="px-6 py-3.5 font-semibold text-[#15171C]">{r.leave_type_name || r.leave_type_code}</td>
-                    <td className={`px-6 py-3.5 text-[#8A929E] ${jetbrainsMono.className}`}>
+                  <tr key={r.id} className="hover:bg-[#FAFAFA] transition-colors">
+                    <td className="px-6 py-3.5 font-semibold text-[#212121]">{r.leave_type_name || r.leave_type_code}</td>
+                    <td className={`px-6 py-3.5 text-[#757575] ${jetbrainsMono.className}`}>
                       {r.start_date}{r.end_date !== r.start_date ? ` → ${r.end_date}` : ""}{r.half_day ? " (½)" : ""}
                     </td>
-                    <td className={`px-6 py-3.5 text-[#374151] ${jetbrainsMono.className}`}>{Number(r.days)}</td>
+                    <td className={`px-6 py-3.5 text-[#424242] ${jetbrainsMono.className}`}>{Number(r.days)}</td>
                     <td className="px-6 py-3.5"><Badge tone={statusTone(r.status)} dot>{r.status.charAt(0) + r.status.slice(1).toLowerCase()}</Badge></td>
                     <td className="px-6 py-3.5 text-right">
                       {(r.status === "PENDING" || r.status === "APPROVED") && (
-                        <button onClick={() => cancel(r.id)} disabled={busy} className="text-[12.5px] font-semibold text-[#8A929E] hover:text-[#C0383C] disabled:opacity-50 transition-colors">{tr("employee.cancel")}</button>
+                        <button onClick={() => cancel(r.id)} disabled={busy} className="text-[12.5px] font-semibold text-[#757575] hover:text-[#C62828] disabled:opacity-50 transition-colors">{tr("employee.cancel")}</button>
                       )}
                     </td>
                   </tr>
@@ -189,17 +189,17 @@ export default function MyLeavePage() {
 
       {/* Request modal */}
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#15171C]/40 backdrop-blur-sm">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm">
           <Card padding="none" className="w-full max-w-lg animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between px-6 py-5 border-b border-[#E8EAED]">
-              <h2 className="text-[17px] font-extrabold tracking-[-0.3px] text-[#15171C]">{tr("employee.requestLeave")}</h2>
-              <button onClick={() => setOpen(false)} aria-label={tr("employee.close")} className="w-8 h-8 rounded-[9px] text-[#8A929E] hover:bg-[#F1F2F5] flex items-center justify-center">
+            <div className="flex items-center justify-between px-6 py-5 border-b border-[#E0E0E0]">
+              <h2 className="text-[17px] font-extrabold tracking-[-0.3px] text-[#212121]">{tr("employee.requestLeave")}</h2>
+              <button onClick={() => setOpen(false)} aria-label={tr("employee.close")} className="w-8 h-8 rounded-[4px] text-[#757575] hover:bg-[#EEEEEE] flex items-center justify-center">
                 <span className="material-symbols-rounded text-[20px]">close</span>
               </button>
             </div>
             <form onSubmit={apply} className="px-6 py-6 space-y-4">
               {formErr && (
-                <div className="flex items-center gap-2 rounded-[10px] border border-[#FBD5D5] bg-[#FDECEC] px-3.5 py-2.5 text-[12.5px] font-medium text-[#C0383C]">
+                <div className="flex items-center gap-2 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-3.5 py-2.5 text-[12.5px] font-medium text-[#C62828]">
                   <span className="material-symbols-rounded text-[17px]">error</span> {formErr}
                 </div>
               )}
@@ -210,8 +210,8 @@ export default function MyLeavePage() {
                 </Select>
               </Field>
               <label className="flex items-center gap-2.5 cursor-pointer">
-                <input type="checkbox" checked={form.half_day} onChange={(e) => setForm({ ...form, half_day: e.target.checked })} className="h-4 w-4 accent-[#5B53E0]" />
-                <span className="text-[13px] font-semibold text-[#374151]">{tr("employee.halfDay")}</span>
+                <input type="checkbox" checked={form.half_day} onChange={(e) => setForm({ ...form, half_day: e.target.checked })} className="h-4 w-4 accent-[#1976D2]" />
+                <span className="text-[13px] font-semibold text-[#424242]">{tr("employee.halfDay")}</span>
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Field label={form.half_day ? tr("employee.date") : tr("employee.startDate")} htmlFor="lv-start" required>

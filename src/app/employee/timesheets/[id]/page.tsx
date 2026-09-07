@@ -88,11 +88,11 @@ export default function MyTimesheetDetailPage({ params }: { params: Promise<{ id
   const summary = !ts
     ? []
     : isHourly
-      ? [{ label: t("employee.totalHours"), value: ts.total_hours, icon: "timer", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" }]
+      ? [{ label: t("employee.totalHours"), value: ts.total_hours, icon: "timer", grad: "linear-gradient(135deg,#42A5F5,#1976D2)", glow: "rgba(25,118,210,0.28)" }]
       : [
-          { label: t("employee.workedDays"), value: ts.worked_days, icon: "task_alt", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-          { label: t("employee.lopDays"), value: ts.lop_days, icon: "money_off", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
-          { label: t("employee.halfDays"), value: ts.half_days, icon: "hourglass_bottom", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+          { label: t("employee.workedDays"), value: ts.worked_days, icon: "task_alt", grad: "linear-gradient(135deg,#66BB6A,#2E7D32)", glow: "rgba(46,125,50,0.25)" },
+          { label: t("employee.lopDays"), value: ts.lop_days, icon: "money_off", grad: "linear-gradient(135deg,#FFB74D,#EF6C00)", glow: "rgba(239,108,0,0.25)" },
+          { label: t("employee.halfDays"), value: ts.half_days, icon: "hourglass_bottom", grad: "linear-gradient(135deg,#42A5F5,#1565C0)", glow: "rgba(21,101,192,0.25)" },
         ];
 
   return (
@@ -110,15 +110,15 @@ export default function MyTimesheetDetailPage({ params }: { params: Promise<{ id
       />
 
       {error && (
-        <div className="flex items-center gap-2.5 rounded-[12px] border border-[#FBD5D5] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
+        <div className="flex items-center gap-2.5 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[13px] font-medium text-[#C62828]">
           <span className="material-symbols-rounded text-[18px]">error</span> {error}
         </div>
       )}
 
       {!ts && !error ? (
         <div className="space-y-6">
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">{[1, 2, 3].map((i) => <div key={i} className="h-24 rounded-[14px] bg-[#F4F5F7] border border-[#E8EAED] animate-pulse" />)}</div>
-          <div className="h-64 rounded-[14px] bg-[#F4F5F7] border border-[#E8EAED] animate-pulse" />
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">{[1, 2, 3].map((i) => <div key={i} className="h-24 rounded-[4px] bg-[#F5F6F8] border border-[#E0E0E0] animate-pulse" />)}</div>
+          <div className="h-64 rounded-[4px] bg-[#F5F6F8] border border-[#E0E0E0] animate-pulse" />
         </div>
       ) : ts ? (
         <>
@@ -133,35 +133,35 @@ export default function MyTimesheetDetailPage({ params }: { params: Promise<{ id
             <div className="overflow-x-auto">
               <table className="w-full text-[13px]">
                 <thead>
-                  <tr className="border-y border-[#E8EAED] bg-[#F7F8FA] text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">
+                  <tr className="border-y border-[#E0E0E0] bg-[#FAFAFA] text-left text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">
                     <th className="px-6 py-3">{t("employee.colDate")}</th>
                     <th className="px-6 py-3">{t("employee.colDay")}</th>
                     <th className="px-6 py-3">{isHourly ? t("employee.colHours") : t("employee.colStatus")}</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#F0F0F1]">
+                <tbody className="divide-y divide-[#EEEEEE]">
                   {ts.entries.map((e) => {
                     const dow = t(`employee.dow${new Date(e.entry_date + "T00:00:00").getDay()}`);
                     const markable = canMark(e);
                     return (
-                      <tr key={e.id} className="hover:bg-[#F7F7F8] transition-colors">
-                        <td className={`px-6 py-3 font-semibold text-[#15171C] ${jetbrainsMono.className}`}>{e.entry_date}</td>
-                        <td className="px-6 py-3 text-[#8A929E]">{dow}</td>
+                      <tr key={e.id} className="hover:bg-[#FAFAFA] transition-colors">
+                        <td className={`px-6 py-3 font-semibold text-[#212121] ${jetbrainsMono.className}`}>{e.entry_date}</td>
+                        <td className="px-6 py-3 text-[#757575]">{dow}</td>
                         <td className="px-6 py-3">
                           {isHourly ? (
                             markable ? (
                               <input type="number" min={0} max={24} step="0.25" value={hoursFor(e.entry_date, e.hours)} onChange={(ev) => setHours(e.entry_date, ev.target.value)}
-                                className="w-28 rounded-[9px] border border-[#E1E4E8] bg-white px-3 py-1.5 text-[13px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20" />
+                                className="w-28 rounded-[4px] border border-[#E0E0E0] bg-white px-3 py-1.5 text-[13px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20" />
                             ) : (
-                              <span className="text-[#9AA3AF]">{e.hours === null ? "—" : Number(e.hours)}</span>
+                              <span className="text-[#9E9E9E]">{e.hours === null ? "—" : Number(e.hours)}</span>
                             )
                           ) : markable ? (
                             <select value={statusFor(e.entry_date, e.day_status)} onChange={(ev) => setStatus(e.entry_date, ev.target.value as DayStatus)}
-                              className="rounded-[9px] border border-[#E1E4E8] bg-white px-3 py-1.5 text-[13px] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20">
+                              className="rounded-[4px] border border-[#E0E0E0] bg-white px-3 py-1.5 text-[13px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20">
                               {SELF_MARK.map((v) => <option key={v} value={v}>{t(`employee.selfMark_${v}`)}</option>)}
                             </select>
                           ) : (
-                            <span className="text-[#374151]">{STATUS_LABEL[e.day_status] ?? e.day_status}</span>
+                            <span className="text-[#424242]">{STATUS_LABEL[e.day_status] ?? e.day_status}</span>
                           )}
                         </td>
                       </tr>

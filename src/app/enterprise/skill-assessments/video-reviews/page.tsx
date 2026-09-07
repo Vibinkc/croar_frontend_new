@@ -63,8 +63,8 @@ export default function VideoReviewsPage() {
             <Card key={it.attempt_id}>
               <div className="flex flex-wrap items-start justify-between gap-3 border-b border-[#EEF0F4] pb-4">
                 <div>
-                  <p className="text-[15px] font-bold text-[#15171C]">{it.candidate_name || it.candidate_email || "Candidate"}</p>
-                  <p className="text-[12.5px] text-[#8A929E]">{it.candidate_email} · {it.topic}</p>
+                  <p className="text-[15px] font-bold text-[#212121]">{it.candidate_name || it.candidate_email || "Candidate"}</p>
+                  <p className="text-[12.5px] text-[#757575]">{it.candidate_email} · {it.topic}</p>
                 </div>
                 <Badge tone="warning" dot>Pending review</Badge>
               </div>
@@ -72,9 +72,9 @@ export default function VideoReviewsPage() {
               <div className="mt-4 grid gap-5">
                 {it.answers.map((a, i) => (
                   <div key={i} className="grid gap-2">
-                    <p className="text-[13.5px] font-semibold text-[#374151]"><span className="text-[#8A929E]">Q{i + 1}.</span> {a.question}</p>
+                    <p className="text-[13.5px] font-semibold text-[#424242]"><span className="text-[#757575]">Q{i + 1}.</span> {a.question}</p>
                     {a.video_url ? (
-                      <video src={`${BACKEND_URL}${a.video_url}`} controls className="w-full max-w-md rounded-xl border border-[#E8EAED] bg-black" />
+                      <video src={`${BACKEND_URL}${a.video_url}`} controls className="w-full max-w-md rounded-xl border border-[#E0E0E0] bg-black" />
                     ) : (
                       <p className="text-xs italic text-rose-400">No video submitted for this question.</p>
                     )}
@@ -83,12 +83,12 @@ export default function VideoReviewsPage() {
               </div>
 
               <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-[#EEF0F4] pt-4">
-                <label className="text-[12.5px] font-semibold text-[#374151]">Score (0–100)</label>
+                <label className="text-[12.5px] font-semibold text-[#424242]">Score (0–100)</label>
                 <input
                   type="number" min={0} max={100}
                   value={scores[it.attempt_id] ?? ""}
                   onChange={(e) => setScores((s) => ({ ...s, [it.attempt_id]: e.target.value }))}
-                  className="h-10 w-24 rounded-lg border border-[#E1E4E8] px-3 text-sm font-semibold text-[#374151] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20"
+                  className="h-10 w-24 rounded-lg border border-[#E0E0E0] px-3 text-sm font-semibold text-[#424242] focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20"
                 />
                 <Button onClick={() => submitReview(it.attempt_id)} disabled={saving === it.attempt_id || !scores[it.attempt_id]}>
                   {saving === it.attempt_id ? "Saving…" : "Submit score"}

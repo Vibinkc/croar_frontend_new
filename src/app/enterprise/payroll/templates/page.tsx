@@ -85,7 +85,7 @@ function fromMoneyLines(lines: MoneyLine[]): LineDraft[] {
 const SAMPLE_CTC_DEFAULT = "1200000";
 
 const selectCls =
-  "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
+  "appearance-none bg-white border border-[#E0E0E0] rounded-[4px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#424242] outline-none cursor-pointer hover:bg-[#FAFAFA] focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all";
 
 export default function TemplatesPage() {
   const { can } = useAuth();
@@ -317,10 +317,10 @@ export default function TemplatesPage() {
   });
 
   const statCards = [
-    { label: tr("payroll.templatesLabel"), value: templates.length, icon: "content_copy", gradient: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.25)" },
-    { label: tr("payroll.withStatutoryLabel"), value: templates.filter(hasStatutory).length, icon: "verified_user", gradient: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-    { label: tr("payroll.employeesLabel"), value: employees.length, icon: "group", gradient: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
-    { label: tr("payroll.avgComponents"), value: templates.length ? Math.round(templates.reduce((a, t) => a + t.components.length, 0) / templates.length) : "—", icon: "layers", gradient: "linear-gradient(135deg,#FBBF24,#D97706)", glow: "rgba(217,119,6,0.25)" },
+    { label: tr("payroll.templatesLabel"), value: templates.length, icon: "content_copy", gradient: "linear-gradient(135deg,#42A5F5,#1976D2)", glow: "rgba(25,118,210,0.25)" },
+    { label: tr("payroll.withStatutoryLabel"), value: templates.filter(hasStatutory).length, icon: "verified_user", gradient: "linear-gradient(135deg,#66BB6A,#2E7D32)", glow: "rgba(46,125,50,0.25)" },
+    { label: tr("payroll.employeesLabel"), value: employees.length, icon: "group", gradient: "linear-gradient(135deg,#42A5F5,#1565C0)", glow: "rgba(21,101,192,0.25)" },
+    { label: tr("payroll.avgComponents"), value: templates.length ? Math.round(templates.reduce((a, t) => a + t.components.length, 0) / templates.length) : "—", icon: "layers", gradient: "linear-gradient(135deg,#FFB300,#EF6C00)", glow: "rgba(239,108,0,0.25)" },
   ];
 
   return (
@@ -339,7 +339,7 @@ export default function TemplatesPage() {
       />
 
       {error && (
-        <div className="flex items-start gap-2.5 rounded-[12px] border border-[#F7D7D7] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
+        <div className="flex items-start gap-2.5 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[13px] font-medium text-[#C62828]">
           <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
           <span>{error}</span>
         </div>
@@ -355,17 +355,17 @@ export default function TemplatesPage() {
       {/* Toolbar: search + filter */}
       <div className="flex flex-col md:flex-row md:items-center gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9E9E9E]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={tr("payroll.searchTemplates")}
-            className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
+            className="w-full h-10 bg-white border border-[#E0E0E0] rounded-[4px] pl-10 pr-4 text-[14px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all"
           />
         </div>
         <div className="relative flex-1 md:flex-none">
-          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
           <select
             value={statutoryFilter}
             onChange={(e) => setStatutoryFilter(e.target.value as "ALL" | "WITH" | "WITHOUT")}
@@ -375,27 +375,27 @@ export default function TemplatesPage() {
             <option value="WITH">{tr("payroll.withStatutory")}</option>
             <option value="WITHOUT">{tr("payroll.withoutStatutory")}</option>
           </select>
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
         </div>
       </div>
 
       {/* Templates list */}
-      <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
+      <div className="bg-white rounded-[4px] border border-[#E0E0E0] overflow-hidden min-h-[420px]">
         {loading ? (
           <div className="p-4 space-y-2.5">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+              <div key={i} className="h-16 bg-[#F5F6F8] rounded-[4px] animate-pulse" />
             ))}
           </div>
         ) : filteredTemplates.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
-            <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
-              <Copy className="w-8 h-8 text-[#C7CCD4]" />
+            <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5">
+              <Copy className="w-8 h-8 text-[#BDBDBD]" />
             </div>
             {templates.length === 0 ? (
               <>
-                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("payroll.noTemplatesYet")}</h3>
-                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("payroll.noTemplatesYet")}</h3>
+                <p className="text-[#757575] text-[14px] max-w-xs mx-auto mb-7">
                   {tr("payroll.noTemplatesYetDesc")}
                 </p>
                 {canEdit && (
@@ -406,8 +406,8 @@ export default function TemplatesPage() {
               </>
             ) : (
               <>
-                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("payroll.noTemplatesMatch")}</h3>
-                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">{tr("payroll.noTemplatesMatchDesc")}</p>
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("payroll.noTemplatesMatch")}</h3>
+                <p className="text-[#757575] text-[14px] max-w-xs mx-auto mb-7">{tr("payroll.noTemplatesMatchDesc")}</p>
                 <Button onClick={() => { setSearchQuery(""); setStatutoryFilter("ALL"); }}>{tr("payroll.clearFilters")}</Button>
               </>
             )}
@@ -415,27 +415,27 @@ export default function TemplatesPage() {
         ) : (
           <>
             {/* Column header (desktop) */}
-            <div className="hidden md:grid grid-cols-[2.4fr_1.6fr_1.2fr_200px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.template")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.earnings")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.statutory")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.actions")}</span>
+            <div className="hidden md:grid grid-cols-[2.4fr_1.6fr_1.2fr_200px] gap-4 px-5 py-3 bg-[#FAFAFA] border-b border-[#E0E0E0]">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.template")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.earnings")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.statutory")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.actions")}</span>
             </div>
 
-            <div className="divide-y divide-[#F0F0F1]">
+            <div className="divide-y divide-[#EEEEEE]">
               {filteredTemplates.map((t) => (
                 <div
                   key={t.id}
-                  className="grid grid-cols-1 md:grid-cols-[2.4fr_1.6fr_1.2fr_200px] gap-x-4 gap-y-3 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors group"
+                  className="grid grid-cols-1 md:grid-cols-[2.4fr_1.6fr_1.2fr_200px] gap-x-4 gap-y-3 items-center px-4 md:px-5 py-3.5 hover:bg-[#FAFAFA] transition-colors group"
                 >
                   {/* Template */}
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                    <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
                       <Copy className="w-[17px] h-[17px]" />
                     </span>
                     <div className="min-w-0">
-                      <div className="text-[14px] font-bold text-[#15171C] truncate">{t.name}</div>
-                      {t.description && <div className="text-[12px] text-[#8A929E] truncate">{t.description}</div>}
+                      <div className="text-[14px] font-bold text-[#212121] truncate">{t.name}</div>
+                      {t.description && <div className="text-[12px] text-[#757575] truncate">{t.description}</div>}
                     </div>
                   </div>
 
@@ -453,7 +453,7 @@ export default function TemplatesPage() {
                     {t.pt_enabled && <Badge tone="teal">PT</Badge>}
                     {t.tds_enabled && <Badge tone="teal">TDS</Badge>}
                     {!t.pf_enabled && !t.esi_enabled && !t.pt_enabled && !t.tds_enabled && (
-                      <span className="text-[12px] text-[#9AA3AF]">{tr("payroll.none")}</span>
+                      <span className="text-[12px] text-[#9E9E9E]">{tr("payroll.none")}</span>
                     )}
                   </div>
 
@@ -469,7 +469,7 @@ export default function TemplatesPage() {
                       <button
                         onClick={() => remove(t)}
                         title={tr("payroll.deleteTemplateTitle")}
-                        className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors shrink-0"
+                        className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#FFEBEE] hover:text-[#C62828] transition-colors shrink-0"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -483,18 +483,18 @@ export default function TemplatesPage() {
       </div>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 sm:p-6 bg-[#15171C]/40 backdrop-blur-sm">
-          <Card padding="none" className="w-full max-w-6xl my-auto shadow-[0_24px_60px_rgba(15,23,42,0.22)] overflow-hidden">
-            <div className="flex items-center justify-between gap-3 px-6 py-4 border-b border-[#E8EAED]">
+        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 sm:p-6 bg-[#212121]/40 backdrop-blur-sm">
+          <Card padding="none" className="w-full max-w-6xl my-auto shadow-[0_24px_60px_rgba(0,0,0,0.22)] overflow-hidden">
+            <div className="flex items-center justify-between gap-3 px-6 py-4 border-b border-[#E0E0E0]">
               <div className="flex items-center gap-2.5">
-                <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
                   <Copy className="w-[18px] h-[18px]" />
                 </span>
-                <h3 className="text-[16px] font-bold text-[#15171C]">{editingId ? tr("payroll.editTemplate") : tr("payroll.newTemplate")}</h3>
+                <h3 className="text-[16px] font-bold text-[#212121]">{editingId ? tr("payroll.editTemplate") : tr("payroll.newTemplate")}</h3>
               </div>
               <button
                 onClick={() => setOpen(false)}
-                className="w-8 h-8 rounded-[8px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors"
+                className="w-8 h-8 rounded-[4px] hover:bg-[#F5F6F8] text-[#757575] hover:text-[#424242] flex items-center justify-center transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -502,7 +502,7 @@ export default function TemplatesPage() {
 
             <form onSubmit={save} className="flex flex-col gap-6 p-6">
               {formErr && (
-                <div className="flex items-start gap-2.5 rounded-[12px] border border-[#F7D7D7] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
+                <div className="flex items-start gap-2.5 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[13px] font-medium text-[#C62828]">
                   <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
                   <span>{formErr}</span>
                 </div>
@@ -527,16 +527,16 @@ export default function TemplatesPage() {
                   <LineSection title={tr("payroll.earnings")} rows={earnings} setRows={setEarnings} refCodesFor={earningRefCodesFor} />
                   <LineSection title={tr("payroll.deductions")} rows={deductions} setRows={setDeductions} refCodesFor={deductionRefCodesFor} />
 
-                  <div className="rounded-[14px] border border-[#E8EAED] bg-[#F7F8FA]/60 p-4">
+                  <div className="rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA]/60 p-4">
                     <div className="mb-3 flex items-center gap-2">
-                      <ShieldCheck className="w-[18px] h-[18px] text-[#5B53E0]" />
-                      <span className="text-[14px] font-bold text-[#15171C]">{tr("payroll.statutoryCompliance")}</span>
+                      <ShieldCheck className="w-[18px] h-[18px] text-[#1976D2]" />
+                      <span className="text-[14px] font-bold text-[#212121]">{tr("payroll.statutoryCompliance")}</span>
                     </div>
                     <div className="flex flex-col gap-2">
                       <ToggleRow icon="savings" title={tr("payroll.providentFund")} desc={tr("payroll.pfDescTemplates")} checked={pfEnabled} onChange={setPfEnabled}>
                         {pfEnabled && (
-                          <label className="mt-2 flex items-center gap-2 text-[12px] text-[#8A929E]">
-                            <input type="checkbox" className="accent-[#5B53E0]" checked={pfCap} onChange={(e) => setPfCap(e.target.checked)} />
+                          <label className="mt-2 flex items-center gap-2 text-[12px] text-[#757575]">
+                            <input type="checkbox" className="accent-[#1976D2]" checked={pfCap} onChange={(e) => setPfCap(e.target.checked)} />
                             <span>{tr("payroll.capPfWageCeiling")}</span>
                           </label>
                         )}
@@ -550,12 +550,12 @@ export default function TemplatesPage() {
 
                 {/* Live preview at a sample CTC */}
                 <div className="lg:sticky lg:top-0 lg:self-start">
-                  <div className="overflow-hidden rounded-[14px] border border-[#DAD7F6] bg-gradient-to-br from-[#ECEBFB] to-white">
-                    <div className="border-b border-[#E8EAED] px-4 py-3">
-                      <span className="flex items-center gap-2 text-[13.5px] font-bold text-[#15171C]">
-                        <Calculator className="w-4 h-4 text-[#5B53E0]" />
+                  <div className="overflow-hidden rounded-[4px] border border-[#BBDEFB] bg-gradient-to-br from-[#E3F2FD] to-white">
+                    <div className="border-b border-[#E0E0E0] px-4 py-3">
+                      <span className="flex items-center gap-2 text-[13.5px] font-bold text-[#212121]">
+                        <Calculator className="w-4 h-4 text-[#1976D2]" />
                         {tr("payroll.previewAtSampleCtc")}
-                        {previewing && <span className="text-[11px] font-medium text-[#8A929E]">{tr("payroll.updating")}</span>}
+                        {previewing && <span className="text-[11px] font-medium text-[#757575]">{tr("payroll.updating")}</span>}
                       </span>
                     </div>
                     <div className="px-4 py-3">
@@ -563,7 +563,7 @@ export default function TemplatesPage() {
                         <Input id="tpl-sample-ctc" type="number" value={sampleCtc} onChange={(e) => setSampleCtc(e.target.value)} />
                       </Field>
                       {!ctcDriven && (
-                        <p className="mt-1.5 text-[12px] text-[#D97706]">
+                        <p className="mt-1.5 text-[12px] text-[#EF6C00]">
                           {tr("payroll.ctcWarnA")}{" "}
                           <strong>{tr("payroll.lineBalanceCtc")}</strong> {tr("payroll.ctcWarnB")} <strong>{tr("payroll.percentOfCtc")}</strong> {tr("payroll.ctcWarnC")}
                         </p>
@@ -571,30 +571,30 @@ export default function TemplatesPage() {
                     </div>
                     <div className="grid grid-cols-3 gap-4 px-4 pb-3">
                       <PreviewStat label={tr("payroll.gross")} value={inr(gross, currency)} />
-                      <PreviewStat label={tr("payroll.deductions")} value={`- ${inr(totalDeductions, currency)}`} tone="text-[#C0383C]" />
-                      <PreviewStat label={tr("payroll.net")} value={inr(net, currency)} tone="text-[#0E8A6E]" big />
+                      <PreviewStat label={tr("payroll.deductions")} value={`- ${inr(totalDeductions, currency)}`} tone="text-[#C62828]" />
+                      <PreviewStat label={tr("payroll.net")} value={inr(net, currency)} tone="text-[#2E7D32]" big />
                     </div>
                     {earningLines.length > 0 && (
-                      <div className="border-t border-[#E8EAED] px-4 py-3">
-                        <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.earningsBreakdown")}</div>
+                      <div className="border-t border-[#E0E0E0] px-4 py-3">
+                        <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.earningsBreakdown")}</div>
                         <div className="flex flex-col gap-1">
                           {earningLines.map((l) => (
                             <div key={l.code} className="flex justify-between text-[13px]">
-                              <span className="text-[#8A929E]">{l.label}</span>
-                              <span className={`font-medium text-[#15171C] ${jetbrainsMono.className}`}>{inr(l.amount, currency)}</span>
+                              <span className="text-[#757575]">{l.label}</span>
+                              <span className={`font-medium text-[#212121] ${jetbrainsMono.className}`}>{inr(l.amount, currency)}</span>
                             </div>
                           ))}
                         </div>
                       </div>
                     )}
                     {deductionLines.length > 0 && (
-                      <div className="border-t border-[#E8EAED] px-4 py-3">
-                        <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.deductionBreakdown")}</div>
+                      <div className="border-t border-[#E0E0E0] px-4 py-3">
+                        <div className="mb-1.5 text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.deductionBreakdown")}</div>
                         <div className="flex flex-col gap-1">
                           {deductionLines.map((l) => (
                             <div key={l.code} className="flex justify-between text-[13px]">
-                              <span className="text-[#8A929E]">{l.label}</span>
-                              <span className={`font-medium text-[#C0383C] ${jetbrainsMono.className}`}>- {inr(l.amount, currency)}</span>
+                              <span className="text-[#757575]">{l.label}</span>
+                              <span className={`font-medium text-[#C62828] ${jetbrainsMono.className}`}>- {inr(l.amount, currency)}</span>
                             </div>
                           ))}
                         </div>
@@ -604,7 +604,7 @@ export default function TemplatesPage() {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 border-t border-[#E8EAED] pt-4">
+              <div className="flex justify-end gap-3 border-t border-[#E0E0E0] pt-4">
                 <Button type="button" variant="ghost" onClick={() => setOpen(false)}>{tr("common.cancel")}</Button>
                 <Button type="submit" disabled={saving}>
                   {saving ? tr("payroll.saving") : editingId ? tr("payroll.updateTemplate") : tr("payroll.saveTemplate")}
@@ -698,18 +698,18 @@ function ApplyModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 sm:p-6 bg-[#15171C]/40 backdrop-blur-sm">
-      <Card padding="none" className="w-full max-w-3xl my-auto shadow-[0_24px_60px_rgba(15,23,42,0.22)] overflow-hidden">
-        <div className="flex items-center justify-between gap-3 px-6 py-4 border-b border-[#E8EAED]">
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 sm:p-6 bg-[#212121]/40 backdrop-blur-sm">
+      <Card padding="none" className="w-full max-w-3xl my-auto shadow-[0_24px_60px_rgba(0,0,0,0.22)] overflow-hidden">
+        <div className="flex items-center justify-between gap-3 px-6 py-4 border-b border-[#E0E0E0]">
           <div className="flex items-center gap-2.5">
-            <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+            <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
               <CheckCircle2 className="w-[18px] h-[18px]" />
             </span>
-            <h3 className="text-[16px] font-bold text-[#15171C]">{tr("payroll.applyQuoted", { name: template.name })}</h3>
+            <h3 className="text-[16px] font-bold text-[#212121]">{tr("payroll.applyQuoted", { name: template.name })}</h3>
           </div>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-[8px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors"
+            className="w-8 h-8 rounded-[4px] hover:bg-[#F5F6F8] text-[#757575] hover:text-[#424242] flex items-center justify-center transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -717,12 +717,12 @@ function ApplyModal({
 
         <div className="flex flex-col gap-5 p-6">
           {err && (
-            <div className="flex items-start gap-2.5 rounded-[12px] border border-[#F7D7D7] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
+            <div className="flex items-start gap-2.5 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[13px] font-medium text-[#C62828]">
               <AlertTriangle className="w-4 h-4 mt-0.5 shrink-0" />
               <span>{err}</span>
             </div>
           )}
-          <p className="text-[13px] text-[#8A929E]">
+          <p className="text-[13px] text-[#757575]">
             {tr("payroll.applyModalIntro")}
           </p>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -734,27 +734,27 @@ function ApplyModal({
             </Field>
           </div>
 
-          <div className="max-h-72 overflow-y-auto rounded-[12px] border border-[#E8EAED]">
+          <div className="max-h-72 overflow-y-auto rounded-[4px] border border-[#E0E0E0]">
             <table className="w-full text-left text-[13px]">
-              <thead className="sticky top-0 bg-[#F7F8FA] text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">
-                <tr className="border-b border-[#E8EAED]">
+              <thead className="sticky top-0 bg-[#FAFAFA] text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">
+                <tr className="border-b border-[#E0E0E0]">
                   <th className="px-4 py-2.5 w-10" />
                   <th className="px-4 py-2.5">{tr("payroll.employee")}</th>
                   <th className="px-4 py-2.5 text-right">{tr("payroll.ctcOverride")}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#F0F0F1]">
+              <tbody className="divide-y divide-[#EEEEEE]">
                 {employees.length === 0 && (
-                  <tr><td colSpan={3} className="px-4 py-6 text-center text-[#8A929E]">{tr("payroll.noEmployees")}</td></tr>
+                  <tr><td colSpan={3} className="px-4 py-6 text-center text-[#757575]">{tr("payroll.noEmployees")}</td></tr>
                 )}
                 {employees.map((e) => (
-                  <tr key={e.id} className="hover:bg-[#F7F8FA]/60 transition-colors">
+                  <tr key={e.id} className="hover:bg-[#FAFAFA]/60 transition-colors">
                     <td className="px-4 py-2.5">
-                      <input type="checkbox" className="accent-[#5B53E0]" checked={rows[e.id]?.checked ?? false} onChange={() => toggle(e.id)} />
+                      <input type="checkbox" className="accent-[#1976D2]" checked={rows[e.id]?.checked ?? false} onChange={() => toggle(e.id)} />
                     </td>
                     <td className="px-4 py-2.5">
-                      <div className="font-bold text-[#15171C]">{e.first_name} {e.last_name}</div>
-                      {e.email && <div className="text-[12px] text-[#8A929E]">{e.email}</div>}
+                      <div className="font-bold text-[#212121]">{e.first_name} {e.last_name}</div>
+                      {e.email && <div className="text-[12px] text-[#757575]">{e.email}</div>}
                     </td>
                     <td className="px-4 py-2.5 text-right">
                       <Input
@@ -771,12 +771,12 @@ function ApplyModal({
             </table>
           </div>
 
-          <label className="flex items-center gap-2 text-[13px] text-[#374151]">
-            <input type="checkbox" className="accent-[#5B53E0]" checked={replaceExisting} onChange={(e) => setReplaceExisting(e.target.checked)} />
+          <label className="flex items-center gap-2 text-[13px] text-[#424242]">
+            <input type="checkbox" className="accent-[#1976D2]" checked={replaceExisting} onChange={(e) => setReplaceExisting(e.target.checked)} />
             <span>{tr("payroll.replaceExisting")}</span>
           </label>
 
-          <div className="flex justify-end gap-3 border-t border-[#E8EAED] pt-4">
+          <div className="flex justify-end gap-3 border-t border-[#E0E0E0] pt-4">
             <Button type="button" variant="ghost" onClick={onClose}>{tr("common.cancel")}</Button>
             <Button type="button" onClick={submit} disabled={busy}>
               {busy ? tr("payroll.applying") : tr("payroll.applyToEmployees", { count: selected.length || "" }).trim()}
@@ -791,10 +791,10 @@ function ApplyModal({
 // ---------------------------------------------------------------------------
 // Shared bits
 // ---------------------------------------------------------------------------
-function PreviewStat({ label, value, tone = "text-[#15171C]", big = false }: { label: string; value: string; tone?: string; big?: boolean }) {
+function PreviewStat({ label, value, tone = "text-[#212121]", big = false }: { label: string; value: string; tone?: string; big?: boolean }) {
   return (
     <div className="min-w-0">
-      <div className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{label}</div>
+      <div className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{label}</div>
       <div className={`font-bold tabular-nums leading-tight break-words ${tone} ${jetbrainsMono.className} ${big ? "text-[15px]" : "text-[13px]"}`}>
         {value}
       </div>
@@ -809,7 +809,7 @@ function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${checked ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"}`}
+      className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${checked ? "bg-[#1976D2]" : "bg-[#E0E0E0]"}`}
     >
       <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform ${checked ? "translate-x-[18px]" : "translate-x-0.5"}`} />
     </button>
@@ -832,14 +832,14 @@ function ToggleRow({
   children?: React.ReactNode;
 }) {
   return (
-    <div className={`rounded-[10px] border p-3 transition-colors ${checked ? "border-[#DAD7F6] bg-[#ECEBFB]/50" : "border-[#E8EAED] bg-white"}`}>
+    <div className={`rounded-[4px] border p-3 transition-colors ${checked ? "border-[#BBDEFB] bg-[#E3F2FD]/50" : "border-[#E0E0E0] bg-white"}`}>
       <div className="flex items-center gap-3">
-        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] ${checked ? "bg-[#ECEBFB] text-[#5B53E0]" : "bg-[#F1F2F5] text-[#8A929E]"}`}>
+        <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[4px] ${checked ? "bg-[#E3F2FD] text-[#1976D2]" : "bg-[#EEEEEE] text-[#757575]"}`}>
           <span className="material-symbols-rounded text-[18px]">{icon}</span>
         </span>
         <div className="min-w-0 flex-1">
-          <div className="text-[13.5px] font-semibold text-[#15171C]">{title}</div>
-          <div className="text-[12px] text-[#8A929E]">{desc}</div>
+          <div className="text-[13.5px] font-semibold text-[#212121]">{title}</div>
+          <div className="text-[12px] text-[#757575]">{desc}</div>
         </div>
         <Toggle checked={checked} onChange={onChange} />
       </div>
@@ -863,22 +863,22 @@ function LineSection({
   const update = (i: number, patch: Partial<LineDraft>) =>
     setRows(rows.map((r, idx) => (idx === i ? { ...r, ...patch } : r)));
   return (
-    <div className="rounded-[14px] border border-[#E8EAED] bg-[#F7F8FA]/60 p-4">
+    <div className="rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA]/60 p-4">
       <div className="mb-3 flex items-center justify-between">
-        <span className="flex items-center gap-2 text-[14px] font-bold text-[#15171C]">
-          <Layers className="w-4 h-4 text-[#5B53E0]" />
+        <span className="flex items-center gap-2 text-[14px] font-bold text-[#212121]">
+          <Layers className="w-4 h-4 text-[#1976D2]" />
           {title}
         </span>
         <button
           type="button"
           onClick={() => setRows([...rows, emptyLine()])}
-          className="inline-flex items-center gap-1 rounded-[8px] border border-[#E1E4E8] bg-white px-2.5 py-1 text-[12px] font-semibold text-[#374151] hover:bg-[#F4F5F7] transition-colors"
+          className="inline-flex items-center gap-1 rounded-[4px] border border-[#E0E0E0] bg-white px-2.5 py-1 text-[12px] font-semibold text-[#424242] hover:bg-[#F5F6F8] transition-colors"
         >
           <Plus className="w-3.5 h-3.5" /> {tr("payroll.addLine")}
         </button>
       </div>
       <div className="flex flex-col gap-2">
-        {rows.length === 0 && <p className="text-[12px] text-[#8A929E]">{tr("payroll.noLines")}</p>}
+        {rows.length === 0 && <p className="text-[12px] text-[#757575]">{tr("payroll.noLines")}</p>}
         {rows.map((r, i) => (
           <div key={i} className="grid grid-cols-12 items-center gap-2">
             <Input className="col-span-2 h-10" placeholder={tr("payroll.codePlaceholder")} value={r.code} onChange={(e) => update(i, { code: e.target.value.toUpperCase() })} />
@@ -891,7 +891,7 @@ function LineSection({
             {r.type === "fixed" ? (
               <Input className="col-span-4 h-10" type="number" placeholder={tr("payroll.amount")} value={r.amount} onChange={(e) => update(i, { amount: e.target.value })} />
             ) : r.type === "balance" ? (
-              <span className="col-span-4 self-center text-[12px] text-[#8A929E]">{tr("payroll.absorbsRemaining")}</span>
+              <span className="col-span-4 self-center text-[12px] text-[#757575]">{tr("payroll.absorbsRemaining")}</span>
             ) : (
               <>
                 <Input className="col-span-2 h-10" type="number" placeholder="%" value={r.percent} onChange={(e) => update(i, { percent: e.target.value })} />
@@ -907,7 +907,7 @@ function LineSection({
             <button
               type="button"
               onClick={() => setRows(rows.filter((_, idx) => idx !== i))}
-              className="col-span-1 flex justify-center text-[#9AA3AF] hover:text-[#C0383C] transition-colors"
+              className="col-span-1 flex justify-center text-[#9E9E9E] hover:text-[#C62828] transition-colors"
               title={tr("payroll.removeLine")}
             >
               <Trash2 className="w-4 h-4" />

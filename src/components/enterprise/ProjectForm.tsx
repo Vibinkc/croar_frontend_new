@@ -234,27 +234,27 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
             />
 
             {/* Tabs */}
-            <div className="flex gap-1.5 p-1.5 bg-white border border-[#E8EAED] rounded-[14px] w-fit">
+            <div className="flex gap-1.5 p-1.5 bg-white border border-[#E0E0E0] rounded-[4px] w-fit">
                 <button
                     type="button"
                     onClick={() => setActiveTab("basic")}
-                    className={`px-5 py-2 rounded-[10px] text-[13px] font-semibold transition-colors ${
-                        activeTab === "basic" ? "bg-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.28)]" : "text-[#8A929E] hover:text-[#374151] hover:bg-[#F4F5F7]"
+                    className={`px-5 py-2 rounded-[4px] text-[13px] font-semibold transition-colors ${
+                        activeTab === "basic" ? "bg-[#1976D2] text-white shadow-[0_4px_12px_rgba(25,118,210,0.28)]" : "text-[#757575] hover:text-[#424242] hover:bg-[#F5F6F8]"
                     }`}
                 >{tr("forms.tabSettings")}</button>
                 <button
                     type="button"
                     onClick={() => setActiveTab("members")}
-                    className={`px-5 py-2 rounded-[10px] text-[13px] font-semibold transition-colors ${
-                        activeTab === "members" ? "bg-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.28)]" : "text-[#8A929E] hover:text-[#374151] hover:bg-[#F4F5F7]"
+                    className={`px-5 py-2 rounded-[4px] text-[13px] font-semibold transition-colors ${
+                        activeTab === "members" ? "bg-[#1976D2] text-white shadow-[0_4px_12px_rgba(25,118,210,0.28)]" : "text-[#757575] hover:text-[#424242] hover:bg-[#F5F6F8]"
                     }`}
                 >{tr("forms.tabTeam")}</button>
                 {projectId && (
                     <button
                         type="button"
                         onClick={() => setActiveTab("tasks")}
-                        className={`px-5 py-2 rounded-[10px] text-[13px] font-semibold transition-colors ${
-                            activeTab === "tasks" ? "bg-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.28)]" : "text-[#8A929E] hover:text-[#374151] hover:bg-[#F4F5F7]"
+                        className={`px-5 py-2 rounded-[4px] text-[13px] font-semibold transition-colors ${
+                            activeTab === "tasks" ? "bg-[#1976D2] text-white shadow-[0_4px_12px_rgba(25,118,210,0.28)]" : "text-[#757575] hover:text-[#424242] hover:bg-[#F5F6F8]"
                         }`}
                     >{tr("forms.tabTasksBoard")}</button>
                 )}
@@ -357,15 +357,15 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                     <Reorder.Item
                                         key={col}
                                         value={col}
-                                        className="flex items-center gap-2 bg-[#ECEBFB] border border-[#5B53E0]/15 pl-2.5 pr-2 py-2 rounded-[10px] group cursor-grab active:cursor-grabbing hover:bg-[#E3E1F9] transition-colors animate-in fade-in slide-in-from-left-2 duration-300"
+                                        className="flex items-center gap-2 bg-[#E3F2FD] border border-[#1976D2]/15 pl-2.5 pr-2 py-2 rounded-[4px] group cursor-grab active:cursor-grabbing hover:bg-[#E3E1F9] transition-colors animate-in fade-in slide-in-from-left-2 duration-300"
                                         style={{ animationDelay: `${idx * 50}ms` }}
                                     >
-                                        <span className="material-symbols-rounded text-[#8A929E] text-[18px]">drag_indicator</span>
-                                        <span className="text-[13px] font-semibold text-[#5B53E0]">{col}</span>
+                                        <span className="material-symbols-rounded text-[#757575] text-[18px]">drag_indicator</span>
+                                        <span className="text-[13px] font-semibold text-[#1976D2]">{col}</span>
                                         <button
                                             type="button"
                                             onClick={() => handleRemoveColumn(col)}
-                                            className="text-[#5B53E0]/50 hover:text-[#EF4444] transition-colors flex items-center"
+                                            className="text-[#1976D2]/50 hover:text-[#E53935] transition-colors flex items-center"
                                         >
                                             <span className="material-symbols-rounded text-[18px]">close</span>
                                         </button>
@@ -378,12 +378,12 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                                     onChange={(e) => setNewColumnName(e.target.value)}
                                     onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddColumn())}
                                     placeholder={tr("forms.addNewStagePlaceholder")}
-                                    className="h-10 bg-white border border-dashed border-[#E1E4E8] rounded-[10px] px-3.5 text-[13px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all w-44"
+                                    className="h-10 bg-white border border-dashed border-[#E0E0E0] rounded-[4px] px-3.5 text-[13px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all w-44"
                                 />
                                 <button
                                     type="button"
                                     onClick={handleAddColumn}
-                                    className="w-10 h-10 rounded-[10px] bg-[#F1F2F5] text-[#8A929E] hover:bg-[#5B53E0] hover:text-white transition-colors flex items-center justify-center"
+                                    className="w-10 h-10 rounded-[4px] bg-[#EEEEEE] text-[#757575] hover:bg-[#1976D2] hover:text-white transition-colors flex items-center justify-center"
                                 >
                                     <span className="material-symbols-rounded text-[20px]">add</span>
                                 </button>
@@ -400,25 +400,25 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                         <CardHeader title={tr("forms.projectTeam")} subtitle={tr("forms.projectTeamSubtitle")} />
                         <div className="grid gap-3">
                             {(formData.members || []).length === 0 ? (
-                                <div className="p-10 border border-dashed border-[#E1E4E8] rounded-[12px] text-center">
-                                    <p className="text-[13px] font-medium text-[#8A929E]">{tr("forms.noMembersAssigned")}</p>
+                                <div className="p-10 border border-dashed border-[#E0E0E0] rounded-[4px] text-center">
+                                    <p className="text-[13px] font-medium text-[#757575]">{tr("forms.noMembersAssigned")}</p>
                                 </div>
                             ) : (
                                 formData.members.map((m) => (
-                                    <div key={m.id} className="flex items-center justify-between p-3.5 bg-[#F7F8FA] rounded-[12px] border border-[#E8EAED] animate-in fade-in slide-in-from-bottom-2 duration-300">
+                                    <div key={m.id} className="flex items-center justify-between p-3.5 bg-[#FAFAFA] rounded-[4px] border border-[#E0E0E0] animate-in fade-in slide-in-from-bottom-2 duration-300">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-[#15171C] text-white flex items-center justify-center font-semibold text-[13px] uppercase">
+                                            <div className="w-10 h-10 rounded-full bg-[#212121] text-white flex items-center justify-center font-semibold text-[13px] uppercase">
                                                 {m.first_name[0]}{m.last_name[0]}
                                             </div>
                                             <div>
-                                                <p className="text-[14px] font-bold text-[#15171C] capitalize">{m.first_name} {m.last_name}</p>
-                                                <p className="text-[12px] font-medium text-[#8A929E]">{m.designation || tr("forms.projectMember")}</p>
+                                                <p className="text-[14px] font-bold text-[#212121] capitalize">{m.first_name} {m.last_name}</p>
+                                                <p className="text-[12px] font-medium text-[#757575]">{m.designation || tr("forms.projectMember")}</p>
                                             </div>
                                         </div>
                                         <button
                                             type="button"
                                             onClick={() => handleRemoveMember(m.id)}
-                                            className="w-9 h-9 rounded-[9px] text-[#9AA3AF] hover:text-[#EF4444] hover:bg-[#FDECEC] transition-colors flex items-center justify-center"
+                                            className="w-9 h-9 rounded-[4px] text-[#9E9E9E] hover:text-[#E53935] hover:bg-[#FFEBEE] transition-colors flex items-center justify-center"
                                         >
                                             <span className="material-symbols-rounded text-[20px]">delete</span>
                                         </button>
@@ -435,14 +435,14 @@ export default function ProjectForm({ projectId, initialData }: ProjectFormProps
                             {employees
                                 .filter(emp => !(formData.members || []).some((m) => m.id === emp.id))
                                 .map((emp) => (
-                                    <div key={emp.id} className="flex items-center justify-between p-3.5 bg-white border border-[#E8EAED] rounded-[12px] hover:border-[#5B53E0]/30 hover:bg-[#F7F8FA] transition-colors group">
+                                    <div key={emp.id} className="flex items-center justify-between p-3.5 bg-white border border-[#E0E0E0] rounded-[4px] hover:border-[#1976D2]/30 hover:bg-[#FAFAFA] transition-colors group">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 rounded-full bg-[#F1F2F5] text-[#8A929E] group-hover:bg-[#ECEBFB] group-hover:text-[#5B53E0] flex items-center justify-center font-semibold text-[13px] transition-colors uppercase">
+                                            <div className="w-10 h-10 rounded-full bg-[#EEEEEE] text-[#757575] group-hover:bg-[#E3F2FD] group-hover:text-[#1976D2] flex items-center justify-center font-semibold text-[13px] transition-colors uppercase">
                                                 {emp.first_name[0]}{emp.last_name[0]}
                                             </div>
                                             <div>
-                                                <p className="text-[14px] font-bold text-[#15171C] capitalize">{emp.first_name} {emp.last_name}</p>
-                                                <p className="text-[12px] font-medium text-[#8A929E]">{emp.designation || tr("forms.available")}</p>
+                                                <p className="text-[14px] font-bold text-[#212121] capitalize">{emp.first_name} {emp.last_name}</p>
+                                                <p className="text-[12px] font-medium text-[#757575]">{emp.designation || tr("forms.available")}</p>
                                             </div>
                                         </div>
                                         <Button

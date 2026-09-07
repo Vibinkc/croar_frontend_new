@@ -37,11 +37,11 @@ const initials = (name?: string | null) =>
 
 /** Colour the match score by band so the board reads at a glance. */
 const scoreTone = (s?: number) => {
-    if (typeof s !== "number") return "bg-[#F1F2F5] text-[#6B6F76]";
-    if (s >= 80) return "bg-[#E6F4EA] text-[#15803D]";
-    if (s >= 60) return "bg-[#ECEBFB] text-[#5B53E0]";
-    if (s >= 40) return "bg-[#FEF3E2] text-[#D97706]";
-    return "bg-[#FDECEC] text-[#C0383C]";
+    if (typeof s !== "number") return "bg-[#EEEEEE] text-[#616161]";
+    if (s >= 80) return "bg-[#E8F5E9] text-[#2E7D32]";
+    if (s >= 60) return "bg-[#E3F2FD] text-[#1976D2]";
+    if (s >= 40) return "bg-[#FFF3E0] text-[#EF6C00]";
+    return "bg-[#FFEBEE] text-[#C62828]";
 };
 
 /**
@@ -212,23 +212,23 @@ export default function JobPipelineBoard({
         <div
             key={app.id}
             className={cn(
-                "relative bg-white border border-[#E8EAED] rounded-[11px] p-3 transition-shadow hover:shadow-[0_4px_14px_rgba(15,23,42,0.07)]",
+                "relative bg-white border border-[#E0E0E0] rounded-[4px] p-3 transition-shadow hover:shadow-[0_4px_14px_rgba(0,0,0,0.07)]",
                 movingId === app.id && "opacity-50",
-                dropped && "opacity-60 bg-[#FBFBFC] border-dashed"
+                dropped && "opacity-60 bg-[#FAFAFA] border-dashed"
             )}
         >
             <div className="flex items-start gap-2.5">
-                <span className="w-8 h-8 shrink-0 rounded-full bg-[#ECEBFB] text-[#5B53E0] text-[11px] font-bold flex items-center justify-center">
+                <span className="w-8 h-8 shrink-0 rounded-full bg-[#E3F2FD] text-[#1976D2] text-[11px] font-bold flex items-center justify-center">
                     {initials(app.candidate?.full_name)}
                 </span>
                 <div className="min-w-0 flex-1">
                     <Link
                         href={`/enterprise/candidates?q=${encodeURIComponent(app.candidate?.email || app.candidate?.full_name || "")}`}
-                        className="block text-[12.5px] font-bold text-[#15171C] truncate hover:text-[#5B53E0] transition-colors"
+                        className="block text-[12.5px] font-bold text-[#212121] truncate hover:text-[#1976D2] transition-colors"
                     >
                         {app.candidate?.full_name || tr("jobBoard.unnamed")}
                     </Link>
-                    <p className="text-[11px] text-[#8A929E] truncate">{app.candidate?.email}</p>
+                    <p className="text-[11px] text-[#757575] truncate">{app.candidate?.email}</p>
                 </div>
 
                 <div className="relative shrink-0">
@@ -236,7 +236,7 @@ export default function JobPipelineBoard({
                         onClick={e => openMenu(app.id, e.currentTarget)}
                         aria-label={tr("jobBoard.moveTo")}
                         aria-expanded={menuFor === app.id}
-                        className="w-7 h-7 rounded-[8px] flex items-center justify-center text-[#8A929E] hover:text-[#15171C] hover:bg-[#F7F8FA] transition-colors"
+                        className="w-7 h-7 rounded-[4px] flex items-center justify-center text-[#757575] hover:text-[#212121] hover:bg-[#FAFAFA] transition-colors"
                     >
                         <span className="material-symbols-rounded text-[17px]">more_vert</span>
                     </button>
@@ -246,9 +246,9 @@ export default function JobPipelineBoard({
                             <div className="fixed inset-0 z-[60]" onClick={closeMenu} />
                             <div
                                 style={{ top: menu.top, left: menu.left }}
-                                className="fixed z-[61] w-52 max-h-[60vh] overflow-y-auto bg-white border border-[#E8EAED] rounded-[11px] shadow-[0_10px_28px_rgba(15,23,42,0.14)] py-1.5"
+                                className="fixed z-[61] w-52 max-h-[60vh] overflow-y-auto bg-white border border-[#E0E0E0] rounded-[4px] shadow-[0_10px_28px_rgba(0,0,0,0.14)] py-1.5"
                             >
-                                <p className="px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-[0.06em] text-[#8A929E]">
+                                <p className="px-3 py-1.5 text-[10.5px] font-bold uppercase tracking-[0.06em] text-[#757575]">
                                     {tr("jobBoard.moveTo")}
                                 </p>
                                 {stages
@@ -257,18 +257,18 @@ export default function JobPipelineBoard({
                                         <button
                                             key={s.id}
                                             onClick={() => move(app.id, s.id)}
-                                            className="w-full text-left px-3 py-2 text-[12.5px] text-[#374151] hover:bg-[#F7F8FA] hover:text-[#5B53E0] transition-colors truncate"
+                                            className="w-full text-left px-3 py-2 text-[12.5px] text-[#424242] hover:bg-[#FAFAFA] hover:text-[#1976D2] transition-colors truncate"
                                         >
                                             {s.name}
                                         </button>
                                     ))}
 
-                                <div className="my-1.5 border-t border-[#F0F0F1]" />
+                                <div className="my-1.5 border-t border-[#EEEEEE]" />
 
                                 {dropped ? (
                                     <button
                                         onClick={() => act(app.id, "restore")}
-                                        className="w-full text-left px-3 py-2 text-[12.5px] font-semibold text-[#15803D] hover:bg-[#E6F4EA] transition-colors flex items-center gap-2"
+                                        className="w-full text-left px-3 py-2 text-[12.5px] font-semibold text-[#2E7D32] hover:bg-[#E8F5E9] transition-colors flex items-center gap-2"
                                     >
                                         <span className="material-symbols-rounded text-[16px]">undo</span>
                                         {tr("jobBoard.restore")}
@@ -276,7 +276,7 @@ export default function JobPipelineBoard({
                                 ) : (
                                     <button
                                         onClick={() => act(app.id, "drop")}
-                                        className="w-full text-left px-3 py-2 text-[12.5px] text-[#374151] hover:bg-[#FEF3E2] hover:text-[#B45309] transition-colors flex items-center gap-2"
+                                        className="w-full text-left px-3 py-2 text-[12.5px] text-[#424242] hover:bg-[#FFF3E0] hover:text-[#E65100] transition-colors flex items-center gap-2"
                                         title={tr("jobBoard.dropHint")}
                                     >
                                         <span className="material-symbols-rounded text-[16px]">do_not_disturb_on</span>
@@ -286,7 +286,7 @@ export default function JobPipelineBoard({
 
                                 <button
                                     onClick={() => act(app.id, "remove")}
-                                    className="w-full text-left px-3 py-2 text-[12.5px] text-[#374151] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors flex items-center gap-2"
+                                    className="w-full text-left px-3 py-2 text-[12.5px] text-[#424242] hover:bg-[#FFEBEE] hover:text-[#C62828] transition-colors flex items-center gap-2"
                                     title={tr("jobBoard.removeHint")}
                                 >
                                     <span className="material-symbols-rounded text-[16px]">remove</span>
@@ -300,19 +300,19 @@ export default function JobPipelineBoard({
 
             <div className="flex items-center gap-1.5 mt-2.5 flex-wrap">
                 {dropped && (
-                    <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[5px] bg-[#FEF3E2] text-[#B45309]">
+                    <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[3px] bg-[#FFF3E0] text-[#E65100]">
                         {tr("jobBoard.droppedBadge")}
                     </span>
                 )}
                 {hired && (
-                    <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[5px] bg-[#E6F4EA] text-[#15803D]">
+                    <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[3px] bg-[#E8F5E9] text-[#2E7D32]">
                         {tr("jobBoard.hiredBadge")}
                     </span>
                 )}
                 {typeof app.ai_match_score === "number" && (
                     <span
                         className={cn(
-                            "text-[10.5px] font-bold px-1.5 py-0.5 rounded-[5px] tabular-nums",
+                            "text-[10.5px] font-bold px-1.5 py-0.5 rounded-[3px] tabular-nums",
                             scoreTone(app.ai_match_score),
                             jetbrainsMono.className
                         )}
@@ -323,7 +323,7 @@ export default function JobPipelineBoard({
                 {(app.candidate?.skills || []).slice(0, 2).map(s => (
                     <span
                         key={s}
-                        className="text-[10.5px] px-1.5 py-0.5 rounded-[5px] bg-[#F7F8FA] border border-[#EFF1F4] text-[#6B6F76] truncate max-w-[92px]"
+                        className="text-[10.5px] px-1.5 py-0.5 rounded-[3px] bg-[#FAFAFA] border border-[#EFF1F4] text-[#616161] truncate max-w-[92px]"
                     >
                         {s}
                     </span>
@@ -336,23 +336,23 @@ export default function JobPipelineBoard({
     return (
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             {error && (
-                <div className="mb-3 rounded-[12px] border border-[#F5C6C7] bg-[#FDECEC] px-4 py-3 text-[12.5px] text-[#C0383C]">
+                <div className="mb-3 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[12.5px] text-[#C62828]">
                     {error}
                 </div>
             )}
 
             <div className="flex items-center justify-between gap-3 mb-4">
                 <div className="flex flex-wrap items-center gap-2 text-[11.5px] font-semibold">
-                    <span className="px-2.5 py-1 rounded-full bg-[#ECEBFB] text-[#5B53E0]">
+                    <span className="px-2.5 py-1 rounded-full bg-[#E3F2FD] text-[#1976D2]">
                         {tr("jobBoard.inPipeline", { count: counts.inPipeline })}
                     </span>
                     {counts.hired > 0 && (
-                        <span className="px-2.5 py-1 rounded-full bg-[#E6F4EA] text-[#15803D]">
+                        <span className="px-2.5 py-1 rounded-full bg-[#E8F5E9] text-[#2E7D32]">
                             {tr("jobBoard.hired", { count: counts.hired })}
                         </span>
                     )}
                     {counts.dropped > 0 && (
-                        <span className="px-2.5 py-1 rounded-full bg-[#FEF3E2] text-[#B45309]">
+                        <span className="px-2.5 py-1 rounded-full bg-[#FFF3E0] text-[#E65100]">
                             {tr("jobBoard.dropped", { count: counts.dropped })}
                         </span>
                     )}
@@ -367,19 +367,19 @@ export default function JobPipelineBoard({
                 <div className="flex gap-3.5 min-w-min">
                     {columns.map(col => (
                         <section key={col.id} className="w-[268px] shrink-0 flex flex-col">
-                            <header className="flex items-center justify-between gap-2 px-3 py-2.5 bg-[#F7F8FA] border border-[#E8EAED] rounded-t-[12px]">
-                                <h4 className="text-[12.5px] font-bold text-[#15171C] truncate">{col.name}</h4>
+                            <header className="flex items-center justify-between gap-2 px-3 py-2.5 bg-[#FAFAFA] border border-[#E0E0E0] rounded-t-[12px]">
+                                <h4 className="text-[12.5px] font-bold text-[#212121] truncate">{col.name}</h4>
                                 <span
                                     className={cn(
                                         "text-[11px] font-bold px-1.5 py-0.5 rounded-full min-w-[22px] text-center tabular-nums",
-                                        col.cards.length ? "bg-[#ECEBFB] text-[#5B53E0]" : "bg-white text-[#9AA3AF] border border-[#E8EAED]",
+                                        col.cards.length ? "bg-[#E3F2FD] text-[#1976D2]" : "bg-white text-[#9E9E9E] border border-[#E0E0E0]",
                                         jetbrainsMono.className
                                     )}
                                 >
                                     {col.cards.length}
                                 </span>
                             </header>
-                            <div className="flex-1 border border-t-0 border-[#E8EAED] rounded-b-[12px] bg-[#FBFBFC] p-2.5 space-y-2.5 min-h-[180px]">
+                            <div className="flex-1 border border-t-0 border-[#E0E0E0] rounded-b-[12px] bg-[#FAFAFA] p-2.5 space-y-2.5 min-h-[180px]">
                                 {col.cards.length === 0 ? (
                                     <p className="text-[11.5px] text-[#B4BAC3] text-center py-8">
                                         {tr("jobBoard.emptyStage")}
@@ -393,16 +393,16 @@ export default function JobPipelineBoard({
 
                     {orphaned.length > 0 && (
                         <section className="w-[268px] shrink-0 flex flex-col">
-                            <header className="flex items-center justify-between gap-2 px-3 py-2.5 bg-[#FEF3E2] border border-[#F3DDBA] rounded-t-[12px]">
-                                <h4 className="text-[12.5px] font-bold text-[#8A5B08] truncate">
+                            <header className="flex items-center justify-between gap-2 px-3 py-2.5 bg-[#FFF3E0] border border-[#FFE0B2] rounded-t-[12px]">
+                                <h4 className="text-[12.5px] font-bold text-[#E65100] truncate">
                                     {tr("jobBoard.unassigned")}
                                 </h4>
-                                <span className={cn("text-[11px] font-bold px-1.5 py-0.5 rounded-full bg-white text-[#D97706] tabular-nums", jetbrainsMono.className)}>
+                                <span className={cn("text-[11px] font-bold px-1.5 py-0.5 rounded-full bg-white text-[#EF6C00] tabular-nums", jetbrainsMono.className)}>
                                     {orphaned.length}
                                 </span>
                             </header>
-                            <div className="flex-1 border border-t-0 border-[#F3DDBA] rounded-b-[12px] bg-[#FFFCF6] p-2.5 space-y-2.5">
-                                <p className="text-[11px] text-[#8A5B08] leading-relaxed mb-1">
+                            <div className="flex-1 border border-t-0 border-[#FFE0B2] rounded-b-[12px] bg-[#FFFCF6] p-2.5 space-y-2.5">
+                                <p className="text-[11px] text-[#E65100] leading-relaxed mb-1">
                                     {tr("jobBoard.unassignedHint")}
                                 </p>
                                 {orphaned.map(a => renderCard(a, -1))}

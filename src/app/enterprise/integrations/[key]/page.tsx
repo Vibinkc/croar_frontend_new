@@ -166,7 +166,7 @@ export default function IntegrationDetail() {
     if (loading) {
         return (
             <div className="p-6 flex justify-center">
-                <div className="w-6 h-6 border-2 border-[#5B53E0]/30 border-t-[#5B53E0] rounded-full animate-spin" />
+                <div className="w-6 h-6 border-2 border-[#1976D2]/30 border-t-[#1976D2] rounded-full animate-spin" />
             </div>
         );
     }
@@ -174,8 +174,8 @@ export default function IntegrationDetail() {
     if (!item) {
         return (
             <div className="p-6 max-w-[820px] mx-auto">
-                <p className="text-[13px] text-[#8A929E]">{tr("integrations.notFound")}</p>
-                <button onClick={() => router.push("/enterprise/integrations")} className="text-[12.5px] font-semibold text-[#5B53E0] mt-2">
+                <p className="text-[13px] text-[#757575]">{tr("integrations.notFound")}</p>
+                <button onClick={() => router.push("/enterprise/integrations")} className="text-[12.5px] font-semibold text-[#1976D2] mt-2">
                     {tr("integrations.backToAll")}
                 </button>
             </div>
@@ -188,17 +188,17 @@ export default function IntegrationDetail() {
     return (
         <div className="p-6 max-w-[820px] mx-auto space-y-4">
             <div className="flex items-center gap-1.5 text-[12px]">
-                <Link href="/enterprise/integrations" className="font-semibold text-[#5B53E0] hover:text-[#4840C4] transition-colors">
+                <Link href="/enterprise/integrations" className="font-semibold text-[#1976D2] hover:text-[#1565C0] transition-colors">
                     {tr("integrations.title")}
                 </Link>
-                <span className="material-symbols-rounded text-[15px] text-[#C3C7CE]">chevron_right</span>
-                <span className="text-[#6B6F76]">{item.name}</span>
+                <span className="material-symbols-rounded text-[15px] text-[#BDBDBD]">chevron_right</span>
+                <span className="text-[#616161]">{item.name}</span>
             </div>
 
-            <div className="rounded-[12px] border border-[#E8EAED] bg-white p-5 space-y-4">
+            <div className="rounded-[4px] border border-[#E0E0E0] bg-white p-5 space-y-4">
                 <div className="flex items-start gap-3.5">
                     <span
-                        className="w-14 h-14 shrink-0 rounded-[12px] border border-[#E8EAED] bg-white flex items-center justify-center overflow-hidden"
+                        className="w-14 h-14 shrink-0 rounded-[4px] border border-[#E0E0E0] bg-white flex items-center justify-center overflow-hidden"
                         style={{ background: `${item.brand_color}0F` }}
                     >
                         {item.icon_url ? (
@@ -217,20 +217,20 @@ export default function IntegrationDetail() {
                     </span>
                     <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-2 flex-wrap">
-                            <h1 className="text-[18px] font-bold text-[#15171C]">{item.name}</h1>
+                            <h1 className="text-[18px] font-bold text-[#212121]">{item.name}</h1>
                             {item.connected && (
-                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-[5px] uppercase tracking-wide bg-[#E4F5EF] text-[#0E8A6E]">
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-[3px] uppercase tracking-wide bg-[#E8F5E9] text-[#2E7D32]">
                                     {item.connection?.verified ? tr("integrations.verified") : tr("integrations.connected")}
                                 </span>
                             )}
                         </div>
-                        <p className="text-[12.5px] text-[#8A929E] leading-relaxed mt-1">{item.summary}</p>
+                        <p className="text-[12.5px] text-[#757575] leading-relaxed mt-1">{item.summary}</p>
                         {item.docs_url && (
                             <a
                                 href={item.docs_url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-[12px] font-semibold text-[#5B53E0] hover:text-[#4840C4] transition-colors mt-1 inline-block"
+                                className="text-[12px] font-semibold text-[#1976D2] hover:text-[#1565C0] transition-colors mt-1 inline-block"
                             >
                                 {tr("integrations.learnMore", { name: item.name })}
                             </a>
@@ -238,11 +238,11 @@ export default function IntegrationDetail() {
                     </div>
                 </div>
 
-                <div className="border-t border-[#F0F0F1] pt-4 space-y-3">
-                    <p className="text-[12.5px] text-[#374151] leading-relaxed">{item.what_it_does}</p>
+                <div className="border-t border-[#EEEEEE] pt-4 space-y-3">
+                    <p className="text-[12.5px] text-[#424242] leading-relaxed">{item.what_it_does}</p>
 
                     {item.free_to_try && item.trial_note && (
-                        <p className="text-[12px] text-[#0E8A6E] bg-[#E4F5EF] rounded-[8px] px-3 py-2 leading-relaxed">
+                        <p className="text-[12px] text-[#2E7D32] bg-[#E8F5E9] rounded-[4px] px-3 py-2 leading-relaxed">
                             {item.trial_note}
                         </p>
                     )}
@@ -250,8 +250,8 @@ export default function IntegrationDetail() {
                     {item.setup_steps?.length > 0 && (
                         <ol className="space-y-2 pt-1">
                             {item.setup_steps.map((step, i) => (
-                                <li key={i} className="flex gap-2.5 text-[12px] text-[#374151] leading-relaxed">
-                                    <span className="w-[18px] h-[18px] shrink-0 mt-px rounded-full bg-[#ECEBFB] text-[#5B53E0] text-[10px] font-bold flex items-center justify-center">
+                                <li key={i} className="flex gap-2.5 text-[12px] text-[#424242] leading-relaxed">
+                                    <span className="w-[18px] h-[18px] shrink-0 mt-px rounded-full bg-[#E3F2FD] text-[#1976D2] text-[10px] font-bold flex items-center justify-center">
                                         {i + 1}
                                     </span>
                                     {step}
@@ -261,9 +261,9 @@ export default function IntegrationDetail() {
                     )}
 
                     {webhook && (
-                        <div className="rounded-[10px] border border-[#E8EAED] bg-[#FAFAFB] p-3">
-                            <p className="text-[11.5px] font-bold text-[#15171C]">{tr("integrations.webhookTitle")}</p>
-                            <p className="text-[11px] text-[#8A929E] leading-relaxed mt-0.5 mb-2">
+                        <div className="rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFB] p-3">
+                            <p className="text-[11.5px] font-bold text-[#212121]">{tr("integrations.webhookTitle")}</p>
+                            <p className="text-[11px] text-[#757575] leading-relaxed mt-0.5 mb-2">
                                 {tr("integrations.webhookDesc", { name: item.name })}
                             </p>
                             <div className="flex gap-1.5">
@@ -272,7 +272,7 @@ export default function IntegrationDetail() {
                                     value={webhook.url}
                                     aria-label={tr("integrations.webhookTitle")}
                                     onFocus={(e) => e.currentTarget.select()}
-                                    className="flex-1 min-w-0 h-8 px-2 rounded-[8px] border border-[#E8EAED] bg-white text-[11px] font-mono text-[#374151]"
+                                    className="flex-1 min-w-0 h-8 px-2 rounded-[4px] border border-[#E0E0E0] bg-white text-[11px] font-mono text-[#424242]"
                                 />
                                 <button
                                     onClick={() => {
@@ -280,7 +280,7 @@ export default function IntegrationDetail() {
                                         setCopiedHook(true);
                                         window.setTimeout(() => setCopiedHook(false), 1600);
                                     }}
-                                    className="h-8 px-2.5 rounded-[8px] border border-[#E8EAED] bg-white text-[11px] font-semibold text-[#374151] hover:border-[#5B53E0]/50 hover:text-[#5B53E0] transition-colors shrink-0"
+                                    className="h-8 px-2.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[11px] font-semibold text-[#424242] hover:border-[#1976D2]/50 hover:text-[#1976D2] transition-colors shrink-0"
                                 >
                                     {copiedHook ? tr("integrations.copied") : tr("integrations.copy")}
                                 </button>
@@ -288,7 +288,7 @@ export default function IntegrationDetail() {
                             {/* A webhook pointed at localhost never arrives, and the failure is
                                 silent at both ends. Say it here rather than after a lost result. */}
                             {!webhook.reachable && (
-                                <p className="text-[11px] text-[#B26B08] leading-relaxed mt-2">
+                                <p className="text-[11px] text-[#EF6C00] leading-relaxed mt-2">
                                     {tr("integrations.webhookUnreachable")}
                                 </p>
                             )}
@@ -301,28 +301,28 @@ export default function IntegrationDetail() {
                     {(item.capabilities.length > 0 || item.limitations.length > 0) && (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {item.capabilities.length > 0 && (
-                                <div className="rounded-[10px] bg-[#F7F8FA] p-3">
-                                    <p className="text-[10px] font-bold text-[#0E8A6E] uppercase tracking-wider mb-1.5">
+                                <div className="rounded-[4px] bg-[#FAFAFA] p-3">
+                                    <p className="text-[10px] font-bold text-[#2E7D32] uppercase tracking-wider mb-1.5">
                                         {tr("integrations.whatYouGet")}
                                     </p>
                                     <ul className="space-y-1">
                                         {item.capabilities.map((c, i) => (
-                                            <li key={i} className="text-[11.5px] text-[#374151] leading-relaxed flex gap-1.5">
-                                                <span className="text-[#0E8A6E]">·</span>{c}
+                                            <li key={i} className="text-[11.5px] text-[#424242] leading-relaxed flex gap-1.5">
+                                                <span className="text-[#2E7D32]">·</span>{c}
                                             </li>
                                         ))}
                                     </ul>
                                 </div>
                             )}
                             {item.limitations.length > 0 && (
-                                <div className="rounded-[10px] bg-[#F7F8FA] p-3">
-                                    <p className="text-[10px] font-bold text-[#B26B08] uppercase tracking-wider mb-1.5">
+                                <div className="rounded-[4px] bg-[#FAFAFA] p-3">
+                                    <p className="text-[10px] font-bold text-[#EF6C00] uppercase tracking-wider mb-1.5">
                                         {tr("integrations.whatItDoesNot")}
                                     </p>
                                     <ul className="space-y-1">
                                         {item.limitations.map((c, i) => (
-                                            <li key={i} className="text-[11.5px] text-[#374151] leading-relaxed flex gap-1.5">
-                                                <span className="text-[#B26B08]">·</span>{c}
+                                            <li key={i} className="text-[11.5px] text-[#424242] leading-relaxed flex gap-1.5">
+                                                <span className="text-[#EF6C00]">·</span>{c}
                                             </li>
                                         ))}
                                     </ul>
@@ -333,12 +333,12 @@ export default function IntegrationDetail() {
                 </div>
 
                 {item.connected && !editing ? (
-                    <div className="border-t border-[#F0F0F1] pt-4 space-y-3">
-                        <div className="text-[12px] text-[#6B6F76] space-y-1">
+                    <div className="border-t border-[#EEEEEE] pt-4 space-y-3">
+                        <div className="text-[12px] text-[#616161] space-y-1">
                             {item.connection?.invite_url && (
                                 <p>
                                     {tr("integrations.currentLink")}{" "}
-                                    <span className="font-mono text-[11.5px] text-[#374151]">{item.connection.invite_url}</span>
+                                    <span className="font-mono text-[11.5px] text-[#424242]">{item.connection.invite_url}</span>
                                 </p>
                             )}
                             {item.connection?.agreed_at && (
@@ -359,30 +359,30 @@ export default function IntegrationDetail() {
                                     setEditing(true);
                                 }}
                                 disabled={busy || !canEdit}
-                                className="h-9 px-4 rounded-[9px] border border-[#E8EAED] bg-white text-[12.5px] font-bold text-[#374151] hover:border-[#5B53E0]/50 hover:text-[#5B53E0] transition-colors disabled:opacity-50"
+                                className="h-9 px-4 rounded-[4px] border border-[#E0E0E0] bg-white text-[12.5px] font-bold text-[#424242] hover:border-[#1976D2]/50 hover:text-[#1976D2] transition-colors disabled:opacity-50"
                             >
                                 {tr("integrations.editConnection")}
                             </button>
                             <button
                                 onClick={() => void disconnect()}
                                 disabled={busy || !canEdit}
-                                className="h-9 px-4 rounded-[9px] border border-[#E8EAED] bg-white text-[12.5px] font-bold text-[#C0383C] hover:bg-[#FCE8E8] transition-colors disabled:opacity-50"
+                                className="h-9 px-4 rounded-[4px] border border-[#E0E0E0] bg-white text-[12.5px] font-bold text-[#C62828] hover:bg-[#FCE8E8] transition-colors disabled:opacity-50"
                             >
                                 {tr("integrations.disconnect")}
                             </button>
                         </div>
                     </div>
                 ) : (
-                    <div className="border-t border-[#F0F0F1] pt-4 space-y-3.5">
+                    <div className="border-t border-[#EEEEEE] pt-4 space-y-3.5">
                         {item.fields.map((f) => (
                             <div key={f.name}>
                                 <div className="flex items-baseline justify-between">
-                                    <label className="block text-[12px] font-bold text-[#15171C] mb-1">
+                                    <label className="block text-[12px] font-bold text-[#212121] mb-1">
                                         {f.label}
-                                        {!f.required && <span className="text-[#A8AEB8] font-semibold"> · {tr("integrations.optional")}</span>}
+                                        {!f.required && <span className="text-[#9E9E9E] font-semibold"> · {tr("integrations.optional")}</span>}
                                     </label>
                                     {(values[f.name] || "").length > MAX_CREDENTIAL * 0.8 && (
-                                        <span className="text-[10.5px] text-[#A8AEB8] tabular-nums">
+                                        <span className="text-[10.5px] text-[#9E9E9E] tabular-nums">
                                             {(values[f.name] || "").length} / {MAX_CREDENTIAL}
                                         </span>
                                     )}
@@ -393,9 +393,9 @@ export default function IntegrationDetail() {
                                     value={values[f.name] || ""}
                                     onChange={(e) => setValues((v) => ({ ...v, [f.name]: e.target.value }))}
                                     placeholder={f.type === "url" ? "https://…" : ""}
-                                    className="w-full h-9 px-2.5 rounded-[8px] border border-[#E8EAED] bg-white text-[12.5px] text-[#15171C] placeholder:text-[#A8AEB8] focus:border-[#5B53E0]/50 outline-none"
+                                    className="w-full h-9 px-2.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[12.5px] text-[#212121] placeholder:text-[#9E9E9E] focus:border-[#1976D2]/50 outline-none"
                                 />
-                                {f.help && <p className="text-[11px] text-[#8A929E] leading-relaxed mt-1">{f.help}</p>}
+                                {f.help && <p className="text-[11px] text-[#757575] leading-relaxed mt-1">{f.help}</p>}
                             </div>
                         ))}
 
@@ -405,9 +405,9 @@ export default function IntegrationDetail() {
                                     type="checkbox"
                                     checked={agreed}
                                     onChange={(e) => setAgreed(e.target.checked)}
-                                    className="w-4 h-4 mt-0.5 accent-[#5B53E0]"
+                                    className="w-4 h-4 mt-0.5 accent-[#1976D2]"
                                 />
-                                <span className="text-[12px] text-[#374151] leading-relaxed">
+                                <span className="text-[12px] text-[#424242] leading-relaxed">
                                     {tr("integrations.consent", { name: item.name })}
                                     {item.docs_url && (
                                         <>
@@ -416,7 +416,7 @@ export default function IntegrationDetail() {
                                                 href={item.docs_url}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="font-semibold text-[#5B53E0] hover:text-[#4840C4]"
+                                                className="font-semibold text-[#1976D2] hover:text-[#1565C0]"
                                             >
                                                 {tr("integrations.theirTerms")}
                                             </a>
@@ -427,20 +427,20 @@ export default function IntegrationDetail() {
                         )}
 
                         {error && (
-                            <p className="text-[12px] text-[#C0383C] bg-[#FCE8E8] rounded-[8px] px-3 py-2">{error}</p>
+                            <p className="text-[12px] text-[#C62828] bg-[#FCE8E8] rounded-[4px] px-3 py-2">{error}</p>
                         )}
 
                         <div className="flex items-center gap-2 pt-1">
                             <button
                                 onClick={() => (editing ? setEditing(false) : router.push("/enterprise/integrations"))}
-                                className="h-9 px-4 rounded-[9px] border border-[#E8EAED] bg-white text-[12.5px] font-semibold text-[#374151] hover:border-[#5B53E0]/50 transition-colors"
+                                className="h-9 px-4 rounded-[4px] border border-[#E0E0E0] bg-white text-[12.5px] font-semibold text-[#424242] hover:border-[#1976D2]/50 transition-colors"
                             >
                                 {tr("integrations.cancel")}
                             </button>
                             <button
                                 onClick={() => void connect()}
                                 disabled={!canSubmit}
-                                className="h-9 px-4 rounded-[9px] bg-[#5B53E0] text-white text-[12.5px] font-bold hover:bg-[#4A43C9] transition-colors disabled:opacity-40"
+                                className="h-9 px-4 rounded-[4px] bg-[#1976D2] text-white text-[12.5px] font-bold hover:bg-[#1565C0] transition-colors disabled:opacity-40"
                             >
                                 {busy
                                     ? tr("integrations.connecting")
@@ -449,7 +449,7 @@ export default function IntegrationDetail() {
                                       : tr("integrations.integrate")}
                             </button>
                             {!canEdit && (
-                                <span className="text-[11.5px] text-[#8A929E]">{tr("integrations.noPermission")}</span>
+                                <span className="text-[11.5px] text-[#757575]">{tr("integrations.noPermission")}</span>
                             )}
                         </div>
                     </div>

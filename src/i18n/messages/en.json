@@ -72,7 +72,13 @@
         "sourcingHub": "Sourcing Hub",
         "candidatesList": "Candidates List",
         "advancedSearch": "Advanced Search",
-        "folders": "Folders"
+        "folders": "Folders",
+        "searchPlaceholder": "Search by name, job, email or department",
+        "searchHint": "Search (Ctrl/Cmd + K)",
+        "toggleSidebar": "Toggle menu",
+        "openMenu": "Open menu",
+        "closeMenu": "Close menu",
+        "account": "Account"
     },
     "sequences": {
         "title": "Sequences",

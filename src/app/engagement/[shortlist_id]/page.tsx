@@ -128,7 +128,7 @@ export default function CandidateEngagementPage() {
     const { profile, job_title } = shortlist;
 
     return (
-        <div className="min-h-screen bg-[#F8FAFC] py-12 px-4 md:px-6">
+        <div className="min-h-screen bg-[#FAFAFA] py-12 px-4 md:px-6">
             <div className="max-w-3xl mx-auto">
                 {/* Branding / Top Nav */}
                 <div className="flex items-center justify-between mb-8">

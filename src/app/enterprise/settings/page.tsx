@@ -172,30 +172,30 @@ export default function OrganizationProfilePage() {
         return (
             <div className="px-4 sm:px-5 pb-20 max-w-7xl mx-auto space-y-6 animate-in fade-in duration-500">
                 {/* Header skeleton — mirrors the real sticky header so nothing shifts on load */}
-                <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
+                <header className="sticky top-0 z-20 py-3 bg-[#F5F6F8]/95 backdrop-blur-sm border-b border-[#E0E0E0] flex items-center justify-between gap-4">
                     <div className="space-y-2">
-                        <div className="w-44 h-6 bg-[#E8EAED] rounded-[8px] animate-pulse" />
-                        <div className="w-60 h-4 bg-[#E8EAED] rounded-[6px] animate-pulse" />
+                        <div className="w-44 h-6 bg-[#E0E0E0] rounded-[4px] animate-pulse" />
+                        <div className="w-60 h-4 bg-[#E0E0E0] rounded-[3px] animate-pulse" />
                     </div>
-                    <div className="w-9 h-9 bg-[#E8EAED] rounded-[10px] animate-pulse" />
+                    <div className="w-9 h-9 bg-[#E0E0E0] rounded-[4px] animate-pulse" />
                 </header>
 
                 {/* Centered, branded spinner so users clearly see it's working */}
                 <div className="flex flex-col items-center justify-center py-20 gap-4">
                     <div className="relative w-12 h-12">
-                        <span className="absolute inset-0 rounded-full border-[3px] border-[#E8EAED]" />
-                        <span className="absolute inset-0 rounded-full border-[3px] border-transparent border-t-[#5B53E0] animate-spin" />
+                        <span className="absolute inset-0 rounded-full border-[3px] border-[#E0E0E0]" />
+                        <span className="absolute inset-0 rounded-full border-[3px] border-transparent border-t-[#1976D2] animate-spin" />
                     </div>
-                    <p className="text-[12.5px] font-semibold text-[#8A929E]">{tr("general.loadingSettings")}</p>
+                    <p className="text-[12.5px] font-semibold text-[#757575]">{tr("general.loadingSettings")}</p>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
                     <div className="md:col-span-4 space-y-3">
                         {[1, 2, 3, 4].map(i => (
-                            <div key={i} className="h-16 bg-white rounded-[14px] border border-[#E8EAED] animate-pulse shadow-sm" />
+                            <div key={i} className="h-16 bg-white rounded-[4px] border border-[#E0E0E0] animate-pulse shadow-sm" />
                         ))}
                     </div>
-                    <div className="md:col-span-8 h-96 bg-white rounded-[14px] border border-[#E8EAED] animate-pulse shadow-sm" />
+                    <div className="md:col-span-8 h-96 bg-white rounded-[4px] border border-[#E0E0E0] animate-pulse shadow-sm" />
                 </div>
             </div>
         );
@@ -221,16 +221,16 @@ export default function OrganizationProfilePage() {
             </AnimatePresence>
 
             {/* Header (sticky) */}
-            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex items-center justify-between gap-4">
+            <header className="sticky top-0 z-20 py-3 bg-[#F5F6F8]/95 backdrop-blur-sm border-b border-[#E0E0E0] flex items-center justify-between gap-4">
                 <div>
                     <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("general.organizationProfile")}</h1>
+                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#212121] leading-tight">{tr("general.organizationProfile")}</h1>
                         <PageHelp title={tr("common.settings")}>
                             <p>{tr("general.helpSettings1")}</p>
                             <p>{tr("general.helpSettings2a")} <strong>{tr("nav.team")}</strong> {tr("general.helpSettings2b")} <strong>{tr("general.permissions")}</strong>{tr("general.helpSettings2c")}</p>
                         </PageHelp>
                     </div>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("general.manageBrand")}</p>
+                    <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("general.manageBrand")}</p>
                 </div>
 
                 <div className="flex items-center gap-2.5 shrink-0">
@@ -238,7 +238,7 @@ export default function OrganizationProfilePage() {
                         <button
                             onClick={handleSave}
                             disabled={isSaving || !hasChanges}
-                            className="inline-flex items-center gap-2 h-9 px-4 rounded-[10px] bg-[#5B53E0] text-white text-[13px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-all disabled:opacity-40"
+                            className="inline-flex items-center gap-2 h-9 px-4 rounded-[4px] bg-[#1976D2] text-white text-[13px] font-semibold hover:bg-[#1565C0] shadow-[0_4px_12px_rgba(25,118,210,0.28)] transition-all disabled:opacity-40"
                         >
                             {isSaving ? (
                                 <RefreshCcw className="w-3.5 h-3.5 animate-spin" />
@@ -251,7 +251,7 @@ export default function OrganizationProfilePage() {
                     
                     <button 
                         onClick={fetchProfile}
-                        className="w-9 h-9 rounded-[10px] hover:bg-[#E8EAED] flex items-center justify-center text-[#6B6F76] transition-colors border border-transparent hover:border-[#E8EAED]"
+                        className="w-9 h-9 rounded-[4px] hover:bg-[#E0E0E0] flex items-center justify-center text-[#616161] transition-colors border border-transparent hover:border-[#E0E0E0]"
                     >
                         <RefreshCcw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                     </button>
@@ -263,7 +263,7 @@ export default function OrganizationProfilePage() {
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                className="bg-white border border-[#E8EAED] rounded-[14px] p-6 sm:p-8 shadow-sm"
+                className="bg-white border border-[#E0E0E0] rounded-[4px] p-6 sm:p-8 shadow-sm"
             >
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     {/* Left Column: Brand Preview & Health */}
@@ -271,18 +271,18 @@ export default function OrganizationProfilePage() {
                         <div className="text-center space-y-5">
                             {/* Logo */}
                             <div className="relative w-32 h-32 mx-auto group/logo">
-                                <div className="absolute inset-0 bg-[#F4F5F7]/50 rounded-[12px] border border-[#E8EAED] overflow-hidden flex items-center justify-center p-5 shadow-inner transition-transform group-hover/logo:scale-95">
+                                <div className="absolute inset-0 bg-[#F5F6F8]/50 rounded-[4px] border border-[#E0E0E0] overflow-hidden flex items-center justify-center p-5 shadow-inner transition-transform group-hover/logo:scale-95">
                                     {logoUrl ? (
                                         <img src={logoUrl} alt="Logo" className="w-full h-full object-contain" />
                                     ) : (
-                                        <Building2 className="w-10 h-10 text-[#9AA3AF]" />
+                                        <Building2 className="w-10 h-10 text-[#9E9E9E]" />
                                     )}
                                 </div>
                                 {canAccess("organization:update") && (
                                     <button
                                         onClick={() => fileInputRef.current?.click()}
                                         title={logoUrl ? tr("general.replaceLogo") : tr("general.uploadLogo")}
-                                        className="absolute -bottom-1 -right-1 w-9 h-9 bg-[#15171C] text-white rounded-[8px] flex items-center justify-center shadow-lg hover:bg-[#5B53E0] transition-all scale-0 group-hover/logo:scale-100"
+                                        className="absolute -bottom-1 -right-1 w-9 h-9 bg-[#212121] text-white rounded-[4px] flex items-center justify-center shadow-lg hover:bg-[#1976D2] transition-all scale-0 group-hover/logo:scale-100"
                                     >
                                         <Camera className="w-4 h-4" />
                                     </button>
@@ -291,16 +291,16 @@ export default function OrganizationProfilePage() {
                                     <button
                                         onClick={() => setLogoUrl("")}
                                         title={tr("general.removeLogo")}
-                                        className="absolute -top-1 -right-1 w-8 h-8 bg-white border border-[#F7D7D7] text-[#C0383C] rounded-[8px] flex items-center justify-center shadow-lg hover:bg-[#EF4444] hover:text-white hover:border-[#EF4444] transition-all scale-0 group-hover/logo:scale-100"
+                                        className="absolute -top-1 -right-1 w-8 h-8 bg-white border border-[#FFCDD2] text-[#C62828] rounded-[4px] flex items-center justify-center shadow-lg hover:bg-[#E53935] hover:text-white hover:border-[#E53935] transition-all scale-0 group-hover/logo:scale-100"
                                     >
                                         <Trash2 className="w-3.5 h-3.5" />
                                     </button>
                                 )}
                                 <input type="file" ref={fileInputRef} className="hidden" onChange={handleLogoUpload} accept="image/*" />
                                 {isUploading && (
-                                    <div className="absolute inset-0 bg-white/85 backdrop-blur-sm rounded-[12px] flex flex-col items-center justify-center gap-1.5">
-                                         <RefreshCcw className="w-5 h-5 text-[#5B53E0] animate-spin" />
-                                         <span className="text-[9.5px] font-bold text-[#8A929E]">{tr("general.updating")}</span>
+                                    <div className="absolute inset-0 bg-white/85 backdrop-blur-sm rounded-[4px] flex flex-col items-center justify-center gap-1.5">
+                                         <RefreshCcw className="w-5 h-5 text-[#1976D2] animate-spin" />
+                                         <span className="text-[9.5px] font-bold text-[#757575]">{tr("general.updating")}</span>
                                     </div>
                                 )}
                             </div>
@@ -308,10 +308,10 @@ export default function OrganizationProfilePage() {
                             {/* Name & Location */}
                             <div className="space-y-2">
                                 <div className="space-y-0.5">
-                                    <p className="text-[10px] font-bold text-[#5B53E0] uppercase tracking-wider">{industry || tr("general.brandIdentity")}</p>
-                                    <h2 className="text-lg font-extrabold text-[#15171C] tracking-[-0.3px] leading-tight truncate">{name || tr("general.yourCompany")}</h2>
+                                    <p className="text-[10px] font-bold text-[#1976D2] uppercase tracking-wider">{industry || tr("general.brandIdentity")}</p>
+                                    <h2 className="text-lg font-extrabold text-[#212121] tracking-[-0.3px] leading-tight truncate">{name || tr("general.yourCompany")}</h2>
                                 </div>
-                                <div className="flex items-center justify-center gap-1.5 text-[#8A929E]">
+                                <div className="flex items-center justify-center gap-1.5 text-[#757575]">
                                     <MapPin className="w-3.5 h-3.5" />
                                     <span className="text-[12.5px] font-semibold">{location || tr("general.locationNotSet")}</span>
                                 </div>
@@ -319,24 +319,24 @@ export default function OrganizationProfilePage() {
 
                             {/* Badges */}
                             <div className="grid grid-cols-2 gap-2.5 pt-1">
-                                <div className="px-2.5 py-2 bg-[#F4F5F7]/50 rounded-[8px] border border-[#E8EAED]/60 flex flex-col items-center gap-1">
-                                    <Shield className="w-3.5 h-3.5 text-[#15803D]" />
-                                    <span className="text-[9.5px] font-bold text-[#8A929E]">{tr("general.verified")}</span>
+                                <div className="px-2.5 py-2 bg-[#F5F6F8]/50 rounded-[4px] border border-[#E0E0E0]/60 flex flex-col items-center gap-1">
+                                    <Shield className="w-3.5 h-3.5 text-[#2E7D32]" />
+                                    <span className="text-[9.5px] font-bold text-[#757575]">{tr("general.verified")}</span>
                                 </div>
-                                <div className="px-2.5 py-2 bg-[#F4F5F7]/50 rounded-[8px] border border-[#E8EAED]/60 flex flex-col items-center gap-1">
-                                    <Zap className="w-3.5 h-3.5 text-[#5B53E0]" />
-                                    <span className="text-[9.5px] font-bold text-[#8A929E]">{tr("general.premium")}</span>
+                                <div className="px-2.5 py-2 bg-[#F5F6F8]/50 rounded-[4px] border border-[#E0E0E0]/60 flex flex-col items-center gap-1">
+                                    <Zap className="w-3.5 h-3.5 text-[#1976D2]" />
+                                    <span className="text-[9.5px] font-bold text-[#757575]">{tr("general.premium")}</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="h-px bg-[#E8EAED]" />
+                        <div className="h-px bg-[#E0E0E0]" />
 
                         {/* Health Status */}
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
-                                <h3 className="text-[12px] font-bold text-[#15171C]">{tr("general.healthStatus")}</h3>
-                                <Activity className="w-3.5 h-3.5 text-[#5B53E0]" />
+                                <h3 className="text-[12px] font-bold text-[#212121]">{tr("general.healthStatus")}</h3>
+                                <Activity className="w-3.5 h-3.5 text-[#1976D2]" />
                             </div>
                             <div className="space-y-3.5">
                                 {[
@@ -345,11 +345,11 @@ export default function OrganizationProfilePage() {
                                 ].map((item, idx) => (
                                     <div key={idx} className="space-y-1.5">
                                         <div className="flex justify-between text-[11px] font-bold">
-                                            <span className="text-[#8A929E]">{item.label}</span>
-                                            <span className="text-[#5B53E0]">{item.status}</span>
+                                            <span className="text-[#757575]">{item.label}</span>
+                                            <span className="text-[#1976D2]">{item.status}</span>
                                         </div>
-                                        <div className="h-1 bg-[#F1F2F5] rounded-full overflow-hidden">
-                                            <div className="h-full bg-[#5B53E0] w-full animate-pulse" />
+                                        <div className="h-1 bg-[#EEEEEE] rounded-full overflow-hidden">
+                                            <div className="h-full bg-[#1976D2] w-full animate-pulse" />
                                         </div>
                                     </div>
                                 ))}
@@ -359,7 +359,7 @@ export default function OrganizationProfilePage() {
 
                     {/* Middle Divider (LG Screens) */}
                     <div className="hidden lg:flex lg:col-span-1 self-stretch justify-center">
-                        <div className="w-px h-full bg-[#E8EAED]" />
+                        <div className="w-px h-full bg-[#E0E0E0]" />
                     </div>
 
                     {/* Right Column: Configuration Form */}
@@ -367,44 +367,44 @@ export default function OrganizationProfilePage() {
                         {/* Section: Basic Information */}
                         <section className="space-y-5">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-1 h-4 bg-[#5B53E0] rounded-full" />
-                                <h3 className="text-[15px] font-bold text-[#15171C]">{tr("general.basicInformation")}</h3>
+                                <div className="w-1 h-4 bg-[#1976D2] rounded-full" />
+                                <h3 className="text-[15px] font-bold text-[#212121]">{tr("general.basicInformation")}</h3>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
-                                    <label htmlFor="company-name" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("general.companyName")}</label>
+                                    <label htmlFor="company-name" className="text-[11.5px] font-bold text-[#757575] ml-0.5">{tr("general.companyName")}</label>
                                     <input
                                         id="company-name"
                                         value={name}
                                         onChange={e => setName(e.target.value)}
                                         readOnly={!canAccess("organization:update")}
-                                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
+                                        className="w-full h-10 bg-white border border-[#E0E0E0] rounded-[4px] px-3.5 text-[14px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15 transition-all"
                                         placeholder={tr("general.companyNamePlaceholder")}
                                     />
                                 </div>
                                 <div className="space-y-1.5">
-                                    <label htmlFor="company-industry" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("general.industry")}</label>
+                                    <label htmlFor="company-industry" className="text-[11.5px] font-bold text-[#757575] ml-0.5">{tr("general.industry")}</label>
                                     <input
                                         id="company-industry"
                                         value={industry}
                                         onChange={e => setIndustry(e.target.value)}
                                         readOnly={!canAccess("organization:update")}
-                                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
+                                        className="w-full h-10 bg-white border border-[#E0E0E0] rounded-[4px] px-3.5 text-[14px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15 transition-all"
                                         placeholder={tr("general.industryPlaceholder")}
                                     />
                                 </div>
                             </div>
 
                             <div className="space-y-1.5">
-                                <label htmlFor="company-location" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("general.locationHq")}</label>
+                                <label htmlFor="company-location" className="text-[11.5px] font-bold text-[#757575] ml-0.5">{tr("general.locationHq")}</label>
                                 <div className="relative">
                                     <input
                                         id="company-location"
                                         value={location}
                                         onChange={e => setLocation(e.target.value)}
                                         readOnly={!canAccess("organization:update")}
-                                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
+                                        className="w-full h-10 bg-white border border-[#E0E0E0] rounded-[4px] pl-10 pr-3.5 text-[14px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15 transition-all"
                                         placeholder={tr("general.locationHqPlaceholder")}
                                     />
                                     <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300" />
@@ -415,46 +415,46 @@ export default function OrganizationProfilePage() {
                                 Without these an organisation could never stop being INR/India. */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="space-y-1.5">
-                                    <label htmlFor="company-country" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("general.country")}</label>
+                                    <label htmlFor="company-country" className="text-[11.5px] font-bold text-[#757575] ml-0.5">{tr("general.country")}</label>
                                     <input
                                         id="company-country"
                                         value={country}
                                         onChange={e => setCountry(e.target.value)}
                                         readOnly={!canAccess("organization:update")}
-                                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
+                                        className="w-full h-10 bg-white border border-[#E0E0E0] rounded-[4px] px-3.5 text-[14px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15 transition-all"
                                         placeholder={tr("general.countryPlaceholder")}
                                     />
                                 </div>
                                 <div className="space-y-1.5">
-                                    <label htmlFor="company-currency" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("general.currency")}</label>
+                                    <label htmlFor="company-currency" className="text-[11.5px] font-bold text-[#757575] ml-0.5">{tr("general.currency")}</label>
                                     <select
                                         id="company-currency"
                                         value={currency}
                                         onChange={e => setCurrency(e.target.value)}
                                         disabled={!canAccess("organization:update")}
-                                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all disabled:opacity-60"
+                                        className="w-full h-10 bg-white border border-[#E0E0E0] rounded-[4px] px-3.5 text-[14px] text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15 transition-all disabled:opacity-60"
                                     >
                                         {(ORG_CURRENCIES.includes(currency) ? ORG_CURRENCIES : [currency, ...ORG_CURRENCIES]).map(c => (
                                             <option key={c} value={c}>{c}</option>
                                         ))}
                                     </select>
-                                    <p className="text-[11px] text-[#9AA3AF] ml-0.5">{tr("general.currencyHint")}</p>
+                                    <p className="text-[11px] text-[#9E9E9E] ml-0.5">{tr("general.currencyHint")}</p>
                                 </div>
                             </div>
                         </section>
 
-                        <div className="h-px bg-[#E8EAED]" />
+                        <div className="h-px bg-[#E0E0E0]" />
 
                         {/* Section: Brand Assets */}
                         <section className="space-y-5">
                             <div className="flex items-center gap-2.5">
-                                <div className="w-1 h-4 bg-[#5B53E0] rounded-full" />
-                                <h3 className="text-[15px] font-bold text-[#15171C]">{tr("general.brandAssets")}</h3>
+                                <div className="w-1 h-4 bg-[#1976D2] rounded-full" />
+                                <h3 className="text-[15px] font-bold text-[#212121]">{tr("general.brandAssets")}</h3>
                             </div>
 
                             <div className="space-y-4">
                                 <div className="space-y-1.5">
-                                    <label htmlFor="company-logo-url" className="text-[11.5px] font-bold text-[#8A929E] ml-0.5">{tr("general.logoUrl")}</label>
+                                    <label htmlFor="company-logo-url" className="text-[11.5px] font-bold text-[#757575] ml-0.5">{tr("general.logoUrl")}</label>
                                     <div className="flex gap-3">
                                         <div className="relative flex-1">
                                             <input
@@ -462,14 +462,14 @@ export default function OrganizationProfilePage() {
                                                 value={logoUrl}
                                                 onChange={e => setLogoUrl(e.target.value)}
                                                 readOnly={!canAccess("organization:update")}
-                                                className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[13.5px] text-[#374151] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15 transition-all"
+                                                className="w-full h-10 bg-white border border-[#E0E0E0] rounded-[4px] px-3.5 text-[13.5px] text-[#424242] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15 transition-all"
                                                 placeholder="https://your-domain.com/logo.png"
                                             />
                                         </div>
                                         {canAccess("organization:update") && (
                                             <button 
                                                 onClick={() => fileInputRef.current?.click()}
-                                                className="inline-flex items-center gap-2 h-10 px-4 rounded-[10px] bg-[#15171C] text-white text-[13px] font-semibold hover:bg-[#252830] transition-all whitespace-nowrap shadow-sm"
+                                                className="inline-flex items-center gap-2 h-10 px-4 rounded-[4px] bg-[#212121] text-white text-[13px] font-semibold hover:bg-[#252830] transition-all whitespace-nowrap shadow-sm"
                                             >
                                                 <Upload className="w-3.5 h-3.5" />
                                                 {tr("general.upload")}
@@ -478,9 +478,9 @@ export default function OrganizationProfilePage() {
                                     </div>
                                 </div>
                                 
-                                <div className="p-4 bg-[#ECEBFB]/50 border border-[#DAD7F6] rounded-[10px] flex gap-3">
-                                    <Shield className="w-4 h-4 text-[#5B53E0] shrink-0 mt-0.5" />
-                                    <p className="text-[13px] text-[#5B53E0] leading-relaxed font-semibold">
+                                <div className="p-4 bg-[#E3F2FD]/50 border border-[#BBDEFB] rounded-[4px] flex gap-3">
+                                    <Shield className="w-4 h-4 text-[#1976D2] shrink-0 mt-0.5" />
+                                    <p className="text-[13px] text-[#1976D2] leading-relaxed font-semibold">
                                         {tr("general.logoUsageNote")}
                                     </p>
                                 </div>

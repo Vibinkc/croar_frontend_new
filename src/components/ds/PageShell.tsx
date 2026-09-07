@@ -14,11 +14,11 @@ export function PageShell({ children, className, width = "default" }: { children
 export function HeroBand({ children, className }: { children: React.ReactNode; className?: string }) {
     return (
         <section
-            className={cn("relative overflow-hidden rounded-[18px] p-6 sm:p-7 md:p-9 text-white", className)}
+            className={cn("relative overflow-hidden rounded-[4px] p-6 sm:p-7 md:p-9 text-white", className)}
             style={{
-                background: "#0E1014",
+                background: "#1E2A38",
                 backgroundImage:
-                    "radial-gradient(1000px 460px at 90% -45%,rgba(91,83,224,0.55),transparent 60%),radial-gradient(760px 420px at -5% 135%,rgba(139,125,255,0.28),transparent 60%)",
+                    "radial-gradient(1000px 460px at 90% -45%,rgba(25,118,210,0.55),transparent 60%),radial-gradient(760px 420px at -5% 135%,rgba(66,165,245,0.28),transparent 60%)",
             }}
         >
             <div className="pointer-events-none absolute -right-20 -top-24 w-80 h-80 rounded-full border border-white/[0.06]" />

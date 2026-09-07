@@ -165,7 +165,7 @@ export default function CompaniesPage() {
                 {canAccess("platform:moderate") && (
                     <button
                         onClick={() => setShowAddModal(true)}
-                        className="self-start md:self-center px-8 py-4 bg-[#7C3AED] text-white rounded-xl text-[10px] font-black   hover:bg-[#6D28D9] transition-all shadow-2xl shadow-indigo-200 flex items-center gap-3 group active:scale-95"
+                        className="self-start md:self-center px-8 py-4 bg-[#1E88E5] text-white rounded-xl text-[10px] font-black   hover:bg-[#1565C0] transition-all shadow-2xl shadow-indigo-200 flex items-center gap-3 group active:scale-95"
                     >
                         <span className="material-symbols-rounded text-xl group-hover:rotate-90 transition-transform">add</span>
                         <span>{tr("general.addCompany")}</span>
@@ -220,7 +220,7 @@ export default function CompaniesPage() {
                             }}
                         >
                             <div className="flex justify-between items-start mb-8">
-                                <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-[#7C3AED] border border-slate-100 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500">
+                                <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center text-[#1E88E5] border border-slate-100 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-500">
                                     <span className="material-symbols-rounded text-3xl">corporate_fare</span>
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
@@ -228,7 +228,7 @@ export default function CompaniesPage() {
                                 </div>
                             </div>
 
-                            <h3 className="text-2xl font-black text-slate-900 tracking-tighter mb-1.5 group-hover:text-[#7C3AED] transition-colors">{company.name}</h3>
+                            <h3 className="text-2xl font-black text-slate-900 tracking-tighter mb-1.5 group-hover:text-[#1E88E5] transition-colors">{company.name}</h3>
                             <p className="text-[11px] text-slate-400 font-bold  tracking-[0.15em] mb-8">{company.industry || tr("general.globalOperations")}</p>
 
                             <div className="flex items-center gap-6 pt-8 border-t border-slate-50/80">
@@ -243,8 +243,8 @@ export default function CompaniesPage() {
                             </div>
 
                             {/* Hover Action Blob */}
-                            <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-[#7C3AED]/5 rounded-full blur-2xl group-hover:bg-[#7C3AED]/10 transition-all"></div>
-                            <div className="absolute bottom-10 right-10 w-12 h-12 bg-[#7C3AED] text-white rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-xl">
+                            <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-[#1E88E5]/5 rounded-full blur-2xl group-hover:bg-[#1E88E5]/10 transition-all"></div>
+                            <div className="absolute bottom-10 right-10 w-12 h-12 bg-[#1E88E5] text-white rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-300 shadow-xl">
                                 <span className="material-symbols-rounded">insights</span>
                             </div>
                         </motion.div>
@@ -272,7 +272,7 @@ export default function CompaniesPage() {
                         {/* Status Bar */}
                         <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b border-slate-100 px-12 py-6 flex justify-between items-center">
                             <div className="flex items-center gap-4">
-                                <button onClick={() => setSelectedCompany(null)} className="flex items-center gap-2 text-[10px] font-black   text-[#7C3AED] hover:text-[#6D28D9] bg-indigo-50 px-4 py-2 rounded-xl transition-all">
+                                <button onClick={() => setSelectedCompany(null)} className="flex items-center gap-2 text-[10px] font-black   text-[#1E88E5] hover:text-[#1565C0] bg-indigo-50 px-4 py-2 rounded-xl transition-all">
                                     <span className="material-symbols-rounded text-sm">arrow_back</span>
                                     <span>{tr("common.back")}</span>
                                 </button>
@@ -291,7 +291,7 @@ export default function CompaniesPage() {
                             {/* Summary Header */}
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 items-start mb-20 animate-in slide-in-from-bottom duration-700">
                                 <div className="lg:col-span-2">
-                                    <div className="flex items-center gap-4 mb-4 text-[#7C3AED]">
+                                    <div className="flex items-center gap-4 mb-4 text-[#1E88E5]">
                                         <span className="material-symbols-rounded">business</span>
                                         <span className="text-[10px] font-black">{tr("general.companyProfile")}</span>
                                     </div>
@@ -390,7 +390,7 @@ export default function CompaniesPage() {
                                                 <div className="space-y-10">
                                                     {[
                                                         { label: tr("general.sourcingSpeed"), val: companyAnalytics.sourcing_efficiency, color: "bg-indigo-600" },
-                                                        { label: tr("general.matchQuality"), val: companyAnalytics.avg_match_score, color: "bg-[#7C3AED]" },
+                                                        { label: tr("general.matchQuality"), val: companyAnalytics.avg_match_score, color: "bg-[#1E88E5]" },
                                                         { label: tr("general.dataIntegrity"), val: 100, color: "bg-emerald-500" }
                                                     ].map((m, idx) => (
                                                         <div key={idx} className="space-y-4">
@@ -411,7 +411,7 @@ export default function CompaniesPage() {
                                                 </div>
                                             </div>
 
-                                            <div className="bg-[#7C3AED] p-10 rounded-2xl text-white">
+                                            <div className="bg-[#1E88E5] p-10 rounded-2xl text-white">
                                                 <h4 className="text-3xl font-black mb-1">{tr("general.systemCaps")}</h4>
                                                 <p className="text-[11px] font-black   opacity-80">{tr("general.upToDate")}</p>
                                                 <div className="mt-8 pt-8 border-t border-white/20">
@@ -453,7 +453,7 @@ export default function CompaniesPage() {
                                         id="company-name"
                                         type="text"
                                         required
-                                        className="w-full px-8 py-5 rounded-xl bg-slate-50 border border-slate-100 font-bold text-slate-900 focus:bg-white focus:border-[#7C3AED] focus:ring-8 focus:ring-[#7C3AED]/5 outline-none transition-all shadow-inner"
+                                        className="w-full px-8 py-5 rounded-xl bg-slate-50 border border-slate-100 font-bold text-slate-900 focus:bg-white focus:border-[#1E88E5] focus:ring-8 focus:ring-[#1E88E5]/5 outline-none transition-all shadow-inner"
                                         placeholder={tr("general.companyNameExample")}
                                         value={newCompany.name}
                                         onChange={e => setNewCompany({ ...newCompany, name: e.target.value })}
@@ -465,7 +465,7 @@ export default function CompaniesPage() {
                                         <input
                                             id="company-industry"
                                             type="text"
-                                            className="w-full px-8 py-5 rounded-xl bg-slate-50 border border-slate-100 font-bold text-slate-900 focus:bg-white focus:border-[#7C3AED] outline-none transition-all shadow-inner"
+                                            className="w-full px-8 py-5 rounded-xl bg-slate-50 border border-slate-100 font-bold text-slate-900 focus:bg-white focus:border-[#1E88E5] outline-none transition-all shadow-inner"
                                             placeholder={tr("general.industryExample")}
                                             value={newCompany.industry}
                                             onChange={e => setNewCompany({ ...newCompany, industry: e.target.value })}
@@ -476,7 +476,7 @@ export default function CompaniesPage() {
                                         <input
                                             id="company-location"
                                             type="text"
-                                            className="text-xs w-full px-8 py-5 rounded-xl bg-slate-50 border border-slate-100 font-bold text-slate-900 focus:bg-white focus:border-[#7C3AED] outline-none transition-all shadow-inner"
+                                            className="text-xs w-full px-8 py-5 rounded-xl bg-slate-50 border border-slate-100 font-bold text-slate-900 focus:bg-white focus:border-[#1E88E5] outline-none transition-all shadow-inner"
                                             placeholder={tr("general.locationExample")}
                                             value={newCompany.location}
                                             onChange={e => setNewCompany({ ...newCompany, location: e.target.value })}

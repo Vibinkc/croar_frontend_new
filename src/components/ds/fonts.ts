@@ -1,26 +1,39 @@
-import { Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Roboto, Roboto_Mono } from "next/font/google";
 
 /**
- * Croar Design System typefaces — configured once and shared across the app.
+ * Typefaces — Roboto, matching Manatal.
+ *
+ * Croar previously ran on Hanken Grotesk, which is a warmer, more editorial face. Manatal is a
+ * Material-family product and reads as one largely because of Roboto: the letterforms are
+ * narrower and the greys sit differently under them, so keeping Hanken under the new blue
+ * would have left the app looking like a recolour rather than a reskin.
+ *
+ * The exported names are kept (`hankenGrotesk`, `jetbrainsMono`) so 130 pages need no import
+ * churn for a change that is purely about which file the glyphs come from. The alias below
+ * spells that out for anyone who greps the old name and finds Roboto.
  *
  * Usage:
- *   import { hankenGrotesk, jetbrainsMono } from "@/components/ds";
- *   <div className={hankenGrotesk.className}> … </div>
- *   <span className={jetbrainsMono.className}>1,284</span>  // figures / stats
- *
- * Or expose both as CSS variables on a wrapper and use the `font-sans` /
- * `font-mono` utilities (variables: --font-hanken, --font-jetbrains).
+ *   import { roboto, robotoMono } from "@/components/ds";
+ *   <div className={roboto.className}> … </div>
  */
-export const hankenGrotesk = Hanken_Grotesk({
+export const roboto = Roboto({
     subsets: ["latin"],
-    weight: ["400", "500", "600", "700", "800"],
+    weight: ["300", "400", "500", "700"],
     variable: "--font-hanken",
     display: "swap",
 });
 
-export const jetbrainsMono = JetBrains_Mono({
+export const robotoMono = Roboto_Mono({
     subsets: ["latin"],
-    weight: ["400", "500", "600", "700"],
+    weight: ["400", "500", "700"],
     variable: "--font-jetbrains",
     display: "swap",
 });
+
+/**
+ * Back-compatible aliases. The CSS variable names are unchanged too (--font-hanken /
+ * --font-jetbrains), so `font-sans` and `font-mono` keep resolving without touching the
+ * Tailwind config.
+ */
+export const hankenGrotesk = roboto;
+export const jetbrainsMono = robotoMono;

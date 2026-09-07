@@ -36,7 +36,7 @@ export default function EmployeeLayout({ children }: { children: React.ReactNode
 
     if (loading || !user || !isSelfServiceUser(user)) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-[#F4F5F7] font-sans text-[13px] font-semibold text-[#8A929E]">
+            <div className="flex min-h-screen items-center justify-center bg-[#F5F6F8] font-sans text-[13px] font-semibold text-[#757575]">
                 {t("employee.loading")}
             </div>
         );
@@ -60,21 +60,21 @@ export default function EmployeeLayout({ children }: { children: React.ReactNode
 
     const navLinkClass = (path: string) => {
         const active = pathname === path || pathname.startsWith(path + "/");
-        return `group flex items-center gap-3 px-3 h-10 rounded-[10px] border transition-colors ${
+        return `group flex items-center gap-3 px-3 h-10 rounded-[4px] border transition-colors ${
             active
-                ? "bg-[#5B53E0]/15 border-[#5B53E0]/30 text-[#8B7DFF] font-semibold"
+                ? "bg-[#1976D2]/15 border-[#1976D2]/30 text-[#42A5F5] font-semibold"
                 : "border-transparent text-[#BAC1CC] hover:bg-white/[0.04] hover:text-white"
         }`;
     };
 
     return (
         <DialogProvider>
-            <div className="flex w-full h-screen bg-[#F4F5F7] overflow-hidden font-sans">
+            <div className="flex w-full h-screen bg-[#F5F6F8] overflow-hidden font-sans">
                 {/* Sidebar */}
-                <aside className="sticky top-0 h-screen w-56 shrink-0 border-r border-[#1C1F26] flex flex-col" style={{ background: "#090A0C" }}>
+                <aside className="sticky top-0 h-screen w-56 shrink-0 border-r border-[#263238] flex flex-col" style={{ background: "#090A0C" }}>
                     <div className="p-3 flex-1 overflow-y-auto no-scrollbar flex flex-col">
                         {/* Logo */}
-                        <div className="px-2 pt-2.5 pb-4 flex items-center shrink-0 mb-3 border-b border-[#1C1F26]">
+                        <div className="px-2 pt-2.5 pb-4 flex items-center shrink-0 mb-3 border-b border-[#263238]">
                             <Link href="/employee/dashboard" aria-label="Croar HR Cloud" className="flex items-center gap-2.5">
                                 <CroarMark size={32} />
                                 <span className="flex flex-col leading-none">
@@ -99,13 +99,13 @@ export default function EmployeeLayout({ children }: { children: React.ReactNode
                     </div>
 
                     {/* Footer: user + logout */}
-                    <div className="p-3 border-t border-[#1C1F26] shrink-0">
+                    <div className="p-3 border-t border-[#263238] shrink-0">
                         <div className="flex items-center gap-2.5 mb-3 px-1.5">
-                            <div className="w-9 h-9 rounded-[10px] bg-[#5B53E0] text-white flex items-center justify-center font-bold text-[12px] uppercase shrink-0 shadow-[0_2px_8px_rgba(91,83,224,0.3)]">
+                            <div className="w-9 h-9 rounded-[4px] bg-[#1976D2] text-white flex items-center justify-center font-bold text-[12px] uppercase shrink-0 shadow-[0_2px_8px_rgba(25,118,210,0.3)]">
                                 {initials}
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p className="text-[12.5px] font-semibold text-[#C7CCD4] truncate">
+                                <p className="text-[12.5px] font-semibold text-[#BDBDBD] truncate">
                                     {user.full_name || user.email}
                                 </p>
                                 <p className="text-[11px] font-medium text-[#525969]">{t("employee.roleEmployee")}</p>
@@ -114,7 +114,7 @@ export default function EmployeeLayout({ children }: { children: React.ReactNode
 
                         <button
                             onClick={logout}
-                            className="group w-full flex items-center gap-3 px-3 h-10 rounded-[10px] text-[#8A929E] hover:bg-white/[0.04] hover:text-rose-400 transition-colors"
+                            className="group w-full flex items-center gap-3 px-3 h-10 rounded-[4px] text-[#757575] hover:bg-white/[0.04] hover:text-rose-400 transition-colors"
                         >
                             <span className="material-symbols-rounded text-[20px] text-[#525969] group-hover:text-rose-400">logout</span>
                             <span className="text-[13px] font-semibold">{t("employee.logout")}</span>
@@ -124,7 +124,7 @@ export default function EmployeeLayout({ children }: { children: React.ReactNode
 
                 {/* Main content — pages own their padding (enterprise-style containers) */}
                 <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden w-full">
-                    <main className="flex-1 w-full overflow-y-auto bg-[#F4F5F7] custom-scrollbar payroll-scope">{children}</main>
+                    <main className="flex-1 w-full overflow-y-auto bg-[#F5F6F8] custom-scrollbar payroll-scope">{children}</main>
                 </div>
             </div>
         </DialogProvider>

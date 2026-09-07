@@ -36,7 +36,7 @@ export default function ConfirmationModal({
                     >
                         <div className="flex flex-col items-center text-center">
                             <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-5 ${
-                                isDestructive ? "bg-rose-50 text-rose-500" : "bg-indigo-50 text-[#7C3AED]"
+                                isDestructive ? "bg-rose-50 text-rose-500" : "bg-indigo-50 text-[#1E88E5]"
                             }`}>
                                 <span className="material-symbols-rounded text-3xl">
                                     {isDestructive ? "delete_forever" : "help_outline"}
@@ -60,7 +60,7 @@ export default function ConfirmationModal({
                                     className={`flex-1 px-6 py-3 rounded-2xl font-black text-[11px]   text-white shadow-lg transition-all active:scale-95 ${
                                         isDestructive 
                                         ? "bg-rose-500 hover:bg-rose-600 shadow-rose-100" 
-                                        : "bg-[#7C3AED] hover:bg-[#6D28D9] shadow-indigo-100"
+                                        : "bg-[#1E88E5] hover:bg-[#1565C0] shadow-indigo-100"
                                     }`}
                                 >
                                     {confirmLabel}

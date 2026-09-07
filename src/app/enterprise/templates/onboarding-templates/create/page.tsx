@@ -8,7 +8,7 @@ import { useI18n } from "@/context/I18nContext";
 export default function CreateOnboardingTemplatePage() {
     const { t: tr } = useI18n();
     return (
-        <div className="p-8 max-w-7xl mx-auto min-h-screen bg-[#FDFDFF] font-sans">
+        <div className="p-8 max-w-7xl mx-auto min-h-screen bg-[#FDFEFF] font-sans">
             {/* Header */}
             <div className="flex items-center gap-6 mb-10">
                 <Link 

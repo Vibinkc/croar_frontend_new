@@ -44,15 +44,15 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
-        <div className="h-12 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+        <div className="h-12 bg-[#F5F6F8] rounded-[4px] animate-pulse" />
         <StatGrid>
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-[108px] bg-[#F4F5F7] rounded-[14px] animate-pulse" />
+            <div key={i} className="h-[108px] bg-[#F5F6F8] rounded-[4px] animate-pulse" />
           ))}
         </StatGrid>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          <div className="lg:col-span-2 h-[220px] bg-[#F4F5F7] rounded-[14px] animate-pulse" />
-          <div className="h-[220px] bg-[#F4F5F7] rounded-[14px] animate-pulse" />
+          <div className="lg:col-span-2 h-[220px] bg-[#F5F6F8] rounded-[4px] animate-pulse" />
+          <div className="h-[220px] bg-[#F5F6F8] rounded-[4px] animate-pulse" />
         </div>
       </div>
     );
@@ -61,7 +61,7 @@ export default function DashboardPage() {
   if (error) {
     return (
       <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
-        <div className="rounded-[14px] border border-[#FBD5D5] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
+        <div className="rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[13px] font-medium text-[#C62828]">
           {error}
         </div>
       </div>
@@ -97,8 +97,8 @@ export default function DashboardPage() {
             icon="groups"
             label={tr("payroll.statEmployees")}
             value={data.employees.total}
-            gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)"
-            glow="rgba(91,83,224,0.28)"
+            gradient="linear-gradient(135deg,#42A5F5,#1976D2)"
+            glow="rgba(25,118,210,0.28)"
             className="h-full"
           />
         </Link>
@@ -107,8 +107,8 @@ export default function DashboardPage() {
             icon="tune"
             label={tr("payroll.statActiveStructures")}
             value={data.active_structures}
-            gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
-            glow="rgba(53,89,199,0.25)"
+            gradient="linear-gradient(135deg,#42A5F5,#1565C0)"
+            glow="rgba(21,101,192,0.25)"
             className="h-full"
           />
         </Link>
@@ -117,8 +117,8 @@ export default function DashboardPage() {
             icon="calendar_month"
             label={tr("payroll.statPayrollCycles")}
             value={data.cycles.total}
-            gradient="linear-gradient(135deg,#F6B65C,#D97706)"
-            glow="rgba(217,119,6,0.25)"
+            gradient="linear-gradient(135deg,#FFB74D,#EF6C00)"
+            glow="rgba(239,108,0,0.25)"
             className="h-full"
           />
         </Link>
@@ -126,8 +126,8 @@ export default function DashboardPage() {
           icon="payments"
           label={tr("payroll.statNetDisbursed")}
           value={inr(data.payroll.net_paid, cur)}
-          gradient="linear-gradient(135deg,#34D399,#0E8A6E)"
-          glow="rgba(14,138,110,0.25)"
+          gradient="linear-gradient(135deg,#66BB6A,#2E7D32)"
+          glow="rgba(46,125,50,0.25)"
           className="h-full"
         />
       </StatGrid>
@@ -143,8 +143,8 @@ export default function DashboardPage() {
             <div className="flex flex-col gap-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="text-[18px] font-bold text-[#15171C]">{cc.name}</div>
-                  <div className="text-[12.5px] text-[#8A929E] mt-0.5">
+                  <div className="text-[18px] font-bold text-[#212121]">{cc.name}</div>
+                  <div className="text-[12.5px] text-[#757575] mt-0.5">
                     {cc.period_start} → {cc.period_end} · Pay date {cc.pay_date}
                   </div>
                 </div>
@@ -154,17 +154,17 @@ export default function DashboardPage() {
               </div>
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 <Mini label={tr("payroll.miniHeadcount")} value={String(cc.headcount)} />
-                <Mini label={tr("payroll.miniNetPay")} value={inr(cc.net, cur)} tone="text-[#0E8A6E]" />
+                <Mini label={tr("payroll.miniNetPay")} value={inr(cc.net, cur)} tone="text-[#2E7D32]" />
                 <Mini label={tr("payroll.miniPendingNet")} value={inr(data.payroll.pending_net, cur)} />
               </div>
             </div>
           ) : (
             <div className="flex flex-col items-center gap-3 py-10 text-center">
-              <div className="w-14 h-14 rounded-[14px] bg-[#F4F5F7] text-[#8A929E] flex items-center justify-center">
+              <div className="w-14 h-14 rounded-[4px] bg-[#F5F6F8] text-[#757575] flex items-center justify-center">
                 <span className="material-symbols-rounded text-[28px]">event_busy</span>
               </div>
-              <p className="text-[13px] text-[#8A929E]">{tr("payroll.noPayrollCyclesYet")}</p>
-              <Link href="/enterprise/payroll" className="text-[13px] font-semibold text-[#5B53E0] hover:underline">
+              <p className="text-[13px] text-[#757575]">{tr("payroll.noPayrollCyclesYet")}</p>
+              <Link href="/enterprise/payroll" className="text-[13px] font-semibold text-[#1976D2] hover:underline">
                 Create the first cycle →
               </Link>
             </div>
@@ -177,17 +177,17 @@ export default function DashboardPage() {
             <CardHeader title={tr("payroll.salaryCoverageTitle")} />
             <Coverage configured={data.employees.configured} total={data.employees.total} />
             <div className="mt-4 flex justify-between text-[13px]">
-              <span className="text-[#8A929E]">{tr("payroll.configured")}</span>
-              <span className={`font-semibold text-[#0E8A6E] ${jetbrainsMono.className}`}>{data.employees.configured}</span>
+              <span className="text-[#757575]">{tr("payroll.configured")}</span>
+              <span className={`font-semibold text-[#2E7D32] ${jetbrainsMono.className}`}>{data.employees.configured}</span>
             </div>
             <div className="mt-1.5 flex justify-between text-[13px]">
-              <span className="text-[#8A929E]">{tr("payroll.missingSetup")}</span>
+              <span className="text-[#757575]">{tr("payroll.missingSetup")}</span>
               {data.employees.missing > 0 ? (
-                <Link href="/enterprise/payroll/structures" className={`font-semibold text-[#C0383C] underline ${jetbrainsMono.className}`}>
+                <Link href="/enterprise/payroll/structures" className={`font-semibold text-[#C62828] underline ${jetbrainsMono.className}`}>
                   {data.employees.missing}
                 </Link>
               ) : (
-                <span className={`font-semibold text-[#15171C] ${jetbrainsMono.className}`}>0</span>
+                <span className={`font-semibold text-[#212121] ${jetbrainsMono.className}`}>0</span>
               )}
             </div>
           </Card>
@@ -198,7 +198,7 @@ export default function DashboardPage() {
               {STATUS_ORDER.map((s) => (
                 <div key={s} className="flex items-center justify-between">
                   <CycleBadge status={s} />
-                  <span className={`text-[13.5px] font-semibold text-[#15171C] ${jetbrainsMono.className}`}>
+                  <span className={`text-[13.5px] font-semibold text-[#212121] ${jetbrainsMono.className}`}>
                     {data.cycles.by_status[s] ?? 0}
                   </span>
                 </div>
@@ -210,52 +210,52 @@ export default function DashboardPage() {
 
       {/* Recent cycles */}
       <Card padding="none" className="overflow-hidden">
-        <div className="flex items-center justify-between px-5 md:px-6 py-4 border-b border-[#E8EAED]">
-          <h3 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.recentCycles")}</h3>
-          <Link href="/enterprise/payroll" className="text-[12.5px] font-semibold text-[#5B53E0] hover:underline">
+        <div className="flex items-center justify-between px-5 md:px-6 py-4 border-b border-[#E0E0E0]">
+          <h3 className="text-[15px] font-bold text-[#212121]">{tr("payroll.recentCycles")}</h3>
+          <Link href="/enterprise/payroll" className="text-[12.5px] font-semibold text-[#1976D2] hover:underline">
             View all →
           </Link>
         </div>
         {data.recent_cycles.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-12 text-center">
-            <div className="w-14 h-14 rounded-[14px] bg-[#F4F5F7] text-[#8A929E] flex items-center justify-center mb-3">
+            <div className="w-14 h-14 rounded-[4px] bg-[#F5F6F8] text-[#757575] flex items-center justify-center mb-3">
               <span className="material-symbols-rounded text-[28px]">history</span>
             </div>
-            <p className="text-[13px] text-[#8A929E]">{tr("payroll.noCyclesYet")}</p>
+            <p className="text-[13px] text-[#757575]">{tr("payroll.noCyclesYet")}</p>
           </div>
         ) : (
           <>
             {/* Column header (desktop) */}
-            <div className="hidden md:grid grid-cols-[2fr_1.6fr_1fr_0.8fr_1fr] gap-4 px-6 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.cycle")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.period")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.status")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.headcount")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.netPay")}</span>
+            <div className="hidden md:grid grid-cols-[2fr_1.6fr_1fr_0.8fr_1fr] gap-4 px-6 py-3 bg-[#FAFAFA] border-b border-[#E0E0E0]">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.cycle")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.period")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.status")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.headcount")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.netPay")}</span>
             </div>
 
-            <div className="divide-y divide-[#F0F0F1]">
+            <div className="divide-y divide-[#EEEEEE]">
               {data.recent_cycles.map((c) => (
                 <div
                   key={c.id}
-                  className="grid grid-cols-[1fr_auto] md:grid-cols-[2fr_1.6fr_1fr_0.8fr_1fr] gap-x-4 gap-y-1.5 items-center px-4 md:px-6 py-3.5 hover:bg-[#F7F7F8] transition-colors group"
+                  className="grid grid-cols-[1fr_auto] md:grid-cols-[2fr_1.6fr_1fr_0.8fr_1fr] gap-x-4 gap-y-1.5 items-center px-4 md:px-6 py-3.5 hover:bg-[#FAFAFA] transition-colors group"
                 >
                   {/* Cycle */}
                   <div className="min-w-0">
                     <Link
                       href={`/enterprise/payroll/${c.id}`}
-                      className="block text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate"
+                      className="block text-[14px] font-bold text-[#212121] group-hover:text-[#1976D2] transition-colors truncate"
                     >
                       {c.name}
                     </Link>
                     {/* mobile-only meta */}
-                    <div className="md:hidden mt-1 text-[12px] text-[#8A929E]">
+                    <div className="md:hidden mt-1 text-[12px] text-[#757575]">
                       {c.period_start} → {c.period_end}
                     </div>
                   </div>
 
                   {/* Period (desktop) */}
-                  <div className="hidden md:block text-[13px] text-[#374151] truncate">
+                  <div className="hidden md:block text-[13px] text-[#424242] truncate">
                     {c.period_start} → {c.period_end}
                   </div>
 
@@ -265,7 +265,7 @@ export default function DashboardPage() {
                   </div>
 
                   {/* Headcount (desktop) */}
-                  <div className={`hidden md:block text-[13px] text-[#374151] text-right ${jetbrainsMono.className}`}>
+                  <div className={`hidden md:block text-[13px] text-[#424242] text-right ${jetbrainsMono.className}`}>
                     {c.headcount || "—"}
                   </div>
 
@@ -274,7 +274,7 @@ export default function DashboardPage() {
                     <span className="md:hidden">
                       <CycleBadge status={c.status} />
                     </span>
-                    <span className={`text-[13.5px] font-semibold text-[#15171C] ${jetbrainsMono.className}`}>
+                    <span className={`text-[13.5px] font-semibold text-[#212121] ${jetbrainsMono.className}`}>
                       {inr(c.net, cur)}
                     </span>
                   </div>
@@ -288,10 +288,10 @@ export default function DashboardPage() {
   );
 }
 
-function Mini({ label, value, tone = "text-[#15171C]" }: { label: string; value: string; tone?: string }) {
+function Mini({ label, value, tone = "text-[#212121]" }: { label: string; value: string; tone?: string }) {
   return (
-    <div className="rounded-[12px] border border-[#E8EAED] bg-[#F8FAFC] p-3">
-      <div className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{label}</div>
+    <div className="rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] p-3">
+      <div className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{label}</div>
       <div className={`text-[17px] font-bold mt-1 ${tone} ${jetbrainsMono.className}`}>{value}</div>
     </div>
   );
@@ -302,13 +302,13 @@ function Coverage({ configured, total }: { configured: number; total: number }) 
   return (
     <div>
       <div className="mb-1.5 flex items-center justify-between text-[13px]">
-        <span className={`font-semibold text-[#15171C] ${jetbrainsMono.className}`}>{pct}%</span>
-        <span className={`text-[#8A929E] ${jetbrainsMono.className}`}>{configured}/{total}</span>
+        <span className={`font-semibold text-[#212121] ${jetbrainsMono.className}`}>{pct}%</span>
+        <span className={`text-[#757575] ${jetbrainsMono.className}`}>{configured}/{total}</span>
       </div>
-      <div className="h-2.5 w-full overflow-hidden rounded-full bg-[#F1F2F5]">
+      <div className="h-2.5 w-full overflow-hidden rounded-full bg-[#EEEEEE]">
         <div
           className="h-full rounded-full transition-all"
-          style={{ width: `${pct}%`, background: "linear-gradient(90deg,#34D399,#0E8A6E)" }}
+          style={{ width: `${pct}%`, background: "linear-gradient(90deg,#66BB6A,#2E7D32)" }}
         />
       </div>
     </div>

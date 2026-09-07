@@ -182,21 +182,21 @@ export default function X360QuestionBank() {
     return (
         <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
             {/* Header (sticky) */}
-            <header className="sticky top-0 z-20 py-3 bg-[#F4F5F7]/95 backdrop-blur-sm border-b border-[#E8EAED] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <header className="sticky top-0 z-20 py-3 bg-[#F5F6F8]/95 backdrop-blur-sm border-b border-[#E0E0E0] flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3 min-w-0">
                     <button
                         onClick={() => router.push('/enterprise/assessments-360')}
                         aria-label={tr("common.back")}
-                        className="w-9 h-9 rounded-[10px] bg-white border border-[#E1E4E8] text-[#8A929E] hover:text-[#5B53E0] hover:border-[#D4D7DC] transition-all flex items-center justify-center shrink-0 shadow-sm"
+                        className="w-9 h-9 rounded-[4px] bg-white border border-[#E0E0E0] text-[#757575] hover:text-[#1976D2] hover:border-[#E0E0E0] transition-all flex items-center justify-center shrink-0 shadow-sm"
                     >
                         <span className="material-symbols-rounded text-[20px]">arrow_back</span>
                     </button>
                     <div className="min-w-0">
                         <div className="flex items-center gap-1.5">
-                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("postOnboarding.questionBank")}</h1>
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#212121] leading-tight">{tr("postOnboarding.questionBank")}</h1>
                             <PageHelp title={tr("postOnboarding.questionBank")}>{tr("assess360.qbHelp")}</PageHelp>
                         </div>
-                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("assess360.qbSubtitle")}</p>
+                        <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("assess360.qbSubtitle")}</p>
                     </div>
                 </div>
 
@@ -214,19 +214,19 @@ export default function X360QuestionBank() {
             {/* Stat cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 {[
-                    { label: tr("assess360.totalQuestions"), value: questions.length, icon: "quiz", grad: "linear-gradient(135deg,#8B7DFF,#5B53E0)", glow: "rgba(91,83,224,0.28)" },
-                    { label: tr("assess360.categoriesStat"), value: allCategoryIds.length, icon: "category", grad: "linear-gradient(135deg,#34D399,#0E8A6E)", glow: "rgba(14,138,110,0.25)" },
-                    { label: tr("assess360.ratingItems"), value: questions.filter(q => q.type === 'RATING').length, icon: "star_rate", grad: "linear-gradient(135deg,#F6B65C,#D97706)", glow: "rgba(217,119,6,0.25)" },
-                    { label: tr("assess360.openTextItems"), value: questions.filter(q => q.type === 'TEXT').length, icon: "edit_note", grad: "linear-gradient(135deg,#6E8BEA,#3559C7)", glow: "rgba(53,89,199,0.25)" },
+                    { label: tr("assess360.totalQuestions"), value: questions.length, icon: "quiz", grad: "linear-gradient(135deg,#42A5F5,#1976D2)", glow: "rgba(25,118,210,0.28)" },
+                    { label: tr("assess360.categoriesStat"), value: allCategoryIds.length, icon: "category", grad: "linear-gradient(135deg,#66BB6A,#2E7D32)", glow: "rgba(46,125,50,0.25)" },
+                    { label: tr("assess360.ratingItems"), value: questions.filter(q => q.type === 'RATING').length, icon: "star_rate", grad: "linear-gradient(135deg,#FFB74D,#EF6C00)", glow: "rgba(239,108,0,0.25)" },
+                    { label: tr("assess360.openTextItems"), value: questions.filter(q => q.type === 'TEXT').length, icon: "edit_note", grad: "linear-gradient(135deg,#42A5F5,#1565C0)", glow: "rgba(21,101,192,0.25)" },
                 ].map((s) => (
-                    <div key={s.label} className="relative bg-white border border-[#E8EAED] rounded-[14px] p-5 overflow-hidden transition-colors hover:border-[#D4D7DC]">
+                    <div key={s.label} className="relative bg-white border border-[#E0E0E0] rounded-[4px] p-5 overflow-hidden transition-colors hover:border-[#E0E0E0]">
                         <div className="absolute inset-x-0 top-0 h-[3px]" style={{ background: s.grad }} />
                         <div className="flex items-start justify-between">
                             <div>
-                                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{s.label}</span>
-                                <div className={`text-[30px] font-semibold tracking-[-1px] text-[#15171C] mt-2 ${jetbrainsMono.className}`}>{s.value}</div>
+                                <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{s.label}</span>
+                                <div className={`text-[30px] font-semibold tracking-[-1px] text-[#212121] mt-2 ${jetbrainsMono.className}`}>{s.value}</div>
                             </div>
-                            <span className="w-10 h-10 rounded-[11px] flex items-center justify-center text-white shrink-0" style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}>
+                            <span className="w-10 h-10 rounded-[4px] flex items-center justify-center text-white shrink-0" style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}>
                                 <span className="material-symbols-rounded text-[20px]">{s.icon}</span>
                             </span>
                         </div>
@@ -235,14 +235,14 @@ export default function X360QuestionBank() {
             </div>
 
             {/* AI Generator panel */}
-            <Card padding="lg" className="relative overflow-hidden text-white border-0" style={{ background: "linear-gradient(135deg,#5B53E0,#4A43C9)" }}>
+            <Card padding="lg" className="relative overflow-hidden text-white border-0" style={{ background: "linear-gradient(135deg,#1976D2,#1565C0)" }}>
                 <div className="absolute top-0 right-0 w-48 h-48 bg-white/5 rounded-full blur-3xl -mr-10 -mt-20" />
                 <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -ml-20 -mb-10" />
 
                 <div className="relative z-10">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                         <div className="flex items-center gap-3">
-                            <div className="w-11 h-11 bg-white/15 backdrop-blur-md rounded-[12px] flex items-center justify-center border border-white/25">
+                            <div className="w-11 h-11 bg-white/15 backdrop-blur-md rounded-[4px] flex items-center justify-center border border-white/25">
                                 <span className="material-symbols-rounded text-white text-[22px]">auto_awesome</span>
                             </div>
                             <div>
@@ -269,9 +269,9 @@ export default function X360QuestionBank() {
                                     <button
                                         key={cat.id}
                                         onClick={() => toggleAiCategory(cat.id)}
-                                        className={`flex items-center gap-2 px-3.5 py-2 rounded-[10px] text-[12.5px] font-semibold transition-all border whitespace-nowrap ${
+                                        className={`flex items-center gap-2 px-3.5 py-2 rounded-[4px] text-[12.5px] font-semibold transition-all border whitespace-nowrap ${
                                             aiConfig.categories.includes(cat.id)
-                                            ? 'bg-white text-[#5B53E0] border-white shadow-sm'
+                                            ? 'bg-white text-[#1976D2] border-white shadow-sm'
                                             : 'bg-white/[0.08] text-white/90 border-white/15 hover:bg-white/[0.14]'
                                         }`}
                                     >
@@ -287,9 +287,9 @@ export default function X360QuestionBank() {
                                     <button
                                         key={cat}
                                         onClick={() => toggleAiCategory(cat)}
-                                        className="flex items-center gap-2 px-3.5 py-2 rounded-[10px] text-[12.5px] font-semibold transition-all border whitespace-nowrap bg-white text-[#5B53E0] border-white shadow-sm"
+                                        className="flex items-center gap-2 px-3.5 py-2 rounded-[4px] text-[12.5px] font-semibold transition-all border whitespace-nowrap bg-white text-[#1976D2] border-white shadow-sm"
                                     >
-                                        <span className="material-symbols-rounded text-[18px] shrink-0 text-[#D97706]">new_releases</span>
+                                        <span className="material-symbols-rounded text-[18px] shrink-0 text-[#EF6C00]">new_releases</span>
                                         {cat}
                                     </button>
                                 ))}
@@ -306,7 +306,7 @@ export default function X360QuestionBank() {
                                             id="ai-quantity"
                                             type="number"
                                             min="1" max="20"
-                                            className="w-full h-11 px-3.5 bg-white/[0.1] border border-white/15 rounded-[10px] focus:ring-2 focus:ring-white/40 outline-none text-[14px] font-semibold text-white placeholder:text-white/50 transition-all hover:bg-white/[0.14]"
+                                            className="w-full h-11 px-3.5 bg-white/[0.1] border border-white/15 rounded-[4px] focus:ring-2 focus:ring-white/40 outline-none text-[14px] font-semibold text-white placeholder:text-white/50 transition-all hover:bg-white/[0.14]"
                                             value={aiConfig.count}
                                             onChange={(e) => setAiConfig({...aiConfig, count: Number.parseInt(e.target.value)})}
                                         />
@@ -318,7 +318,7 @@ export default function X360QuestionBank() {
                                         id="ai-business-context"
                                         type="text"
                                         placeholder={tr("assess360.businessContextPlaceholder")}
-                                        className="w-full h-11 px-3.5 bg-white/[0.1] border border-white/15 rounded-[10px] focus:ring-2 focus:ring-white/40 outline-none text-[14px] font-semibold text-white placeholder:text-white/50 transition-all hover:bg-white/[0.14]"
+                                        className="w-full h-11 px-3.5 bg-white/[0.1] border border-white/15 rounded-[4px] focus:ring-2 focus:ring-white/40 outline-none text-[14px] font-semibold text-white placeholder:text-white/50 transition-all hover:bg-white/[0.14]"
                                         value={aiConfig.context}
                                         onChange={(e) => setAiConfig({...aiConfig, context: e.target.value})}
                                     />
@@ -332,7 +332,7 @@ export default function X360QuestionBank() {
                                             id="ai-new-category"
                                             type="text"
                                             placeholder={tr("assess360.newCategoryPlaceholder")}
-                                            className="flex-1 h-11 px-3.5 bg-white/[0.1] border border-white/15 rounded-[10px] focus:ring-2 focus:ring-white/40 outline-none text-[14px] font-semibold text-white placeholder:text-white/50 transition-all hover:bg-white/[0.14]"
+                                            className="flex-1 h-11 px-3.5 bg-white/[0.1] border border-white/15 rounded-[4px] focus:ring-2 focus:ring-white/40 outline-none text-[14px] font-semibold text-white placeholder:text-white/50 transition-all hover:bg-white/[0.14]"
                                             value={aiConfig.customCategory}
                                             onChange={(e) => setAiConfig({...aiConfig, customCategory: e.target.value})}
                                             onKeyDown={(e) => {
@@ -351,7 +351,7 @@ export default function X360QuestionBank() {
                                                 }
                                             }}
                                             aria-label={tr("assess360.addCategory")}
-                                            className="w-11 h-11 shrink-0 bg-white text-[#5B53E0] rounded-[10px] flex items-center justify-center hover:bg-white/90 active:scale-95 transition-all shadow-sm"
+                                            className="w-11 h-11 shrink-0 bg-white text-[#1976D2] rounded-[4px] flex items-center justify-center hover:bg-white/90 active:scale-95 transition-all shadow-sm"
                                         >
                                             <span className="material-symbols-rounded">add</span>
                                         </button>
@@ -360,11 +360,11 @@ export default function X360QuestionBank() {
                                 <button
                                     onClick={handleAIGenerate}
                                     disabled={isGenerating || aiConfig.categories.length === 0}
-                                    className="w-full h-[46px] bg-white text-[#5B53E0] rounded-[10px] font-semibold text-[14px] hover:bg-white/90 active:scale-[0.99] transition-all disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2.5"
+                                    className="w-full h-[46px] bg-white text-[#1976D2] rounded-[4px] font-semibold text-[14px] hover:bg-white/90 active:scale-[0.99] transition-all disabled:opacity-50 disabled:pointer-events-none flex items-center justify-center gap-2.5"
                                 >
                                     {isGenerating ? (
                                         <>
-                                            <div className="w-4 h-4 border-2 border-[#5B53E0] border-t-transparent rounded-full animate-spin" />
+                                            <div className="w-4 h-4 border-2 border-[#1976D2] border-t-transparent rounded-full animate-spin" />
                                             <span>{tr("assess360.synthesizing")}</span>
                                         </>
                                     ) : (
@@ -382,15 +382,15 @@ export default function X360QuestionBank() {
 
             {/* AI Preview */}
             {generatedQuestions.length > 0 && (
-                <Card ref={suggestionsRef} padding="lg" className="border-[#FBBF24]/40 bg-[#FEF9EF] animate-in fade-in slide-in-from-top-4 duration-500">
+                <Card ref={suggestionsRef} padding="lg" className="border-[#FFB300]/40 bg-[#FEF9EF] animate-in fade-in slide-in-from-top-4 duration-500">
                     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
                         <div className="flex items-center gap-3.5">
-                            <div className="w-11 h-11 bg-[#FEF3E2] rounded-[12px] flex items-center justify-center text-[#D97706] border border-[#FBBF24]/40 shrink-0">
+                            <div className="w-11 h-11 bg-[#FFF3E0] rounded-[4px] flex items-center justify-center text-[#EF6C00] border border-[#FFB300]/40 shrink-0">
                                 <span className="material-symbols-rounded text-[22px]">auto_awesome</span>
                             </div>
                             <div>
-                                <h3 className="text-[16px] font-bold text-[#15171C] tracking-tight">{tr("assess360.aiSuggestionsReady")}</h3>
-                                <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("assess360.aiSuggestionsDesc")}</p>
+                                <h3 className="text-[16px] font-bold text-[#212121] tracking-tight">{tr("assess360.aiSuggestionsReady")}</h3>
+                                <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("assess360.aiSuggestionsDesc")}</p>
                             </div>
                         </div>
                         <div className="flex gap-2.5 shrink-0">
@@ -404,10 +404,10 @@ export default function X360QuestionBank() {
                     </div>
                     <div className="space-y-2.5">
                         {generatedQuestions.map((q, i) => (
-                            <div key={i} className="bg-white p-4 rounded-[12px] border border-[#E8EAED] flex items-start gap-3.5">
-                                <div className={`w-7 h-7 rounded-full bg-[#FEF3E2] flex items-center justify-center text-[#D97706] font-bold text-[12px] shrink-0 ${jetbrainsMono.className}`}>{i + 1}</div>
+                            <div key={i} className="bg-white p-4 rounded-[4px] border border-[#E0E0E0] flex items-start gap-3.5">
+                                <div className={`w-7 h-7 rounded-full bg-[#FFF3E0] flex items-center justify-center text-[#EF6C00] font-bold text-[12px] shrink-0 ${jetbrainsMono.className}`}>{i + 1}</div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-[13.5px] font-medium text-[#15171C] leading-relaxed">{q.text}</p>
+                                    <p className="text-[13.5px] font-medium text-[#212121] leading-relaxed">{q.text}</p>
                                     <div className="flex flex-wrap gap-1.5 mt-2">
                                         <Badge tone="indigo">{q.category}</Badge>
                                         <Badge tone="neutral">{q.type}</Badge>
@@ -422,14 +422,14 @@ export default function X360QuestionBank() {
             {/* Category directory */}
             <div className="space-y-4">
                 <div className="flex items-center justify-between px-1">
-                    <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight">{tr("assess360.competencyCategories")}</h2>
+                    <h2 className="text-[16px] font-bold text-[#212121] tracking-tight">{tr("assess360.competencyCategories")}</h2>
                     <Badge tone="neutral">{allCategoryIds.length} {tr("assess360.categoriesLower")}</Badge>
                 </div>
 
                 {loading ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
                         {[1, 2, 3, 4, 5, 6].map(i => (
-                            <div key={i} className="h-44 bg-white rounded-[14px] border border-[#E8EAED] animate-pulse" />
+                            <div key={i} className="h-44 bg-white rounded-[4px] border border-[#E0E0E0] animate-pulse" />
                         ))}
                     </div>
                 ) : (
@@ -444,13 +444,13 @@ export default function X360QuestionBank() {
                                     router.push('/enterprise/assessments-360/questions/new');
                                 }
                             }}
-                            className="bg-[#FAFAFE] p-5 rounded-[14px] border-2 border-dashed border-[#DAD7F6] hover:border-[#5B53E0] hover:bg-[#F4F3FE] transition-all cursor-pointer flex flex-col items-center justify-center text-center group min-h-[176px]"
+                            className="bg-[#FAFCFE] p-5 rounded-[4px] border-2 border-dashed border-[#BBDEFB] hover:border-[#1976D2] hover:bg-[#F4F3FE] transition-all cursor-pointer flex flex-col items-center justify-center text-center group min-h-[176px]"
                         >
-                            <div className="w-14 h-14 bg-white rounded-[14px] flex items-center justify-center text-[#5B53E0] shadow-sm border border-[#E8EAED] group-hover:scale-105 transition-transform mb-3">
+                            <div className="w-14 h-14 bg-white rounded-[4px] flex items-center justify-center text-[#1976D2] shadow-sm border border-[#E0E0E0] group-hover:scale-105 transition-transform mb-3">
                                 <span className="material-symbols-rounded text-[26px]">add_circle</span>
                             </div>
-                            <h3 className="text-[14px] font-bold text-[#15171C] tracking-tight mb-0.5">{tr("assess360.createCompetency")}</h3>
-                            <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("assess360.manualEntry")}</p>
+                            <h3 className="text-[14px] font-bold text-[#212121] tracking-tight mb-0.5">{tr("assess360.createCompetency")}</h3>
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("assess360.manualEntry")}</p>
                         </div>
 
                         {allCategoryIds.map(cat => {
@@ -472,21 +472,21 @@ export default function X360QuestionBank() {
                                     }}
                                     className="group relative overflow-hidden flex flex-col items-center text-center cursor-pointer min-h-[176px] justify-center animate-in zoom-in duration-300"
                                 >
-                                    <div className="absolute top-0 right-0 w-20 h-20 bg-[#ECEBFB]/60 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-[#ECEBFB] transition-colors" />
+                                    <div className="absolute top-0 right-0 w-20 h-20 bg-[#E3F2FD]/60 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-[#E3F2FD] transition-colors" />
 
-                                    <div className="w-14 h-14 bg-[#15171C] rounded-[14px] flex items-center justify-center text-white group-hover:scale-105 transition-transform mb-3">
+                                    <div className="w-14 h-14 bg-[#212121] rounded-[4px] flex items-center justify-center text-white group-hover:scale-105 transition-transform mb-3">
                                         <span className="material-symbols-rounded text-[26px]">{icon}</span>
                                     </div>
 
-                                    <h3 className="text-[14px] font-bold text-[#15171C] tracking-tight mb-0.5">{label}</h3>
-                                    <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] mb-3">{tr("assess360.competencies")}</p>
+                                    <h3 className="text-[14px] font-bold text-[#212121] tracking-tight mb-0.5">{label}</h3>
+                                    <p className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] mb-3">{tr("assess360.competencies")}</p>
 
-                                    <div className={`px-4 py-1 bg-[#F1F2F5] border border-[#E8EAED] rounded-[20px] text-[12px] font-semibold text-[#4B5563] transition-all group-hover:bg-[#5B53E0] group-hover:text-white group-hover:border-[#5B53E0] ${jetbrainsMono.className}`}>
+                                    <div className={`px-4 py-1 bg-[#EEEEEE] border border-[#E0E0E0] rounded-[4px] text-[12px] font-semibold text-[#4F4F4F] transition-all group-hover:bg-[#1976D2] group-hover:text-white group-hover:border-[#1976D2] ${jetbrainsMono.className}`}>
                                         {catQuestions.length} {tr("assess360.items")}
                                     </div>
 
                                     <div className="absolute bottom-4 right-5 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
-                                        <span className="material-symbols-rounded text-[#5B53E0] text-[20px]">arrow_right_alt</span>
+                                        <span className="material-symbols-rounded text-[#1976D2] text-[20px]">arrow_right_alt</span>
                                     </div>
                                 </Card>
                             );
@@ -494,12 +494,12 @@ export default function X360QuestionBank() {
 
                         {/* Blank Slate for Library */}
                         {questions.length === 0 && (
-                            <div className="col-span-full bg-white rounded-[14px] p-16 md:p-20 text-center border border-dashed border-[#E8EAED]">
-                                <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mx-auto mb-5">
-                                    <span className="material-symbols-rounded text-[#C7CCD4] text-[32px]">inventory_2</span>
+                            <div className="col-span-full bg-white rounded-[4px] p-16 md:p-20 text-center border border-dashed border-[#E0E0E0]">
+                                <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mx-auto mb-5">
+                                    <span className="material-symbols-rounded text-[#BDBDBD] text-[32px]">inventory_2</span>
                                 </div>
-                                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("assess360.knowledgeBaseEmpty")}</h3>
-                                <p className="text-[#8A929E] text-[14px] max-w-sm mx-auto mb-7">{tr("assess360.knowledgeBaseEmptyDesc")}</p>
+                                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("assess360.knowledgeBaseEmpty")}</h3>
+                                <p className="text-[#757575] text-[14px] max-w-sm mx-auto mb-7">{tr("assess360.knowledgeBaseEmptyDesc")}</p>
                             </div>
                         )}
                     </div>
@@ -509,12 +509,12 @@ export default function X360QuestionBank() {
             {/* Quick manual add */}
             <Card padding="lg">
                 <div className="flex items-center gap-3 mb-5">
-                    <div className="w-10 h-10 bg-[#ECEBFB] rounded-[11px] flex items-center justify-center text-[#5B53E0] shrink-0">
+                    <div className="w-10 h-10 bg-[#E3F2FD] rounded-[4px] flex items-center justify-center text-[#1976D2] shrink-0">
                         <span className="material-symbols-rounded text-[20px]">edit_note</span>
                     </div>
                     <div>
-                        <h2 className="text-[16px] font-bold text-[#15171C] tracking-tight">{tr("assess360.newQuestion")}</h2>
-                        <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("assess360.newQuestionDesc")}</p>
+                        <h2 className="text-[16px] font-bold text-[#212121] tracking-tight">{tr("assess360.newQuestion")}</h2>
+                        <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("assess360.newQuestionDesc")}</p>
                     </div>
                 </div>
                 <form onSubmit={handleAdd} className="space-y-4">
@@ -539,7 +539,7 @@ export default function X360QuestionBank() {
                                     <option value="RATING">{tr("assess360.ratingType")}</option>
                                     <option value="TEXT">{tr("assess360.openText")}</option>
                                 </Select>
-                                <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] pointer-events-none text-[20px]">unfold_more</span>
+                                <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] pointer-events-none text-[20px]">unfold_more</span>
                             </div>
                         </Field>
                         <Field label={tr("assess360.coreCategory")} htmlFor="manual-core-category">
@@ -551,7 +551,7 @@ export default function X360QuestionBank() {
                                 >
                                     {categories.map(c => <option key={c.id} value={c.id}>{c.label}</option>)}
                                 </Select>
-                                <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9AA3AF] pointer-events-none text-[20px]">unfold_more</span>
+                                <span className="material-symbols-rounded absolute right-3 top-1/2 -translate-y-1/2 text-[#9E9E9E] pointer-events-none text-[20px]">unfold_more</span>
                             </div>
                         </Field>
                     </div>

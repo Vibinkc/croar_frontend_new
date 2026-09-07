@@ -18,10 +18,10 @@ interface Application {
 
 /** Match-score bands. Ordered strongest first so the chart reads top-down as quality. */
 const SCORE_BANDS: { key: string; min: number; max: number; bar: string }[] = [
-    { key: "strong", min: 80, max: 101, bar: "from-[#5AC8A8] to-[#0E8A6E]" },
-    { key: "good", min: 60, max: 80, bar: "from-[#8B7DFF] to-[#5B53E0]" },
-    { key: "fair", min: 40, max: 60, bar: "from-[#F0B357] to-[#D97706]" },
-    { key: "weak", min: 0, max: 40, bar: "from-[#F08A8C] to-[#C0383C]" },
+    { key: "strong", min: 80, max: 101, bar: "from-[#5AC8A8] to-[#2E7D32]" },
+    { key: "good", min: 60, max: 80, bar: "from-[#42A5F5] to-[#1976D2]" },
+    { key: "fair", min: 40, max: 60, bar: "from-[#F0B357] to-[#EF6C00]" },
+    { key: "weak", min: 0, max: 40, bar: "from-[#F08A8C] to-[#C62828]" },
 ];
 
 /**
@@ -109,28 +109,28 @@ export default function JobReportsTab({
                     label={tr("jobReports.totalApplicants")}
                     value={report.total}
                     icon="group"
-                    gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)"
+                    gradient="linear-gradient(135deg,#42A5F5,#1976D2)"
                 />
                 <StatCard
                     label={tr("jobReports.last30Days")}
                     value={report.recent}
                     icon="trending_up"
-                    gradient="linear-gradient(135deg,#5AC8A8,#0E8A6E)"
-                    glow="rgba(14,138,110,0.26)"
+                    gradient="linear-gradient(135deg,#5AC8A8,#2E7D32)"
+                    glow="rgba(46,125,50,0.26)"
                 />
                 <StatCard
                     label={tr("jobReports.avgFit")}
                     value={report.avgFit === null ? "—" : `${report.avgFit}%`}
                     icon="target"
-                    gradient="linear-gradient(135deg,#F0B357,#D97706)"
-                    glow="rgba(217,119,6,0.26)"
+                    gradient="linear-gradient(135deg,#F0B357,#EF6C00)"
+                    glow="rgba(239,108,0,0.26)"
                 />
                 <StatCard
                     label={tr("jobReports.furthestStage")}
                     value={report.furthest?.name || "—"}
                     icon="flag"
-                    gradient="linear-gradient(135deg,#6E8BFF,#3559C7)"
-                    glow="rgba(53,89,199,0.26)"
+                    gradient="linear-gradient(135deg,#6E8BFF,#1565C0)"
+                    glow="rgba(21,101,192,0.26)"
                 />
             </StatGrid>
 
@@ -138,8 +138,8 @@ export default function JobReportsTab({
                 {/* Funnel — one bar per stage, scaled against the busiest stage so the shape of the
                     drop-off stays readable even when the numbers are small. */}
                 <Card className="lg:col-span-3">
-                    <h3 className="text-[15px] font-bold text-[#15171C]">{tr("jobReports.funnelTitle")}</h3>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5 mb-5">{tr("jobReports.funnelSubtitle")}</p>
+                    <h3 className="text-[15px] font-bold text-[#212121]">{tr("jobReports.funnelTitle")}</h3>
+                    <p className="text-[12.5px] text-[#757575] mt-0.5 mb-5">{tr("jobReports.funnelSubtitle")}</p>
 
                     <ul className="space-y-3.5">
                         {report.byStage.map(stage => {
@@ -147,13 +147,13 @@ export default function JobReportsTab({
                             return (
                                 <li key={stage.id}>
                                     <div className="flex items-baseline justify-between gap-3 mb-1.5">
-                                        <span className="text-[12.5px] font-semibold text-[#374151] truncate">
+                                        <span className="text-[12.5px] font-semibold text-[#424242] truncate">
                                             {stage.name}
                                         </span>
-                                        <span className="text-[11.5px] text-[#8A929E] shrink-0 tabular-nums">
+                                        <span className="text-[11.5px] text-[#757575] shrink-0 tabular-nums">
                                             <span
                                                 className={cn(
-                                                    "text-[13px] font-bold text-[#15171C]",
+                                                    "text-[13px] font-bold text-[#212121]",
                                                     jetbrainsMono.className
                                                 )}
                                             >
@@ -162,9 +162,9 @@ export default function JobReportsTab({
                                             · {pct}%
                                         </span>
                                     </div>
-                                    <div className="h-2 rounded-full bg-[#F1F2F5] overflow-hidden">
+                                    <div className="h-2 rounded-full bg-[#EEEEEE] overflow-hidden">
                                         <div
-                                            className="h-full rounded-full bg-gradient-to-r from-[#8B7DFF] to-[#5B53E0] transition-[width] duration-500"
+                                            className="h-full rounded-full bg-gradient-to-r from-[#42A5F5] to-[#1976D2] transition-[width] duration-500"
                                             style={{ width: `${Math.round((stage.count / peak) * 100)}%` }}
                                         />
                                     </div>
@@ -174,18 +174,18 @@ export default function JobReportsTab({
                     </ul>
 
                     {report.unassigned > 0 && (
-                        <p className="mt-5 pt-4 border-t border-[#F0F0F1] text-[11.5px] text-[#8A929E]">
+                        <p className="mt-5 pt-4 border-t border-[#EEEEEE] text-[11.5px] text-[#757575]">
                             {tr("jobReports.unassignedNote", { count: report.unassigned })}
                         </p>
                     )}
                 </Card>
 
                 <Card className="lg:col-span-2">
-                    <h3 className="text-[15px] font-bold text-[#15171C]">{tr("jobReports.qualityTitle")}</h3>
-                    <p className="text-[12.5px] text-[#8A929E] mt-0.5 mb-5">{tr("jobReports.qualitySubtitle")}</p>
+                    <h3 className="text-[15px] font-bold text-[#212121]">{tr("jobReports.qualityTitle")}</h3>
+                    <p className="text-[12.5px] text-[#757575] mt-0.5 mb-5">{tr("jobReports.qualitySubtitle")}</p>
 
                     {scoredTotal === 0 ? (
-                        <p className="py-6 text-center text-[12.5px] text-[#8A929E]">
+                        <p className="py-6 text-center text-[12.5px] text-[#757575]">
                             {tr("jobReports.noScores")}
                         </p>
                     ) : (
@@ -195,19 +195,19 @@ export default function JobReportsTab({
                                 return (
                                     <li key={band.key}>
                                         <div className="flex items-baseline justify-between gap-3 mb-1.5">
-                                            <span className="text-[12.5px] font-semibold text-[#374151]">
+                                            <span className="text-[12.5px] font-semibold text-[#424242]">
                                                 {tr(`jobReports.band.${band.key}`)}
                                             </span>
                                             <span
                                                 className={cn(
-                                                    "text-[13px] font-bold text-[#15171C] tabular-nums",
+                                                    "text-[13px] font-bold text-[#212121] tabular-nums",
                                                     jetbrainsMono.className
                                                 )}
                                             >
                                                 {band.count}
                                             </span>
                                         </div>
-                                        <div className="h-2 rounded-full bg-[#F1F2F5] overflow-hidden">
+                                        <div className="h-2 rounded-full bg-[#EEEEEE] overflow-hidden">
                                             <div
                                                 className={cn(
                                                     "h-full rounded-full bg-gradient-to-r transition-[width] duration-500",
@@ -223,7 +223,7 @@ export default function JobReportsTab({
                     )}
 
                     {report.unscored > 0 && (
-                        <p className="mt-5 pt-4 border-t border-[#F0F0F1] text-[11.5px] text-[#8A929E]">
+                        <p className="mt-5 pt-4 border-t border-[#EEEEEE] text-[11.5px] text-[#757575]">
                             {tr("jobReports.unscoredNote", { count: report.unscored })}
                         </p>
                     )}

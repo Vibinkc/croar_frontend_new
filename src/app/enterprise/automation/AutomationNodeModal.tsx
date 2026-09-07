@@ -464,9 +464,9 @@ export default function AutomationNodeModal({
 
   const headerMeta = useMemo(() => {
     switch (type) {
-      case "mail": return { title: tr("automation.mailAction"), icon: "mark_email_unread", color: "#6366f1", bg: "#eef2ff" };
-      case "assessment": return { title: tr("automation.assessmentAction"), icon: "psychology", color: "#f59e0b", bg: "#fffbeb" };
-      case "interview": return { title: tr("automation.interviewAction"), icon: "event_available", color: "#10b981", bg: "#ecfdf5" };
+      case "mail": return { title: tr("automation.mailAction"), icon: "mark_email_unread", color: "#1976D2", bg: "#eef2ff" };
+      case "assessment": return { title: tr("automation.assessmentAction"), icon: "psychology", color: "#FB8C00", bg: "#fffbeb" };
+      case "interview": return { title: tr("automation.interviewAction"), icon: "event_available", color: "#43A047", bg: "#ecfdf5" };
       case "onboarding": return { title: tr("automation.onboardingAction"), icon: "person_add", color: "#a855f7", bg: "#faf5ff" };
     }
   }, [type, tr]);
@@ -486,18 +486,18 @@ export default function AutomationNodeModal({
           <motion.div initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ type: "spring", damping: 25, stiffness: 200 }} className="relative w-full max-w-lg bg-white shadow-2xl h-full flex flex-col pointer-events-auto">
             
             {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E8EAED] shrink-0 bg-white">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-[#E0E0E0] shrink-0 bg-white">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-[12px] flex items-center justify-center border border-current shadow-sm" style={{ backgroundColor: headerMeta.bg, color: headerMeta.color }}>
+                <div className="w-10 h-10 rounded-[4px] flex items-center justify-center border border-current shadow-sm" style={{ backgroundColor: headerMeta.bg, color: headerMeta.color }}>
                   <span className="material-symbols-rounded text-[20px]">{headerMeta.icon}</span>
                 </div>
                 <div>
-                  <h2 className="text-[18px] font-extrabold text-[#15171C] leading-tight">{editingId ? tr("automation.editAction") : tr("automation.createAction")}</h2>
+                  <h2 className="text-[18px] font-extrabold text-[#212121] leading-tight">{editingId ? tr("automation.editAction") : tr("automation.createAction")}</h2>
                   <p className="text-[11.5px] font-bold mt-0.5 uppercase tracking-wider" style={{ color: headerMeta.color }}>{headerMeta.title}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={onClose} className="w-9 h-9 rounded-[10px] hover:bg-[#F4F5F7] flex items-center justify-center text-[#8A929E] transition-colors border border-[#E8EAED]">
+                <button onClick={onClose} className="w-9 h-9 rounded-[4px] hover:bg-[#F5F6F8] flex items-center justify-center text-[#757575] transition-colors border border-[#E0E0E0]">
                   <span className="material-symbols-rounded text-lg">close</span>
                 </button>
               </div>
@@ -505,16 +505,16 @@ export default function AutomationNodeModal({
 
             {/* Tabs (Only for Assessment/Interview) */}
             {(type === "assessment" || type === "interview") && (
-              <div className="flex border-b border-[#E8EAED] shrink-0 bg-white px-6">
+              <div className="flex border-b border-[#E0E0E0] shrink-0 bg-white px-6">
                 <button
                   onClick={() => setActiveTab("config")}
-                  className={`px-6 py-3 text-[12px] font-bold transition-all border-b-2 ${activeTab === "config" ? "border-[#5B53E0] text-[#5B53E0]" : "border-transparent text-[#8A929E] hover:text-[#15171C]"}`}
+                  className={`px-6 py-3 text-[12px] font-bold transition-all border-b-2 ${activeTab === "config" ? "border-[#1976D2] text-[#1976D2]" : "border-transparent text-[#757575] hover:text-[#212121]"}`}
                 >
                   {tr("automation.configurationStep")}
                 </button>
                 <button
                   onClick={() => setActiveTab("sub")}
-                  className={`px-6 py-3 text-[12px] font-bold transition-all border-b-2 ${activeTab === "sub" ? "border-[#5B53E0] text-[#5B53E0]" : "border-transparent text-[#8A929E] hover:text-[#15171C]"}`}
+                  className={`px-6 py-3 text-[12px] font-bold transition-all border-b-2 ${activeTab === "sub" ? "border-[#1976D2] text-[#1976D2]" : "border-transparent text-[#757575] hover:text-[#212121]"}`}
                 >
                   {type === "assessment" ? tr("automation.questionsTab", { count: form.generated_questions?.length || 0 }) : tr("automation.timeSlotsTab", { count: form.time_slots?.length || 0 })}
                 </button>
@@ -536,36 +536,36 @@ export default function AutomationNodeModal({
                   {loading && (
                     <div className="absolute inset-0 z-50 bg-white/60 backdrop-blur-[1px] flex items-center justify-center">
                       <div className="flex flex-col items-center gap-2">
-                        <div className="w-8 h-8 border-4 border-slate-200 border-t-[#5B53E0] rounded-full animate-spin" />
-                        <p className="text-[11.5px] font-bold text-[#8A929E] tracking-wider uppercase">{tr("automation.loadingData")}</p>
+                        <div className="w-8 h-8 border-4 border-slate-200 border-t-[#1976D2] rounded-full animate-spin" />
+                        <p className="text-[11.5px] font-bold text-[#757575] tracking-wider uppercase">{tr("automation.loadingData")}</p>
                       </div>
                     </div>
                   )}
                   {/* Job Info */}
                   <div className="opacity-70">
-                    <label htmlFor="automation-target-job" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.targetJob")}</label>
-                    <div id="automation-target-job" className="w-full h-11 flex items-center bg-[#F4F5F7]/80 border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] font-semibold text-[#8A929E]">
+                    <label htmlFor="automation-target-job" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.targetJob")}</label>
+                    <div id="automation-target-job" className="w-full h-11 flex items-center bg-[#F5F6F8]/80 border border-[#E0E0E0] rounded-[4px] px-3.5 text-[14px] font-semibold text-[#757575]">
                       {selectedJob?.title || tr("automation.noJobSelected")}
                     </div>
                   </div>
 
                   {/* Round Selection */}
                   <div>
-                    <label htmlFor="automation-round-select" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.connectToRoundLabel")} <span className="text-red-400">*</span></label>
+                    <label htmlFor="automation-round-select" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.connectToRoundLabel")} <span className="text-red-400">*</span></label>
                     {jobRounds.length > 0 ? (
                       <select
                         id="automation-round-select"
                         value={roundValue}
                         onChange={handleRoundSelect}
-                        className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer"
+                        className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all cursor-pointer"
                       >
                         <option value="" className="text-slate-900 bg-white">{tr("automation.selectStage")}</option>
                         {jobRounds.map((r, i) => <option key={i} value={`${i + 1}|${r.name}`} className="text-slate-900 bg-white">{tr("automation.stageColon", { index: i + 1, name: r.name })}</option>)}
                       </select>
                     ) : (
                       <div className="grid grid-cols-2 gap-3">
-                        <input type="number" min={1} value={form.stage_index || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, stage_index: Number(e.target.value) }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" placeholder={tr("automation.idxPlaceholder")} />
-                        <input type="text" value={form.stage_name || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, stage_name: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" placeholder={tr("automation.stageNamePlaceholder")} />
+                        <input type="number" min={1} value={form.stage_index || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, stage_index: Number(e.target.value) }))} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all" placeholder={tr("automation.idxPlaceholder")} />
+                        <input type="text" value={form.stage_name || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, stage_name: e.target.value }))} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all" placeholder={tr("automation.stageNamePlaceholder")} />
                       </div>
                     )}
                   </div>
@@ -573,16 +573,16 @@ export default function AutomationNodeModal({
                   {/* Trigger Criteria */}
                   {type !== "onboarding" && (
                     <div>
-                      <label htmlFor="automation-trigger-criteria" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.triggerConditionLabel")} {type === "mail" && <span className="text-red-400">*</span>}</label>
+                      <label htmlFor="automation-trigger-criteria" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.triggerConditionLabel")} {type === "mail" && <span className="text-red-400">*</span>}</label>
                       <textarea
                         id="automation-trigger-criteria"
                         value={form.criteria || ""}
                         onChange={(e) => setForm((f: FormState) => ({ ...f, criteria: e.target.value }))} 
-                        className="w-full px-3.5 py-2.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all resize-none" 
+                        className="w-full px-3.5 py-2.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all resize-none" 
                         rows={3}
                         placeholder={tr("automation.criteriaPlaceholderScore")}
                       />
-                      <p className="text-[11px] text-[#8A929E] mt-1.5 ml-0.5">{tr("automation.clearConditionsHelp")}</p>
+                      <p className="text-[11px] text-[#757575] mt-1.5 ml-0.5">{tr("automation.clearConditionsHelp")}</p>
                     </div>
                   )}
 
@@ -592,8 +592,8 @@ export default function AutomationNodeModal({
                     {/* MAIL Action */}
                     {type === "mail" && (
                       <div>
-                        <label htmlFor="automation-email-template" className="block text-[11.5px] font-bold text-[#5B53E0] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.emailTemplate")} <span className="text-red-400">*</span></label>
-                        <select id="automation-email-template" value={form.template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
+                        <label htmlFor="automation-email-template" className="block text-[11.5px] font-bold text-[#1976D2] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.emailTemplate")} <span className="text-red-400">*</span></label>
+                        <select id="automation-email-template" value={form.template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all cursor-pointer">
                           <option value="" className="text-slate-900 bg-white">{tr("automation.selectTemplateEllipsis")}</option>
                           {emailTemplates.map((t: Template) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                         </select>
@@ -603,8 +603,8 @@ export default function AutomationNodeModal({
                     {/* ASSESSMENT Action */}
                     {type === "assessment" && (
                       <>
-                        <div className="bg-[#FEF3E2]/50 p-4 rounded-[12px] border border-[#FCE1BF] shadow-sm">
-                          <label htmlFor="automation-assessment-template" className="block text-[11.5px] font-bold text-[#D97706] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.useTemplateOptional")}</label>
+                        <div className="bg-[#FFF3E0]/50 p-4 rounded-[4px] border border-[#FFE0B2] shadow-sm">
+                          <label htmlFor="automation-assessment-template" className="block text-[11.5px] font-bold text-[#EF6C00] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.useTemplateOptional")}</label>
                           <select
                             id="automation-assessment-template"
                             value={form.template_id || ""}
@@ -621,7 +621,7 @@ export default function AutomationNodeModal({
                                 setForm((f: FormState) => ({ ...f, template_id: "" }));
                               }
                             }}
-                            className="w-full h-10 px-3 rounded-[10px] border border-[#FCE1BF] bg-white text-[13.5px] font-medium text-[#374151] outline-none focus:border-[#D97706] focus:ring-2 focus:ring-[#D97706]/20 transition-all cursor-pointer"
+                            className="w-full h-10 px-3 rounded-[4px] border border-[#FFE0B2] bg-white text-[13.5px] font-medium text-[#424242] outline-none focus:border-[#EF6C00] focus:ring-2 focus:ring-[#EF6C00]/20 transition-all cursor-pointer"
                           >
                             <option value="" className="text-slate-900 bg-white">{tr("automation.customConfig")}</option>
                             {assessmentTemplates.map((t) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
@@ -630,33 +630,33 @@ export default function AutomationNodeModal({
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label htmlFor="automation-assessment-type" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.typeLabel")}</label>
-                            <select id="automation-assessment-type" value={form.assessment_type || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, assessment_type: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
+                            <label htmlFor="automation-assessment-type" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.typeLabel")}</label>
+                            <select id="automation-assessment-type" value={form.assessment_type || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, assessment_type: e.target.value }))} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all cursor-pointer">
                               <option value="APTITUDE" className="text-slate-900 bg-white">{tr("automation.aptitude")}</option>
                               <option value="CODING" className="text-slate-900 bg-white">{tr("automation.coding")}</option>
                               <option value="BOTH" className="text-slate-900 bg-white">{tr("automation.both")}</option>
                             </select>
                           </div>
                           <div>
-                            <label htmlFor="automation-topic" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.topicLabel")} <span className="text-red-400">*</span></label>
-                            <input id="automation-topic" type="text" value={form.topic || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, topic: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" placeholder={tr("automation.topicPlaceholder")} />
+                            <label htmlFor="automation-topic" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.topicLabel")} <span className="text-red-400">*</span></label>
+                            <input id="automation-topic" type="text" value={form.topic || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, topic: e.target.value }))} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all" placeholder={tr("automation.topicPlaceholder")} />
                           </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label htmlFor="automation-question-count" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.questionsLabel")}</label>
-                            <input id="automation-question-count" type="number" value={form.question_count || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, question_count: Number(e.target.value) }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" />
+                            <label htmlFor="automation-question-count" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.questionsLabel")}</label>
+                            <input id="automation-question-count" type="number" value={form.question_count || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, question_count: Number(e.target.value) }))} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all" />
                           </div>
                           <div>
-                            <label htmlFor="automation-test-duration" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.durationMin")}</label>
-                            <input id="automation-test-duration" type="number" value={form.test_duration || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, test_duration: Number(e.target.value) }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" />
+                            <label htmlFor="automation-test-duration" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.durationMin")}</label>
+                            <input id="automation-test-duration" type="number" value={form.test_duration || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, test_duration: Number(e.target.value) }))} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all" />
                           </div>
                         </div>
 
                         <div>
-                          <label htmlFor="automation-assessment-email-template" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.inviteEmailTemplate")}</label>
-                          <select id="automation-assessment-email-template" value={form.email_template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, email_template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
+                          <label htmlFor="automation-assessment-email-template" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.inviteEmailTemplate")}</label>
+                          <select id="automation-assessment-email-template" value={form.email_template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, email_template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all cursor-pointer">
                             <option value="" className="text-slate-900 bg-white">{tr("automation.defaultInviteEmail")}</option>
                             {emailTemplates.map((t: Template) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                           </select>
@@ -669,7 +669,7 @@ export default function AutomationNodeModal({
                           <button
                             onClick={handleGeneratePreview}
                             disabled={loading}
-                            className="w-full h-11 bg-[#5B53E0] text-white rounded-[10px] text-[13px] font-semibold hover:bg-[#4A43C9] shadow-md shadow-[#5B53E0]/15 active:scale-95 transition-all flex items-center justify-center gap-2 border border-[#5B53E0]/20 disabled:opacity-50"
+                            className="w-full h-11 bg-[#1976D2] text-white rounded-[4px] text-[13px] font-semibold hover:bg-[#1565C0] shadow-md shadow-[#1976D2]/15 active:scale-95 transition-all flex items-center justify-center gap-2 border border-[#1976D2]/20 disabled:opacity-50"
                           >
                              {loading ? (
                                <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -687,8 +687,8 @@ export default function AutomationNodeModal({
                       <>
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label htmlFor="automation-interview-type" className="block text-[11.5px] font-bold text-[#0E8A6E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.interviewType")}</label>
-                            <select id="automation-interview-type" value={form.interview_type || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, interview_type: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
+                            <label htmlFor="automation-interview-type" className="block text-[11.5px] font-bold text-[#2E7D32] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.interviewType")}</label>
+                            <select id="automation-interview-type" value={form.interview_type || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, interview_type: e.target.value }))} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all cursor-pointer">
                               <option value="GMEET" className="text-slate-900 bg-white">Google Meet</option>
                               <option value="AI" className="text-slate-900 bg-white">{tr("automation.aiInterview")}</option>
                             </select>
@@ -696,15 +696,15 @@ export default function AutomationNodeModal({
                           {form.interview_type === "AI" && (
                             <div>
                                <div className="flex items-center justify-between mb-2 ml-0.5">
-                                 <label htmlFor="automation-interview-template" className="block text-[11.5px] font-bold text-[#0E8A6E] uppercase tracking-wider">{tr("automation.aiTemplate")}</label>
+                                 <label htmlFor="automation-interview-template" className="block text-[11.5px] font-bold text-[#2E7D32] uppercase tracking-wider">{tr("automation.aiTemplate")}</label>
                                  <button
                                    onClick={() => window.open('/enterprise/templates/interview-templates', '_blank')}
-                                   className="text-[11px] font-semibold text-[#5B53E0] hover:underline"
+                                   className="text-[11px] font-semibold text-[#1976D2] hover:underline"
                                  >
                                    + {tr("automation.createNew")}
                                  </button>
                                </div>
-                              <select id="automation-interview-template" value={form.interview_template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, interview_template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
+                              <select id="automation-interview-template" value={form.interview_template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, interview_template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all cursor-pointer">
                                 <option value="" className="text-slate-900 bg-white">{tr("automation.selectAiTemplateOption")}</option>
                                 {interviewTemplates.map((t: Template) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.title || t.name || tr("automation.untitledTemplate")}</option>)}
                               </select>
@@ -714,27 +714,27 @@ export default function AutomationNodeModal({
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label htmlFor="automation-start-date" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.availableFrom")} <span className="text-red-400">*</span></label>
-                            <input id="automation-start-date" type="date" value={form.start_date || ""} min={new Date().toISOString().split('T')[0]} onChange={(e) => setForm((f: FormState) => ({ ...f, start_date: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" />
+                            <label htmlFor="automation-start-date" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.availableFrom")} <span className="text-red-400">*</span></label>
+                            <input id="automation-start-date" type="date" value={form.start_date || ""} min={new Date().toISOString().split('T')[0]} onChange={(e) => setForm((f: FormState) => ({ ...f, start_date: e.target.value }))} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all" />
                           </div>
                           <div>
-                            <label htmlFor="automation-end-date" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.availableTo")} <span className="text-red-400">*</span></label>
-                            <input id="automation-end-date" type="date" value={form.end_date || ""} min={form.start_date || new Date().toISOString().split('T')[0]} onChange={(e) => setForm((f: FormState) => ({ ...f, end_date: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" />
+                            <label htmlFor="automation-end-date" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.availableTo")} <span className="text-red-400">*</span></label>
+                            <input id="automation-end-date" type="date" value={form.end_date || ""} min={form.start_date || new Date().toISOString().split('T')[0]} onChange={(e) => setForm((f: FormState) => ({ ...f, end_date: e.target.value }))} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all" />
                           </div>
                         </div>
 
                         <div className="grid grid-cols-4 gap-4">
                           <div>
-                            <label htmlFor="automation-start-time" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.startShort")} <span className="text-red-400">*</span></label>
-                            <input id="automation-start-time" type="time" value={form.start_time || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, start_time: e.target.value }))} className="w-full h-11 px-2.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[13.5px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" />
+                            <label htmlFor="automation-start-time" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.startShort")} <span className="text-red-400">*</span></label>
+                            <input id="automation-start-time" type="time" value={form.start_time || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, start_time: e.target.value }))} className="w-full h-11 px-2.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[13.5px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all" />
                           </div>
                           <div>
-                            <label htmlFor="automation-end-time" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.endShort")} <span className="text-red-400">*</span></label>
-                            <input id="automation-end-time" type="time" value={form.end_time || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, end_time: e.target.value }))} className="w-full h-11 px-2.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[13.5px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" />
+                            <label htmlFor="automation-end-time" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.endShort")} <span className="text-red-400">*</span></label>
+                            <input id="automation-end-time" type="time" value={form.end_time || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, end_time: e.target.value }))} className="w-full h-11 px-2.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[13.5px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all" />
                           </div>
                           <div>
-                            <label htmlFor="automation-interview-duration" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.duration")} <span className="text-red-400">*</span></label>
-                            <select id="automation-interview-duration" value={form.duration || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, duration: e.target.value }))} className="w-full h-11 px-2 rounded-[10px] border border-[#E1E4E8] bg-white text-[13.5px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
+                            <label htmlFor="automation-interview-duration" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.duration")} <span className="text-red-400">*</span></label>
+                            <select id="automation-interview-duration" value={form.duration || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, duration: e.target.value }))} className="w-full h-11 px-2 rounded-[4px] border border-[#E0E0E0] bg-white text-[13.5px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all cursor-pointer">
                               <option value="15" className="text-slate-900 bg-white">15m</option>
                               <option value="30" className="text-slate-900 bg-white">30m</option>
                               <option value="45" className="text-slate-900 bg-white">45m</option>
@@ -742,26 +742,26 @@ export default function AutomationNodeModal({
                             </select>
                           </div>
                           <div>
-                            <label htmlFor="automation-daily-limit" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.limitShort")} <span className="text-red-400">*</span></label>
-                            <input id="automation-daily-limit" type="number" min={1} value={form.daily_limit || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, daily_limit: Number(e.target.value) }))} className="w-full h-11 px-2.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[13.5px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" />
+                            <label htmlFor="automation-daily-limit" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.limitShort")} <span className="text-red-400">*</span></label>
+                            <input id="automation-daily-limit" type="number" min={1} value={form.daily_limit || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, daily_limit: Number(e.target.value) }))} className="w-full h-11 px-2.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[13.5px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all" />
                           </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label htmlFor="automation-interviewer-email" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.interviewerEmail")}</label>
+                            <label htmlFor="automation-interviewer-email" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.interviewerEmail")}</label>
                             <input
                               id="automation-interviewer-email"
                               type="email"
                               value={form.interviewer_email || ""} 
                               onChange={(e) => setForm((f: FormState) => ({ ...f, interviewer_email: e.target.value }))} 
-                              className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" 
+                              className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all" 
                               placeholder="johndoe@email.com"
                             />
                           </div>
                           <div>
-                            <label htmlFor="automation-interview-email-template" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.inviteTemplate")}</label>
-                            <select id="automation-interview-email-template" value={form.email_template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, email_template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
+                            <label htmlFor="automation-interview-email-template" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.inviteTemplate")}</label>
+                            <select id="automation-interview-email-template" value={form.email_template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, email_template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all cursor-pointer">
                               <option value="" className="text-slate-900 bg-white">{tr("automation.defaultInvite")}</option>
                               {emailTemplates.map((t: Template) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                             </select>
@@ -770,7 +770,7 @@ export default function AutomationNodeModal({
                         <div className="pt-2">
                            <button
                              onClick={handleGenerateTimeSlots}
-                             className="w-full h-11 bg-[#5B53E0] text-white rounded-[10px] text-[13px] font-semibold hover:bg-[#4A43C9] shadow-md shadow-[#5B53E0]/15 active:scale-95 transition-all flex items-center justify-center gap-2 border border-[#5B53E0]/20"
+                             className="w-full h-11 bg-[#1976D2] text-white rounded-[4px] text-[13px] font-semibold hover:bg-[#1565C0] shadow-md shadow-[#1976D2]/15 active:scale-95 transition-all flex items-center justify-center gap-2 border border-[#1976D2]/20"
                            >
                               <span className="material-symbols-rounded text-lg">schedule</span>
                               {tr("automation.nextConfigureTimeSlots")}
@@ -783,15 +783,15 @@ export default function AutomationNodeModal({
                     {type === "onboarding" && (
                       <>
                         <div>
-                          <label htmlFor="automation-onboarding-template" className="block text-[11.5px] font-bold text-[#8B5CF6] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.onboardingTemplate")} <span className="text-red-400">*</span></label>
-                          <select id="automation-onboarding-template" value={form.template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
+                          <label htmlFor="automation-onboarding-template" className="block text-[11.5px] font-bold text-[#42A5F5] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.onboardingTemplate")} <span className="text-red-400">*</span></label>
+                          <select id="automation-onboarding-template" value={form.template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all cursor-pointer">
                             <option value="" className="text-slate-900 bg-white">{tr("automation.selectTemplateEllipsis")}</option>
                             {onboardingTemplates.map((t: Template) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                           </select>
                         </div>
                         <div>
-                          <label htmlFor="automation-onboarding-email-template" className="block text-[11.5px] font-bold text-[#8B5CF6] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.introEmailTemplate")}</label>
-                          <select id="automation-onboarding-email-template" value={form.email_template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, email_template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all cursor-pointer">
+                          <label htmlFor="automation-onboarding-email-template" className="block text-[11.5px] font-bold text-[#42A5F5] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.introEmailTemplate")}</label>
+                          <select id="automation-onboarding-email-template" value={form.email_template_id || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, email_template_id: e.target.value }))} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all cursor-pointer">
                             <option value="" className="text-slate-900 bg-white">{tr("automation.noIntroEmail")}</option>
                             {emailTemplates.map((t: Template) => <option key={t.id} value={t.id} className="text-slate-900 bg-white">{t.name}</option>)}
                           </select>
@@ -801,26 +801,26 @@ export default function AutomationNodeModal({
                   </div>
 
                   {/* AUTOMATION SETTINGS (Common) */}
-                  <div className="pt-6 border-t border-[#E8EAED] flex flex-col gap-4">
-                    <span className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-1 ml-0.5">{tr("automation.automationLogic")}</span>
+                  <div className="pt-6 border-t border-[#E0E0E0] flex flex-col gap-4">
+                    <span className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-1 ml-0.5">{tr("automation.automationLogic")}</span>
                     
-                    <div className="flex items-center justify-between p-4 bg-[#F7F8FA]/50 border border-[#E1E4E8] rounded-[12px]">
+                    <div className="flex items-center justify-between p-4 bg-[#FAFAFA]/50 border border-[#E0E0E0] rounded-[4px]">
                         <div>
-                          <p className="text-[14px] font-bold text-[#15171C]">{tr("automation.enabledStatus")}</p>
-                          <p className="text-[11px] text-[#8A929E] mt-0.5">{tr("automation.triggerAutomationsDesc")}</p>
+                          <p className="text-[14px] font-bold text-[#212121]">{tr("automation.enabledStatus")}</p>
+                          <p className="text-[11px] text-[#757575] mt-0.5">{tr("automation.triggerAutomationsDesc")}</p>
                         </div>
-                        <button onClick={() => setForm((f: FormState) => ({ ...f, is_enabled: !f.is_enabled }))} className={`relative w-11 h-6 rounded-full transition-all duration-300 ${form.is_enabled ? "bg-[#5B53E0]" : "bg-slate-200"}`}>
+                        <button onClick={() => setForm((f: FormState) => ({ ...f, is_enabled: !f.is_enabled }))} className={`relative w-11 h-6 rounded-full transition-all duration-300 ${form.is_enabled ? "bg-[#1976D2]" : "bg-slate-200"}`}>
                           <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300 ${form.is_enabled ? "translate-x-5" : ""}`} />
                         </button>
                     </div>
 
                     {(type === "mail" || type === "assessment" || type === "interview" || type === "onboarding") && (
-                      <div className="flex items-center justify-between p-4 bg-[#F7F8FA]/50 border border-[#E1E4E8] rounded-[12px]">
+                      <div className="flex items-center justify-between p-4 bg-[#FAFAFA]/50 border border-[#E0E0E0] rounded-[4px]">
                           <div>
-                            <p className="text-[14px] font-bold text-[#15171C]">{tr("automation.autoMoveCandidate")}</p>
-                            <p className="text-[11px] text-[#8A929E] mt-0.5">{tr("automation.advanceAfterTrigger")}</p>
+                            <p className="text-[14px] font-bold text-[#212121]">{tr("automation.autoMoveCandidate")}</p>
+                            <p className="text-[11px] text-[#757575] mt-0.5">{tr("automation.advanceAfterTrigger")}</p>
                           </div>
-                          <button onClick={() => setForm((f: FormState) => ({ ...f, auto_move: !f.auto_move }))} className={`relative w-11 h-6 rounded-full transition-all duration-300 ${form.auto_move ? "bg-[#5B53E0]" : "bg-slate-200"}`}>
+                          <button onClick={() => setForm((f: FormState) => ({ ...f, auto_move: !f.auto_move }))} className={`relative w-11 h-6 rounded-full transition-all duration-300 ${form.auto_move ? "bg-[#1976D2]" : "bg-slate-200"}`}>
                             <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300 ${form.auto_move ? "translate-x-5" : ""}`} />
                           </button>
                       </div>
@@ -828,20 +828,20 @@ export default function AutomationNodeModal({
 
                     {(type === "mail" || type === "assessment") && (
                       <div className="space-y-4">
-                        <div className="flex items-center justify-between p-4 bg-[#F7F8FA]/50 border border-[#E1E4E8] rounded-[12px]">
+                        <div className="flex items-center justify-between p-4 bg-[#FAFAFA]/50 border border-[#E0E0E0] rounded-[4px]">
                             <div>
-                              <p className="text-[14px] font-bold text-[#15171C]">{tr("automation.scheduleMode")}</p>
-                              <p className="text-[11px] text-[#8A929E] mt-0.5">{form.is_immediate ? tr("automation.immediateExecution") : tr("automation.scheduledExecution")}</p>
+                              <p className="text-[14px] font-bold text-[#212121]">{tr("automation.scheduleMode")}</p>
+                              <p className="text-[11px] text-[#757575] mt-0.5">{form.is_immediate ? tr("automation.immediateExecution") : tr("automation.scheduledExecution")}</p>
                             </div>
-                            <button onClick={() => setForm((f: FormState) => ({ ...f, is_immediate: !f.is_immediate }))} className={`relative w-11 h-6 rounded-full transition-all duration-300 ${form.is_immediate ? "bg-[#5B53E0]" : "bg-slate-200"}`}>
+                            <button onClick={() => setForm((f: FormState) => ({ ...f, is_immediate: !f.is_immediate }))} className={`relative w-11 h-6 rounded-full transition-all duration-300 ${form.is_immediate ? "bg-[#1976D2]" : "bg-slate-200"}`}>
                               <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-all duration-300 ${form.is_immediate ? "translate-x-5" : ""}`} />
                             </button>
                         </div>
 
                         {!form.is_immediate && (
                           <div className="px-1 animate-in slide-in-from-top-2 duration-300">
-                              <label htmlFor="automation-send-at" className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.sendDateTime")}</label>
-                              <input id="automation-send-at" type="datetime-local" value={form.send_at || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, send_at: e.target.value }))} className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all" />
+                              <label htmlFor="automation-send-at" className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.sendDateTime")}</label>
+                              <input id="automation-send-at" type="datetime-local" value={form.send_at || ""} onChange={(e) => setForm((f: FormState) => ({ ...f, send_at: e.target.value }))} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all" />
                           </div>
                         )}
                       </div>
@@ -853,7 +853,7 @@ export default function AutomationNodeModal({
                    {type === "assessment" && (
                      <div className="space-y-4">
                         <div className="flex items-center justify-between mb-2">
-                           <h3 className="text-[13px] font-bold text-[#15171C]">{tr("automation.questionBank")}</h3>
+                           <h3 className="text-[13px] font-bold text-[#212121]">{tr("automation.questionBank")}</h3>
                            <button 
                                onClick={() => {
                                  const newQ = form.assessment_type === 'CODING' ? {
@@ -872,33 +872,33 @@ export default function AutomationNodeModal({
                                  };
                                  setForm((f: FormState) => ({ ...f, generated_questions: [...(f.generated_questions || []), newQ] }));
                                }}
-                               className="flex items-center gap-2 px-3 py-1.5 bg-white border border-[#E1E4E8] rounded-[10px] text-[12px] font-semibold text-[#5B53E0] hover:bg-[#5B53E0] hover:text-white transition-all shadow-sm"
+                               className="flex items-center gap-2 px-3 py-1.5 bg-white border border-[#E0E0E0] rounded-[4px] text-[12px] font-semibold text-[#1976D2] hover:bg-[#1976D2] hover:text-white transition-all shadow-sm"
                              >
                                <span className="material-symbols-rounded text-sm">add</span>
                                {tr("automation.addQuestion")}
                              </button>
                         </div>
                         {(!form.generated_questions || form.generated_questions.length === 0) ? (
-                          <div className="py-12 flex flex-col items-center justify-center bg-[#F7F8FA]/50 rounded-[14px] border-2 border-dashed border-[#E1E4E8]">
-                             <span className="material-symbols-rounded text-[#9AA3AF] text-3xl mb-2">auto_awesome</span>
-                             <p className="text-[13px] font-semibold text-[#8A929E]">{tr("automation.noQuestionsYet")}</p>
-                             <button onClick={() => setActiveTab("config")} className="mt-2 text-[12px] text-[#5B53E0] font-bold hover:underline">{tr("automation.goToConfigGenerate")}</button>
+                          <div className="py-12 flex flex-col items-center justify-center bg-[#FAFAFA]/50 rounded-[4px] border-2 border-dashed border-[#E0E0E0]">
+                             <span className="material-symbols-rounded text-[#9E9E9E] text-3xl mb-2">auto_awesome</span>
+                             <p className="text-[13px] font-semibold text-[#757575]">{tr("automation.noQuestionsYet")}</p>
+                             <button onClick={() => setActiveTab("config")} className="mt-2 text-[12px] text-[#1976D2] font-bold hover:underline">{tr("automation.goToConfigGenerate")}</button>
                           </div>
                         ) : (
                           <div className="space-y-6">
                              {form.generated_questions.map((q: Question, i: number) => (
-                               <div key={q.id || i} className="bg-white border border-[#E8EAED] rounded-[14px] p-6 shadow-sm hover:shadow-md transition-all relative group">
-                                  <div className="absolute -top-2.5 -left-2.5 w-7 h-7 bg-[#5B53E0] text-white rounded-[8px] flex items-center justify-center font-bold shadow-md text-xs">#{i + 1}</div>
+                               <div key={q.id || i} className="bg-white border border-[#E0E0E0] rounded-[4px] p-6 shadow-sm hover:shadow-md transition-all relative group">
+                                  <div className="absolute -top-2.5 -left-2.5 w-7 h-7 bg-[#1976D2] text-white rounded-[4px] flex items-center justify-center font-bold shadow-md text-xs">#{i + 1}</div>
                                   
                                   <div className="flex justify-between gap-2 mb-4">
-                                     <span className="text-[11px] font-bold text-[#8A929E] uppercase tracking-wider ml-6">
+                                     <span className="text-[11px] font-bold text-[#757575] uppercase tracking-wider ml-6">
                                        {tr("automation.taskLabel", { type: q.type || form.assessment_type })}
                                      </span>
                                      <button 
                                        onClick={() => {
                                          setForm((f: FormState) => ({ ...f, generated_questions: (f.generated_questions || []).filter((_: Question, idx: number) => idx !== i) }));
                                        }}
-                                       className="w-8 h-8 rounded-[10px] flex items-center justify-center text-[#9AA3AF] hover:text-[#EF4444] hover:bg-[#FDECEC] transition-all opacity-0 group-hover:opacity-100"
+                                       className="w-8 h-8 rounded-[4px] flex items-center justify-center text-[#9E9E9E] hover:text-[#E53935] hover:bg-[#FFEBEE] transition-all opacity-0 group-hover:opacity-100"
                                      >
                                          <span className="material-symbols-rounded text-base">delete</span>
                                      </button>
@@ -908,7 +908,7 @@ export default function AutomationNodeModal({
                                     {(q.type === 'APTITUDE' || (!q.type && form.assessment_type === 'APTITUDE')) ? (
                                       <>
                                         <div>
-                                          <label htmlFor={`automation-question-text-${i}`} className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.questionText")}</label>
+                                          <label htmlFor={`automation-question-text-${i}`} className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.questionText")}</label>
                                           <textarea
                                             id={`automation-question-text-${i}`}
                                             value={q.question}
@@ -917,7 +917,7 @@ export default function AutomationNodeModal({
                                               newQs[i].question = e.target.value;
                                               setForm((f: FormState) => ({ ...f, generated_questions: newQs }));
                                             }}
-                                            className="w-full px-3.5 py-2.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all h-20 resize-none font-medium"
+                                            className="w-full px-3.5 py-2.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all h-20 resize-none font-medium"
                                             placeholder={tr("automation.enterQuestionText")}
                                           />
                                         </div>
@@ -931,7 +931,7 @@ export default function AutomationNodeModal({
                                                   newQs[i]!.options![optIdx] = e.target.value;
                                                   setForm((f: FormState) => ({ ...f, generated_questions: newQs }));
                                                 }}
-                                                className={`w-full h-11 pl-11 pr-4 rounded-[10px] border-2 text-[13.5px] font-semibold transition-all ${q.correct_answer === opt ? "border-[#5B53E0] bg-[#ECEBFB]/50 text-[#5B53E0]" : "border-[#E1E4E8] bg-white text-[#374151] focus:border-[#5B53E0]"}`}
+                                                className={`w-full h-11 pl-11 pr-4 rounded-[4px] border-2 text-[13.5px] font-semibold transition-all ${q.correct_answer === opt ? "border-[#1976D2] bg-[#E3F2FD]/50 text-[#1976D2]" : "border-[#E0E0E0] bg-white text-[#424242] focus:border-[#1976D2]"}`}
                                                 placeholder={tr("automation.optionN", { n: optIdx + 1 })}
                                               />
                                               <button 
@@ -940,7 +940,7 @@ export default function AutomationNodeModal({
                                                   newQs[i].correct_answer = opt;
                                                   setForm((f: FormState) => ({ ...f, generated_questions: newQs }));
                                                 }}
-                                                className={`absolute left-3 top-3 w-5 h-5 rounded-[6px] flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#5B53E0] text-white" : "bg-slate-100 text-[#8A929E] hover:bg-slate-200"}`}
+                                                className={`absolute left-3 top-3 w-5 h-5 rounded-[3px] flex items-center justify-center transition-all ${q.correct_answer === opt ? "bg-[#1976D2] text-white" : "bg-slate-100 text-[#757575] hover:bg-slate-200"}`}
                                               >
                                                 <span className="material-symbols-rounded text-xs">{q.correct_answer === opt ? "check" : "circle"}</span>
                                               </button>
@@ -951,7 +951,7 @@ export default function AutomationNodeModal({
                                     ) : (
                                       <>
                                         <div>
-                                          <label htmlFor={`automation-problem-title-${i}`} className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.problemTitle")}</label>
+                                          <label htmlFor={`automation-problem-title-${i}`} className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.problemTitle")}</label>
                                           <input
                                             id={`automation-problem-title-${i}`}
                                             type="text"
@@ -961,12 +961,12 @@ export default function AutomationNodeModal({
                                               newQs[i].title = e.target.value;
                                               setForm((f: FormState) => ({ ...f, generated_questions: newQs }));
                                             }}
-                                            className="w-full h-11 px-3.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all font-medium"
+                                            className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all font-medium"
                                             placeholder={tr("automation.problemTitlePlaceholder")}
                                           />
                                         </div>
                                         <div>
-                                          <label htmlFor={`automation-problem-statement-${i}`} className="block text-[11.5px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.problemStatement")}</label>
+                                          <label htmlFor={`automation-problem-statement-${i}`} className="block text-[11.5px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-0.5">{tr("automation.problemStatement")}</label>
                                           <textarea
                                             id={`automation-problem-statement-${i}`}
                                             value={q.problem_statement || ''}
@@ -975,7 +975,7 @@ export default function AutomationNodeModal({
                                               newQs[i].problem_statement = e.target.value;
                                               setForm((f: FormState) => ({ ...f, generated_questions: newQs }));
                                             }}
-                                            className="w-full px-3.5 py-2.5 rounded-[10px] border border-[#E1E4E8] bg-white text-[14px] font-medium text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all h-32 resize-none font-medium"
+                                            className="w-full px-3.5 py-2.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[14px] font-medium text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all h-32 resize-none font-medium"
                                             placeholder={tr("automation.enterProblemDetails")}
                                           />
                                         </div>
@@ -992,7 +992,7 @@ export default function AutomationNodeModal({
                    {type === "interview" && (
                      <div className="space-y-4">
                         <div className="flex items-center justify-between mb-2">
-                           <h3 className="text-[13px] font-bold text-[#15171C]">{tr("automation.timeSlots")}</h3>
+                           <h3 className="text-[13px] font-bold text-[#212121]">{tr("automation.timeSlots")}</h3>
                            <button 
                              onClick={() => {
                                const limit = Number(form.daily_limit) || 0;
@@ -1003,21 +1003,21 @@ export default function AutomationNodeModal({
                                setForm((f: FormState) => ({ ...f, time_slots: [...(f.time_slots || []), "09:00"] }));
                              }}
                              disabled={Number(form.daily_limit) > 0 && form.time_slots?.length >= Number(form.daily_limit)}
-                             className="text-[12px] font-bold text-[#5B53E0] hover:underline disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:no-underline"
+                             className="text-[12px] font-bold text-[#1976D2] hover:underline disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:no-underline"
                            >
                              {tr("automation.addSlotPlus")}
                            </button>
                         </div>
                         {(!form.time_slots || form.time_slots.length === 0) ? (
-                          <div className="py-12 flex flex-col items-center justify-center bg-[#F7F8FA]/50 rounded-[14px] border-2 border-dashed border-[#E1E4E8]">
-                             <span className="material-symbols-rounded text-[#9AA3AF] text-3xl mb-2">schedule</span>
-                             <p className="text-[13px] font-semibold text-[#8A929E]">{tr("automation.noTimeSlotsGenerated")}</p>
-                             <button onClick={handleGenerateTimeSlots} className="mt-2 text-[12px] text-[#5B53E0] font-bold hover:underline">{tr("automation.autoGenerateSlotsPlain")}</button>
+                          <div className="py-12 flex flex-col items-center justify-center bg-[#FAFAFA]/50 rounded-[4px] border-2 border-dashed border-[#E0E0E0]">
+                             <span className="material-symbols-rounded text-[#9E9E9E] text-3xl mb-2">schedule</span>
+                             <p className="text-[13px] font-semibold text-[#757575]">{tr("automation.noTimeSlotsGenerated")}</p>
+                             <button onClick={handleGenerateTimeSlots} className="mt-2 text-[12px] text-[#1976D2] font-bold hover:underline">{tr("automation.autoGenerateSlotsPlain")}</button>
                           </div>
                         ) : (
                           <div className="grid grid-cols-3 gap-3">
                              {form.time_slots.map((slot: string, i: number) => (
-                               <div key={i} className="flex items-center gap-2 bg-[#F7F8FA]/50 border border-[#E1E4E8] rounded-[10px] p-2 group hover:border-[#5B53E0]/50 transition-all">
+                               <div key={i} className="flex items-center gap-2 bg-[#FAFAFA]/50 border border-[#E0E0E0] rounded-[4px] p-2 group hover:border-[#1976D2]/50 transition-all">
                                   <input 
                                     type="time" 
                                     value={slot} 
@@ -1026,13 +1026,13 @@ export default function AutomationNodeModal({
                                       newSlots[i] = e.target.value;
                                       setForm((f: FormState) => ({ ...f, time_slots: newSlots }));
                                     }}
-                                    className="bg-transparent border-none p-0 text-[13px] font-semibold text-[#15171C] focus:ring-0 flex-1 outline-none cursor-pointer"
+                                    className="bg-transparent border-none p-0 text-[13px] font-semibold text-[#212121] focus:ring-0 flex-1 outline-none cursor-pointer"
                                   />
                                   <button 
                                     onClick={() => {
                                       setForm((f: FormState) => ({ ...f, time_slots: (f.time_slots || []).filter((_: string, idx: number) => idx !== i) }));
                                     }}
-                                    className="text-[#9AA3AF] hover:text-[#EF4444] transition-colors"
+                                    className="text-[#9E9E9E] hover:text-[#E53935] transition-colors"
                                   >
                                      <span className="material-symbols-rounded text-[16px]">close</span>
                                   </button>
@@ -1040,10 +1040,10 @@ export default function AutomationNodeModal({
                              ))} 
                           </div>
                         )} 
-                        <div className="pt-4 mt-4 border-t border-[#E8EAED]">
+                        <div className="pt-4 mt-4 border-t border-[#E0E0E0]">
                            <button 
                              onClick={handleGenerateTimeSlots}
-                             className="w-full h-11 bg-[#15171C] hover:bg-[#1F2127] text-white rounded-[10px] text-[13px] font-semibold transition-all shadow-sm"
+                             className="w-full h-11 bg-[#212121] hover:bg-[#263238] text-white rounded-[4px] text-[13px] font-semibold transition-all shadow-sm"
                            >
                               {tr("automation.refreshRegenerateSlots")}
                            </button>
@@ -1057,11 +1057,11 @@ export default function AutomationNodeModal({
             </div>
 
             {/* Footer */}
-            <div className="p-6 border-t border-[#E8EAED] bg-[#F7F8FA]/50 shrink-0">
+            <div className="p-6 border-t border-[#E0E0E0] bg-[#FAFAFA]/50 shrink-0">
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="w-full h-11 flex items-center justify-center gap-2 text-white rounded-[10px] text-sm font-semibold transition-all active:scale-[0.98] disabled:opacity-60 shadow-md"
+                className="w-full h-11 flex items-center justify-center gap-2 text-white rounded-[4px] text-sm font-semibold transition-all active:scale-[0.98] disabled:opacity-60 shadow-md"
                 style={{ backgroundColor: headerMeta.color, boxShadow: `0 4px 12px -2px ${headerMeta.color}30` }}
               >
                 {saving ? (

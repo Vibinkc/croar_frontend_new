@@ -19,18 +19,18 @@ interface JobActivity {
  * being hidden — an unknown action is still something the team did to this job.
  */
 const ACTION_LOOK: Record<string, { icon: string; cls: string }> = {
-    created: { icon: "add_circle", cls: "bg-[#E6F4EA] text-[#15803D]" },
-    updated: { icon: "edit", cls: "bg-[#E7ECFB] text-[#3559C7]" },
-    assigned: { icon: "person_add", cls: "bg-[#ECEBFB] text-[#5B53E0]" },
-    viewed: { icon: "visibility", cls: "bg-[#F1F2F5] text-[#4B5563]" },
-    published: { icon: "campaign", cls: "bg-[#FEF3E2] text-[#D97706]" },
-    deleted: { icon: "delete", cls: "bg-[#FDECEC] text-[#C0383C]" },
-    note_added: { icon: "sticky_note_2", cls: "bg-[#ECEBFB] text-[#5B53E0]" },
-    attachment_added: { icon: "attach_file", cls: "bg-[#E3F4EF] text-[#0E8A6E]" },
-    attachment_removed: { icon: "delete", cls: "bg-[#FDECEC] text-[#C0383C]" },
+    created: { icon: "add_circle", cls: "bg-[#E8F5E9] text-[#2E7D32]" },
+    updated: { icon: "edit", cls: "bg-[#E3F2FD] text-[#1565C0]" },
+    assigned: { icon: "person_add", cls: "bg-[#E3F2FD] text-[#1976D2]" },
+    viewed: { icon: "visibility", cls: "bg-[#EEEEEE] text-[#4F4F4F]" },
+    published: { icon: "campaign", cls: "bg-[#FFF3E0] text-[#EF6C00]" },
+    deleted: { icon: "delete", cls: "bg-[#FFEBEE] text-[#C62828]" },
+    note_added: { icon: "sticky_note_2", cls: "bg-[#E3F2FD] text-[#1976D2]" },
+    attachment_added: { icon: "attach_file", cls: "bg-[#E8F5E9] text-[#2E7D32]" },
+    attachment_removed: { icon: "delete", cls: "bg-[#FFEBEE] text-[#C62828]" },
 };
 
-const FALLBACK_LOOK = { icon: "radio_button_checked", cls: "bg-[#F1F2F5] text-[#4B5563]" };
+const FALLBACK_LOOK = { icon: "radio_button_checked", cls: "bg-[#EEEEEE] text-[#4F4F4F]" };
 
 /** "attachment_added" → "Attachment added" — used only when there is no translation for the key. */
 const humanise = (action: string) =>
@@ -69,7 +69,7 @@ export default function JobActivitiesTab({ jobId }: { jobId: string }) {
     if (isLoading) {
         return (
             <Card padding="sm" className="animate-in fade-in duration-500">
-                <p className="py-10 text-center text-[13px] text-[#8A929E]">{tr("jobActivity.loading")}</p>
+                <p className="py-10 text-center text-[13px] text-[#757575]">{tr("jobActivity.loading")}</p>
             </Card>
         );
     }
@@ -89,9 +89,9 @@ export default function JobActivitiesTab({ jobId }: { jobId: string }) {
 
     return (
         <Card padding="none" className="overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="px-5 py-4 border-b border-[#F0F0F1]">
-                <h3 className="text-[15px] font-bold text-[#15171C]">{tr("jobActivity.title")}</h3>
-                <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("jobActivity.subtitle")}</p>
+            <div className="px-5 py-4 border-b border-[#EEEEEE]">
+                <h3 className="text-[15px] font-bold text-[#212121]">{tr("jobActivity.title")}</h3>
+                <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("jobActivity.subtitle")}</p>
             </div>
 
             <ol className="px-5 py-4">
@@ -102,7 +102,7 @@ export default function JobActivitiesTab({ jobId }: { jobId: string }) {
                     return (
                         <li key={row.id} className="flex gap-3 relative pb-5 last:pb-0">
                             {/* Connector line — omitted on the last row so the trail ends cleanly. */}
-                            {!isLast && <span className="absolute left-[15px] top-8 bottom-0 w-px bg-[#E8EAED]" />}
+                            {!isLast && <span className="absolute left-[15px] top-8 bottom-0 w-px bg-[#E0E0E0]" />}
                             <span
                                 className={cn(
                                     "w-8 h-8 shrink-0 rounded-full flex items-center justify-center relative z-10",
@@ -112,12 +112,12 @@ export default function JobActivitiesTab({ jobId }: { jobId: string }) {
                                 <span className="material-symbols-rounded text-[17px]">{look.icon}</span>
                             </span>
                             <div className="min-w-0 flex-1 pt-1">
-                                <p className="text-[13px] text-[#15171C] leading-snug">
+                                <p className="text-[13px] text-[#212121] leading-snug">
                                     <span className="font-bold">{row.actor_name || tr("jobActivity.someone")}</span>{" "}
                                     <span className="text-[#4B5057]">{label(row.action).toLowerCase()}</span>
-                                    {extra && <span className="text-[#8A929E]"> — {extra}</span>}
+                                    {extra && <span className="text-[#757575]"> — {extra}</span>}
                                 </p>
-                                <p className="text-[11.5px] text-[#8A929E] mt-0.5">
+                                <p className="text-[11.5px] text-[#757575] mt-0.5">
                                     {new Date(row.created_at).toLocaleString()}
                                 </p>
                             </div>

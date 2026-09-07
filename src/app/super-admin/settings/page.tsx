@@ -85,9 +85,9 @@ export default function PlatformSettingsPage() {
     if (isLoading) {
         return (
             <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
-                <div className="h-16 bg-white rounded-[14px] border border-[#E8EAED] animate-pulse" />
+                <div className="h-16 bg-white rounded-[4px] border border-[#E0E0E0] animate-pulse" />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    {[1, 2].map(i => <div key={i} className="h-44 bg-white rounded-[14px] border border-[#E8EAED] animate-pulse" />)}
+                    {[1, 2].map(i => <div key={i} className="h-44 bg-white rounded-[4px] border border-[#E0E0E0] animate-pulse" />)}
                 </div>
             </div>
         );
@@ -102,9 +102,9 @@ export default function PlatformSettingsPage() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className={`fixed bottom-8 right-8 z-50 px-5 py-3.5 rounded-[12px] shadow-[0_14px_34px_rgba(15,23,42,0.16)] text-[13.5px] font-semibold flex items-center gap-3 border ${toast.type === "success" ? "bg-white border-[#E8EAED] text-[#15171C]" : "bg-[#FDECEC] border-[#F7D7D7] text-[#C0383C]"}`}
+                        className={`fixed bottom-8 right-8 z-50 px-5 py-3.5 rounded-[4px] shadow-[0_14px_34px_rgba(0,0,0,0.16)] text-[13.5px] font-semibold flex items-center gap-3 border ${toast.type === "success" ? "bg-white border-[#E0E0E0] text-[#212121]" : "bg-[#FFEBEE] border-[#FFCDD2] text-[#C62828]"}`}
                     >
-                        <div className={`w-8 h-8 rounded-[10px] flex items-center justify-center ${toast.type === "success" ? "bg-[#E6F4EA] text-[#15803D]" : "bg-[#FDECEC] text-[#C0383C]"}`}>
+                        <div className={`w-8 h-8 rounded-[4px] flex items-center justify-center ${toast.type === "success" ? "bg-[#E8F5E9] text-[#2E7D32]" : "bg-[#FFEBEE] text-[#C62828]"}`}>
                             {toast.type === "success" ? <CheckCircle2 className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
                         </div>
                         {toast.msg}
@@ -128,7 +128,7 @@ export default function PlatformSettingsPage() {
                 {settings.map((setting) => (
                     <Card key={setting.key} interactive className="flex flex-col">
                         <div className="flex items-start justify-between gap-4">
-                            <span className="w-10 h-10 rounded-[11px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                            <span className="w-10 h-10 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
                                 {setting.key === 'signup_enabled' ? (
                                     <UserPlus className="w-5 h-5" />
                                 ) : setting.key === 'google_sso_enabled' || setting.key === 'microsoft_sso_enabled' ? (
@@ -139,11 +139,11 @@ export default function PlatformSettingsPage() {
                             </span>
 
                             <div className="flex items-center gap-3">
-                                {isSaving === setting.key && <RefreshCcw className="w-4 h-4 animate-spin text-[#8A929E]" />}
+                                {isSaving === setting.key && <RefreshCcw className="w-4 h-4 animate-spin text-[#757575]" />}
                                 <button
                                     onClick={() => toggleSetting(setting.key, !!setting.value_bool)}
                                     disabled={isSaving !== null}
-                                    className={`relative w-12 h-6.5 rounded-full transition-colors duration-300 flex items-center px-0.5 disabled:opacity-60 ${setting.value_bool ? 'bg-[#5B53E0]' : 'bg-[#E1E4E8]'}`}
+                                    className={`relative w-12 h-6.5 rounded-full transition-colors duration-300 flex items-center px-0.5 disabled:opacity-60 ${setting.value_bool ? 'bg-[#1976D2]' : 'bg-[#E0E0E0]'}`}
                                     style={{ height: "26px", width: "46px" }}
                                 >
                                     <span className={`w-[20px] h-[20px] bg-white rounded-full shadow-sm transform transition-transform duration-300 ${setting.value_bool ? 'translate-x-[20px]' : 'translate-x-0'}`} />
@@ -152,16 +152,16 @@ export default function PlatformSettingsPage() {
                         </div>
 
                         <div className="mt-4 space-y-1.5">
-                            <h3 className="text-[15px] font-bold text-[#15171C] capitalize">
+                            <h3 className="text-[15px] font-bold text-[#212121] capitalize">
                                 {setting.key.replace(/_/g, ' ')}
                             </h3>
-                            <p className="text-[12.5px] text-[#8A929E] leading-relaxed">
+                            <p className="text-[12.5px] text-[#757575] leading-relaxed">
                                 {setting.description}
                             </p>
                         </div>
 
-                        <div className="mt-5 pt-4 border-t border-[#E8EAED] flex items-center justify-between">
-                            <span className="text-[12px] text-[#8A929E]">{t("superAdmin.globalStatus")}</span>
+                        <div className="mt-5 pt-4 border-t border-[#E0E0E0] flex items-center justify-between">
+                            <span className="text-[12px] text-[#757575]">{t("superAdmin.globalStatus")}</span>
                             <Badge tone={setting.value_bool ? "success" : "danger"} dot>
                                 {setting.value_bool ? t("superAdmin.active") : t("superAdmin.disabled")}
                             </Badge>
@@ -176,16 +176,16 @@ export default function PlatformSettingsPage() {
                     title={<>{t("superAdmin.securityGovernance")}</>}
                     subtitle={t("superAdmin.coreEntryPoints")}
                     action={
-                        <span className={`inline-flex items-center h-7 px-3 rounded-[8px] bg-[#F1F2F5] text-[#4B5563] text-[12px] font-semibold ${jetbrainsMono.className}`}>
+                        <span className={`inline-flex items-center h-7 px-3 rounded-[4px] bg-[#EEEEEE] text-[#4F4F4F] text-[12px] font-semibold ${jetbrainsMono.className}`}>
                             v1.0.4
                         </span>
                     }
                 />
                 <div className="flex items-start gap-4">
-                    <span className="w-11 h-11 rounded-[12px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                    <span className="w-11 h-11 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
                         <ShieldCheck className="w-6 h-6" />
                     </span>
-                    <p className="text-[13.5px] text-[#374151] leading-relaxed max-w-2xl">
+                    <p className="text-[13.5px] text-[#424242] leading-relaxed max-w-2xl">
                         {t("superAdmin.securityGovernanceDesc")}
                     </p>
                 </div>

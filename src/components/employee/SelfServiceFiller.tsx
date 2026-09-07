@@ -58,7 +58,7 @@ export default function SelfServiceFiller({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-[#15171C]/40 p-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-[#212121]/40 p-4 backdrop-blur-sm">
       <div className="my-auto flex w-full max-w-2xl flex-col rounded-2xl border border-slate-100 bg-white shadow-2xl">
         {/* Header */}
         <div className="flex items-start justify-between gap-3 border-b border-slate-100 px-6 py-4">
@@ -84,7 +84,7 @@ export default function SelfServiceFiller({
               {questions.map((q, idx) => (
                 <div key={q.id}>
                   <div className="mb-2 flex items-start gap-2">
-                    <span className="mt-0.5 text-[12px] font-black text-[#5B53E0]">{idx + 1}.</span>
+                    <span className="mt-0.5 text-[12px] font-black text-[#1976D2]">{idx + 1}.</span>
                     <div className="min-w-0">
                       <p className="text-[13.5px] font-bold text-slate-800">{q.text}</p>
                       {q.category && (
@@ -106,8 +106,8 @@ export default function SelfServiceFiller({
                             onClick={() => setVal(q.id, { value: n })}
                             className={`h-10 w-10 rounded-xl border text-[14px] font-black transition-all ${
                               active
-                                ? "border-[#5B53E0] bg-[#5B53E0] text-white shadow-[0_4px_12px_rgba(91,83,224,0.28)]"
-                                : "border-slate-200 bg-white text-slate-500 hover:border-[#5B53E0] hover:text-[#5B53E0]"
+                                ? "border-[#1976D2] bg-[#1976D2] text-white shadow-[0_4px_12px_rgba(25,118,210,0.28)]"
+                                : "border-slate-200 bg-white text-slate-500 hover:border-[#1976D2] hover:text-[#1976D2]"
                             }`}
                           >
                             {n}
@@ -128,16 +128,16 @@ export default function SelfServiceFiller({
                             onClick={() => setVal(q.id, { text: opt })}
                             className={`flex items-center gap-2.5 rounded-xl border px-3.5 py-2.5 text-left text-[13px] font-semibold transition-all ${
                               active
-                                ? "border-[#5B53E0] bg-[#5B53E0]/5 text-[#5B53E0]"
-                                : "border-slate-200 bg-white text-slate-600 hover:border-[#5B53E0]/40"
+                                ? "border-[#1976D2] bg-[#1976D2]/5 text-[#1976D2]"
+                                : "border-slate-200 bg-white text-slate-600 hover:border-[#1976D2]/40"
                             }`}
                           >
                             <span
                               className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full border-2 ${
-                                active ? "border-[#5B53E0]" : "border-slate-300"
+                                active ? "border-[#1976D2]" : "border-slate-300"
                               }`}
                             >
-                              {active && <span className="h-2 w-2 rounded-full bg-[#5B53E0]" />}
+                              {active && <span className="h-2 w-2 rounded-full bg-[#1976D2]" />}
                             </span>
                             {opt}
                           </button>
@@ -153,7 +153,7 @@ export default function SelfServiceFiller({
                         value={answers[q.id]?.text ?? ""}
                         onChange={(e) => setVal(q.id, { text: e.target.value })}
                         placeholder={t("employee.yourAnswerPlaceholder")}
-                        className="w-full resize-none rounded-xl border border-slate-200 bg-white p-3 text-[13.5px] text-slate-700 outline-none transition-all focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/15"
+                        className="w-full resize-none rounded-xl border border-slate-200 bg-white p-3 text-[13.5px] text-slate-700 outline-none transition-all focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15"
                       />
                     </div>
                   )}
@@ -181,7 +181,7 @@ export default function SelfServiceFiller({
               type="button"
               onClick={() => onSubmit(build())}
               disabled={busy || requiredUnanswered > 0 || questions.length === 0}
-              className="rounded-lg bg-[#5B53E0] px-5 py-2 text-[13px] font-bold text-white shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors hover:bg-[#4A42C8] disabled:opacity-50"
+              className="rounded-lg bg-[#1976D2] px-5 py-2 text-[13px] font-bold text-white shadow-[0_4px_12px_rgba(25,118,210,0.28)] transition-colors hover:bg-[#4A42C8] disabled:opacity-50"
             >
               {busy ? t("employee.submitting") : t("employee.submit")}
             </button>

@@ -41,10 +41,10 @@ interface BoardRow {
 }
 
 const CATEGORY_META: Record<string, { icon: string; chip: string }> = {
-    assessment: { icon: "quiz", chip: "bg-[#ECEBFB] text-[#5B53E0]" },
-    job_board: { icon: "campaign", chip: "bg-[#FEF3E2] text-[#B45309]" },
-    meeting: { icon: "co_present", chip: "bg-[#E7ECFB] text-[#3559C7]" },
-    email: { icon: "forward_to_inbox", chip: "bg-[#E3F4EF] text-[#0E8A6E]" },
+    assessment: { icon: "quiz", chip: "bg-[#E3F2FD] text-[#1976D2]" },
+    job_board: { icon: "campaign", chip: "bg-[#FFF3E0] text-[#E65100]" },
+    meeting: { icon: "co_present", chip: "bg-[#E3F2FD] text-[#1565C0]" },
+    email: { icon: "forward_to_inbox", chip: "bg-[#E8F5E9] text-[#2E7D32]" },
 };
 
 /**
@@ -61,10 +61,10 @@ const CATEGORY_META: Record<string, { icon: string; chip: string }> = {
 /** Provider logo, falling back to a branded monogram when the favicon will not load. */
 function IntegrationLogo({ name, src, colour }: { name: string; src?: string | null; colour?: string }) {
     const [failed, setFailed] = useState(false);
-    const tint = colour || "#5B53E0";
+    const tint = colour || "#1976D2";
     if (src && !failed) {
         return (
-            <span className="w-10 h-10 shrink-0 rounded-[11px] border border-[#E8EAED] bg-white flex items-center justify-center overflow-hidden">
+            <span className="w-10 h-10 shrink-0 rounded-[4px] border border-[#E0E0E0] bg-white flex items-center justify-center overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={src} alt="" className="w-5 h-5 object-contain" onError={() => setFailed(true)} />
             </span>
@@ -72,7 +72,7 @@ function IntegrationLogo({ name, src, colour }: { name: string; src?: string | n
     }
     return (
         <span
-            className="w-10 h-10 shrink-0 rounded-[11px] flex items-center justify-center text-[15px] font-extrabold text-white"
+            className="w-10 h-10 shrink-0 rounded-[4px] flex items-center justify-center text-[15px] font-extrabold text-white"
             style={{ background: tint }}
         >
             {name.trim().charAt(0).toUpperCase()}
@@ -170,21 +170,21 @@ export default function AssessmentIntegrations() {
     return (
         <div className="space-y-6">
             <div>
-                <h2 className="text-[16px] font-bold text-[#15171C]">{tr("integrations.assessTitle")}</h2>
-                <p className="text-[13px] text-[#8A929E] mt-0.5 leading-relaxed">
+                <h2 className="text-[16px] font-bold text-[#212121]">{tr("integrations.assessTitle")}</h2>
+                <p className="text-[13px] text-[#757575] mt-0.5 leading-relaxed">
                     {tr("integrations.assessSubtitle", { connected: connectedCount, total: items.length })}
                 </p>
             </div>
 
             {error && (
-                <div className="rounded-[12px] border border-[#F5C6C7] bg-[#FDECEC] px-4 py-3 text-[12.5px] text-[#C0383C]">
+                <div className="rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[12.5px] text-[#C62828]">
                     {error}
                 </div>
             )}
 
             {isLoading ? (
                 <Card padding="sm">
-                    <p className="py-12 text-center text-[13px] text-[#8A929E]">{tr("integrations.loading")}</p>
+                    <p className="py-12 text-center text-[13px] text-[#757575]">{tr("integrations.loading")}</p>
                 </Card>
             ) : (
                 <>
@@ -193,10 +193,10 @@ export default function AssessmentIntegrations() {
                         return (
                             <section key={category} className="space-y-3">
                                 <div className="flex items-center gap-2.5">
-                                    <span className={cn("w-8 h-8 rounded-[10px] flex items-center justify-center", meta.chip)}>
+                                    <span className={cn("w-8 h-8 rounded-[4px] flex items-center justify-center", meta.chip)}>
                                         <span className="material-symbols-rounded text-[18px]">{meta.icon}</span>
                                     </span>
-                                    <h2 className="text-[15px] font-bold text-[#15171C]">
+                                    <h2 className="text-[15px] font-bold text-[#212121]">
                                         {tr(`integrations.category.${category}`)}
                                     </h2>
                                 </div>
@@ -208,7 +208,7 @@ export default function AssessmentIntegrations() {
                                             padding="sm"
                                             className={cn(
                                                 "transition-colors",
-                                                it.connected ? "border-[#BFE3CC] bg-[#FCFDFC]" : "hover:border-[#D4D7DC]"
+                                                it.connected ? "border-[#BFE3CC] bg-[#FCFDFC]" : "hover:border-[#E0E0E0]"
                                             )}
                                         >
                                             <div className="flex items-start justify-between gap-3">
@@ -216,9 +216,9 @@ export default function AssessmentIntegrations() {
                                                     <IntegrationLogo name={it.name} src={it.icon_url} colour={it.brand_color} />
                                                     <div className="min-w-0">
                                                         <div className="flex items-center gap-2 flex-wrap">
-                                                            <h3 className="text-[13.5px] font-bold text-[#15171C]">{it.name}</h3>
+                                                            <h3 className="text-[13.5px] font-bold text-[#212121]">{it.name}</h3>
                                                             {it.connected && (
-                                                                <span className="inline-flex items-center gap-1 text-[10.5px] font-bold px-1.5 py-0.5 rounded-[5px] bg-[#E6F4EA] text-[#15803D]">
+                                                                <span className="inline-flex items-center gap-1 text-[10.5px] font-bold px-1.5 py-0.5 rounded-[3px] bg-[#E8F5E9] text-[#2E7D32]">
                                                                     <span className="material-symbols-rounded text-[13px]">check_circle</span>
                                                                     {it.connection?.verified
                                                                         ? tr("integrations.verified")
@@ -227,17 +227,17 @@ export default function AssessmentIntegrations() {
                                                             )}
                                                             {/* Whether this tool can actually be connected, or only linked to. */}
                                                             {it.api_tier === "free" && (
-                                                                <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[5px] bg-[#ECEBFB] text-[#5B53E0]">
+                                                                <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[3px] bg-[#E3F2FD] text-[#1976D2]">
                                                                     {tr("integrations.freeApi")}
                                                                 </span>
                                                             )}
                                                             {it.api_tier === "paid" && (
-                                                                <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[5px] bg-[#FEF3E2] text-[#B45309]">
+                                                                <span className="text-[10.5px] font-bold px-1.5 py-0.5 rounded-[3px] bg-[#FFF3E0] text-[#E65100]">
                                                                     {tr("integrations.paidApi")}
                                                                 </span>
                                                             )}
                                                         </div>
-                                                        <p className="text-[12px] text-[#8A929E] mt-0.5 leading-relaxed">{it.summary}</p>
+                                                        <p className="text-[12px] text-[#757575] mt-0.5 leading-relaxed">{it.summary}</p>
                                                     </div>
                                                 </div>
                                                 {it.connected ? (
@@ -264,12 +264,12 @@ export default function AssessmentIntegrations() {
                                             <ul className="mt-3 space-y-1">
                                                 {it.capabilities.map(c => (
                                                     <li key={c} className="text-[11.5px] text-[#4B5057] leading-relaxed flex gap-1.5">
-                                                        <span className="material-symbols-rounded text-[14px] text-[#15803D] shrink-0 mt-px">check</span>
+                                                        <span className="material-symbols-rounded text-[14px] text-[#2E7D32] shrink-0 mt-px">check</span>
                                                         {c}
                                                     </li>
                                                 ))}
                                                 {it.limitations.map(l => (
-                                                    <li key={l} className="text-[11.5px] text-[#8A929E] leading-relaxed flex gap-1.5">
+                                                    <li key={l} className="text-[11.5px] text-[#757575] leading-relaxed flex gap-1.5">
                                                         <span className="material-symbols-rounded text-[14px] text-[#B4BAC3] shrink-0 mt-px">remove</span>
                                                         {l}
                                                     </li>
@@ -277,19 +277,19 @@ export default function AssessmentIntegrations() {
                                             </ul>
 
                                             {it.connected && it.connection?.invite_url && (
-                                                <p className="mt-2.5 text-[11px] text-[#8A929E] truncate">
+                                                <p className="mt-2.5 text-[11px] text-[#757575] truncate">
                                                     {tr("integrations.usingLink")}{" "}
-                                                    <span className="text-[#374151]">{it.connection.invite_url}</span>
+                                                    <span className="text-[#424242]">{it.connection.invite_url}</span>
                                                 </p>
                                             )}
 
                                             {openFor === it.key && !it.connected && (
-                                                <div className="mt-3.5 pt-3.5 border-t border-[#F0F0F1] space-y-3">
+                                                <div className="mt-3.5 pt-3.5 border-t border-[#EEEEEE] space-y-3">
                                                     {it.fields.map(f => (
                                                         <div key={f.name}>
                                                             <label
                                                                 htmlFor={`${it.key}-${f.name}`}
-                                                                className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-1.5"
+                                                                className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-1.5"
                                                             >
                                                                 {f.label} {f.required && <span className="text-rose-500">*</span>}
                                                             </label>
@@ -300,7 +300,7 @@ export default function AssessmentIntegrations() {
                                                                 onChange={e => setDraft(d => ({ ...d, [f.name]: e.target.value }))}
                                                             />
                                                             {f.help && (
-                                                                <p className="text-[10.5px] text-[#8A929E] mt-1 leading-relaxed">{f.help}</p>
+                                                                <p className="text-[10.5px] text-[#757575] mt-1 leading-relaxed">{f.help}</p>
                                                             )}
                                                         </div>
                                                     ))}
@@ -316,7 +316,7 @@ export default function AssessmentIntegrations() {
                                                                 href={it.docs_url}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
-                                                                className="text-[12px] font-semibold text-[#5B53E0] hover:text-[#4840C4] ml-auto"
+                                                                className="text-[12px] font-semibold text-[#1976D2] hover:text-[#1565C0] ml-auto"
                                                             >
                                                                 {tr("integrations.docs")}
                                                             </a>
@@ -336,20 +336,20 @@ export default function AssessmentIntegrations() {
                     {boards.length > 0 && (
                         <section className="space-y-3">
                             <div className="flex items-center gap-2.5">
-                                <span className={cn("w-8 h-8 rounded-[10px] flex items-center justify-center", CATEGORY_META.job_board.chip)}>
+                                <span className={cn("w-8 h-8 rounded-[4px] flex items-center justify-center", CATEGORY_META.job_board.chip)}>
                                     <span className="material-symbols-rounded text-[18px]">campaign</span>
                                 </span>
-                                <h2 className="text-[15px] font-bold text-[#15171C]">{tr("integrations.category.job_board")}</h2>
+                                <h2 className="text-[15px] font-bold text-[#212121]">{tr("integrations.category.job_board")}</h2>
                             </div>
                             <Card padding="sm">
-                                <p className="text-[12.5px] text-[#8A929E] leading-relaxed mb-3">
+                                <p className="text-[12.5px] text-[#757575] leading-relaxed mb-3">
                                     {tr("integrations.boardsHint", { count: boards.length })}
                                 </p>
                                 <div className="flex flex-wrap gap-1.5 mb-3.5">
                                     {boards.slice(0, 12).map(b => (
                                         <span
                                             key={b.key}
-                                            className="text-[11px] font-semibold px-2 py-1 rounded-[6px] bg-[#F7F8FA] border border-[#E8EAED] text-[#4B5057]"
+                                            className="text-[11px] font-semibold px-2 py-1 rounded-[3px] bg-[#FAFAFA] border border-[#E0E0E0] text-[#4B5057]"
                                         >
                                             {b.name}
                                         </span>

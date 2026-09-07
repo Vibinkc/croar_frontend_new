@@ -6,9 +6,8 @@
  * Their anatomy is kept exactly: filter rail, a result row with four icon actions and its four
  * labelled blocks (candidate information / company / contact details / skills), a full-height
  * profile drawer with Education, Experience and Skills panels over a sticky action bar, and an
- * Add-to-job dialog with a status filter and a keyword box. What changes is the material —
- * Croar's indigo, hairlines, radii and Hanken Grotesk instead of their blue chrome and 4px
- * corners.
+ * Add-to-job dialog with a status filter and a keyword box. Since the app-wide reskin the
+ * material matches too — Manatal's blue, Material greys, 4px corners and Roboto.
  *
  * Two of their rules are kept because they are right, not because they are theirs:
  *   · Add to job stays disabled until the profile has been imported. A search result is a
@@ -63,12 +62,12 @@ interface Folder {
 
 /** Deterministic avatar tint, so the same person keeps the same colour across renders. */
 const TONES: [string, string][] = [
-    ["#ECEBFB", "#5B53E0"],
-    ["#E3F4EF", "#0E8A6E"],
-    ["#FEF3E2", "#B26B08"],
-    ["#E7ECFB", "#3559C7"],
-    ["#FDECEC", "#C0383C"],
-    ["#F1F2F5", "#4B5563"],
+    ["#E3F2FD", "#1976D2"],
+    ["#E8F5E9", "#2E7D32"],
+    ["#FFF3E0", "#EF6C00"],
+    ["#E3F2FD", "#1565C0"],
+    ["#FFEBEE", "#C62828"],
+    ["#EEEEEE", "#4F4F4F"],
 ];
 function toneFor(seed: string): [string, string] {
     let h = 0;
@@ -108,11 +107,11 @@ function IconAction({
             onClick={onClick}
             disabled={disabled}
             className={cn(
-                "w-9 h-9 rounded-[10px] flex items-center justify-center transition-colors shrink-0",
+                "w-9 h-9 rounded-[4px] flex items-center justify-center transition-colors shrink-0",
                 "disabled:opacity-35 disabled:pointer-events-none",
                 tone === "solid"
                     ? "bg-white/15 text-white hover:bg-white/25"
-                    : "text-[#9AA3AF] hover:bg-[#F4F5F7] hover:text-[#5B53E0]"
+                    : "text-[#9E9E9E] hover:bg-[#F5F6F8] hover:text-[#1976D2]"
             )}
         >
             <span className="material-symbols-rounded text-[20px]">{icon}</span>
@@ -122,13 +121,13 @@ function IconAction({
 
 /** The small grey caption above each block on a result row. */
 function Caption({ children }: { children: React.ReactNode }) {
-    return <p className="text-[10.5px] font-bold uppercase tracking-[0.5px] text-[#9AA3AF] mb-1.5">{children}</p>;
+    return <p className="text-[10.5px] font-bold uppercase tracking-[0.5px] text-[#9E9E9E] mb-1.5">{children}</p>;
 }
 
 function Line({ icon, children, tone }: { icon: string; children: React.ReactNode; tone?: string }) {
     return (
-        <span className={cn("flex items-center gap-1.5 text-[12.5px] min-w-0", tone || "text-[#4B5563]")}>
-            <span className="material-symbols-rounded text-[16px] text-[#9AA3AF] shrink-0">{icon}</span>
+        <span className={cn("flex items-center gap-1.5 text-[12.5px] min-w-0", tone || "text-[#4F4F4F]")}>
+            <span className="material-symbols-rounded text-[16px] text-[#9E9E9E] shrink-0">{icon}</span>
             <span className="truncate">{children}</span>
         </span>
     );
@@ -143,8 +142,8 @@ function Checkbox({ checked, onChange, label }: { checked: boolean; onChange: ()
             aria-label={label}
             onClick={onChange}
             className={cn(
-                "w-[18px] h-[18px] rounded-[5px] border flex items-center justify-center transition-colors shrink-0",
-                checked ? "bg-[#5B53E0] border-[#5B53E0] text-white" : "bg-white border-[#D4D7DC] hover:border-[#5B53E0]"
+                "w-[18px] h-[18px] rounded-[3px] border flex items-center justify-center transition-colors shrink-0",
+                checked ? "bg-[#1976D2] border-[#1976D2] text-white" : "bg-white border-[#E0E0E0] hover:border-[#1976D2]"
             )}
         >
             {checked && <span className="material-symbols-rounded text-[14px] leading-none">check</span>}
@@ -155,9 +154,9 @@ function Checkbox({ checked, onChange, label }: { checked: boolean; onChange: ()
 /** A titled panel with a grey header strip — the drawer's Education / Experience / Skills cards. */
 function Panel({ title, children, className }: { title: string; children: React.ReactNode; className?: string }) {
     return (
-        <section className={cn("rounded-[12px] border border-[#E8EAED] bg-white overflow-hidden", className)}>
-            <header className="px-4 py-2.5 bg-[#F4F5F7] border-b border-[#E8EAED]">
-                <h3 className="text-[13px] font-bold text-[#15171C]">{title}</h3>
+        <section className={cn("rounded-[4px] border border-[#E0E0E0] bg-white overflow-hidden", className)}>
+            <header className="px-4 py-2.5 bg-[#F5F6F8] border-b border-[#E0E0E0]">
+                <h3 className="text-[13px] font-bold text-[#212121]">{title}</h3>
             </header>
             <div className="p-4">{children}</div>
         </section>
@@ -167,8 +166,8 @@ function Panel({ title, children, className }: { title: string; children: React.
 function NoData({ text }: { text: string }) {
     return (
         <div className="flex flex-col items-center justify-center gap-2 py-6 text-center">
-            <span className="material-symbols-rounded text-[26px] text-[#D4D7DC]">inbox</span>
-            <p className="text-[12.5px] text-[#9AA3AF]">{text}</p>
+            <span className="material-symbols-rounded text-[26px] text-[#E0E0E0]">inbox</span>
+            <p className="text-[12.5px] text-[#9E9E9E]">{text}</p>
         </div>
     );
 }
@@ -185,9 +184,9 @@ function HistoryItem({ title, subtitle, meta }: { title: string; subtitle?: stri
                 {(subtitle || title).trim().charAt(0).toUpperCase()}
             </span>
             <div className="min-w-0">
-                <p className="text-[13px] font-semibold text-[#15171C] leading-snug">{title}</p>
-                {subtitle && <p className="text-[12.5px] text-[#4B5563] leading-snug">{subtitle}</p>}
-                {meta && <p className="text-[11.5px] text-[#9AA3AF] mt-0.5">{meta}</p>}
+                <p className="text-[13px] font-semibold text-[#212121] leading-snug">{title}</p>
+                {subtitle && <p className="text-[12.5px] text-[#4F4F4F] leading-snug">{subtitle}</p>}
+                {meta && <p className="text-[11.5px] text-[#9E9E9E] mt-0.5">{meta}</p>}
             </div>
         </div>
     );
@@ -202,20 +201,20 @@ function Section({
     count?: number; children: React.ReactNode;
 }) {
     return (
-        <div className="border-b border-[#E8EAED] last:border-b-0">
+        <div className="border-b border-[#E0E0E0] last:border-b-0">
             <button
                 type="button"
                 onClick={onToggle}
-                className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-[#F9FAFB] transition-colors"
+                className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-[#FAFAFA] transition-colors"
             >
-                <span className="material-symbols-rounded text-[18px] text-[#9AA3AF]">{icon}</span>
-                <span className="flex-1 text-[13px] font-semibold text-[#15171C]">{title}</span>
+                <span className="material-symbols-rounded text-[18px] text-[#9E9E9E]">{icon}</span>
+                <span className="flex-1 text-[13px] font-semibold text-[#212121]">{title}</span>
                 {count ? (
-                    <span className="text-[10px] font-bold w-[18px] h-[18px] rounded-full bg-[#5B53E0] text-white flex items-center justify-center">
+                    <span className="text-[10px] font-bold w-[18px] h-[18px] rounded-full bg-[#1976D2] text-white flex items-center justify-center">
                         {count}
                     </span>
                 ) : null}
-                <span className={cn("material-symbols-rounded text-[18px] text-[#C3C7CE] transition-transform", !open && "-rotate-90")}>
+                <span className={cn("material-symbols-rounded text-[18px] text-[#BDBDBD] transition-transform", !open && "-rotate-90")}>
                     expand_more
                 </span>
             </button>
@@ -225,7 +224,7 @@ function Section({
 }
 
 const INPUT =
-    "w-full h-9 px-3 rounded-[9px] border border-[#E1E4E8] bg-white text-[13px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
+    "w-full h-9 px-3 rounded-[4px] border border-[#E0E0E0] bg-white text-[13px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all";
 
 function Chips({ values, onRemove }: { values: string[]; onRemove: (v: string) => void }) {
     if (!values.length) return null;
@@ -234,7 +233,7 @@ function Chips({ values, onRemove }: { values: string[]; onRemove: (v: string) =
             {values.map((v) => (
                 <span
                     key={v}
-                    className="inline-flex items-center gap-1 text-[11.5px] font-semibold pl-1.5 pr-1 py-1 rounded-[7px] bg-[#E3F4EF] text-[#0E8A6E]"
+                    className="inline-flex items-center gap-1 text-[11.5px] font-semibold pl-1.5 pr-1 py-1 rounded-[4px] bg-[#E8F5E9] text-[#2E7D32]"
                 >
                     <span className="material-symbols-rounded text-[14px]">check_circle</span>
                     {v}
@@ -529,10 +528,10 @@ export default function SourcingHub() {
 
             <div className="flex-1 flex gap-4 px-6 py-4 min-h-0">
                 {/* ── filter rail ──────────────────────────────────────────────── */}
-                <aside className="w-[288px] shrink-0 hidden lg:flex flex-col rounded-[14px] border border-[#E8EAED] bg-white overflow-hidden">
-                    <div className="px-4 py-3 border-b border-[#E8EAED] flex items-center justify-between">
-                        <span className="text-[13.5px] font-bold text-[#15171C]">{tr("hub.filters")}</span>
-                        <button type="button" onClick={clearAll} className="text-[12.5px] font-semibold text-[#5B53E0] hover:text-[#4A43C9]">
+                <aside className="w-[288px] shrink-0 hidden lg:flex flex-col rounded-[4px] border border-[#E0E0E0] bg-white overflow-hidden">
+                    <div className="px-4 py-3 border-b border-[#E0E0E0] flex items-center justify-between">
+                        <span className="text-[13.5px] font-bold text-[#212121]">{tr("hub.filters")}</span>
+                        <button type="button" onClick={clearAll} className="text-[12.5px] font-semibold text-[#1976D2] hover:text-[#1565C0]">
                             {tr("hub.clearAll")}
                         </button>
                     </div>
@@ -549,7 +548,7 @@ export default function SourcingHub() {
                                 onBlur={() => addChip(titleDraft, titles, setTitles, () => setTitleDraft(""))}
                             />
                             <Chips values={titles} onRemove={(v) => setTitles(titles.filter((x) => x !== v))} />
-                            <p className="text-[11px] text-[#9AA3AF]">{tr("hub.enterToAdd")}</p>
+                            <p className="text-[11px] text-[#9E9E9E]">{tr("hub.enterToAdd")}</p>
                         </Section>
 
                         <Section title={tr("hub.location")} icon="location_on"
@@ -559,7 +558,7 @@ export default function SourcingHub() {
                             {/* Manatal has a radius box here. A web search cannot be bounded by
                                 kilometres the way a geocoded database can, so the reason is on the
                                 page instead of a control that quietly does nothing. */}
-                            <p className="text-[11px] text-[#8A929E] leading-relaxed">{tr("hub.noRadius")}</p>
+                            <p className="text-[11px] text-[#757575] leading-relaxed">{tr("hub.noRadius")}</p>
                         </Section>
 
                         <Section title={tr("hub.company")} icon="apartment"
@@ -579,7 +578,7 @@ export default function SourcingHub() {
                                 onBlur={() => addChip(skillDraft, skills, setSkills, () => setSkillDraft(""))}
                             />
                             <Chips values={skills} onRemove={(v) => setSkills(skills.filter((x) => x !== v))} />
-                            <p className="text-[11px] text-[#9AA3AF]">{tr("hub.enterToAdd")}</p>
+                            <p className="text-[11px] text-[#9E9E9E]">{tr("hub.enterToAdd")}</p>
                         </Section>
 
                         <Section title={tr("hub.experience")} icon="badge"
@@ -587,7 +586,7 @@ export default function SourcingHub() {
                             <div className="flex gap-2 items-center">
                                 <input className={INPUT} type="number" min={0} value={yearsMin}
                                        placeholder={tr("hub.min")} onChange={(e) => setYearsMin(e.target.value)} />
-                                <span className="text-[#C3C7CE]">–</span>
+                                <span className="text-[#BDBDBD]">–</span>
                                 <input className={INPUT} type="number" min={0} value={yearsMax}
                                        placeholder={tr("hub.max")} onChange={(e) => setYearsMax(e.target.value)} />
                             </div>
@@ -604,19 +603,19 @@ export default function SourcingHub() {
                         </Section>
                     </div>
 
-                    <div className="p-3 border-t border-[#E8EAED]">
+                    <div className="p-3 border-t border-[#E0E0E0]">
                         <Button fullWidth icon={searching ? "progress_activity" : "search"}
                                 onClick={() => void search()} disabled={!canSearch || searching}>
                             {searching ? tr("hub.searching") : tr("hub.search")}
                         </Button>
-                        {!canSearch && <p className="text-[11px] text-[#8A929E] text-center mt-2">{tr("hub.needAFilter")}</p>}
+                        {!canSearch && <p className="text-[11px] text-[#757575] text-center mt-2">{tr("hub.needAFilter")}</p>}
                     </div>
                 </aside>
 
                 {/* ── results ──────────────────────────────────────────────────── */}
-                <main className="flex-1 min-w-0 rounded-[14px] border border-[#E8EAED] bg-white flex flex-col overflow-hidden">
+                <main className="flex-1 min-w-0 rounded-[4px] border border-[#E0E0E0] bg-white flex flex-col overflow-hidden">
                     {error && (
-                        <p className="m-4 text-[12.5px] text-[#C0383C] bg-[#FDECEC] rounded-[9px] px-3 py-2">{error}</p>
+                        <p className="m-4 text-[12.5px] text-[#C62828] bg-[#FFEBEE] rounded-[4px] px-3 py-2">{error}</p>
                     )}
 
                     {!searched && !searching ? (
@@ -624,20 +623,20 @@ export default function SourcingHub() {
                                     description={tr("hub.emptyDesc")} className="flex-1" />
                     ) : searching ? (
                         <div className="flex-1 flex flex-col items-center justify-center gap-3 py-20">
-                            <div className="w-6 h-6 border-2 border-[#5B53E0]/30 border-t-[#5B53E0] rounded-full animate-spin" />
-                            <p className="text-[12.5px] text-[#8A929E]">{tr("hub.searchingLong")}</p>
+                            <div className="w-6 h-6 border-2 border-[#1976D2]/30 border-t-[#1976D2] rounded-full animate-spin" />
+                            <p className="text-[12.5px] text-[#757575]">{tr("hub.searchingLong")}</p>
                         </div>
                     ) : (
                         <>
                             {sample && (
-                                <div className="px-4 py-2.5 bg-[#FEF3E2] border-b border-[#F5D9A8] flex items-start gap-2">
-                                    <span className="material-symbols-rounded text-[18px] text-[#B26B08] shrink-0">science</span>
+                                <div className="px-4 py-2.5 bg-[#FFF3E0] border-b border-[#F5D9A8] flex items-start gap-2">
+                                    <span className="material-symbols-rounded text-[18px] text-[#EF6C00] shrink-0">science</span>
                                     <p className="text-[12.5px] text-[#8A5A05] leading-relaxed">{tr("hub.sampleBanner")}</p>
                                 </div>
                             )}
 
                             {/* results toolbar — select-all, range count, bulk actions */}
-                            <div className="px-4 py-2.5 border-b border-[#E8EAED] flex items-center gap-3 flex-wrap min-h-[52px]">
+                            <div className="px-4 py-2.5 border-b border-[#E0E0E0] flex items-center gap-3 flex-wrap min-h-[52px]">
                                 <Checkbox
                                     checked={allSelected}
                                     label={tr("hub.selectAll")}
@@ -645,7 +644,7 @@ export default function SourcingHub() {
                                 />
                                 {selected.size > 0 ? (
                                     <>
-                                        <span className="text-[13px] font-bold text-[#15171C]">
+                                        <span className="text-[13px] font-bold text-[#212121]">
                                             {tr("hub.nSelected", { count: selected.size })}
                                         </span>
                                         <div className="flex items-center gap-2 ml-auto">
@@ -663,14 +662,14 @@ export default function SourcingHub() {
                                                 {tr("hub.addToFolder")}
                                             </Button>
                                             <button type="button" onClick={() => setSelected(new Set())}
-                                                    className="text-[12.5px] font-semibold text-[#8A929E] hover:text-[#15171C]">
+                                                    className="text-[12.5px] font-semibold text-[#757575] hover:text-[#212121]">
                                                 {tr("hub.clearSelection")}
                                             </button>
                                         </div>
                                     </>
                                 ) : (
                                     <>
-                                        <span className="text-[13px] font-semibold text-[#15171C] tabular-nums">
+                                        <span className="text-[13px] font-semibold text-[#212121] tabular-nums">
                                             {tr("hub.rangeCount", {
                                                 from: results.length ? 1 : 0,
                                                 to: results.length,
@@ -678,7 +677,7 @@ export default function SourcingHub() {
                                             })}
                                         </span>
                                         {query && (
-                                            <span className="text-[11.5px] text-[#9AA3AF] font-mono truncate max-w-[46%]" title={query}>
+                                            <span className="text-[11.5px] text-[#9E9E9E] font-mono truncate max-w-[46%]" title={query}>
                                                 {query}
                                             </span>
                                         )}
@@ -690,13 +689,13 @@ export default function SourcingHub() {
                                 <EmptyState icon="search_off" tone="muted" title={tr("hub.noResults")}
                                             description={tr("hub.noResultsDesc")} className="flex-1" />
                             ) : (
-                                <div className="flex-1 overflow-y-auto divide-y divide-[#F1F2F5]">
+                                <div className="flex-1 overflow-y-auto divide-y divide-[#EEEEEE]">
                                     {results.map((p, i) => {
                                         const k = keyOf(p);
                                         const done = !!imported[k];
                                         const edu = p.education?.[0];
                                         return (
-                                            <article key={k} className="p-4 flex items-start gap-3 hover:bg-[#F9FAFB] transition-colors">
+                                            <article key={k} className="p-4 flex items-start gap-3 hover:bg-[#FAFAFA] transition-colors">
                                                 <div className="pt-1.5">
                                                     <Checkbox checked={selected.has(k)} onChange={() => toggle(k)} label={p.full_name} />
                                                 </div>
@@ -705,19 +704,19 @@ export default function SourcingHub() {
                                                 <div className="min-w-0 flex-1">
                                                     <div className="flex items-center gap-1.5 flex-wrap">
                                                         <button type="button" onClick={() => setDrawerAt(i)}
-                                                                className="text-[14.5px] font-bold text-[#5B53E0] hover:text-[#4A43C9] text-left">
+                                                                className="text-[14.5px] font-bold text-[#1976D2] hover:text-[#1565C0] text-left">
                                                             {p.full_name}
                                                         </button>
                                                         {p.profile_url && (
                                                             <a href={p.profile_url} target="_blank" rel="noopener noreferrer"
-                                                               title={tr("hub.openProfile")} className="text-[#9AA3AF] hover:text-[#5B53E0]">
+                                                               title={tr("hub.openProfile")} className="text-[#9E9E9E] hover:text-[#1976D2]">
                                                                 <span className="material-symbols-rounded text-[15px]">link</span>
                                                             </a>
                                                         )}
                                                         {sample && <Badge tone="warning">{tr("hub.sampleTag")}</Badge>}
                                                         {done && <Badge tone="teal">{tr("hub.imported")}</Badge>}
                                                     </div>
-                                                    {p.headline && <p className="text-[12.5px] text-[#4B5563] mt-0.5">{p.headline}</p>}
+                                                    {p.headline && <p className="text-[12.5px] text-[#4F4F4F] mt-0.5">{p.headline}</p>}
 
                                                     {/* Manatal's four labelled blocks, two per column. */}
                                                     <div className="grid sm:grid-cols-2 gap-x-8 gap-y-3 mt-3">
@@ -730,12 +729,12 @@ export default function SourcingHub() {
                                                                         {[edu.school, edu.degree].filter(Boolean).join(" · ")}
                                                                     </Line>
                                                                 )}
-                                                                {!p.location && !edu && <span className="text-[12.5px] text-[#C3C7CE]">—</span>}
+                                                                {!p.location && !edu && <span className="text-[12.5px] text-[#BDBDBD]">—</span>}
                                                             </div>
                                                             {p.company && (
                                                                 <div className="mt-3">
                                                                     <Caption>{tr("hub.company")}</Caption>
-                                                                    <span className="inline-flex items-center gap-1.5 text-[12.5px] text-[#15171C] font-medium min-w-0">
+                                                                    <span className="inline-flex items-center gap-1.5 text-[12.5px] text-[#212121] font-medium min-w-0">
                                                                         <Avatar name={p.company} size={22} />
                                                                         <span className="truncate">{p.company}</span>
                                                                     </span>
@@ -750,24 +749,24 @@ export default function SourcingHub() {
                                                                 than left to the drawer. */}
                                                             {p.email ? (
                                                                 <a href={`mailto:${p.email}`}
-                                                                   className="flex items-center gap-1.5 text-[12.5px] text-[#0E8A6E] hover:underline min-w-0">
+                                                                   className="flex items-center gap-1.5 text-[12.5px] text-[#2E7D32] hover:underline min-w-0">
                                                                     <span className="material-symbols-rounded text-[16px] shrink-0">mail</span>
                                                                     <span className="truncate">{p.email}</span>
                                                                 </a>
                                                             ) : (
-                                                                <Line icon="mail_off" tone="text-[#B26B08]">{tr("hub.noEmail")}</Line>
+                                                                <Line icon="mail_off" tone="text-[#EF6C00]">{tr("hub.noEmail")}</Line>
                                                             )}
                                                             {p.skills && p.skills.length > 0 && (
                                                                 <div className="mt-3">
                                                                     <Caption>{tr("hub.candidateSkills")}</Caption>
                                                                     <div className="flex flex-wrap gap-1.5">
                                                                         {p.skills.slice(0, 8).map((s) => (
-                                                                            <span key={s} className="text-[11.5px] font-semibold px-2 py-0.5 rounded-[6px] bg-[#E7ECFB] text-[#3559C7]">
+                                                                            <span key={s} className="text-[11.5px] font-semibold px-2 py-0.5 rounded-[3px] bg-[#E3F2FD] text-[#1565C0]">
                                                                                 {s}
                                                                             </span>
                                                                         ))}
                                                                         {p.skills.length > 8 && (
-                                                                            <span className="text-[11.5px] text-[#9AA3AF] self-center">
+                                                                            <span className="text-[11.5px] text-[#9E9E9E] self-center">
                                                                                 +{p.skills.length - 8}
                                                                             </span>
                                                                         )}
@@ -801,35 +800,35 @@ export default function SourcingHub() {
             {/* ── profile drawer ───────────────────────────────────────────────── */}
             {viewing && (
                 <div className="fixed inset-0 z-[200] flex justify-end" onClick={() => setDrawerAt(null)}>
-                    <div className="absolute inset-0 bg-[#15171C]/45" />
-                    <div className="relative w-full max-w-[860px] h-full bg-[#F4F5F7] flex flex-col shadow-[0_14px_34px_rgba(15,23,42,0.16)]"
+                    <div className="absolute inset-0 bg-[#212121]/45" />
+                    <div className="relative w-full max-w-[860px] h-full bg-[#F5F6F8] flex flex-col shadow-[0_14px_34px_rgba(0,0,0,0.16)]"
                          onClick={(e) => e.stopPropagation()}>
                         {/* title band */}
-                        <div className="px-6 h-[58px] shrink-0 bg-[#5B53E0] text-white flex items-center justify-between gap-3">
+                        <div className="px-6 h-[58px] shrink-0 bg-[#1976D2] text-white flex items-center justify-between gap-3">
                             <h2 className="text-[17px] font-bold truncate">{viewing.full_name}</h2>
                             <IconAction icon="close" label={tr("hub.close")} tone="solid" onClick={() => setDrawerAt(null)} />
                         </div>
 
                         {sample && (
-                            <div className="px-6 py-2 bg-[#FEF3E2] border-b border-[#F5D9A8] flex items-center gap-2 shrink-0">
-                                <span className="material-symbols-rounded text-[17px] text-[#B26B08]">science</span>
+                            <div className="px-6 py-2 bg-[#FFF3E0] border-b border-[#F5D9A8] flex items-center gap-2 shrink-0">
+                                <span className="material-symbols-rounded text-[17px] text-[#EF6C00]">science</span>
                                 <p className="text-[12px] text-[#8A5A05]">{tr("hub.sampleTagLong")}</p>
                             </div>
                         )}
 
                         {/* identity block */}
-                        <div className="px-6 py-5 bg-white border-b border-[#E8EAED] flex items-start gap-4 shrink-0">
+                        <div className="px-6 py-5 bg-white border-b border-[#E0E0E0] flex items-start gap-4 shrink-0">
                             <Avatar name={viewing.full_name} src={viewing.avatar_url} size={72} />
                             <div className="min-w-0 flex-1">
-                                <h3 className="text-[19px] font-extrabold tracking-[-0.3px] text-[#15171C]">{viewing.full_name}</h3>
+                                <h3 className="text-[19px] font-extrabold tracking-[-0.3px] text-[#212121]">{viewing.full_name}</h3>
                                 <div className="flex flex-col gap-1 mt-1.5">
                                     {viewing.headline && <Line icon="work">{viewing.headline}</Line>}
                                     {viewing.location && <Line icon="location_on">{viewing.location}</Line>}
-                                    {viewing.email && <Line icon="mail" tone="text-[#0E8A6E]">{viewing.email}</Line>}
+                                    {viewing.email && <Line icon="mail" tone="text-[#2E7D32]">{viewing.email}</Line>}
                                 </div>
                                 {viewing.profile_url && (
                                     <a href={viewing.profile_url} target="_blank" rel="noopener noreferrer"
-                                       className="inline-flex items-center gap-1 mt-2 text-[12.5px] font-semibold text-[#5B53E0] hover:text-[#4A43C9]">
+                                       className="inline-flex items-center gap-1 mt-2 text-[12.5px] font-semibold text-[#1976D2] hover:text-[#1565C0]">
                                         <span className="material-symbols-rounded text-[16px]">open_in_new</span>
                                         {tr("hub.openProfile")}
                                     </a>
@@ -850,16 +849,16 @@ export default function SourcingHub() {
                         {/* the three panels */}
                         <div className="flex-1 overflow-y-auto p-5">
                             {viewing.ai_summary && (
-                                <div className="rounded-[12px] border border-[#DAD7F6] bg-[#ECEBFB] p-4 mb-4">
-                                    <p className="text-[10.5px] font-bold text-[#5B53E0] uppercase tracking-[0.5px] mb-1">{tr("hub.summary")}</p>
-                                    <p className="text-[13px] text-[#374151] leading-relaxed">{viewing.ai_summary}</p>
+                                <div className="rounded-[4px] border border-[#BBDEFB] bg-[#E3F2FD] p-4 mb-4">
+                                    <p className="text-[10.5px] font-bold text-[#1976D2] uppercase tracking-[0.5px] mb-1">{tr("hub.summary")}</p>
+                                    <p className="text-[13px] text-[#424242] leading-relaxed">{viewing.ai_summary}</p>
                                 </div>
                             )}
                             <div className="grid md:grid-cols-2 gap-4 items-start">
                                 <div className="flex flex-col gap-4">
                                     <Panel title={tr("hub.education")}>
                                         {viewing.education?.length ? (
-                                            <div className="divide-y divide-[#F1F2F5]">
+                                            <div className="divide-y divide-[#EEEEEE]">
                                                 {viewing.education.map((e, n) => (
                                                     <HistoryItem key={n} title={e.school || e.degree || "—"}
                                                                  subtitle={[e.degree, e.field].filter(Boolean).join(", ") || undefined}
@@ -873,7 +872,7 @@ export default function SourcingHub() {
                                         {viewing.skills?.length ? (
                                             <div className="flex flex-wrap gap-1.5">
                                                 {viewing.skills.map((s) => (
-                                                    <span key={s} className="text-[12px] font-semibold px-2.5 py-1 rounded-[7px] bg-[#E7ECFB] text-[#3559C7]">
+                                                    <span key={s} className="text-[12px] font-semibold px-2.5 py-1 rounded-[4px] bg-[#E3F2FD] text-[#1565C0]">
                                                         {s}
                                                     </span>
                                                 ))}
@@ -884,7 +883,7 @@ export default function SourcingHub() {
 
                                 <Panel title={tr("hub.experienceHistory")}>
                                     {viewing.experience?.length ? (
-                                        <div className="divide-y divide-[#F1F2F5]">
+                                        <div className="divide-y divide-[#EEEEEE]">
                                             {viewing.experience.map((e, n) => (
                                                 <HistoryItem key={n} title={e.title || "—"} subtitle={e.company} meta={e.years} />
                                             ))}
@@ -894,7 +893,7 @@ export default function SourcingHub() {
                                         // saying so beats an empty card that implies no history exists.
                                         <>
                                             <HistoryItem title={viewing.headline || tr("hub.currentRole")} subtitle={viewing.company || undefined} />
-                                            <p className="text-[11.5px] text-[#9AA3AF] mt-2 pt-2 border-t border-[#F1F2F5]">
+                                            <p className="text-[11.5px] text-[#9E9E9E] mt-2 pt-2 border-t border-[#EEEEEE]">
                                                 {tr("hub.historyFromHeadline")}
                                             </p>
                                         </>
@@ -904,14 +903,14 @@ export default function SourcingHub() {
                         </div>
 
                         {/* sticky action bar */}
-                        <div className="shrink-0 bg-white border-t border-[#E8EAED] px-5 py-3 flex items-center gap-2 flex-wrap">
+                        <div className="shrink-0 bg-white border-t border-[#E0E0E0] px-5 py-3 flex items-center gap-2 flex-wrap">
                             <IconAction icon="chevron_left" label={tr("hub.previous")}
                                         disabled={drawerAt === null || drawerAt <= 0}
                                         onClick={() => setDrawerAt((i) => (i === null ? i : i - 1))} />
                             <IconAction icon="chevron_right" label={tr("hub.next")}
                                         disabled={drawerAt === null || drawerAt >= results.length - 1}
                                         onClick={() => setDrawerAt((i) => (i === null ? i : i + 1))} />
-                            <span className="text-[12px] text-[#9AA3AF] mr-1 tabular-nums">
+                            <span className="text-[12px] text-[#9E9E9E] mr-1 tabular-nums">
                                 {(drawerAt ?? 0) + 1} / {results.length}
                             </span>
 
@@ -942,13 +941,13 @@ export default function SourcingHub() {
             {/* ── add to job ───────────────────────────────────────────────────── */}
             {jobPicker && (
                 <div className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={() => setJobPicker(null)}>
-                    <div className="absolute inset-0 bg-[#15171C]/45" />
-                    <div className="relative w-full max-w-[520px] bg-white rounded-[14px] border border-[#E8EAED] shadow-[0_14px_34px_rgba(15,23,42,0.16)]"
+                    <div className="absolute inset-0 bg-[#212121]/45" />
+                    <div className="relative w-full max-w-[520px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)]"
                          onClick={(e) => e.stopPropagation()}>
-                        <div className="px-5 py-4 border-b border-[#E8EAED] flex items-center justify-between gap-3">
+                        <div className="px-5 py-4 border-b border-[#E0E0E0] flex items-center justify-between gap-3">
                             <div className="min-w-0">
-                                <h3 className="text-[16px] font-bold text-[#15171C]">{tr("hub.addToJob")}</h3>
-                                <p className="text-[12px] text-[#8A929E] truncate">
+                                <h3 className="text-[16px] font-bold text-[#212121]">{tr("hub.addToJob")}</h3>
+                                <p className="text-[12px] text-[#757575] truncate">
                                     {jobPicker.length === 1 ? jobPicker[0].full_name : tr("hub.nSelected", { count: jobPicker.length })}
                                 </p>
                             </div>
@@ -956,12 +955,12 @@ export default function SourcingHub() {
                         </div>
 
                         <div className="p-5 flex flex-col gap-3">
-                            <label className="flex items-center gap-2 text-[12.5px] text-[#4B5563]">
+                            <label className="flex items-center gap-2 text-[12.5px] text-[#4F4F4F]">
                                 {tr("hub.searchByStatus")}
                                 <select
                                     value={jobStatus}
                                     onChange={(e) => setJobStatus(e.target.value)}
-                                    className="h-8 px-2 rounded-[8px] border border-[#E1E4E8] bg-white text-[12.5px] font-semibold text-[#15171C] outline-none focus:border-[#5B53E0]"
+                                    className="h-8 px-2 rounded-[4px] border border-[#E0E0E0] bg-white text-[12.5px] font-semibold text-[#212121] outline-none focus:border-[#1976D2]"
                                 >
                                     <option value="ALL">{tr("hub.all")}</option>
                                     {statuses.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -969,38 +968,38 @@ export default function SourcingHub() {
                             </label>
 
                             <div className="relative">
-                                <span className="material-symbols-rounded text-[18px] text-[#9AA3AF] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">search</span>
+                                <span className="material-symbols-rounded text-[18px] text-[#9E9E9E] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">search</span>
                                 <input className={cn(INPUT, "pl-9")} value={jobQuery} placeholder={tr("hub.searchJobs")}
                                        onChange={(e) => setJobQuery(e.target.value)} />
                             </div>
 
-                            <p className="text-[12px] text-[#8A929E]">{tr("hub.jobCount", { count: shownJobs.length })}</p>
+                            <p className="text-[12px] text-[#757575]">{tr("hub.jobCount", { count: shownJobs.length })}</p>
 
-                            <div className="max-h-[320px] overflow-y-auto -mx-1 px-1 divide-y divide-[#F1F2F5]">
+                            <div className="max-h-[320px] overflow-y-auto -mx-1 px-1 divide-y divide-[#EEEEEE]">
                                 {shownJobs.map((j) => (
                                     <button
                                         key={j.id}
                                         type="button"
                                         disabled={!!busy}
                                         onClick={() => void importMany(jobPicker, j.id)}
-                                        className="w-full py-2.5 px-1 flex items-center gap-3 text-left rounded-[9px] hover:bg-[#F9FAFB] transition-colors disabled:opacity-50"
+                                        className="w-full py-2.5 px-1 flex items-center gap-3 text-left rounded-[4px] hover:bg-[#FAFAFA] transition-colors disabled:opacity-50"
                                     >
                                         <Avatar name={j.title} size={34} />
                                         <span className="min-w-0 flex-1">
-                                            <span className="block text-[13.5px] font-semibold text-[#15171C] truncate">{j.title}</span>
-                                            {j.department && <span className="block text-[12px] text-[#8A929E] truncate">{j.department}</span>}
+                                            <span className="block text-[13.5px] font-semibold text-[#212121] truncate">{j.title}</span>
+                                            {j.department && <span className="block text-[12px] text-[#757575] truncate">{j.department}</span>}
                                         </span>
-                                        {j.status && <span className="w-2 h-2 rounded-full bg-[#5B53E0] shrink-0" title={j.status} />}
-                                        <span className="material-symbols-rounded text-[20px] text-[#5B53E0]">add</span>
+                                        {j.status && <span className="w-2 h-2 rounded-full bg-[#1976D2] shrink-0" title={j.status} />}
+                                        <span className="material-symbols-rounded text-[20px] text-[#1976D2]">add</span>
                                     </button>
                                 ))}
                                 {shownJobs.length === 0 && (
-                                    <p className="py-8 text-center text-[12.5px] text-[#8A929E]">{tr("hub.noJobs")}</p>
+                                    <p className="py-8 text-center text-[12.5px] text-[#757575]">{tr("hub.noJobs")}</p>
                                 )}
                             </div>
 
                             {/* Adding does not tell them. Say it where the decision is made. */}
-                            <p className="text-[11.5px] text-[#8A929E] leading-relaxed border-t border-[#F1F2F5] pt-3">
+                            <p className="text-[11.5px] text-[#757575] leading-relaxed border-t border-[#EEEEEE] pt-3">
                                 {tr("hub.noNotify")}
                             </p>
                         </div>
@@ -1011,13 +1010,13 @@ export default function SourcingHub() {
             {/* ── add to folder ────────────────────────────────────────────────── */}
             {folderPicker && (
                 <div className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={() => setFolderPicker(null)}>
-                    <div className="absolute inset-0 bg-[#15171C]/45" />
-                    <div className="relative w-full max-w-[520px] bg-white rounded-[14px] border border-[#E8EAED] shadow-[0_14px_34px_rgba(15,23,42,0.16)]"
+                    <div className="absolute inset-0 bg-[#212121]/45" />
+                    <div className="relative w-full max-w-[520px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)]"
                          onClick={(e) => e.stopPropagation()}>
-                        <div className="px-5 py-4 border-b border-[#E8EAED] flex items-center justify-between gap-3">
+                        <div className="px-5 py-4 border-b border-[#E0E0E0] flex items-center justify-between gap-3">
                             <div className="min-w-0">
-                                <h3 className="text-[16px] font-bold text-[#15171C]">{tr("hub.addToFolder")}</h3>
-                                <p className="text-[12px] text-[#8A929E] truncate">
+                                <h3 className="text-[16px] font-bold text-[#212121]">{tr("hub.addToFolder")}</h3>
+                                <p className="text-[12px] text-[#757575] truncate">
                                     {folderPicker.length === 1 ? folderPicker[0].full_name : tr("hub.nSelected", { count: folderPicker.length })}
                                 </p>
                             </div>
@@ -1042,41 +1041,41 @@ export default function SourcingHub() {
                             </div>
 
                             <div className="relative">
-                                <span className="material-symbols-rounded text-[18px] text-[#9AA3AF] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">search</span>
+                                <span className="material-symbols-rounded text-[18px] text-[#9E9E9E] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">search</span>
                                 <input className={cn(INPUT, "pl-9")} value={folderQuery} placeholder={tr("hub.searchFolders")}
                                        onChange={(e) => setFolderQuery(e.target.value)} />
                             </div>
 
-                            <p className="text-[12px] text-[#8A929E]">{tr("hub.folderCount", { count: shownFolders.length })}</p>
+                            <p className="text-[12px] text-[#757575]">{tr("hub.folderCount", { count: shownFolders.length })}</p>
 
-                            <div className="max-h-[280px] overflow-y-auto -mx-1 px-1 divide-y divide-[#F1F2F5]">
+                            <div className="max-h-[280px] overflow-y-auto -mx-1 px-1 divide-y divide-[#EEEEEE]">
                                 {shownFolders.map((f) => (
                                     <button
                                         key={f.id}
                                         type="button"
                                         disabled={!!busy}
                                         onClick={() => void importMany(folderPicker, undefined, f.id)}
-                                        className="w-full py-2.5 px-1 flex items-center gap-3 text-left rounded-[9px] hover:bg-[#F9FAFB] transition-colors disabled:opacity-50"
+                                        className="w-full py-2.5 px-1 flex items-center gap-3 text-left rounded-[4px] hover:bg-[#FAFAFA] transition-colors disabled:opacity-50"
                                     >
-                                        <span className="w-9 h-9 shrink-0 rounded-full bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
+                                        <span className="w-9 h-9 shrink-0 rounded-full bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center">
                                             <span className="material-symbols-rounded text-[19px]">folder</span>
                                         </span>
                                         <span className="min-w-0 flex-1">
-                                            <span className="block text-[13.5px] font-semibold text-[#15171C] truncate">{f.name}</span>
-                                            <span className="block text-[12px] text-[#8A929E]">
+                                            <span className="block text-[13.5px] font-semibold text-[#212121] truncate">{f.name}</span>
+                                            <span className="block text-[12px] text-[#757575]">
                                                 {tr("hub.folderCandidates", { count: f.candidate_count })}
                                             </span>
                                         </span>
-                                        <span className="material-symbols-rounded text-[20px] text-[#5B53E0]">add</span>
+                                        <span className="material-symbols-rounded text-[20px] text-[#1976D2]">add</span>
                                     </button>
                                 ))}
                                 {shownFolders.length === 0 && (
-                                    <p className="py-8 text-center text-[12.5px] text-[#8A929E]">{tr("hub.noFolders")}</p>
+                                    <p className="py-8 text-center text-[12.5px] text-[#757575]">{tr("hub.noFolders")}</p>
                                 )}
                             </div>
 
                             {/* The distinction that makes folders safe to use. */}
-                            <p className="text-[11.5px] text-[#8A929E] leading-relaxed border-t border-[#F1F2F5] pt-3">
+                            <p className="text-[11.5px] text-[#757575] leading-relaxed border-t border-[#EEEEEE] pt-3">
                                 {tr("hub.folderNote")}
                             </p>
                         </div>
@@ -1087,11 +1086,11 @@ export default function SourcingHub() {
             {/* ── where the data comes from ────────────────────────────────────── */}
             {provenance && (
                 <div className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={() => setProvenance(false)}>
-                    <div className="absolute inset-0 bg-[#15171C]/45" />
-                    <div className="relative w-full max-w-[480px] bg-white rounded-[14px] border border-[#E8EAED] shadow-[0_14px_34px_rgba(15,23,42,0.16)] p-6"
+                    <div className="absolute inset-0 bg-[#212121]/45" />
+                    <div className="relative w-full max-w-[480px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] p-6"
                          onClick={(e) => e.stopPropagation()}>
-                        <h3 className="text-[17px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("hub.whereFrom")}</h3>
-                        <p className="text-[13px] text-[#4B5563] leading-relaxed">{tr("hub.whereFromBody")}</p>
+                        <h3 className="text-[17px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("hub.whereFrom")}</h3>
+                        <p className="text-[13px] text-[#4F4F4F] leading-relaxed">{tr("hub.whereFromBody")}</p>
                         <div className="flex justify-end mt-5">
                             <Button size="sm" variant="secondary" onClick={() => setProvenance(false)}>{tr("hub.close")}</Button>
                         </div>
@@ -1100,7 +1099,7 @@ export default function SourcingHub() {
             )}
 
             {toast && (
-                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[220] px-4 py-2.5 rounded-[10px] bg-[#15171C] text-white text-[12.5px] font-semibold shadow-[0_14px_34px_rgba(15,23,42,0.16)]">
+                <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[220] px-4 py-2.5 rounded-[4px] bg-[#212121] text-white text-[12.5px] font-semibold shadow-[0_14px_34px_rgba(0,0,0,0.16)]">
                     {toast}
                 </div>
             )}

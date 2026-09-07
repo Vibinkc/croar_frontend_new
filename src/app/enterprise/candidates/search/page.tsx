@@ -38,12 +38,12 @@ interface Folder {
 }
 
 const TONES: [string, string][] = [
-    ["#ECEBFB", "#5B53E0"],
-    ["#E3F4EF", "#0E8A6E"],
-    ["#FEF3E2", "#B26B08"],
-    ["#E7ECFB", "#3559C7"],
-    ["#FDECEC", "#C0383C"],
-    ["#F1F2F5", "#4B5563"],
+    ["#E3F2FD", "#1976D2"],
+    ["#E8F5E9", "#2E7D32"],
+    ["#FFF3E0", "#EF6C00"],
+    ["#E3F2FD", "#1565C0"],
+    ["#FFEBEE", "#C62828"],
+    ["#EEEEEE", "#4F4F4F"],
 ];
 function toneFor(seed: string): [string, string] {
     let h = 0;
@@ -64,14 +64,14 @@ function Avatar({ name, size = 38 }: { name: string; size?: number }) {
 }
 
 const INPUT =
-    "w-full h-9 px-3 rounded-[9px] border border-[#E1E4E8] bg-white text-[13px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
+    "w-full h-9 px-3 rounded-[4px] border border-[#E0E0E0] bg-white text-[13px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all";
 
 function Section({ title, icon, children }: { title: string; icon: string; children: React.ReactNode }) {
     return (
-        <div className="border-b border-[#E8EAED] last:border-b-0 px-4 py-3.5">
+        <div className="border-b border-[#E0E0E0] last:border-b-0 px-4 py-3.5">
             <div className="flex items-center gap-2 mb-2.5">
-                <span className="material-symbols-rounded text-[18px] text-[#9AA3AF]">{icon}</span>
-                <span className="text-[13px] font-semibold text-[#15171C]">{title}</span>
+                <span className="material-symbols-rounded text-[18px] text-[#9E9E9E]">{icon}</span>
+                <span className="text-[13px] font-semibold text-[#212121]">{title}</span>
             </div>
             <div className="flex flex-col gap-2">{children}</div>
         </div>
@@ -196,10 +196,10 @@ export default function AdvancedSearchPage() {
 
             <div className="flex-1 flex gap-4 px-6 py-4 min-h-0">
                 {/* ── filter rail ──────────────────────────────────────────────── */}
-                <aside className="w-[300px] shrink-0 hidden lg:flex flex-col rounded-[14px] border border-[#E8EAED] bg-white overflow-hidden">
-                    <div className="px-4 py-3 border-b border-[#E8EAED] flex items-center justify-between">
-                        <span className="text-[13.5px] font-bold text-[#15171C]">{tr("advSearch.filters")}</span>
-                        <button type="button" onClick={clearAll} className="text-[12.5px] font-semibold text-[#5B53E0] hover:text-[#4A43C9]">
+                <aside className="w-[300px] shrink-0 hidden lg:flex flex-col rounded-[4px] border border-[#E0E0E0] bg-white overflow-hidden">
+                    <div className="px-4 py-3 border-b border-[#E0E0E0] flex items-center justify-between">
+                        <span className="text-[13.5px] font-bold text-[#212121]">{tr("advSearch.filters")}</span>
+                        <button type="button" onClick={clearAll} className="text-[12.5px] font-semibold text-[#1976D2] hover:text-[#1565C0]">
                             {tr("advSearch.clearAll")}
                         </button>
                     </div>
@@ -226,7 +226,7 @@ export default function AdvancedSearchPage() {
                             {skills.length > 0 && (
                                 <div className="flex flex-wrap gap-1.5">
                                     {skills.map((s) => (
-                                        <span key={s} className="inline-flex items-center gap-1 text-[11.5px] font-semibold pl-2 pr-1 py-1 rounded-[7px] bg-[#E7ECFB] text-[#3559C7]">
+                                        <span key={s} className="inline-flex items-center gap-1 text-[11.5px] font-semibold pl-2 pr-1 py-1 rounded-[4px] bg-[#E3F2FD] text-[#1565C0]">
                                             {s}
                                             <button type="button" onClick={() => setSkills(skills.filter((x) => x !== s))} aria-label={`Remove ${s}`}>
                                                 <span className="material-symbols-rounded text-[15px]">cancel</span>
@@ -238,7 +238,7 @@ export default function AdvancedSearchPage() {
                             {/* "React or Vue" and "React and Vue" are both real asks; guessing
                                 between them would make half of all searches wrong. */}
                             {skills.length > 1 && (
-                                <div className="flex rounded-[9px] border border-[#E1E4E8] overflow-hidden">
+                                <div className="flex rounded-[4px] border border-[#E0E0E0] overflow-hidden">
                                     {([["any", tr("advSearch.matchAny")], ["all", tr("advSearch.matchAll")]] as const).map(([k, label]) => (
                                         <button
                                             key={k}
@@ -246,7 +246,7 @@ export default function AdvancedSearchPage() {
                                             onClick={() => setMatchAll(k === "all")}
                                             className={cn(
                                                 "flex-1 h-8 text-[12px] font-semibold transition-colors",
-                                                (k === "all") === matchAll ? "bg-[#5B53E0] text-white" : "bg-white text-[#4B5563] hover:bg-[#F4F5F7]"
+                                                (k === "all") === matchAll ? "bg-[#1976D2] text-white" : "bg-white text-[#4F4F4F] hover:bg-[#F5F6F8]"
                                             )}
                                         >
                                             {label}
@@ -272,11 +272,11 @@ export default function AdvancedSearchPage() {
                             <div className="flex gap-2 items-center">
                                 <input className={INPUT} type="number" min={0} value={yearsMin}
                                        placeholder={tr("advSearch.min")} onChange={(e) => setYearsMin(e.target.value)} />
-                                <span className="text-[#C3C7CE]">–</span>
+                                <span className="text-[#BDBDBD]">–</span>
                                 <input className={INPUT} type="number" min={0} value={yearsMax}
                                        placeholder={tr("advSearch.max")} onChange={(e) => setYearsMax(e.target.value)} />
                             </div>
-                            <p className="text-[11px] text-[#9AA3AF]">{tr("advSearch.experienceNote")}</p>
+                            <p className="text-[11px] text-[#9E9E9E]">{tr("advSearch.experienceNote")}</p>
                         </Section>
 
                         <Section title={tr("advSearch.folder")} icon="folder">
@@ -304,21 +304,21 @@ export default function AdvancedSearchPage() {
                         </Section>
                     </div>
 
-                    <div className="p-3 border-t border-[#E8EAED]">
+                    <div className="p-3 border-t border-[#E0E0E0]">
                         <Button fullWidth icon={searching ? "progress_activity" : "search"}
                                 onClick={() => void run(1)} disabled={searching}>
                             {searching ? tr("advSearch.searching") : tr("advSearch.search")}
                         </Button>
                         {/* No filters means everyone, which is a legitimate ask — say so rather
                             than disabling the button and leaving the reason unexplained. */}
-                        <p className="text-[11px] text-[#8A929E] text-center mt-2">{tr("advSearch.noFiltersNote")}</p>
+                        <p className="text-[11px] text-[#757575] text-center mt-2">{tr("advSearch.noFiltersNote")}</p>
                     </div>
                 </aside>
 
                 {/* ── results ──────────────────────────────────────────────────── */}
-                <main className="flex-1 min-w-0 rounded-[14px] border border-[#E8EAED] bg-white flex flex-col overflow-hidden">
+                <main className="flex-1 min-w-0 rounded-[4px] border border-[#E0E0E0] bg-white flex flex-col overflow-hidden">
                     {error && (
-                        <p className="m-4 text-[12.5px] text-[#C0383C] bg-[#FDECEC] rounded-[9px] px-3 py-2">{error}</p>
+                        <p className="m-4 text-[12.5px] text-[#C62828] bg-[#FFEBEE] rounded-[4px] px-3 py-2">{error}</p>
                     )}
 
                     {!searched && !searching ? (
@@ -328,12 +328,12 @@ export default function AdvancedSearchPage() {
                                     className="flex-1" />
                     ) : searching ? (
                         <div className="flex-1 flex items-center justify-center py-20">
-                            <div className="w-6 h-6 border-2 border-[#5B53E0]/30 border-t-[#5B53E0] rounded-full animate-spin" />
+                            <div className="w-6 h-6 border-2 border-[#1976D2]/30 border-t-[#1976D2] rounded-full animate-spin" />
                         </div>
                     ) : (
                         <>
-                            <div className="px-4 py-3 border-b border-[#E8EAED] flex items-center justify-between gap-3 flex-wrap">
-                                <span className="text-[13px] font-semibold text-[#15171C] tabular-nums">
+                            <div className="px-4 py-3 border-b border-[#E0E0E0] flex items-center justify-between gap-3 flex-wrap">
+                                <span className="text-[13px] font-semibold text-[#212121] tabular-nums">
                                     {tr("advSearch.rangeCount", {
                                         from: total ? (page - 1) * PAGE_SIZE + 1 : 0,
                                         to: Math.min(page * PAGE_SIZE, total),
@@ -346,7 +346,7 @@ export default function AdvancedSearchPage() {
                                                 disabled={page <= 1} onClick={() => void run(page - 1)}>
                                             {tr("advSearch.prev")}
                                         </Button>
-                                        <span className="text-[12px] text-[#9AA3AF] tabular-nums px-1">{page} / {lastPage}</span>
+                                        <span className="text-[12px] text-[#9E9E9E] tabular-nums px-1">{page} / {lastPage}</span>
                                         <Button size="sm" variant="secondary" trailingIcon="chevron_right"
                                                 disabled={page >= lastPage} onClick={() => void run(page + 1)}>
                                             {tr("advSearch.next")}
@@ -359,28 +359,28 @@ export default function AdvancedSearchPage() {
                                 <EmptyState icon="search_off" tone="muted" title={tr("advSearch.noResults")}
                                             description={tr("advSearch.noResultsDesc")} className="flex-1" />
                             ) : (
-                                <div className="flex-1 overflow-y-auto divide-y divide-[#F1F2F5]">
+                                <div className="flex-1 overflow-y-auto divide-y divide-[#EEEEEE]">
                                     {results.map((c) => {
                                         const label = c.full_name || tr("advSearch.unnamed");
                                         return (
-                                            <div key={c.id} className="p-4 flex items-start gap-3 hover:bg-[#F9FAFB] transition-colors">
+                                            <div key={c.id} className="p-4 flex items-start gap-3 hover:bg-[#FAFAFA] transition-colors">
                                                 <Avatar name={label} />
                                                 <div className="min-w-0 flex-1">
                                                     <div className="flex items-center gap-2 flex-wrap">
-                                                        <span className="text-[14px] font-bold text-[#15171C]">{label}</span>
+                                                        <span className="text-[14px] font-bold text-[#212121]">{label}</span>
                                                         {c.source_platform && <Badge tone="neutral">{c.source_platform}</Badge>}
                                                         {typeof c.total_experience === "number" && (
                                                             <Badge tone="indigo">{tr("advSearch.yearsExp", { count: c.total_experience })}</Badge>
                                                         )}
                                                     </div>
-                                                    {c.headline && <p className="text-[12.5px] text-[#4B5563] mt-0.5">{c.headline}</p>}
-                                                    <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1.5 text-[12px] text-[#8A929E]">
+                                                    {c.headline && <p className="text-[12.5px] text-[#4F4F4F] mt-0.5">{c.headline}</p>}
+                                                    <div className="flex flex-wrap gap-x-4 gap-y-1 mt-1.5 text-[12px] text-[#757575]">
                                                         {c.email ? (
-                                                            <a href={`mailto:${c.email}`} className="inline-flex items-center gap-1 text-[#0E8A6E] hover:underline">
+                                                            <a href={`mailto:${c.email}`} className="inline-flex items-center gap-1 text-[#2E7D32] hover:underline">
                                                                 <span className="material-symbols-rounded text-[15px]">mail</span>{c.email}
                                                             </a>
                                                         ) : (
-                                                            <span className="inline-flex items-center gap-1 text-[#B26B08]">
+                                                            <span className="inline-flex items-center gap-1 text-[#EF6C00]">
                                                                 <span className="material-symbols-rounded text-[15px]">mail_off</span>{tr("advSearch.noEmailShort")}
                                                             </span>
                                                         )}
@@ -398,12 +398,12 @@ export default function AdvancedSearchPage() {
                                                     {c.skills && c.skills.length > 0 && (
                                                         <div className="flex flex-wrap gap-1.5 mt-2">
                                                             {c.skills.slice(0, 10).map((s) => (
-                                                                <span key={s} className="text-[11.5px] font-semibold px-2 py-0.5 rounded-[6px] bg-[#E7ECFB] text-[#3559C7]">
+                                                                <span key={s} className="text-[11.5px] font-semibold px-2 py-0.5 rounded-[3px] bg-[#E3F2FD] text-[#1565C0]">
                                                                     {s}
                                                                 </span>
                                                             ))}
                                                             {c.skills.length > 10 && (
-                                                                <span className="text-[11.5px] text-[#9AA3AF] self-center">+{c.skills.length - 10}</span>
+                                                                <span className="text-[11.5px] text-[#9E9E9E] self-center">+{c.skills.length - 10}</span>
                                                             )}
                                                         </div>
                                                     )}

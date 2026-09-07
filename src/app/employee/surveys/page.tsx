@@ -75,7 +75,7 @@ export default function EmployeeSurveysPage() {
       />
 
       {error && (
-        <div className="flex items-center gap-2.5 rounded-[12px] border border-[#FBD5D5] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
+        <div className="flex items-center gap-2.5 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[13px] font-medium text-[#C62828]">
           <span className="material-symbols-rounded text-[18px]">error</span> {error}
         </div>
       )}
@@ -84,20 +84,20 @@ export default function EmployeeSurveysPage() {
         <CardHeader className="px-6 pt-6" title={t("employee.pendingSurveys")} subtitle={t("employee.pendingSurveysSubtitle")}
           action={<Badge tone="indigo">{rows.length}</Badge>} />
         {loading ? (
-          <div className="px-6 pb-6 space-y-2.5">{[1, 2, 3].map((i) => <div key={i} className="h-16 rounded-[12px] bg-[#F4F5F7] animate-pulse" />)}</div>
+          <div className="px-6 pb-6 space-y-2.5">{[1, 2, 3].map((i) => <div key={i} className="h-16 rounded-[4px] bg-[#F5F6F8] animate-pulse" />)}</div>
         ) : rows.length === 0 ? (
           <EmptyState tone="muted" icon="poll" title={t("employee.noSurveys")} description={t("employee.noSurveysDesc")} />
         ) : (
-          <div className="divide-y divide-[#F0F0F1]">
+          <div className="divide-y divide-[#EEEEEE]">
             {rows.map((r) => (
               <div key={r.id} className="flex items-center justify-between gap-4 px-6 py-4">
                 <div className="flex min-w-0 items-center gap-3">
-                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[11px] bg-[#ECEBFB] text-[#5B53E0]">
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-[4px] bg-[#E3F2FD] text-[#1976D2]">
                     <span className="material-symbols-rounded text-[22px]">poll</span>
                   </span>
                   <div className="min-w-0">
-                    <p className="truncate text-[14px] font-bold text-[#15171C]">{r.instance_name}</p>
-                    <p className="truncate text-[12px] text-[#8A929E]">{r.template_title}</p>
+                    <p className="truncate text-[14px] font-bold text-[#212121]">{r.instance_name}</p>
+                    <p className="truncate text-[12px] text-[#757575]">{r.template_title}</p>
                   </div>
                 </div>
                 <Button size="sm" icon="edit_note" disabled={opening} onClick={() => open(r)}>{t("employee.takeSurvey")}</Button>

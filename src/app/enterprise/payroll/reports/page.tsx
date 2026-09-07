@@ -74,7 +74,7 @@ export default function ReportsPage() {
       />
 
       {error && (
-        <div className="rounded-[10px] border border-[#FBD5D5] bg-[#FDECEC] px-4 py-3 text-[13px] font-medium text-[#C0383C]">
+        <div className="rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3 text-[13px] font-medium text-[#C62828]">
           {error}
         </div>
       )}
@@ -85,34 +85,34 @@ export default function ReportsPage() {
           label={tr("payroll.statPayrollCycles")}
           value={loading ? "—" : cycles.length}
           icon="event_repeat"
-          gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)"
-          glow="rgba(91,83,224,0.28)"
+          gradient="linear-gradient(135deg,#42A5F5,#1976D2)"
+          glow="rgba(25,118,210,0.28)"
         />
         <StatCard
           label={tr("payroll.statRegisterReady")}
           value={loading ? "—" : readyCount}
           icon="task_alt"
-          gradient="linear-gradient(135deg,#34D399,#0E8A6E)"
-          glow="rgba(14,138,110,0.25)"
+          gradient="linear-gradient(135deg,#66BB6A,#2E7D32)"
+          glow="rgba(46,125,50,0.25)"
         />
         <StatCard
           label={tr("payroll.statExportFormats")}
           value="2"
           icon="download"
-          gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
-          glow="rgba(53,89,199,0.25)"
+          gradient="linear-gradient(135deg,#42A5F5,#1565C0)"
+          glow="rgba(21,101,192,0.25)"
         />
       </StatGrid>
 
       {/* Payroll summary (all cycles) */}
       <Card interactive padding="lg" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-start gap-4 min-w-0">
-          <span className="w-11 h-11 rounded-[12px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+          <span className="w-11 h-11 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
             <span className="material-symbols-rounded text-[22px]">summarize</span>
           </span>
           <div className="min-w-0">
-            <h3 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.payrollSummary")}</h3>
-            <p className="text-[12.5px] text-[#8A929E] mt-0.5">
+            <h3 className="text-[15px] font-bold text-[#212121]">{tr("payroll.payrollSummary")}</h3>
+            <p className="text-[12.5px] text-[#757575] mt-0.5">
               {tr("payroll.cycleLevelTotals")}
             </p>
           </div>
@@ -144,8 +144,8 @@ export default function ReportsPage() {
       {/* Salary register per cycle */}
       <div className="space-y-4">
         <div>
-          <h2 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.salaryRegister")}</h2>
-          <p className="text-[12.5px] text-[#8A929E] mt-0.5">
+          <h2 className="text-[15px] font-bold text-[#212121]">{tr("payroll.salaryRegister")}</h2>
+          <p className="text-[12.5px] text-[#757575] mt-0.5">
             Per-employee earnings, deductions and net pay for a cycle. Available once
             a cycle has been run.
           </p>
@@ -154,16 +154,16 @@ export default function ReportsPage() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-[176px] bg-[#F4F5F7] rounded-[14px] animate-pulse" />
+              <div key={i} className="h-[176px] bg-[#F5F6F8] rounded-[4px] animate-pulse" />
             ))}
           </div>
         ) : cycles.length === 0 ? (
           <Card padding="lg" className="flex flex-col items-center justify-center text-center py-16">
-            <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
-              <span className="material-symbols-rounded text-[32px] text-[#C7CCD4]">receipt_long</span>
+            <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5">
+              <span className="material-symbols-rounded text-[32px] text-[#BDBDBD]">receipt_long</span>
             </div>
-            <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("payroll.noCyclesYet")}</h3>
-            <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto">
+            <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("payroll.noCyclesYet")}</h3>
+            <p className="text-[#757575] text-[14px] max-w-xs mx-auto">
               Once you create and run a payroll cycle, its salary register will be available to export here.
             </p>
           </Card>
@@ -179,7 +179,7 @@ export default function ReportsPage() {
                   className="flex flex-col gap-4"
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <span className="w-10 h-10 rounded-[11px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                    <span className="w-10 h-10 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
                       <span className="material-symbols-rounded text-[20px]">receipt_long</span>
                     </span>
                     <Badge tone={STATUS_TONE[c.status as CycleStatus] ?? "neutral"} dot>
@@ -188,8 +188,8 @@ export default function ReportsPage() {
                   </div>
 
                   <div className="min-w-0">
-                    <h3 className="text-[14px] font-bold text-[#15171C] truncate">{c.name}</h3>
-                    <p className={`text-[12px] text-[#8A929E] mt-1 ${jetbrainsMono.className}`}>
+                    <h3 className="text-[14px] font-bold text-[#212121] truncate">{c.name}</h3>
+                    <p className={`text-[12px] text-[#757575] mt-1 ${jetbrainsMono.className}`}>
                       {c.period_start} → {c.period_end}
                     </p>
                   </div>
@@ -227,7 +227,7 @@ export default function ReportsPage() {
                         </Button>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-1.5 text-[12px] italic text-[#8A929E]">
+                      <div className="flex items-center gap-1.5 text-[12px] italic text-[#757575]">
                         <span className="material-symbols-rounded text-[16px]">lock</span>
                         {c.status === "CANCELLED" ? "Cancelled — no register" : "Run the cycle first"}
                       </div>

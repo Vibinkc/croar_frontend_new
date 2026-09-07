@@ -154,16 +154,16 @@ export default function AutomationCanvasPage() {
           data: { 
             label: (
               <div className="flex flex-col items-center p-2">
-                <span className="text-[10px] font-bold text-[#5B53E0] uppercase tracking-wider">{tr("automation.round")} {rIdx + 1}</span>
-                <span className="font-bold text-[#15171C] text-[13.5px] mt-0.5">{round.name}</span>
+                <span className="text-[10px] font-bold text-[#1976D2] uppercase tracking-wider">{tr("automation.round")} {rIdx + 1}</span>
+                <span className="font-bold text-[#212121] text-[13.5px] mt-0.5">{round.name}</span>
               </div>
             ) 
           },
           style: {
             background: '#fff',
-            border: '1.5px solid #5B53E0',
+            border: '1.5px solid #1976D2',
             borderRadius: '12px',
-            boxShadow: '0 4px 14px 0 rgba(91, 83, 224, 0.08)',
+            boxShadow: '0 4px 14px 0 rgba(25,118,210, 0.08)',
             width: 180,
           },
           sourcePosition: 'right' as Position,
@@ -177,8 +177,8 @@ export default function AutomationCanvasPage() {
             source: `round-${rIdx}`,
             target: roundNodeId,
             type: 'smoothstep',
-            style: { stroke: '#E8EAED', strokeWidth: 2 },
-            markerEnd: { type: MarkerType.ArrowClosed, color: '#E8EAED' },
+            style: { stroke: '#E0E0E0', strokeWidth: 2 },
+            markerEnd: { type: MarkerType.ArrowClosed, color: '#E0E0E0' },
           });
         }
  
@@ -190,16 +190,16 @@ export default function AutomationCanvasPage() {
           const autoNodeId = `auto-${auto.action_type}-${auto.id}`;
           
           let icon = "mail";
-          let color = "#3b82f6";
+          let color = "#1E88E5";
           let bg = "#eff6ff";
-          if (auto.action_type === "mail") { icon = "mark_email_unread"; color = "#5B53E0"; bg = "#ECEBFB"; }
-          if (auto.action_type === "assessment") { icon = "psychology"; color = "#D97706"; bg = "#FEF3E2"; }
-          if (auto.action_type === "interview") { icon = "event_available"; color = "#0E8A6E"; bg = "#E3F4EF"; }
-          if (auto.action_type === "onboarding") { icon = "person_add"; color = "#8B5CF6"; bg = "#F5F3FF"; }
+          if (auto.action_type === "mail") { icon = "mark_email_unread"; color = "#1976D2"; bg = "#E3F2FD"; }
+          if (auto.action_type === "assessment") { icon = "psychology"; color = "#EF6C00"; bg = "#FFF3E0"; }
+          if (auto.action_type === "interview") { icon = "event_available"; color = "#2E7D32"; bg = "#E8F5E9"; }
+          if (auto.action_type === "onboarding") { icon = "person_add"; color = "#42A5F5"; bg = "#F3F9FE"; }
  
           if (!auto.is_enabled) {
-            bg = "#F1F2F5";
-            color = "#9AA3AF";
+            bg = "#EEEEEE";
+            color = "#9E9E9E";
           }
  
           newNodes.push({
@@ -217,30 +217,30 @@ export default function AutomationCanvasPage() {
                       </span>
                     </div>
                     {!auto.is_enabled && (
-                      <span className="text-[8px] font-bold text-[#8A929E] tracking-tight bg-white border border-[#E8EAED] px-1 rounded">{tr("automation.disabled")}</span>
+                      <span className="text-[8px] font-bold text-[#757575] tracking-tight bg-white border border-[#E0E0E0] px-1 rounded">{tr("automation.disabled")}</span>
                     )}
                   </div>
                   
-                  <div className="text-[13px] font-bold text-[#15171C] leading-tight mb-1 truncate w-full">
+                  <div className="text-[13px] font-bold text-[#212121] leading-tight mb-1 truncate w-full">
                     {auto.criteria || tr("automation.anyTrigger")}
                   </div>
  
                   {auto.action_type === "assessment" && (
-                    <div className="text-[10px] text-[#8A929E] font-semibold flex items-center gap-1">
+                    <div className="text-[10px] text-[#757575] font-semibold flex items-center gap-1">
                       <span className="material-symbols-rounded text-[10px]">topic</span>
                       {auto.topic || tr("automation.noTopic")} {tr("automation.qsCount", { count: auto.generated_questions?.length || 0 })}
                     </div>
                   )}
  
                   {auto.action_type === "interview" && (
-                     <div className="text-[10px] text-[#8A929E] font-semibold flex items-center gap-1">
+                     <div className="text-[10px] text-[#757575] font-semibold flex items-center gap-1">
                         <span className="material-symbols-rounded text-[10px]">event</span>
                         {auto.interview_type} • {tr("automation.slotsSuffix", { count: auto.time_slots?.length || 0 })}
                      </div>
                   )}
  
                   {auto.action_type === "mail" && auto.template_id && (
-                    <div className="text-[10px] text-[#8A929E] font-semibold flex items-center gap-1">
+                    <div className="text-[10px] text-[#757575] font-semibold flex items-center gap-1">
                         <span className="material-symbols-rounded text-[10px]">description</span>
                         {tr("automation.templateAction")}
                     </div>
@@ -255,7 +255,7 @@ export default function AutomationCanvasPage() {
               width: 190,
               opacity: auto.is_enabled ? 1 : 0.6,
               cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(21, 23, 28, 0.04)',
+              boxShadow: '0 4px 12px rgba(0,0,0, 0.04)',
             },
             sourcePosition: 'bottom' as Position,
             targetPosition: 'top' as Position,
@@ -312,42 +312,42 @@ export default function AutomationCanvasPage() {
   }, [selectedJobId, fetchAutomations, setNodes, setEdges]);
 
   return (
-    <div className="w-full h-full flex flex-col bg-[#FDFDFF]">
+    <div className="w-full h-full flex flex-col bg-[#FDFEFF]">
       {/* Header (sticky) */}
-      <div className="sticky top-0 z-20 px-6 py-3 border-b border-[#E8EAED] flex-shrink-0 bg-[#F4F5F7]/95 backdrop-blur-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="sticky top-0 z-20 px-6 py-3 border-b border-[#E0E0E0] flex-shrink-0 bg-[#F5F6F8]/95 backdrop-blur-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-1.5">
-            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("automation.canvasTitle")}</h1>
+            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#212121] leading-tight">{tr("automation.canvasTitle")}</h1>
             <PageHelp title={tr("automation.canvasTitle")}>
               <p>{tr("automation.canvasHelp")}</p>
             </PageHelp>
           </div>
-          <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("automation.canvasSubtitle")}</p>
+          <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("automation.canvasSubtitle")}</p>
         </div>
 
         <div className="flex items-center gap-2.5">
           <button 
             onClick={() => selectedJobId && fetchAutomations(selectedJobId)}
             disabled={loading || !selectedJobId}
-            className="flex items-center gap-2 h-9 px-4 rounded-[10px] border border-[#E8EAED] text-[#4B5563] hover:bg-[#F7F8FA] hover:text-[#15171C] transition-all font-semibold text-[13px] bg-white shadow-sm disabled:opacity-50 active:scale-95 shrink-0"
+            className="flex items-center gap-2 h-9 px-4 rounded-[4px] border border-[#E0E0E0] text-[#4F4F4F] hover:bg-[#FAFAFA] hover:text-[#212121] transition-all font-semibold text-[13px] bg-white shadow-sm disabled:opacity-50 active:scale-95 shrink-0"
           >
             <span className={`material-symbols-rounded text-lg ${loading ? 'animate-spin' : ''}`}>refresh</span>
             {tr("automation.sync")}
           </button>
 
           <div className="flex items-center gap-2 relative">
-            <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-lg pointer-events-none">work</span>
+            <span className="material-symbols-rounded absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-lg pointer-events-none">work</span>
             <select
               value={selectedJobId}
               onChange={(e) => setSelectedJobId(e.target.value)}
-              className="w-64 h-9 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-10 text-[13px] font-semibold text-[#374151] hover:border-[#DAD7F6] hover:bg-[#F7F8FA] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+              className="w-64 h-9 bg-white border border-[#E0E0E0] rounded-[4px] pl-10 pr-10 text-[13px] font-semibold text-[#424242] hover:border-[#BBDEFB] hover:bg-[#FAFAFA] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm"
             >
               <option value="">{tr("automation.selectJobFlow")}</option>
               {jobs.map((j) => (
                 <option key={j.id} value={j.id}>{j.title}</option>
               ))}
             </select>
-            <span className="material-symbols-rounded absolute right-3.5 top-1/2 -translate-y-1/2 text-[#9AA3AF] text-lg pointer-events-none">expand_more</span>
+            <span className="material-symbols-rounded absolute right-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E] text-lg pointer-events-none">expand_more</span>
           </div>
         </div>
       </div>
@@ -356,26 +356,26 @@ export default function AutomationCanvasPage() {
       <div className="flex-1 w-full bg-slate-50/50 relative">
         {!selectedJobId ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <div className="w-16 h-16 rounded-[18px] bg-[#ECEBFB] flex items-center justify-center mb-4 border border-[#DAD7F6]">
-              <span className="material-symbols-rounded text-[#5B53E0] text-3xl">account_tree</span>
+            <div className="w-16 h-16 rounded-[4px] bg-[#E3F2FD] flex items-center justify-center mb-4 border border-[#BBDEFB]">
+              <span className="material-symbols-rounded text-[#1976D2] text-3xl">account_tree</span>
             </div>
-            <p className="text-[#15171C] font-extrabold text-lg">{tr("automation.noJobSelected")}</p>
-            <p className="text-[#8A929E] text-sm mt-1">{tr("automation.selectJobToViewCanvas")}</p>
+            <p className="text-[#212121] font-extrabold text-lg">{tr("automation.noJobSelected")}</p>
+            <p className="text-[#757575] text-sm mt-1">{tr("automation.selectJobToViewCanvas")}</p>
           </div>
         ) : loading ? (
           <div className="absolute inset-0 flex items-center justify-center">
             <div className="flex flex-col items-center gap-3">
-              <div className="w-8 h-8 border-4 border-[#5B53E0] border-t-transparent rounded-full animate-spin" />
-              <p className="text-sm font-semibold text-[#8A929E]">{tr("automation.loadingPipelines")}</p>
+              <div className="w-8 h-8 border-4 border-[#1976D2] border-t-transparent rounded-full animate-spin" />
+              <p className="text-sm font-semibold text-[#757575]">{tr("automation.loadingPipelines")}</p>
             </div>
           </div>
         ) : nodes.length === 0 ? (
           <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <div className="w-16 h-16 rounded-[18px] bg-[#FEF3E2] flex items-center justify-center mb-4 border border-[#FCE1BF]">
-              <span className="material-symbols-rounded text-[#D97706] text-3xl">info</span>
+            <div className="w-16 h-16 rounded-[4px] bg-[#FFF3E0] flex items-center justify-center mb-4 border border-[#FFE0B2]">
+              <span className="material-symbols-rounded text-[#EF6C00] text-3xl">info</span>
             </div>
-            <p className="text-[#15171C] font-extrabold text-lg">{tr("automation.noStages")}</p>
-            <p className="text-[#8A929E] text-sm mt-1">{tr("automation.noHiringRoundsYet")}</p>
+            <p className="text-[#212121] font-extrabold text-lg">{tr("automation.noStages")}</p>
+            <p className="text-[#757575] text-sm mt-1">{tr("automation.noHiringRoundsYet")}</p>
           </div>
         ) : (
           <>
@@ -390,30 +390,30 @@ export default function AutomationCanvasPage() {
               className="bg-slate-50"
               defaultEdgeOptions={{ type: 'smoothstep' }}
             >
-              <Background color="#E8EAED" gap={24} size={2} />
+              <Background color="#E0E0E0" gap={24} size={2} />
               <Controls className="bg-white shadow-md border-none rounded-xl overflow-hidden" />
             </ReactFlow>
 
             {/* Floating Actions */}
             {canAccess("automation:moderate") && (
               <div className="absolute top-6 right-6 z-10 flex flex-col items-end gap-2 pointer-events-none">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-[#8A929E] bg-white/90 border border-[#E8EAED] px-2.5 py-1 rounded-[6px] shadow-sm pointer-events-auto">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#757575] bg-white/90 border border-[#E0E0E0] px-2.5 py-1 rounded-[3px] shadow-sm pointer-events-auto">
                   {tr("automation.addAction")}
                 </span>
-                <div className="flex bg-white shadow-[0_12px_24px_rgba(21,23,28,0.08)] border border-[#E8EAED] rounded-[12px] p-1 gap-1 pointer-events-auto">
-                  <button onClick={() => openCreateModal("mail")} className="h-10 pl-2 pr-3 flex items-center gap-1.5 rounded-[9px] hover:bg-[#ECEBFB] text-[#5B53E0] transition-colors" title={tr("automation.addMailAutomation")}>
+                <div className="flex bg-white shadow-[0_12px_24px_rgba(0,0,0,0.08)] border border-[#E0E0E0] rounded-[4px] p-1 gap-1 pointer-events-auto">
+                  <button onClick={() => openCreateModal("mail")} className="h-10 pl-2 pr-3 flex items-center gap-1.5 rounded-[4px] hover:bg-[#E3F2FD] text-[#1976D2] transition-colors" title={tr("automation.addMailAutomation")}>
                     <span className="material-symbols-rounded text-[20px]">mark_email_unread</span>
                     <span className="text-[12.5px] font-semibold">{tr("automation.nodeMail")}</span>
                   </button>
-                  <button onClick={() => openCreateModal("assessment")} className="h-10 pl-2 pr-3 flex items-center gap-1.5 rounded-[9px] hover:bg-[#FEF3E2] text-[#D97706] transition-colors" title={tr("automation.addAssessmentAutomation")}>
+                  <button onClick={() => openCreateModal("assessment")} className="h-10 pl-2 pr-3 flex items-center gap-1.5 rounded-[4px] hover:bg-[#FFF3E0] text-[#EF6C00] transition-colors" title={tr("automation.addAssessmentAutomation")}>
                     <span className="material-symbols-rounded text-[20px]">psychology</span>
                     <span className="text-[12.5px] font-semibold">{tr("automation.nodeAssessment")}</span>
                   </button>
-                  <button onClick={() => openCreateModal("interview")} className="h-10 pl-2 pr-3 flex items-center gap-1.5 rounded-[9px] hover:bg-[#E3F4EF] text-[#0E8A6E] transition-colors" title={tr("automation.addInterviewAutomation")}>
+                  <button onClick={() => openCreateModal("interview")} className="h-10 pl-2 pr-3 flex items-center gap-1.5 rounded-[4px] hover:bg-[#E8F5E9] text-[#2E7D32] transition-colors" title={tr("automation.addInterviewAutomation")}>
                     <span className="material-symbols-rounded text-[20px]">event_available</span>
                     <span className="text-[12.5px] font-semibold">{tr("automation.nodeInterview")}</span>
                   </button>
-                  <button onClick={() => openCreateModal("onboarding")} className="h-10 pl-2 pr-3 flex items-center gap-1.5 rounded-[9px] hover:bg-[#F5F3FF] text-[#8B5CF6] transition-colors" title={tr("automation.addOnboardingAutomation")}>
+                  <button onClick={() => openCreateModal("onboarding")} className="h-10 pl-2 pr-3 flex items-center gap-1.5 rounded-[4px] hover:bg-[#F3F9FE] text-[#42A5F5] transition-colors" title={tr("automation.addOnboardingAutomation")}>
                     <span className="material-symbols-rounded text-[20px]">person_add</span>
                     <span className="text-[12.5px] font-semibold">{tr("automation.nodeOnboarding")}</span>
                   </button>

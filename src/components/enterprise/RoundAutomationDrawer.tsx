@@ -17,16 +17,16 @@ export type AutomationKind = "assessment" | "interview" | "email" | "onboarding"
  */
 
 const TONES: Record<AutomationKind, { chip: string; icon: string }> = {
-    assessment: { chip: "bg-[#ECEBFB] border-[#DAD7F6]/60 text-[#5B53E0]", icon: "quiz" },
-    interview: { chip: "bg-[#E7ECFB] border-[#C9D5F5]/60 text-[#3559C7]", icon: "co_present" },
-    email: { chip: "bg-[#E3F4EF] border-[#BFE3D8]/60 text-[#0E8A6E]", icon: "forward_to_inbox" },
-    onboarding: { chip: "bg-[#FEF3E2] border-[#F3DDBA]/60 text-[#B45309]", icon: "person_add" },
+    assessment: { chip: "bg-[#E3F2FD] border-[#BBDEFB]/60 text-[#1976D2]", icon: "quiz" },
+    interview: { chip: "bg-[#E3F2FD] border-[#C9D5F5]/60 text-[#1565C0]", icon: "co_present" },
+    email: { chip: "bg-[#E8F5E9] border-[#BFE3D8]/60 text-[#2E7D32]", icon: "forward_to_inbox" },
+    onboarding: { chip: "bg-[#FFF3E0] border-[#FFE0B2]/60 text-[#E65100]", icon: "person_add" },
 };
 
 /** Field label in the Automation module's style: small, uppercase, optional required marker. */
 export function DrawerLabel({ htmlFor, children, required }: { htmlFor?: string; children: React.ReactNode; required?: boolean }) {
     return (
-        <label htmlFor={htmlFor} className="block text-[11px] font-bold text-[#8A929E] uppercase tracking-wider mb-2 ml-1">
+        <label htmlFor={htmlFor} className="block text-[11px] font-bold text-[#757575] uppercase tracking-wider mb-2 ml-1">
             {children} {required && <span className="text-rose-500">*</span>}
         </label>
     );
@@ -53,11 +53,11 @@ export function DrawerSelect({
                 aria-label={ariaLabel}
                 value={value}
                 onChange={e => onChange(e.target.value)}
-                className="w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm"
+                className="w-full bg-white border border-[#E0E0E0] rounded-[4px] h-11 px-4 pr-10 text-[13.5px] font-semibold text-[#424242] hover:border-[#BBDEFB] outline-none appearance-none cursor-pointer focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm"
             >
                 {children}
             </select>
-            <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+            <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
         </div>
     );
 }
@@ -68,7 +68,7 @@ export function DrawerInput(props: React.InputHTMLAttributes<HTMLInputElement>) 
     return (
         <input
             {...rest}
-            className={`w-full bg-white border border-[#E1E4E8] rounded-[12px] h-11 px-4 text-[13.5px] font-semibold text-[#374151] hover:border-[#DAD7F6] outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm ${className}`}
+            className={`w-full bg-white border border-[#E0E0E0] rounded-[4px] h-11 px-4 text-[13.5px] font-semibold text-[#424242] hover:border-[#BBDEFB] outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm ${className}`}
         />
     );
 }
@@ -78,7 +78,7 @@ export function DrawerTextarea(props: React.TextareaHTMLAttributes<HTMLTextAreaE
     return (
         <textarea
             {...rest}
-            className={`w-full bg-white border border-[#E1E4E8] rounded-[12px] px-4 py-3 text-[13.5px] font-medium text-[#374151] hover:border-[#DAD7F6] outline-none focus:ring-2 focus:ring-[#5B53E0]/20 focus:border-[#5B53E0] transition-all shadow-sm resize-none ${className}`}
+            className={`w-full bg-white border border-[#E0E0E0] rounded-[4px] px-4 py-3 text-[13.5px] font-medium text-[#424242] hover:border-[#BBDEFB] outline-none focus:ring-2 focus:ring-[#1976D2]/20 focus:border-[#1976D2] transition-all shadow-sm resize-none ${className}`}
         />
     );
 }
@@ -100,14 +100,14 @@ export function DrawerToggle({
     onChange: (v: boolean) => void;
 }) {
     return (
-        <div className="flex items-center justify-between p-4 bg-[#F7F8FA]/50 border border-[#E8EAED] rounded-[12px] transition-all hover:border-[#DAD7F6]">
+        <div className="flex items-center justify-between p-4 bg-[#FAFAFA]/50 border border-[#E0E0E0] rounded-[4px] transition-all hover:border-[#BBDEFB]">
             <div className="flex items-center gap-3 min-w-0">
-                <div className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center border border-[#E8EAED] shrink-0">
+                <div className="w-9 h-9 rounded-lg bg-white shadow-sm flex items-center justify-center border border-[#E0E0E0] shrink-0">
                     <span className={`material-symbols-rounded text-[18px] ${iconClass}`}>{icon}</span>
                 </div>
                 <div className="min-w-0">
-                    <p className="text-[13px] font-bold text-[#15171C] truncate">{title}</p>
-                    <p className="text-[11px] text-[#9AA3AF] font-medium truncate">{hint}</p>
+                    <p className="text-[13px] font-bold text-[#212121] truncate">{title}</p>
+                    <p className="text-[11px] text-[#9E9E9E] font-medium truncate">{hint}</p>
                 </div>
             </div>
             <button
@@ -116,7 +116,7 @@ export function DrawerToggle({
                 aria-checked={checked}
                 aria-label={title}
                 onClick={() => onChange(!checked)}
-                className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer shrink-0 ${checked ? "bg-[#5B53E0]" : "bg-[#E1E4E8]"}`}
+                className={`relative w-11 h-6 rounded-full transition-colors duration-200 focus:outline-none cursor-pointer shrink-0 ${checked ? "bg-[#1976D2]" : "bg-[#E0E0E0]"}`}
             >
                 <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200 ${checked ? "translate-x-5" : "translate-x-0"}`} />
             </button>
@@ -156,7 +156,7 @@ export default function RoundAutomationDrawer({
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        className="absolute inset-0 bg-[#15171C]/40 backdrop-blur-sm"
+                        className="absolute inset-0 bg-[#212121]/40 backdrop-blur-sm"
                         onClick={onClose}
                     />
                     <motion.div
@@ -164,18 +164,18 @@ export default function RoundAutomationDrawer({
                         animate={{ x: 0 }}
                         exit={{ x: "100%" }}
                         transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                        className="relative h-full w-full max-w-md bg-white shadow-2xl flex flex-col border-l border-[#E8EAED]"
+                        className="relative h-full w-full max-w-md bg-white shadow-2xl flex flex-col border-l border-[#E0E0E0]"
                     >
-                        <div className="px-6 py-5 border-b border-[#E8EAED] flex items-center justify-between shrink-0">
+                        <div className="px-6 py-5 border-b border-[#E0E0E0] flex items-center justify-between shrink-0">
                             <div className="flex items-center gap-3 min-w-0">
-                                <div className={`w-10 h-10 rounded-[10px] flex items-center justify-center border shadow-sm shrink-0 ${tone.chip}`}>
+                                <div className={`w-10 h-10 rounded-[4px] flex items-center justify-center border shadow-sm shrink-0 ${tone.chip}`}>
                                     <span className="material-symbols-rounded text-[20px]">{tone.icon}</span>
                                 </div>
                                 <div className="min-w-0">
-                                    <h2 className="text-[16px] font-extrabold text-[#15171C] leading-tight truncate">
+                                    <h2 className="text-[16px] font-extrabold text-[#212121] leading-tight truncate">
                                         {tr(`roundDrawer.title.${kind}`)}
                                     </h2>
-                                    <p className="text-[12.5px] text-[#8A929E] font-medium mt-0.5 truncate">
+                                    <p className="text-[12.5px] text-[#757575] font-medium mt-0.5 truncate">
                                         {tr("roundDrawer.forRound", { index: roundIndex, name: roundName })}
                                     </p>
                                 </div>
@@ -183,7 +183,7 @@ export default function RoundAutomationDrawer({
                             <button
                                 onClick={onClose}
                                 aria-label={tr("common.cancel")}
-                                className="p-1.5 hover:bg-[#F4F5F7] text-[#9AA3AF] hover:text-[#4B5563] rounded-lg transition-all shrink-0"
+                                className="p-1.5 hover:bg-[#F5F6F8] text-[#9E9E9E] hover:text-[#4F4F4F] rounded-lg transition-all shrink-0"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -191,11 +191,11 @@ export default function RoundAutomationDrawer({
 
                         <div className="flex-1 overflow-y-auto px-6 py-6 space-y-6">{children}</div>
 
-                        <div className="px-6 py-4 border-t border-[#E8EAED] shrink-0">
+                        <div className="px-6 py-4 border-t border-[#E0E0E0] shrink-0">
                             <button
                                 onClick={onSave}
                                 disabled={!canSave}
-                                className="w-full flex items-center justify-center gap-2 h-12 bg-[#5B53E0] text-white rounded-[10px] text-[13.5px] font-semibold hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)] transition-all active:scale-95 disabled:opacity-60 disabled:pointer-events-none"
+                                className="w-full flex items-center justify-center gap-2 h-12 bg-[#1976D2] text-white rounded-[4px] text-[13.5px] font-semibold hover:bg-[#1565C0] shadow-[0_6px_16px_rgba(25,118,210,0.28)] transition-all active:scale-95 disabled:opacity-60 disabled:pointer-events-none"
                             >
                                 <Save className="w-[18px] h-[18px]" />
                                 {saveLabel || tr("roundDrawer.save")}

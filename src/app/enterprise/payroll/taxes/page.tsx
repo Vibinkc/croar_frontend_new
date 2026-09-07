@@ -270,79 +270,79 @@ export default function TaxesPage() {
           label={tr("payroll.employees")}
           value={employees.length}
           icon="group"
-          gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)"
-          glow="rgba(91,83,224,0.25)"
+          gradient="linear-gradient(135deg,#42A5F5,#1976D2)"
+          glow="rgba(25,118,210,0.25)"
         />
         <StatCard
           label={tr("payroll.declarations")}
           value={declaredCount}
           icon="description"
-          gradient="linear-gradient(135deg,#34D399,#0E8A6E)"
-          glow="rgba(14,138,110,0.25)"
+          gradient="linear-gradient(135deg,#66BB6A,#2E7D32)"
+          glow="rgba(46,125,50,0.25)"
         />
         <StatCard
           label={tr("payroll.tdsDeposited")}
           value={money(totalDeposited)}
           icon="account_balance"
-          gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
-          glow="rgba(53,89,199,0.25)"
+          gradient="linear-gradient(135deg,#42A5F5,#1565C0)"
+          glow="rgba(21,101,192,0.25)"
         />
         <StatCard
           label={tr("payroll.tdsDue")}
           value={money(totalDue)}
           icon="warning"
-          gradient="linear-gradient(135deg,#F6B65C,#D97706)"
-          glow="rgba(217,119,6,0.25)"
+          gradient="linear-gradient(135deg,#FFB74D,#EF6C00)"
+          glow="rgba(239,108,0,0.25)"
         />
       </StatGrid>
 
       {/* --- TDS Liabilities (deducted vs deposited) --- */}
       <Card padding="none">
-        <div className="p-5 md:p-6 border-b border-[#E8EAED]">
-          <h2 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.tdsLiabilities")}</h2>
-          <p className="text-[12.5px] text-[#8A929E] mt-0.5">
+        <div className="p-5 md:p-6 border-b border-[#E0E0E0]">
+          <h2 className="text-[15px] font-bold text-[#212121]">{tr("payroll.tdsLiabilities")}</h2>
+          <p className="text-[12.5px] text-[#757575] mt-0.5">
             {tr("payroll.tdsLiabilitiesSub")}
           </p>
         </div>
         {loading ? (
           <div className="p-4 space-y-2.5">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-12 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+              <div key={i} className="h-12 bg-[#F5F6F8] rounded-[4px] animate-pulse" />
             ))}
           </div>
         ) : liabilities.length === 0 ? (
           <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
-            <div className="w-14 h-14 rounded-[16px] bg-[#F4F5F7] flex items-center justify-center mb-4">
-              <span className="material-symbols-rounded text-[26px] text-[#C7CCD4]">receipt_long</span>
+            <div className="w-14 h-14 rounded-[4px] bg-[#F5F6F8] flex items-center justify-center mb-4">
+              <span className="material-symbols-rounded text-[26px] text-[#BDBDBD]">receipt_long</span>
             </div>
-            <p className="text-[13.5px] text-[#8A929E] max-w-sm">
+            <p className="text-[13.5px] text-[#757575] max-w-sm">
               {tr("payroll.noTdsWithheld")}
             </p>
           </div>
         ) : (
           <>
             {/* Column header (desktop) */}
-            <div className="hidden md:grid grid-cols-[1.4fr_1fr_1fr_1.2fr] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.month")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.deducted")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.deposited")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.balance")}</span>
+            <div className="hidden md:grid grid-cols-[1.4fr_1fr_1fr_1.2fr] gap-4 px-5 py-3 bg-[#FAFAFA] border-b border-[#E0E0E0]">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.month")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.deducted")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.deposited")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.balance")}</span>
             </div>
-            <div className="divide-y divide-[#F0F0F1]">
+            <div className="divide-y divide-[#EEEEEE]">
               {liabilities.map((row) => {
                 const bal = Number(row.difference);
                 return (
                   <div
                     key={row.period_month}
-                    className="grid grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1.2fr] gap-x-4 gap-y-1.5 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors"
+                    className="grid grid-cols-2 md:grid-cols-[1.4fr_1fr_1fr_1.2fr] gap-x-4 gap-y-1.5 items-center px-4 md:px-5 py-3.5 hover:bg-[#FAFAFA] transition-colors"
                   >
-                    <span className={`text-[13.5px] font-bold text-[#15171C] ${jetbrainsMono.className}`}>{row.period_month}</span>
-                    <span className={`text-[13px] text-[#374151] text-right ${jetbrainsMono.className}`}>
-                      <span className="md:hidden text-[10px] uppercase tracking-[0.04em] text-[#8A929E] mr-1.5 font-sans">{tr("payroll.dedShort")}</span>
+                    <span className={`text-[13.5px] font-bold text-[#212121] ${jetbrainsMono.className}`}>{row.period_month}</span>
+                    <span className={`text-[13px] text-[#424242] text-right ${jetbrainsMono.className}`}>
+                      <span className="md:hidden text-[10px] uppercase tracking-[0.04em] text-[#757575] mr-1.5 font-sans">{tr("payroll.dedShort")}</span>
                       {money(row.tds_deducted)}
                     </span>
-                    <span className={`text-[13px] text-[#374151] text-right ${jetbrainsMono.className}`}>
-                      <span className="md:hidden text-[10px] uppercase tracking-[0.04em] text-[#8A929E] mr-1.5 font-sans">{tr("payroll.depShort")}</span>
+                    <span className={`text-[13px] text-[#424242] text-right ${jetbrainsMono.className}`}>
+                      <span className="md:hidden text-[10px] uppercase tracking-[0.04em] text-[#757575] mr-1.5 font-sans">{tr("payroll.depShort")}</span>
                       {money(row.tds_deposited)}
                     </span>
                     <div className="col-span-2 md:col-span-1 flex md:justify-end">
@@ -364,10 +364,10 @@ export default function TaxesPage() {
 
       {/* --- TDS Challans --- */}
       <Card padding="none">
-        <div className="flex items-start justify-between gap-3 p-5 md:p-6 border-b border-[#E8EAED]">
+        <div className="flex items-start justify-between gap-3 p-5 md:p-6 border-b border-[#E0E0E0]">
           <div>
-            <h2 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.tdsChallans")}</h2>
-            <p className="text-[12.5px] text-[#8A929E] mt-0.5">
+            <h2 className="text-[15px] font-bold text-[#212121]">{tr("payroll.tdsChallans")}</h2>
+            <p className="text-[12.5px] text-[#757575] mt-0.5">
               {tr("payroll.tdsChallansSub")}
             </p>
           </div>
@@ -388,55 +388,55 @@ export default function TaxesPage() {
         {loading ? (
           <div className="p-4 space-y-2.5">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-12 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+              <div key={i} className="h-12 bg-[#F5F6F8] rounded-[4px] animate-pulse" />
             ))}
           </div>
         ) : challans.length === 0 ? (
           <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
-            <div className="w-14 h-14 rounded-[16px] bg-[#F4F5F7] flex items-center justify-center mb-4">
-              <span className="material-symbols-rounded text-[26px] text-[#C7CCD4]">request_quote</span>
+            <div className="w-14 h-14 rounded-[4px] bg-[#F5F6F8] flex items-center justify-center mb-4">
+              <span className="material-symbols-rounded text-[26px] text-[#BDBDBD]">request_quote</span>
             </div>
-            <p className="text-[13.5px] text-[#8A929E]">{tr("payroll.noChallans")}</p>
+            <p className="text-[13.5px] text-[#757575]">{tr("payroll.noChallans")}</p>
           </div>
         ) : (
           <>
             {/* Column header (desktop) */}
-            <div className="hidden md:grid grid-cols-[1fr_1.2fr_1fr_1fr_1fr_60px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.period")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.challanNo")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.bsrCode")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.deposited")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.amount")}</span>
-              {canEdit && <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.actions")}</span>}
+            <div className="hidden md:grid grid-cols-[1fr_1.2fr_1fr_1fr_1fr_60px] gap-4 px-5 py-3 bg-[#FAFAFA] border-b border-[#E0E0E0]">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.period")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.challanNo")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.bsrCode")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.deposited")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.amount")}</span>
+              {canEdit && <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.actions")}</span>}
             </div>
-            <div className="divide-y divide-[#F0F0F1]">
+            <div className="divide-y divide-[#EEEEEE]">
               {challans.map((ch) => (
                 <div
                   key={ch.id}
-                  className="grid grid-cols-[1fr_auto] md:grid-cols-[1fr_1.2fr_1fr_1fr_1fr_60px] gap-x-4 gap-y-1.5 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors"
+                  className="grid grid-cols-[1fr_auto] md:grid-cols-[1fr_1.2fr_1fr_1fr_1fr_60px] gap-x-4 gap-y-1.5 items-center px-4 md:px-5 py-3.5 hover:bg-[#FAFAFA] transition-colors"
                 >
-                  <span className={`text-[13.5px] font-bold text-[#15171C] ${jetbrainsMono.className}`}>{ch.period_month}</span>
-                  <span className={`text-[12.5px] text-[#374151] ${jetbrainsMono.className} truncate`}>{ch.challan_number}</span>
-                  <span className={`hidden md:block text-[12.5px] text-[#374151] ${jetbrainsMono.className}`}>{ch.bsr_code || "—"}</span>
-                  <span className="hidden md:block text-[13px] text-[#8A929E]">{ch.deposit_date}</span>
-                  <span className={`hidden md:block text-[13px] font-semibold text-[#15171C] text-right ${jetbrainsMono.className}`}>{money(ch.amount)}</span>
+                  <span className={`text-[13.5px] font-bold text-[#212121] ${jetbrainsMono.className}`}>{ch.period_month}</span>
+                  <span className={`text-[12.5px] text-[#424242] ${jetbrainsMono.className} truncate`}>{ch.challan_number}</span>
+                  <span className={`hidden md:block text-[12.5px] text-[#424242] ${jetbrainsMono.className}`}>{ch.bsr_code || "—"}</span>
+                  <span className="hidden md:block text-[13px] text-[#757575]">{ch.deposit_date}</span>
+                  <span className={`hidden md:block text-[13px] font-semibold text-[#212121] text-right ${jetbrainsMono.className}`}>{money(ch.amount)}</span>
                   {/* Mobile meta + amount + action */}
                   <div className="flex items-center justify-end gap-2 md:hidden">
-                    <span className={`text-[13px] font-semibold text-[#15171C] ${jetbrainsMono.className}`}>{money(ch.amount)}</span>
+                    <span className={`text-[13px] font-semibold text-[#212121] ${jetbrainsMono.className}`}>{money(ch.amount)}</span>
                   </div>
                   {canEdit && (
                     <div className="hidden md:flex justify-end">
                       <button
                         onClick={() => removeChallan(ch)}
                         title={tr("payroll.deleteChallanTitle")}
-                        className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
+                        className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#FFEBEE] hover:text-[#C62828] transition-colors"
                       >
                         <span className="material-symbols-rounded text-[18px]">delete</span>
                       </button>
                     </div>
                   )}
                   {/* Mobile-only sub row: bsr/date + delete */}
-                  <div className="col-span-2 md:hidden flex items-center justify-between text-[12px] text-[#8A929E]">
+                  <div className="col-span-2 md:hidden flex items-center justify-between text-[12px] text-[#757575]">
                     <span className="flex items-center gap-3">
                       <span className={jetbrainsMono.className}>{ch.bsr_code || "—"}</span>
                       <span>{ch.deposit_date}</span>
@@ -445,7 +445,7 @@ export default function TaxesPage() {
                       <button
                         onClick={() => removeChallan(ch)}
                         title={tr("payroll.deleteChallanTitle")}
-                        className="w-8 h-8 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors"
+                        className="w-8 h-8 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#FFEBEE] hover:text-[#C62828] transition-colors"
                       >
                         <span className="material-symbols-rounded text-[18px]">delete</span>
                       </button>
@@ -460,49 +460,49 @@ export default function TaxesPage() {
 
       {/* --- IT Declarations --- */}
       <Card padding="none">
-        <div className="p-5 md:p-6 border-b border-[#E8EAED]">
-          <h2 className="text-[15px] font-bold text-[#15171C]">{tr("payroll.incomeTaxDeclarations")}</h2>
-          <p className="text-[12.5px] text-[#8A929E] mt-0.5">
+        <div className="p-5 md:p-6 border-b border-[#E0E0E0]">
+          <h2 className="text-[15px] font-bold text-[#212121]">{tr("payroll.incomeTaxDeclarations")}</h2>
+          <p className="text-[12.5px] text-[#757575] mt-0.5">
             {tr("payroll.incomeTaxDeclarationsSub")}
           </p>
         </div>
         {loading ? (
           <div className="p-4 space-y-2.5">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="h-12 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+              <div key={i} className="h-12 bg-[#F5F6F8] rounded-[4px] animate-pulse" />
             ))}
           </div>
         ) : employees.length === 0 ? (
           <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
-            <div className="w-14 h-14 rounded-[16px] bg-[#F4F5F7] flex items-center justify-center mb-4">
-              <span className="material-symbols-rounded text-[26px] text-[#C7CCD4]">group</span>
+            <div className="w-14 h-14 rounded-[4px] bg-[#F5F6F8] flex items-center justify-center mb-4">
+              <span className="material-symbols-rounded text-[26px] text-[#BDBDBD]">group</span>
             </div>
-            <p className="text-[13.5px] text-[#8A929E]">{tr("payroll.noEmployeesYet")}</p>
+            <p className="text-[13.5px] text-[#757575]">{tr("payroll.noEmployeesYet")}</p>
           </div>
         ) : (
           <>
             {/* Column header (desktop) */}
-            <div className="hidden md:grid grid-cols-[2fr_1fr_1.2fr_1fr_80px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.employee")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.regime")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.totalDeclared")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.status")}</span>
-              {canEdit && <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.actions")}</span>}
+            <div className="hidden md:grid grid-cols-[2fr_1fr_1.2fr_1fr_80px] gap-4 px-5 py-3 bg-[#FAFAFA] border-b border-[#E0E0E0]">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.employee")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.regime")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.totalDeclared")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.status")}</span>
+              {canEdit && <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.actions")}</span>}
             </div>
-            <div className="divide-y divide-[#F0F0F1]">
+            <div className="divide-y divide-[#EEEEEE]">
               {employees.map((emp) => {
                 const p = profileFor(emp.id);
                 return (
                   <div
                     key={emp.id}
-                    className="grid grid-cols-[1fr_auto] md:grid-cols-[2fr_1fr_1.2fr_1fr_80px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors"
+                    className="grid grid-cols-[1fr_auto] md:grid-cols-[2fr_1fr_1.2fr_1fr_80px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#FAFAFA] transition-colors"
                   >
                     {/* Employee */}
                     <div className="flex items-center gap-3 min-w-0">
-                      <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center font-extrabold text-[12px] uppercase shrink-0">
+                      <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center font-extrabold text-[12px] uppercase shrink-0">
                         {((emp.first_name?.[0] || "") + (emp.last_name?.[0] || "")).toUpperCase() || "?"}
                       </span>
-                      <span className="text-[13.5px] font-bold text-[#15171C] truncate">{empName(emp)}</span>
+                      <span className="text-[13.5px] font-bold text-[#212121] truncate">{empName(emp)}</span>
                     </div>
 
                     {/* Regime */}
@@ -510,12 +510,12 @@ export default function TaxesPage() {
                       {p ? (
                         <Badge tone={p.tax_regime === "NEW" ? "indigo" : "teal"}>{p.tax_regime}</Badge>
                       ) : (
-                        <span className="text-[#C7CCD4]">—</span>
+                        <span className="text-[#BDBDBD]">—</span>
                       )}
                     </div>
 
                     {/* Total Declared */}
-                    <div className={`hidden md:block text-[13px] text-[#374151] text-right ${jetbrainsMono.className}`}>
+                    <div className={`hidden md:block text-[13px] text-[#424242] text-right ${jetbrainsMono.className}`}>
                       {p ? money(declaredTotal(p)) : "—"}
                     </div>
 
@@ -550,7 +550,7 @@ export default function TaxesPage() {
                         </Button>
                       )}
                     </div>
-                    <div className="col-span-2 md:hidden flex items-center justify-between text-[12px] text-[#8A929E]">
+                    <div className="col-span-2 md:hidden flex items-center justify-between text-[12px] text-[#757575]">
                       <span>{p ? tr("payroll.declared") : tr("payroll.notDeclared")}</span>
                       <span className={jetbrainsMono.className}>{p ? money(declaredTotal(p)) : "—"}</span>
                     </div>

@@ -125,16 +125,16 @@ export default function UnifiedEmployeePortal() {
     }
 
     return (
-        <div className="min-h-screen bg-[#F7F8FA] flex flex-col items-center justify-start py-12 sm:py-16 px-4 sm:px-5 md:px-7 selection:bg-[#ECEBFB] overflow-x-hidden">
+        <div className="min-h-screen bg-[#FAFAFA] flex flex-col items-center justify-start py-12 sm:py-16 px-4 sm:px-5 md:px-7 selection:bg-[#E3F2FD] overflow-x-hidden">
             <div className={`w-full transition-all duration-700 ease-in-out ${step === 'login' ? 'max-w-[460px]' : 'max-w-[1200px]'}`}>
                 {step === 'login' ? (
-                    <Card padding="lg" className="animate-in fade-in slide-in-from-bottom-4 duration-500 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
+                    <Card padding="lg" className="animate-in fade-in slide-in-from-bottom-4 duration-500 shadow-[0_12px_40px_rgba(0,0,0,0.06)]">
                         <header className="text-center mb-9">
                             <div className="flex justify-center mb-6">
                                 <CroarLogo />
                             </div>
-                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">{tr("assess360.employeeExperienceHub")}</h1>
-                            <p className="text-[13.5px] text-[#8A929E] mt-1.5">{tr("assess360.portalSubtitle")}</p>
+                            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#212121] leading-tight">{tr("assess360.employeeExperienceHub")}</h1>
+                            <p className="text-[13.5px] text-[#757575] mt-1.5">{tr("assess360.portalSubtitle")}</p>
                         </header>
 
                         <form onSubmit={handleLogin} className="space-y-5">
@@ -162,7 +162,7 @@ export default function UnifiedEmployeePortal() {
                             </Field>
 
                             {error && (
-                                <div className="flex items-start gap-2 p-3 bg-[#FDECEC] text-[#C0383C] rounded-[10px] text-[12.5px] font-medium border border-[#F6D5D5]">
+                                <div className="flex items-start gap-2 p-3 bg-[#FFEBEE] text-[#C62828] rounded-[4px] text-[12.5px] font-medium border border-[#F6D5D5]">
                                     <span className="material-symbols-rounded text-[18px] mt-px">error</span>
                                     <span>{error}</span>
                                 </div>
@@ -187,15 +187,15 @@ export default function UnifiedEmployeePortal() {
                             </Button>
                         </form>
 
-                        <footer className="mt-8 text-center text-[12px] text-[#8A929E]">
+                        <footer className="mt-8 text-center text-[12px] text-[#757575]">
                             {tr("assess360.secureEntry")}
                         </footer>
                     </Card>
                 ) : (
                     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                        <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-[#E8EAED]">
+                        <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between pb-6 border-b border-[#E0E0E0]">
                             <div className="min-w-0">
-                                <h1 className="text-[22px] md:text-[26px] font-extrabold tracking-[-0.5px] text-[#15171C] leading-tight">
+                                <h1 className="text-[22px] md:text-[26px] font-extrabold tracking-[-0.5px] text-[#212121] leading-tight">
                                     {tr("auth.welcomeBack")}, {employee?.first_name}
                                 </h1>
                                 <div className="flex items-center gap-2 mt-2">
@@ -203,7 +203,7 @@ export default function UnifiedEmployeePortal() {
                                         <span className={`${jetbrainsMono.className} font-semibold`}>{totalTasks}</span>
                                         &nbsp;{totalTasks === 1 ? tr("assess360.activeTaskOne") : tr("assess360.activeTaskMany")}
                                     </Badge>
-                                    <span className="text-[12.5px] text-[#8A929E]">{tr("assess360.inYourPipeline")}</span>
+                                    <span className="text-[12.5px] text-[#757575]">{tr("assess360.inYourPipeline")}</span>
                                 </div>
                             </div>
                             <Button
@@ -218,19 +218,19 @@ export default function UnifiedEmployeePortal() {
 
                         {totalTasks === 0 ? (
                             <Card padding="lg" className="py-20 text-center">
-                                <div className="w-16 h-16 bg-[#E6F4EA] text-[#15803D] rounded-[14px] flex items-center justify-center mx-auto mb-5">
+                                <div className="w-16 h-16 bg-[#E8F5E9] text-[#2E7D32] rounded-[4px] flex items-center justify-center mx-auto mb-5">
                                     <span className="material-symbols-rounded text-[34px]">task_alt</span>
                                 </div>
-                                <h3 className="text-[17px] font-bold text-[#15171C]">{tr("assess360.allCaughtUp")}</h3>
-                                <p className="text-[13.5px] text-[#8A929E] mt-1">{tr("assess360.noActiveTasks")}</p>
+                                <h3 className="text-[17px] font-bold text-[#212121]">{tr("assess360.allCaughtUp")}</h3>
+                                <p className="text-[13.5px] text-[#757575] mt-1">{tr("assess360.noActiveTasks")}</p>
                             </Card>
                         ) : (
                             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                                 {/* 360 Section */}
                                 <section className="space-y-3.5">
                                     <div className="flex items-center gap-2 px-0.5">
-                                        <span className="material-symbols-rounded text-[20px] text-[#5B53E0]">group</span>
-                                        <h3 className="text-[13px] font-bold text-[#15171C]">{tr("assess360.feedback360")}</h3>
+                                        <span className="material-symbols-rounded text-[20px] text-[#1976D2]">group</span>
+                                        <h3 className="text-[13px] font-bold text-[#212121]">{tr("assess360.feedback360")}</h3>
                                         <Badge tone="indigo" className="ml-auto">
                                             <span className={jetbrainsMono.className}>{assessments.length}</span>
                                         </Badge>
@@ -239,12 +239,12 @@ export default function UnifiedEmployeePortal() {
                                         {assessments.length > 0 ? assessments.map((ass) => (
                                             <Card key={ass.id} padding="sm" interactive className="group flex items-center justify-between gap-3">
                                                 <div className="flex items-center gap-3 min-w-0">
-                                                    <div className="w-11 h-11 bg-[#ECEBFB] text-[#5B53E0] rounded-[11px] flex items-center justify-center font-bold text-[16px] shrink-0">
+                                                    <div className="w-11 h-11 bg-[#E3F2FD] text-[#1976D2] rounded-[4px] flex items-center justify-center font-bold text-[16px] shrink-0">
                                                         {ass.ratee_name?.[0]}
                                                     </div>
                                                     <div className="min-w-0">
-                                                        <h4 className="text-[14px] font-semibold text-[#15171C] leading-tight truncate">{tr("assess360.review")} {ass.ratee_name}</h4>
-                                                        <p className="text-[12px] text-[#8A929E] mt-0.5 truncate">{ass.relation}</p>
+                                                        <h4 className="text-[14px] font-semibold text-[#212121] leading-tight truncate">{tr("assess360.review")} {ass.ratee_name}</h4>
+                                                        <p className="text-[12px] text-[#757575] mt-0.5 truncate">{ass.relation}</p>
                                                     </div>
                                                 </div>
                                                 <Button
@@ -258,7 +258,7 @@ export default function UnifiedEmployeePortal() {
                                                 </Button>
                                             </Card>
                                         )) : (
-                                            <div className="py-10 bg-[#F7F8FA] rounded-[14px] border border-dashed border-[#E1E4E8] flex flex-col items-center justify-center gap-2 text-[#8A929E]">
+                                            <div className="py-10 bg-[#FAFAFA] rounded-[4px] border border-dashed border-[#E0E0E0] flex flex-col items-center justify-center gap-2 text-[#757575]">
                                                 <span className="material-symbols-rounded text-[26px] opacity-50">history_edu</span>
                                                 <p className="text-[12px] font-medium">{tr("assess360.noPendingReviews")}</p>
                                             </div>
@@ -269,8 +269,8 @@ export default function UnifiedEmployeePortal() {
                                 {/* Surveys Section */}
                                 <section className="space-y-3.5">
                                     <div className="flex items-center gap-2 px-0.5">
-                                        <span className="material-symbols-rounded text-[20px] text-[#0E8A6E]">analytics</span>
-                                        <h3 className="text-[13px] font-bold text-[#15171C]">{tr("assess360.cultureSurveys")}</h3>
+                                        <span className="material-symbols-rounded text-[20px] text-[#2E7D32]">analytics</span>
+                                        <h3 className="text-[13px] font-bold text-[#212121]">{tr("assess360.cultureSurveys")}</h3>
                                         <Badge tone="teal" className="ml-auto">
                                             <span className={jetbrainsMono.className}>{surveys.length}</span>
                                         </Badge>
@@ -279,12 +279,12 @@ export default function UnifiedEmployeePortal() {
                                         {surveys.length > 0 ? surveys.map((srv) => (
                                             <Card key={srv.id} padding="sm" interactive className="group flex items-center justify-between gap-3">
                                                 <div className="flex items-center gap-3 min-w-0">
-                                                    <div className="w-11 h-11 bg-[#E3F4EF] text-[#0E8A6E] rounded-[11px] flex items-center justify-center shrink-0">
+                                                    <div className="w-11 h-11 bg-[#E8F5E9] text-[#2E7D32] rounded-[4px] flex items-center justify-center shrink-0">
                                                         <span className="material-symbols-rounded text-[20px]">assignment</span>
                                                     </div>
                                                     <div className="min-w-0">
-                                                        <h4 className="text-[14px] font-semibold text-[#15171C] leading-tight truncate">{srv.instance_name}</h4>
-                                                        <p className="text-[12px] text-[#8A929E] mt-0.5 truncate">{srv.template_title}</p>
+                                                        <h4 className="text-[14px] font-semibold text-[#212121] leading-tight truncate">{srv.instance_name}</h4>
+                                                        <p className="text-[12px] text-[#757575] mt-0.5 truncate">{srv.template_title}</p>
                                                     </div>
                                                 </div>
                                                 <Button
@@ -298,7 +298,7 @@ export default function UnifiedEmployeePortal() {
                                                 </Button>
                                             </Card>
                                         )) : (
-                                            <div className="py-10 bg-[#F7F8FA] rounded-[14px] border border-dashed border-[#E1E4E8] flex flex-col items-center justify-center gap-2 text-[#8A929E]">
+                                            <div className="py-10 bg-[#FAFAFA] rounded-[4px] border border-dashed border-[#E0E0E0] flex flex-col items-center justify-center gap-2 text-[#757575]">
                                                 <span className="material-symbols-rounded text-[26px] opacity-50">poll</span>
                                                 <p className="text-[12px] font-medium">{tr("assess360.allPulseCompleted")}</p>
                                             </div>
@@ -309,8 +309,8 @@ export default function UnifiedEmployeePortal() {
                                 {/* AI Lab Section */}
                                 <section className="space-y-3.5">
                                     <div className="flex items-center gap-2 px-0.5">
-                                        <span className="material-symbols-rounded text-[20px] text-[#D97706]">neurology</span>
-                                        <h3 className="text-[13px] font-bold text-[#15171C]">{tr("assess360.aiPracticeLab")}</h3>
+                                        <span className="material-symbols-rounded text-[20px] text-[#EF6C00]">neurology</span>
+                                        <h3 className="text-[13px] font-bold text-[#212121]">{tr("assess360.aiPracticeLab")}</h3>
                                         <Badge tone="warning" className="ml-auto">
                                             <span className={jetbrainsMono.className}>{simulationAssignments.length}</span>
                                         </Badge>
@@ -319,19 +319,19 @@ export default function UnifiedEmployeePortal() {
                                         {simulationAssignments.length > 0 ? simulationAssignments.map((sim) => (
                                             <Card key={sim.id} padding="sm" interactive className="group flex flex-col gap-3.5">
                                                 <div className="flex items-center justify-between">
-                                                    <div className="w-11 h-11 bg-[#FEF3E2] text-[#D97706] rounded-[11px] flex items-center justify-center shrink-0">
+                                                    <div className="w-11 h-11 bg-[#FFF3E0] text-[#EF6C00] rounded-[4px] flex items-center justify-center shrink-0">
                                                         <span className="material-symbols-rounded text-[20px]">psychology</span>
                                                     </div>
                                                     <Badge tone="neutral">{tr("assess360.practice")}</Badge>
                                                 </div>
                                                 <div>
-                                                    <h4 className="text-[14px] font-semibold text-[#15171C] leading-tight">{sim.title}</h4>
-                                                    <p className="text-[12.5px] text-[#8A929E] mt-1 leading-relaxed line-clamp-2">{sim.description}</p>
+                                                    <h4 className="text-[14px] font-semibold text-[#212121] leading-tight">{sim.title}</h4>
+                                                    <p className="text-[12.5px] text-[#757575] mt-1 leading-relaxed line-clamp-2">{sim.description}</p>
                                                 </div>
-                                                <div className="pt-3 border-t border-[#E8EAED] flex items-center justify-between gap-3">
+                                                <div className="pt-3 border-t border-[#E0E0E0] flex items-center justify-between gap-3">
                                                     <div className="flex items-center gap-1.5 min-w-0">
-                                                        <span className="material-symbols-rounded text-[#D97706] text-[16px] shrink-0">record_voice_over</span>
-                                                        <span className="text-[12px] text-[#8A929E] truncate">{sim.character}</span>
+                                                        <span className="material-symbols-rounded text-[#EF6C00] text-[16px] shrink-0">record_voice_over</span>
+                                                        <span className="text-[12px] text-[#757575] truncate">{sim.character}</span>
                                                     </div>
                                                     <Button
                                                         variant="primary"
@@ -345,7 +345,7 @@ export default function UnifiedEmployeePortal() {
                                                 </div>
                                             </Card>
                                         )) : (
-                                            <div className="py-10 bg-[#F7F8FA] rounded-[14px] border border-dashed border-[#E1E4E8] flex flex-col items-center justify-center gap-2 text-[#8A929E]">
+                                            <div className="py-10 bg-[#FAFAFA] rounded-[4px] border border-dashed border-[#E0E0E0] flex flex-col items-center justify-center gap-2 text-[#757575]">
                                                 <span className="material-symbols-rounded text-[26px] opacity-50">lock_open</span>
                                                 <p className="text-[12px] font-medium">{tr("assess360.noLabSessions")}</p>
                                             </div>
@@ -359,7 +359,7 @@ export default function UnifiedEmployeePortal() {
             </div>
 
             {/* Global Portal Footer */}
-            <div className={`mt-10 text-[11px] font-medium text-[#8A929E] tracking-[0.2em] uppercase transition-opacity duration-700 ${step === 'login' ? 'opacity-0' : 'opacity-100'}`}>
+            <div className={`mt-10 text-[11px] font-medium text-[#757575] tracking-[0.2em] uppercase transition-opacity duration-700 ${step === 'login' ? 'opacity-0' : 'opacity-100'}`}>
                 {tr("assess360.employeePortal")}
             </div>
         </div>

@@ -37,8 +37,8 @@ export function PageHeader({
   return (
     <header className="flex flex-wrap items-start justify-between gap-4">
       <div className="flex items-center gap-3">
-        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#7C3AED]/10 shadow-sm shadow-[#7C3AED]/5">
-          <span className="material-symbols-rounded text-2xl text-[#7C3AED]">{icon}</span>
+        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#1E88E5]/10 shadow-sm shadow-[#1E88E5]/5">
+          <span className="material-symbols-rounded text-2xl text-[#1E88E5]">{icon}</span>
         </div>
         <div>
           <h1 className="text-2xl font-black leading-tight tracking-tight text-slate-900">{title}</h1>
@@ -64,8 +64,8 @@ export function StatCard({
   tone?: string;
 }) {
   return (
-    <div className="group rounded-xl border border-slate-100 bg-white p-5 shadow-sm transition-all duration-300 hover:border-[#7C3AED]/20 hover:shadow-md">
-      <span className="material-symbols-rounded mb-3 text-[#7C3AED]">{icon}</span>
+    <div className="group rounded-xl border border-slate-100 bg-white p-5 shadow-sm transition-all duration-300 hover:border-[#1E88E5]/20 hover:shadow-md">
+      <span className="material-symbols-rounded mb-3 text-[#1E88E5]">{icon}</span>
       <div className={`text-2xl font-black tracking-tight ${tone}`}>{value}</div>
       <div className="mt-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">{label}</div>
     </div>

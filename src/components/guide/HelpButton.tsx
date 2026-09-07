@@ -40,11 +40,11 @@ export function HelpButton() {
                     {/* click-away catcher */}
                     <div className="fixed inset-0 z-[55]" onClick={() => setHelpOpen(false)} aria-hidden />
 
-                    <div className="fixed bottom-[84px] right-5 z-[60] w-[340px] max-w-[calc(100vw-28px)] bg-white rounded-[16px] border border-[#E8EAED] shadow-[0_22px_60px_rgba(15,23,42,0.24)] overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200">
-                        <div className="px-5 pt-5 pb-4 bg-[#0E1014] text-white relative">
+                    <div className="fixed bottom-[84px] right-5 z-[60] w-[340px] max-w-[calc(100vw-28px)] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_22px_60px_rgba(0,0,0,0.24)] overflow-hidden animate-in fade-in slide-in-from-bottom-2 duration-200">
+                        <div className="px-5 pt-5 pb-4 bg-[#1E2A38] text-white relative">
                             <div
                                 className="absolute inset-0 opacity-70"
-                                style={{ background: "radial-gradient(120% 120% at 100% 0%, rgba(91,83,224,0.45), transparent 60%)" }}
+                                style={{ background: "radial-gradient(120% 120% at 100% 0%, rgba(25,118,210,0.45), transparent 60%)" }}
                             />
                             <div className="relative">
                                 <h3 className="text-[15.5px] font-bold">{tr("sharedUi.helpGettingStarted")}</h3>
@@ -55,34 +55,34 @@ export function HelpButton() {
                         <div className="p-4 space-y-4 max-h-[60vh] overflow-y-auto">
                             <button
                                 onClick={() => { setHelpOpen(false); setGuideOpen(true); }}
-                                className="w-full flex items-center gap-3 p-3 rounded-[12px] border border-[#E8EAED] hover:border-[#5B53E0]/40 hover:bg-[#FAFAFE] transition-all text-left"
+                                className="w-full flex items-center gap-3 p-3 rounded-[4px] border border-[#E0E0E0] hover:border-[#1976D2]/40 hover:bg-[#FAFCFE] transition-all text-left"
                             >
-                                <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                                <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
                                     <span className="material-symbols-rounded text-[20px]">menu_book</span>
                                 </span>
                                 <span className="min-w-0">
-                                    <span className="block text-[13px] font-bold text-[#15171C]">{tr("sharedUi.browseFullGuide")}</span>
-                                    <span className="block text-[11.5px] text-[#8A929E]">{tr("sharedUi.everyModuleWorkflow")}</span>
+                                    <span className="block text-[13px] font-bold text-[#212121]">{tr("sharedUi.browseFullGuide")}</span>
+                                    <span className="block text-[11.5px] text-[#757575]">{tr("sharedUi.everyModuleWorkflow")}</span>
                                 </span>
                             </button>
 
                             <button
                                 onClick={startTour}
-                                className="w-full flex items-center gap-3 p-3 rounded-[12px] border border-[#E8EAED] hover:border-[#5B53E0]/40 hover:bg-[#FAFAFE] transition-all text-left"
+                                className="w-full flex items-center gap-3 p-3 rounded-[4px] border border-[#E0E0E0] hover:border-[#1976D2]/40 hover:bg-[#FAFCFE] transition-all text-left"
                             >
-                                <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                                <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
                                     <span className="material-symbols-rounded text-[20px]">play_circle</span>
                                 </span>
                                 <span className="min-w-0">
-                                    <span className="block text-[13px] font-bold text-[#15171C]">{tr("sharedUi.takeProductTour")}</span>
-                                    <span className="block text-[11.5px] text-[#8A929E]">{tr("sharedUi.thirtySecondWalkthrough")}</span>
+                                    <span className="block text-[13px] font-bold text-[#212121]">{tr("sharedUi.takeProductTour")}</span>
+                                    <span className="block text-[11.5px] text-[#757575]">{tr("sharedUi.thirtySecondWalkthrough")}</span>
                                 </span>
                             </button>
 
                             <div>
                                 <div className="flex items-center justify-between mb-2 px-0.5">
-                                    <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#8A929E]">{tr("sharedUi.gettingStarted")}</span>
-                                    <span className="text-[11px] font-semibold text-[#5B53E0]">{completed}/{CHECKLIST.length}</span>
+                                    <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#757575]">{tr("sharedUi.gettingStarted")}</span>
+                                    <span className="text-[11px] font-semibold text-[#1976D2]">{completed}/{CHECKLIST.length}</span>
                                 </div>
                                 <div className="space-y-0.5">
                                     {CHECKLIST.map((item) => (
@@ -90,14 +90,14 @@ export function HelpButton() {
                                             <button
                                                 onClick={() => setDone((d) => ({ ...d, [item.id]: !d[item.id] }))}
                                                 aria-label={done[item.id] ? tr("sharedUi.markIncomplete") : tr("sharedUi.markComplete")}
-                                                className={`w-5 h-5 rounded-[6px] border flex items-center justify-center shrink-0 transition-colors ${done[item.id] ? "bg-[#5B53E0] border-[#5B53E0] text-white" : "border-[#CBD0D8] text-transparent hover:border-[#5B53E0]"}`}
+                                                className={`w-5 h-5 rounded-[3px] border flex items-center justify-center shrink-0 transition-colors ${done[item.id] ? "bg-[#1976D2] border-[#1976D2] text-white" : "border-[#CBD0D8] text-transparent hover:border-[#1976D2]"}`}
                                             >
                                                 <span className="material-symbols-rounded text-[15px]">check</span>
                                             </button>
                                             <Link
                                                 href={item.href}
                                                 onClick={() => setHelpOpen(false)}
-                                                className={`flex-1 text-[13px] py-1.5 transition-colors ${done[item.id] ? "text-[#9AA3AF] line-through" : "text-[#374151] hover:text-[#5B53E0]"}`}
+                                                className={`flex-1 text-[13px] py-1.5 transition-colors ${done[item.id] ? "text-[#9E9E9E] line-through" : "text-[#424242] hover:text-[#1976D2]"}`}
                                             >
                                                 {checklistLabels[item.id] ?? item.label}
                                             </Link>
@@ -107,15 +107,15 @@ export function HelpButton() {
                             </div>
 
                             <div>
-                                <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#8A929E] block mb-2 px-0.5">{tr("sharedUi.tips")}</span>
-                                <div className="rounded-[12px] bg-[#F7F8FA] border border-[#E8EAED] p-3 space-y-2">
+                                <span className="text-[11px] font-bold uppercase tracking-[0.05em] text-[#757575] block mb-2 px-0.5">{tr("sharedUi.tips")}</span>
+                                <div className="rounded-[4px] bg-[#FAFAFA] border border-[#E0E0E0] p-3 space-y-2">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-[12.5px] text-[#374151]">{tr("sharedUi.searchJumpAnything")}</span>
-                                        <kbd className="text-[10.5px] font-bold bg-white border border-[#E1E4E8] text-[#6B6F76] rounded-[5px] px-1.5 h-5 inline-flex items-center">⌘K</kbd>
+                                        <span className="text-[12.5px] text-[#424242]">{tr("sharedUi.searchJumpAnything")}</span>
+                                        <kbd className="text-[10.5px] font-bold bg-white border border-[#E0E0E0] text-[#616161] rounded-[3px] px-1.5 h-5 inline-flex items-center">⌘K</kbd>
                                     </div>
                                     <div className="flex items-center justify-between">
-                                        <span className="text-[12.5px] text-[#374151]">{tr("sharedUi.closeDialogsTour")}</span>
-                                        <kbd className="text-[10.5px] font-bold bg-white border border-[#E1E4E8] text-[#6B6F76] rounded-[5px] px-1.5 h-5 inline-flex items-center">Esc</kbd>
+                                        <span className="text-[12.5px] text-[#424242]">{tr("sharedUi.closeDialogsTour")}</span>
+                                        <kbd className="text-[10.5px] font-bold bg-white border border-[#E0E0E0] text-[#616161] rounded-[3px] px-1.5 h-5 inline-flex items-center">Esc</kbd>
                                     </div>
                                 </div>
                             </div>
@@ -129,7 +129,7 @@ export function HelpButton() {
                 onClick={() => setHelpOpen(!helpOpen)}
                 aria-label={tr("sharedUi.help")}
                 title={tr("sharedUi.helpGettingStarted")}
-                className="fixed bottom-5 right-5 z-[60] w-12 h-12 rounded-full bg-[#5B53E0] text-white shadow-[0_10px_28px_rgba(91,83,224,0.4)] hover:bg-[#4A43C9] transition-colors flex items-center justify-center"
+                className="fixed bottom-5 right-5 z-[60] w-12 h-12 rounded-full bg-[#1976D2] text-white shadow-[0_10px_28px_rgba(25,118,210,0.4)] hover:bg-[#1565C0] transition-colors flex items-center justify-center"
             >
                 <span className="material-symbols-rounded text-[24px]">{helpOpen ? "close" : "question_mark"}</span>
             </button>

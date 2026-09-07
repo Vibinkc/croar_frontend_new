@@ -210,8 +210,8 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
     };
 
     if (loading) return (
-        <div className="min-h-screen flex items-center justify-center bg-[#F4F5F7]">
-            <div className="w-10 h-10 border-4 border-[#5B53E0] border-t-transparent rounded-full animate-spin"></div>
+        <div className="min-h-screen flex items-center justify-center bg-[#F5F6F8]">
+            <div className="w-10 h-10 border-4 border-[#1976D2] border-t-transparent rounded-full animate-spin"></div>
         </div>
     );
 
@@ -266,25 +266,25 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
             <Card padding="lg">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6">
                     <div className="flex items-center gap-3 min-w-0">
-                        <span className="w-10 h-10 rounded-[11px] bg-[#15171C] text-white flex items-center justify-center shrink-0">
+                        <span className="w-10 h-10 rounded-[4px] bg-[#212121] text-white flex items-center justify-center shrink-0">
                             <span className="material-symbols-rounded text-[22px]">account_tree</span>
                         </span>
                         <div className="min-w-0">
-                            <h3 className="text-[15px] font-bold text-[#15171C]">{isEdit ? tr("forms.competencyRefinement") : tr("forms.competencyArchitecture")}</h3>
-                            <p className="text-[12.5px] text-[#8A929E] mt-0.5">{isEdit ? tr("forms.competencyRefinementSubtitle") : tr("forms.competencyArchitectureSubtitle")}</p>
+                            <h3 className="text-[15px] font-bold text-[#212121]">{isEdit ? tr("forms.competencyRefinement") : tr("forms.competencyArchitecture")}</h3>
+                            <p className="text-[12.5px] text-[#757575] mt-0.5">{isEdit ? tr("forms.competencyRefinementSubtitle") : tr("forms.competencyArchitectureSubtitle")}</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
                         <div className="flex flex-col items-end leading-none">
-                            <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[#5B53E0] mb-1">{tr("forms.totalSelected")}</span>
-                            <span className={`text-[24px] font-semibold tracking-[-1px] text-[#15171C] ${jetbrainsMono.className}`}>{formData.question_ids.length}</span>
+                            <span className="text-[10px] font-bold uppercase tracking-[0.06em] text-[#1976D2] mb-1">{tr("forms.totalSelected")}</span>
+                            <span className={`text-[24px] font-semibold tracking-[-1px] text-[#212121] ${jetbrainsMono.className}`}>{formData.question_ids.length}</span>
                         </div>
                         <Button
                             type="button"
                             variant="dark"
                             icon="psychology"
                             onClick={() => setIsAiWizardOpen(true)}
-                            className="bg-[#5B53E0] border-transparent text-white hover:bg-[#4A43C9] shadow-[0_6px_16px_rgba(91,83,224,0.28)]"
+                            className="bg-[#1976D2] border-transparent text-white hover:bg-[#1565C0] shadow-[0_6px_16px_rgba(25,118,210,0.28)]"
                         >
                             {isEdit ? tr("forms.aiStrategyWizard") : tr("forms.strategyWizard")}
                         </Button>
@@ -298,14 +298,14 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
 
                         return (
                             <div key={cat} className="space-y-4">
-                                <div className="flex justify-between items-center pb-3 border-b border-[#E8EAED]">
+                                <div className="flex justify-between items-center pb-3 border-b border-[#E0E0E0]">
                                     <div className="flex items-center gap-3 min-w-0">
-                                        <div className={`w-9 h-9 rounded-[10px] flex items-center justify-center font-semibold text-[13px] transition-all ${jetbrainsMono.className} ${selectedInCat > 0 ? 'bg-[#5B53E0] text-white shadow-[0_6px_16px_rgba(91,83,224,0.28)]' : 'bg-[#F1F2F5] text-[#9AA3AF]'}`}>
+                                        <div className={`w-9 h-9 rounded-[4px] flex items-center justify-center font-semibold text-[13px] transition-all ${jetbrainsMono.className} ${selectedInCat > 0 ? 'bg-[#1976D2] text-white shadow-[0_6px_16px_rgba(25,118,210,0.28)]' : 'bg-[#EEEEEE] text-[#9E9E9E]'}`}>
                                             {selectedInCat}
                                         </div>
                                         <div className="min-w-0">
-                                            <h4 className="text-[14px] font-bold text-[#15171C]">{cat.replaceAll('_', ' ')}</h4>
-                                            <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#8A929E]">{catQuestions.length} {tr("forms.totalOptions")}</p>
+                                            <h4 className="text-[14px] font-bold text-[#212121]">{cat.replaceAll('_', ' ')}</h4>
+                                            <p className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#757575]">{catQuestions.length} {tr("forms.totalOptions")}</p>
                                         </div>
                                     </div>
                                     {selectedInCat > 0 && (
@@ -323,20 +323,20 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
                                                 tabIndex={0}
                                                 onClick={() => toggleQuestion(q.id)}
                                                 onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { toggleQuestion(q.id); } }}
-                                                className={`p-4 rounded-[12px] cursor-pointer transition-all flex flex-col gap-3 border relative group ${
+                                                className={`p-4 rounded-[4px] cursor-pointer transition-all flex flex-col gap-3 border relative group ${
                                                     isSelected
-                                                    ? 'border-[#5B53E0] bg-[#F8F7FE] ring-2 ring-[#5B53E0]/15'
-                                                    : 'border-[#E8EAED] bg-white hover:border-[#D4D7DC] hover:bg-[#F7F7F8]'
+                                                    ? 'border-[#1976D2] bg-[#F8F7FE] ring-2 ring-[#1976D2]/15'
+                                                    : 'border-[#E0E0E0] bg-white hover:border-[#E0E0E0] hover:bg-[#FAFAFA]'
                                                 }`}
                                             >
                                                 <div className="flex-1">
-                                                    <p className={`text-[13.5px] font-semibold leading-relaxed transition-colors ${isSelected ? 'text-[#15171C]' : 'text-[#374151]'}`}>
+                                                    <p className={`text-[13.5px] font-semibold leading-relaxed transition-colors ${isSelected ? 'text-[#212121]' : 'text-[#424242]'}`}>
                                                         {q.text}
                                                     </p>
                                                 </div>
-                                                <div className="flex justify-between items-center pt-2.5 border-t border-[#E8EAED] mt-auto">
-                                                    <Badge tone="neutral" className="rounded-[6px] px-2 py-0.5 text-[10px]">{q.type}</Badge>
-                                                    <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-all ${isSelected ? 'bg-[#5B53E0] border-[#5B53E0] text-white' : 'bg-[#F4F5F7] border-[#E1E4E8] text-transparent group-hover:border-[#9AA3AF]'}`}>
+                                                <div className="flex justify-between items-center pt-2.5 border-t border-[#E0E0E0] mt-auto">
+                                                    <Badge tone="neutral" className="rounded-[3px] px-2 py-0.5 text-[10px]">{q.type}</Badge>
+                                                    <div className={`w-6 h-6 rounded-full border flex items-center justify-center transition-all ${isSelected ? 'bg-[#1976D2] border-[#1976D2] text-white' : 'bg-[#F5F6F8] border-[#E0E0E0] text-transparent group-hover:border-[#9E9E9E]'}`}>
                                                         <span className="material-symbols-rounded text-[15px] font-bold">check</span>
                                                     </div>
                                                 </div>
@@ -352,11 +352,11 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
 
             {/* Finalize */}
             <Card padding="lg" className="flex flex-col items-center text-center">
-                <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#8A929E] mb-3">{isEdit ? tr("forms.finalArchitecture") : tr("forms.frameworkReadiness")}</span>
-                <h4 className="text-[20px] font-extrabold tracking-[-0.5px] text-[#15171C] mb-1.5">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.08em] text-[#757575] mb-3">{isEdit ? tr("forms.finalArchitecture") : tr("forms.frameworkReadiness")}</span>
+                <h4 className="text-[20px] font-extrabold tracking-[-0.5px] text-[#212121] mb-1.5">
                     <span className={jetbrainsMono.className}>{formData.question_ids.length}</span> {isEdit ? tr("forms.questionsConfigured") : tr("forms.questionsSelected")}
                 </h4>
-                <p className="text-[13px] text-[#8A929E] max-w-sm mb-6">{isEdit ? tr("forms.verifySelection") : tr("forms.reviewCompetencyMix")}</p>
+                <p className="text-[13px] text-[#757575] max-w-sm mb-6">{isEdit ? tr("forms.verifySelection") : tr("forms.reviewCompetencyMix")}</p>
                 <Button
                     size="lg"
                     icon={submitting ? undefined : (isEdit ? 'published_with_changes' : 'rocket_launch')}
@@ -377,16 +377,16 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
 
             {/* AI Wizard Modal */}
             {isAiWizardOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#15171C]/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-                    <Card padding="none" className="w-full max-w-md shadow-[0_24px_60px_rgba(15,23,42,0.24)] overflow-hidden animate-in zoom-in-95 duration-200">
-                        <div className="p-5 border-b border-[#E8EAED] flex justify-between items-center bg-[#F7F8FA]">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#212121]/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+                    <Card padding="none" className="w-full max-w-md shadow-[0_24px_60px_rgba(0,0,0,0.24)] overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-5 border-b border-[#E0E0E0] flex justify-between items-center bg-[#FAFAFA]">
                             <div className="flex items-center gap-2.5">
-                                <span className="w-8 h-8 rounded-[8px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center">
+                                <span className="w-8 h-8 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center">
                                     <span className="material-symbols-rounded text-[19px]">psychology</span>
                                 </span>
-                                <h2 className="text-[15px] font-bold text-[#15171C]">{tr("forms.aiStrategyWizard")}</h2>
+                                <h2 className="text-[15px] font-bold text-[#212121]">{tr("forms.aiStrategyWizard")}</h2>
                             </div>
-                            <button onClick={() => setIsAiWizardOpen(false)} className="w-7 h-7 rounded-[6px] hover:bg-[#F4F5F7] text-[#8A929E] hover:text-[#374151] flex items-center justify-center transition-colors">
+                            <button onClick={() => setIsAiWizardOpen(false)} className="w-7 h-7 rounded-[3px] hover:bg-[#F5F6F8] text-[#757575] hover:text-[#424242] flex items-center justify-center transition-colors">
                                 <span className="material-symbols-rounded text-[19px]">close</span>
                             </button>
                         </div>
@@ -409,7 +409,7 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
                                 variant="dark"
                                 onClick={generateWithAi}
                                 disabled={generatingAi || !industryNature}
-                                className="bg-[#15171C] border-transparent text-white hover:bg-[#5B53E0]"
+                                className="bg-[#212121] border-transparent text-white hover:bg-[#1976D2]"
                             >
                                 {generatingAi ? (
                                     <>

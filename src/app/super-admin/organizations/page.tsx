@@ -165,7 +165,7 @@ function OrganizationsContent() {
     };
 
     const selectCls =
-        "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
+        "appearance-none bg-white border border-[#E0E0E0] rounded-[4px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#424242] outline-none cursor-pointer hover:bg-[#FAFAFA] focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all";
 
     const filtered = organizations.filter((o) => {
         const q = searchQuery.toLowerCase();
@@ -204,41 +204,41 @@ function OrganizationsContent() {
 
             {/* Metrics */}
             <StatGrid>
-                <StatCard label={t("superAdmin.statTotalOrgs")} value={stats.total} icon="apartment" gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)" glow="rgba(91,83,224,0.28)" />
-                <StatCard label={t("superAdmin.statConsultancies")} value={stats.consultancies} icon="hub" gradient="linear-gradient(135deg,#6E8BEA,#3559C7)" glow="rgba(53,89,199,0.25)" />
-                <StatCard label={t("superAdmin.active")} value={stats.active} icon="check_circle" gradient="linear-gradient(135deg,#34D399,#0E8A6E)" glow="rgba(14,138,110,0.25)" />
+                <StatCard label={t("superAdmin.statTotalOrgs")} value={stats.total} icon="apartment" gradient="linear-gradient(135deg,#42A5F5,#1976D2)" glow="rgba(25,118,210,0.28)" />
+                <StatCard label={t("superAdmin.statConsultancies")} value={stats.consultancies} icon="hub" gradient="linear-gradient(135deg,#42A5F5,#1565C0)" glow="rgba(21,101,192,0.25)" />
+                <StatCard label={t("superAdmin.active")} value={stats.active} icon="check_circle" gradient="linear-gradient(135deg,#66BB6A,#2E7D32)" glow="rgba(46,125,50,0.25)" />
                 <StatCard label={t("superAdmin.deactivated")} value={stats.suspended} icon="block" gradient="linear-gradient(135deg,#F6736B,#D03A3A)" glow="rgba(208,58,58,0.25)" />
             </StatGrid>
 
             {/* Toolbar */}
             <div className="flex flex-col md:flex-row md:items-center gap-3">
                 <div className="relative flex-1">
-                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9E9E9E]" />
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder={t("superAdmin.searchOrgsPlaceholder")}
-                        className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
+                        className="w-full h-10 bg-white border border-[#E0E0E0] rounded-[4px] pl-10 pr-4 text-[14px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all"
                     />
                 </div>
                 <div className="relative flex-1 md:flex-none">
-                    <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                    <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
                     <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as "ALL" | "ACTIVE" | "SUSPENDED")} className={`${selectCls} w-full md:min-w-[170px]`}>
                         <option value="ALL">{t("superAdmin.anyStatus")}</option>
                         <option value="ACTIVE">{t("superAdmin.active")}</option>
                         <option value="SUSPENDED">{t("superAdmin.deactivated")}</option>
                     </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
                 </div>
             </div>
 
             {/* List */}
-            <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
+            <div className="bg-white rounded-[4px] border border-[#E0E0E0] overflow-hidden min-h-[420px]">
                 {isLoading ? (
                     <div className="p-4 space-y-2.5">
                         {[1, 2, 3, 4, 5].map((i) => (
-                            <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+                            <div key={i} className="h-16 bg-[#F5F6F8] rounded-[4px] animate-pulse" />
                         ))}
                     </div>
                 ) : filtered.length === 0 ? (
@@ -261,30 +261,30 @@ function OrganizationsContent() {
                     )
                 ) : (
                     <>
-                        <div className="hidden md:grid grid-cols-[2.2fr_1.6fr_1.2fr_0.9fr_140px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{t("superAdmin.colOrganization")}</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{t("superAdmin.colSlugUrl")}</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{t("superAdmin.industry")}</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{t("superAdmin.status")}</span>
-                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{t("superAdmin.actions")}</span>
+                        <div className="hidden md:grid grid-cols-[2.2fr_1.6fr_1.2fr_0.9fr_140px] gap-4 px-5 py-3 bg-[#FAFAFA] border-b border-[#E0E0E0]">
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{t("superAdmin.colOrganization")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{t("superAdmin.colSlugUrl")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{t("superAdmin.industry")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{t("superAdmin.status")}</span>
+                            <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{t("superAdmin.actions")}</span>
                         </div>
 
-                        <div className="divide-y divide-[#F0F0F1]">
+                        <div className="divide-y divide-[#EEEEEE]">
                             {filtered.map((o) => (
                                 <div
                                     key={o.id}
-                                    className="grid grid-cols-[1fr_auto] md:grid-cols-[2.2fr_1.6fr_1.2fr_0.9fr_140px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors group"
+                                    className="grid grid-cols-[1fr_auto] md:grid-cols-[2.2fr_1.6fr_1.2fr_0.9fr_140px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#FAFAFA] transition-colors group"
                                 >
                                     {/* Organization */}
                                     <div className="flex items-center gap-3 min-w-0">
-                                        <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0 font-bold text-[13px]">
+                                        <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0 font-bold text-[13px]">
                                             {o.name?.charAt(0).toUpperCase() || <Building2 className="w-[17px] h-[17px]" />}
                                         </span>
                                         <div className="min-w-0">
                                             <span className="flex items-center gap-1.5 min-w-0">
-                                                <span className="text-[14px] font-bold text-[#15171C] truncate">{o.name}</span>
+                                                <span className="text-[14px] font-bold text-[#212121] truncate">{o.name}</span>
                                                 {o.is_consultancy && (
-                                                    <span className="shrink-0 inline-flex items-center gap-1 rounded-[6px] bg-[#ECEBFB] text-[#5B53E0] px-1.5 py-0.5 text-[10px] font-bold">
+                                                    <span className="shrink-0 inline-flex items-center gap-1 rounded-[3px] bg-[#E3F2FD] text-[#1976D2] px-1.5 py-0.5 text-[10px] font-bold">
                                                         <Network className="w-3 h-3" /> {t("superAdmin.consultancyBadge")}
                                                     </span>
                                                 )}
@@ -299,10 +299,10 @@ function OrganizationsContent() {
                                                     bits.push(t("superAdmin.clientOf", { name: parentName(o) || "—" }));
                                                 }
                                                 return bits.length ? (
-                                                    <span className="hidden md:block text-[11px] text-[#C7CCD4] mt-0.5 truncate">{bits.join(" · ")}</span>
+                                                    <span className="hidden md:block text-[11px] text-[#BDBDBD] mt-0.5 truncate">{bits.join(" · ")}</span>
                                                 ) : null;
                                             })()}
-                                            <div className="flex items-center gap-2.5 mt-0.5 text-[12px] text-[#8A929E] md:hidden">
+                                            <div className="flex items-center gap-2.5 mt-0.5 text-[12px] text-[#757575] md:hidden">
                                                 <span className={`truncate ${jetbrainsMono.className}`}>{o.slug}.{FRONTEND_DOMAIN}</span>
                                             </div>
                                         </div>
@@ -310,13 +310,13 @@ function OrganizationsContent() {
 
                                     {/* Slug / URL */}
                                     <div className="hidden md:flex items-center min-w-0">
-                                        <span className={`px-2 py-0.5 rounded-[6px] bg-[#F4F5F7] border border-[#E1E4E8] text-[11px] text-[#6B6F76] truncate ${jetbrainsMono.className}`}>
+                                        <span className={`px-2 py-0.5 rounded-[3px] bg-[#F5F6F8] border border-[#E0E0E0] text-[11px] text-[#616161] truncate ${jetbrainsMono.className}`}>
                                             {o.slug}.{FRONTEND_DOMAIN}
                                         </span>
                                     </div>
 
                                     {/* Industry */}
-                                    <div className="hidden md:block text-[12.5px] text-[#6B6F76] truncate">{o.industry || "—"}</div>
+                                    <div className="hidden md:block text-[12.5px] text-[#616161] truncate">{o.industry || "—"}</div>
 
                                     {/* Status */}
                                     <div className="hidden md:flex items-center">
@@ -330,13 +330,13 @@ function OrganizationsContent() {
                                         <button onClick={() => toggleStatus(o)} className="md:hidden mr-1 cursor-pointer" title={t("superAdmin.activateDeactivateOrg")}>
                                             {(o.is_active ?? true) ? <Badge tone="success" dot>{t("superAdmin.active")}</Badge> : <Badge tone="neutral" dot>{t("superAdmin.disabled")}</Badge>}
                                         </button>
-                                        <button onClick={() => openEdit(o)} className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors" title={t("superAdmin.editOrgTitle")}>
+                                        <button onClick={() => openEdit(o)} className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#E3F2FD] hover:text-[#1976D2] transition-colors" title={t("superAdmin.editOrgTitle")}>
                                             <FileEdit className="w-4 h-4" />
                                         </button>
-                                        <Link href={`/super-admin/organizations/${o.id}/admins`} className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#ECEBFB] hover:text-[#5B53E0] transition-colors" title={t("superAdmin.manageAdmins")}>
+                                        <Link href={`/super-admin/organizations/${o.id}/admins`} className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#E3F2FD] hover:text-[#1976D2] transition-colors" title={t("superAdmin.manageAdmins")}>
                                             <Users className="w-4 h-4" />
                                         </Link>
-                                        <button onClick={() => handleDelete(o.id)} className="w-9 h-9 flex items-center justify-center rounded-[9px] text-[#9AA3AF] hover:bg-[#FDECEC] hover:text-[#C0383C] transition-colors" title={t("superAdmin.delete")}>
+                                        <button onClick={() => handleDelete(o.id)} className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#FFEBEE] hover:text-[#C62828] transition-colors" title={t("superAdmin.delete")}>
                                             <Trash2 className="w-4 h-4" />
                                         </button>
                                     </div>
@@ -349,19 +349,19 @@ function OrganizationsContent() {
 
             {/* Create Organization modal */}
             {isCreating && (
-                <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 bg-[#15171C]/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
+                <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
                     <Card padding="none" className="w-full max-w-2xl my-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                        <div className="flex items-start justify-between gap-3 px-6 py-5 border-b border-[#E8EAED]">
+                        <div className="flex items-start justify-between gap-3 px-6 py-5 border-b border-[#E0E0E0]">
                             <div className="flex items-center gap-3 min-w-0">
-                                <span className="w-10 h-10 rounded-[11px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                                <span className="w-10 h-10 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
                                     <Building2 className="w-5 h-5" />
                                 </span>
                                 <div className="min-w-0">
-                                    <h2 className="text-[18px] font-extrabold tracking-[-0.4px] text-[#15171C]">{t("superAdmin.newOrg")}</h2>
-                                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{t("superAdmin.createOrgModalDesc")}</p>
+                                    <h2 className="text-[18px] font-extrabold tracking-[-0.4px] text-[#212121]">{t("superAdmin.newOrg")}</h2>
+                                    <p className="text-[12.5px] text-[#757575] mt-0.5">{t("superAdmin.createOrgModalDesc")}</p>
                                 </div>
                             </div>
-                            <button type="button" onClick={() => setIsCreating(false)} aria-label={t("superAdmin.close")} className="w-9 h-9 rounded-[10px] text-[#8A929E] hover:bg-[#F1F2F5] hover:text-[#374151] transition-colors flex items-center justify-center shrink-0">
+                            <button type="button" onClick={() => setIsCreating(false)} aria-label={t("superAdmin.close")} className="w-9 h-9 rounded-[4px] text-[#757575] hover:bg-[#EEEEEE] hover:text-[#424242] transition-colors flex items-center justify-center shrink-0">
                                 <X className="w-[18px] h-[18px]" />
                             </button>
                         </div>
@@ -380,18 +380,18 @@ function OrganizationsContent() {
                             </Field>
 
                             {/* Account type */}
-                            <div className="pt-5 border-t border-[#F0F0F1] space-y-4">
-                                <h3 className="text-[13px] font-bold text-[#15171C]">{t("superAdmin.accountType")}</h3>
+                            <div className="pt-5 border-t border-[#EEEEEE] space-y-4">
+                                <h3 className="text-[13px] font-bold text-[#212121]">{t("superAdmin.accountType")}</h3>
                                 <label className="flex items-start gap-3 cursor-pointer">
                                     <input
                                         type="checkbox"
                                         checked={newIsConsultancy}
                                         onChange={(e) => { setNewIsConsultancy(e.target.checked); if (e.target.checked) setNewParentId(""); }}
-                                        className="mt-0.5 h-4 w-4 accent-[#5B53E0]"
+                                        className="mt-0.5 h-4 w-4 accent-[#1976D2]"
                                     />
                                     <span>
-                                        <span className="block text-[13.5px] font-bold text-[#15171C]">{t("superAdmin.thisIsConsultancy")}</span>
-                                        <span className="block text-[12px] text-[#8A929E] mt-0.5">{t("superAdmin.consultancyDescCreate")}</span>
+                                        <span className="block text-[13.5px] font-bold text-[#212121]">{t("superAdmin.thisIsConsultancy")}</span>
+                                        <span className="block text-[12px] text-[#757575] mt-0.5">{t("superAdmin.consultancyDescCreate")}</span>
                                     </span>
                                 </label>
                                 {!newIsConsultancy && consultancies.length > 0 && (
@@ -404,8 +404,8 @@ function OrganizationsContent() {
                                 )}
                             </div>
 
-                            <div className="pt-5 border-t border-[#F0F0F1]">
-                                <h3 className="text-[13px] font-bold text-[#15171C] mb-4">{t("superAdmin.orgAdminAccount")}</h3>
+                            <div className="pt-5 border-t border-[#EEEEEE]">
+                                <h3 className="text-[13px] font-bold text-[#212121] mb-4">{t("superAdmin.orgAdminAccount")}</h3>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                                     <Field label={t("superAdmin.adminEmail")} htmlFor="org-admin-email" required>
                                         <Input id="org-admin-email" placeholder="admin@acme.com" type="email" value={adminEmail} onChange={(e) => setAdminEmail(e.target.value)} required />
@@ -426,19 +426,19 @@ function OrganizationsContent() {
 
             {/* Edit Organization modal */}
             {editing && (
-                <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 bg-[#15171C]/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
+                <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
                     <Card padding="none" className="w-full max-w-xl my-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
-                        <div className="flex items-start justify-between gap-3 px-6 py-5 border-b border-[#E8EAED]">
+                        <div className="flex items-start justify-between gap-3 px-6 py-5 border-b border-[#E0E0E0]">
                             <div className="flex items-center gap-3 min-w-0">
-                                <span className="w-10 h-10 rounded-[11px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                                <span className="w-10 h-10 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
                                     <FileEdit className="w-5 h-5" />
                                 </span>
                                 <div className="min-w-0">
-                                    <h2 className="text-[18px] font-extrabold tracking-[-0.4px] text-[#15171C] truncate">{t("superAdmin.editOrgName", { name: editing.name })}</h2>
-                                    <p className="text-[12.5px] text-[#8A929E] mt-0.5">{t("superAdmin.editOrgModalDesc")}</p>
+                                    <h2 className="text-[18px] font-extrabold tracking-[-0.4px] text-[#212121] truncate">{t("superAdmin.editOrgName", { name: editing.name })}</h2>
+                                    <p className="text-[12.5px] text-[#757575] mt-0.5">{t("superAdmin.editOrgModalDesc")}</p>
                                 </div>
                             </div>
-                            <button type="button" onClick={() => setEditing(null)} aria-label={t("superAdmin.close")} className="w-9 h-9 rounded-[10px] text-[#8A929E] hover:bg-[#F1F2F5] hover:text-[#374151] transition-colors flex items-center justify-center shrink-0">
+                            <button type="button" onClick={() => setEditing(null)} aria-label={t("superAdmin.close")} className="w-9 h-9 rounded-[4px] text-[#757575] hover:bg-[#EEEEEE] hover:text-[#424242] transition-colors flex items-center justify-center shrink-0">
                                 <X className="w-[18px] h-[18px]" />
                             </button>
                         </div>
@@ -456,18 +456,18 @@ function OrganizationsContent() {
                                 </Field>
                             </div>
 
-                            <div className="pt-5 border-t border-[#F0F0F1] space-y-4">
-                                <h3 className="text-[13px] font-bold text-[#15171C]">{t("superAdmin.accountType")}</h3>
+                            <div className="pt-5 border-t border-[#EEEEEE] space-y-4">
+                                <h3 className="text-[13px] font-bold text-[#212121]">{t("superAdmin.accountType")}</h3>
                                 <label className="flex items-start gap-3 cursor-pointer">
                                     <input
                                         type="checkbox"
                                         checked={editIsConsultancy}
                                         onChange={(e) => { setEditIsConsultancy(e.target.checked); if (e.target.checked) setEditParentId(""); }}
-                                        className="mt-0.5 h-4 w-4 accent-[#5B53E0]"
+                                        className="mt-0.5 h-4 w-4 accent-[#1976D2]"
                                     />
                                     <span>
-                                        <span className="block text-[13.5px] font-bold text-[#15171C]">{t("superAdmin.thisIsConsultancy")}</span>
-                                        <span className="block text-[12px] text-[#8A929E] mt-0.5">{t("superAdmin.consultancyDescEdit")}</span>
+                                        <span className="block text-[13.5px] font-bold text-[#212121]">{t("superAdmin.thisIsConsultancy")}</span>
+                                        <span className="block text-[12px] text-[#757575] mt-0.5">{t("superAdmin.consultancyDescEdit")}</span>
                                     </span>
                                 </label>
                                 {!editIsConsultancy && (
@@ -495,7 +495,7 @@ function OrganizationsContent() {
 export default function OrganizationsPage() {
     const { t } = useI18n();
     return (
-        <Suspense fallback={<div className="p-8 text-[13px] text-[#8A929E]">{t("superAdmin.loadingOrgs")}</div>}>
+        <Suspense fallback={<div className="p-8 text-[13px] text-[#757575]">{t("superAdmin.loadingOrgs")}</div>}>
             <OrganizationsContent />
         </Suspense>
     );

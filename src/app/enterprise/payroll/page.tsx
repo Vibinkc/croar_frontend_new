@@ -153,7 +153,7 @@ export default function PayrollHome() {
   }
 
   const selectCls =
-    "appearance-none bg-white border border-[#E1E4E8] rounded-[10px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#374151] outline-none cursor-pointer hover:bg-[#F7F7F8] focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all";
+    "appearance-none bg-white border border-[#E0E0E0] rounded-[4px] h-10 pl-9 pr-9 text-[13px] font-medium text-[#424242] outline-none cursor-pointer hover:bg-[#FAFAFA] focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all";
 
   return (
     <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
@@ -181,50 +181,50 @@ export default function PayrollHome() {
           label={tr("payroll.statTotalEmployees")}
           value={loading ? "…" : employees.length}
           icon="group"
-          gradient="linear-gradient(135deg,#8B7DFF,#5B53E0)"
-          glow="rgba(91,83,224,0.28)"
+          gradient="linear-gradient(135deg,#42A5F5,#1976D2)"
+          glow="rgba(25,118,210,0.28)"
         />
         <StatCard
           label={tr("payroll.statSalaryConfigured")}
           value={loading ? "…" : configuredIds.size}
           icon="task_alt"
-          gradient="linear-gradient(135deg,#34D399,#0E8A6E)"
-          glow="rgba(14,138,110,0.25)"
+          gradient="linear-gradient(135deg,#66BB6A,#2E7D32)"
+          glow="rgba(46,125,50,0.25)"
         />
         <Link href="/enterprise/payroll/structures" className="block">
           <StatCard
             label={missing > 0 ? tr("payroll.missingSetupConfigure") : tr("payroll.missingSetup")}
             value={loading ? "…" : missing}
             icon="warning"
-            gradient="linear-gradient(135deg,#F6B65C,#D97706)"
-            glow="rgba(217,119,6,0.25)"
+            gradient="linear-gradient(135deg,#FFB74D,#EF6C00)"
+            glow="rgba(239,108,0,0.25)"
           />
         </Link>
         <StatCard
           label={current ? tr("payroll.currentNetNamed", { name: current.name }) : tr("payroll.currentNet")}
           value={loading ? "…" : <Money value={current?.totals?.net ?? 0} currency={orgCurrency} className="text-[20px]" />}
           icon="payments"
-          gradient="linear-gradient(135deg,#6E8BEA,#3559C7)"
-          glow="rgba(53,89,199,0.25)"
+          gradient="linear-gradient(135deg,#42A5F5,#1565C0)"
+          glow="rgba(21,101,192,0.25)"
         />
       </StatGrid>
 
       {/* Toolbar: search + filter */}
       <div className="flex flex-col md:flex-row md:items-center gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9AA3AF]" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-[#9E9E9E]" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={tr("payroll.searchCyclesPlaceholder")}
-            className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] pl-10 pr-4 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
+            className="w-full h-10 bg-white border border-[#E0E0E0] rounded-[4px] pl-10 pr-4 text-[14px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all"
           />
         </div>
 
         <div className="flex items-center gap-2.5">
           <div className="relative flex-1 md:flex-none">
-            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+            <Filter className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
@@ -237,28 +237,28 @@ export default function PayrollHome() {
               <option value="PAID">{tr("payroll.paid")}</option>
               <option value="CANCELLED">{tr("payroll.cancelled")}</option>
             </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9AA3AF] pointer-events-none" />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E] pointer-events-none" />
           </div>
         </div>
       </div>
 
       {/* Cycles list */}
-      <div className="bg-white rounded-[14px] border border-[#E8EAED] overflow-hidden min-h-[420px]">
+      <div className="bg-white rounded-[4px] border border-[#E0E0E0] overflow-hidden min-h-[420px]">
         {loading ? (
           <div className="p-4 space-y-2.5">
             {[1, 2, 3, 4, 5].map((i) => (
-              <div key={i} className="h-16 bg-[#F4F5F7] rounded-[12px] animate-pulse" />
+              <div key={i} className="h-16 bg-[#F5F6F8] rounded-[4px] animate-pulse" />
             ))}
           </div>
         ) : visibleCycles.length === 0 ? (
           <div className="flex flex-col items-center justify-center p-16 md:p-20 text-center">
-            <div className="w-16 h-16 bg-[#F4F5F7] rounded-[16px] flex items-center justify-center mb-5">
-              <CalendarRange className="w-8 h-8 text-[#C7CCD4]" />
+            <div className="w-16 h-16 bg-[#F5F6F8] rounded-[4px] flex items-center justify-center mb-5">
+              <CalendarRange className="w-8 h-8 text-[#BDBDBD]" />
             </div>
             {cycles.length === 0 ? (
               <>
-                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("payroll.noCyclesYet")}</h3>
-                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">{tr("payroll.createFirstCycle")}</p>
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("payroll.noCyclesYet")}</h3>
+                <p className="text-[#757575] text-[14px] max-w-xs mx-auto mb-7">{tr("payroll.createFirstCycle")}</p>
                 {can("payroll:configure") && (
                   <Button icon="add" onClick={openModal}>
                     {tr("payroll.newCycle")}
@@ -267,8 +267,8 @@ export default function PayrollHome() {
               </>
             ) : (
               <>
-                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#15171C] mb-2">{tr("payroll.noCyclesMatch")}</h3>
-                <p className="text-[#8A929E] text-[14px] max-w-xs mx-auto mb-7">{tr("payroll.tryAdjusting")}</p>
+                <h3 className="text-[18px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("payroll.noCyclesMatch")}</h3>
+                <p className="text-[#757575] text-[14px] max-w-xs mx-auto mb-7">{tr("payroll.tryAdjusting")}</p>
                 <Button
                   variant="secondary"
                   size="sm"
@@ -285,42 +285,42 @@ export default function PayrollHome() {
         ) : (
           <>
             {/* Column header (desktop) */}
-            <div className="hidden md:grid grid-cols-[2fr_1.6fr_1fr_0.8fr_1fr_150px] gap-4 px-5 py-3 bg-[#F7F8FA] border-b border-[#E8EAED]">
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.cycle")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.period")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">{tr("payroll.status")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.headcount")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.netPay")}</span>
-              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E] text-right">{tr("payroll.actions")}</span>
+            <div className="hidden md:grid grid-cols-[2fr_1.6fr_1fr_0.8fr_1fr_150px] gap-4 px-5 py-3 bg-[#FAFAFA] border-b border-[#E0E0E0]">
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.cycle")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.period")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{tr("payroll.status")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.headcount")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.netPay")}</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575] text-right">{tr("payroll.actions")}</span>
             </div>
 
-            <div className="divide-y divide-[#F0F0F1]">
+            <div className="divide-y divide-[#EEEEEE]">
               {visibleCycles.map((c) => (
                 <div
                   key={c.id}
-                  className="grid grid-cols-[1fr_auto] md:grid-cols-[2fr_1.6fr_1fr_0.8fr_1fr_150px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#F7F7F8] transition-colors group"
+                  className="grid grid-cols-[1fr_auto] md:grid-cols-[2fr_1.6fr_1fr_0.8fr_1fr_150px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#FAFAFA] transition-colors group"
                 >
                   {/* Cycle */}
                   <div className="flex items-center gap-3 min-w-0">
-                    <span className="w-9 h-9 rounded-[10px] bg-[#ECEBFB] text-[#5B53E0] flex items-center justify-center shrink-0">
+                    <span className="w-9 h-9 rounded-[4px] bg-[#E3F2FD] text-[#1976D2] flex items-center justify-center shrink-0">
                       <CalendarRange className="w-[17px] h-[17px]" />
                     </span>
                     <div className="min-w-0">
                       <Link
                         href={`/enterprise/payroll/${c.id}`}
-                        className="block text-[14px] font-bold text-[#15171C] group-hover:text-[#5B53E0] transition-colors truncate"
+                        className="block text-[14px] font-bold text-[#212121] group-hover:text-[#1976D2] transition-colors truncate"
                       >
                         {c.name}
                       </Link>
                       {/* mobile-only meta */}
-                      <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[12px] text-[#8A929E] md:hidden">
+                      <div className="flex flex-wrap items-center gap-2 mt-0.5 text-[12px] text-[#757575] md:hidden">
                         <span className={jetbrainsMono.className}>{c.period_start} → {c.period_end}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Period (desktop) */}
-                  <div className={`hidden md:block text-[13px] text-[#374151] truncate ${jetbrainsMono.className}`}>
+                  <div className={`hidden md:block text-[13px] text-[#424242] truncate ${jetbrainsMono.className}`}>
                     {c.period_start} → {c.period_end}
                   </div>
 
@@ -330,12 +330,12 @@ export default function PayrollHome() {
                   </div>
 
                   {/* Headcount (desktop) */}
-                  <div className={`hidden md:block text-[13px] text-[#374151] text-right ${jetbrainsMono.className}`}>
+                  <div className={`hidden md:block text-[13px] text-[#424242] text-right ${jetbrainsMono.className}`}>
                     {c.totals?.headcount ?? "—"}
                   </div>
 
                   {/* Net Pay (desktop) */}
-                  <div className={`hidden md:block text-[13px] font-semibold text-[#15171C] text-right ${jetbrainsMono.className}`}>
+                  <div className={`hidden md:block text-[13px] font-semibold text-[#212121] text-right ${jetbrainsMono.className}`}>
                     {inr(c.totals?.net ?? 0, orgCurrency)}
                   </div>
 
@@ -348,14 +348,14 @@ export default function PayrollHome() {
                     {c.status === "DRAFT" && can("payroll:manage") && (
                       <button
                         onClick={() => remove(c.id)}
-                        className="h-8 px-3 rounded-[9px] text-[12px] font-semibold text-[#C0383C] hover:bg-[#FDECEC] transition-colors"
+                        className="h-8 px-3 rounded-[4px] text-[12px] font-semibold text-[#C62828] hover:bg-[#FFEBEE] transition-colors"
                       >
                         {tr("payroll.delete")}
                       </button>
                     )}
                     <Link
                       href={`/enterprise/payroll/${c.id}`}
-                      className="inline-flex items-center h-8 px-3 rounded-[9px] bg-[#5B53E0] text-white text-[12px] font-semibold hover:bg-[#4A43C9] shadow-[0_4px_12px_rgba(91,83,224,0.28)] transition-colors"
+                      className="inline-flex items-center h-8 px-3 rounded-[4px] bg-[#1976D2] text-white text-[12px] font-semibold hover:bg-[#1565C0] shadow-[0_4px_12px_rgba(25,118,210,0.28)] transition-colors"
                     >
                       {tr("payroll.manage")}
                     </Link>
@@ -373,7 +373,7 @@ export default function PayrollHome() {
             <Field label={tr("payroll.fieldCycleName")}>
               <input
                 required
-                className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
+                className="w-full h-10 bg-white border border-[#E0E0E0] rounded-[4px] px-3.5 text-[14px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
               />
@@ -383,7 +383,7 @@ export default function PayrollHome() {
                 <input
                   required
                   type="date"
-                  className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
+                  className="w-full h-10 bg-white border border-[#E0E0E0] rounded-[4px] px-3.5 text-[14px] text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all"
                   value={form.period_start}
                   onChange={(e) => setForm({ ...form, period_start: e.target.value })}
                 />
@@ -392,7 +392,7 @@ export default function PayrollHome() {
                 <input
                   required
                   type="date"
-                  className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
+                  className="w-full h-10 bg-white border border-[#E0E0E0] rounded-[4px] px-3.5 text-[14px] text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all"
                   value={form.period_end}
                   onChange={(e) => setForm({ ...form, period_end: e.target.value })}
                 />
@@ -402,14 +402,14 @@ export default function PayrollHome() {
               <input
                 required
                 type="date"
-                className="w-full h-10 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 text-[14px] text-[#15171C] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
+                className="w-full h-10 bg-white border border-[#E0E0E0] rounded-[4px] px-3.5 text-[14px] text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all"
                 value={form.pay_date}
                 onChange={(e) => setForm({ ...form, pay_date: e.target.value })}
               />
             </Field>
             <Field label={tr("payroll.fieldNotesOptional")}>
               <textarea
-                className="w-full min-h-20 bg-white border border-[#E1E4E8] rounded-[10px] px-3.5 py-2.5 text-[14px] text-[#15171C] placeholder:text-[#9AA3AF] outline-none focus:border-[#5B53E0] focus:ring-2 focus:ring-[#5B53E0]/20 transition-all"
+                className="w-full min-h-20 bg-white border border-[#E0E0E0] rounded-[4px] px-3.5 py-2.5 text-[14px] text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all"
                 value={form.notes}
                 onChange={(e) => setForm({ ...form, notes: e.target.value })}
               />
@@ -432,7 +432,7 @@ export default function PayrollHome() {
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="flex flex-col gap-1.5">
-      <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#8A929E]">
+      <span className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">
         {label}
       </span>
       {children}

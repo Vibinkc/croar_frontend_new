@@ -139,7 +139,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                 <div className="max-w-[900px] w-full space-y-12">
                     <header className="flex flex-col items-center gap-6 text-center">
                         <div className="tracking-tighter py-4">
-                            <span className="text-6xl font-black bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent  tracking-tighter">CROAR.AI</span>
+                            <span className="text-6xl font-black bg-gradient-to-r from-[#1E88E5] to-[#D946EF] bg-clip-text text-transparent  tracking-tighter">CROAR.AI</span>
                         </div>
                         <div>
                             <h2 className="text-4xl font-black text-slate-900 tracking-tighter mb-2 ">{t("automation.neuralAuditComplete")}</h2>
@@ -224,7 +224,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
             {/* Sidebar - ChatGPT Style */}
             <aside className="w-[280px] bg-[#202123] text-white flex flex-col p-4 shrink-0 transition-all">
                 <div className="py-8 px-4 mb-4 tracking-tighter">
-                    <span className="text-4xl font-black  bg-gradient-to-r from-[#7C3AED] to-[#D946EF] bg-clip-text text-transparent tracking-tighter">CROAR.AI</span>
+                    <span className="text-4xl font-black  bg-gradient-to-r from-[#1E88E5] to-[#D946EF] bg-clip-text text-transparent tracking-tighter">CROAR.AI</span>
                 </div>
                 
                 <button 
@@ -290,7 +290,7 @@ export default function SimulationChat({ sessionId, onComplete, onClose }: Simul
                         {messages.map((m, i) => (
                             <div 
                                 key={i} 
-                                className={`group py-12 border-b border-slate-50 flex gap-8 items-start animate-in slide-in-from-bottom-4 duration-500 ${m.role === 'assistant' ? 'bg-[#f7f7f8]/50 -mx-6 px-12 rounded-xl' : ''}`}
+                                className={`group py-12 border-b border-slate-50 flex gap-8 items-start animate-in slide-in-from-bottom-4 duration-500 ${m.role === 'assistant' ? 'bg-[#FAFAFA]/50 -mx-6 px-12 rounded-xl' : ''}`}
                             >
                                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-md grow-0 shrink-0 ${m.role === 'assistant' ? 'bg-indigo-600 text-white' : 'bg-slate-900 text-white'}`}>
                                     <span className="material-symbols-rounded text-xl">

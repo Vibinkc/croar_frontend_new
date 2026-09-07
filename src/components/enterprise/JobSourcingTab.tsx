@@ -42,7 +42,7 @@ export default function JobSourcingTab({
             icon: "public",
             titleKey: "careerPage",
             descKey: "careerPageDesc",
-            chip: "bg-[#E7ECFB] text-[#3559C7]",
+            chip: "bg-[#E3F2FD] text-[#1565C0]",
             live: isPublished,
         },
         {
@@ -50,29 +50,29 @@ export default function JobSourcingTab({
             icon: "campaign",
             titleKey: "jobBoards",
             descKey: "jobBoardsDesc",
-            chip: "bg-[#FEF3E2] text-[#D97706]",
+            chip: "bg-[#FFF3E0] text-[#EF6C00]",
         },
         {
             id: "sourcing_hub",
             icon: "travel_explore",
             titleKey: "sourcingHub",
             descKey: "sourcingHubDesc",
-            chip: "bg-[#ECEBFB] text-[#5B53E0]",
+            chip: "bg-[#E3F2FD] text-[#1976D2]",
         },
         {
             id: "recommendations",
             icon: "auto_awesome",
             titleKey: "recommendations",
             descKey: "recommendationsDesc",
-            chip: "bg-[#E3F4EF] text-[#0E8A6E]",
+            chip: "bg-[#E8F5E9] text-[#2E7D32]",
         },
     ];
 
     return (
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div>
-                <h3 className="text-[15px] font-bold text-[#15171C]">{tr("jobSourcing.title")}</h3>
-                <p className="text-[12.5px] text-[#8A929E] mt-0.5">{tr("jobSourcing.subtitle")}</p>
+                <h3 className="text-[15px] font-bold text-[#212121]">{tr("jobSourcing.title")}</h3>
+                <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("jobSourcing.subtitle")}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -90,12 +90,12 @@ export default function JobSourcingTab({
                                 onNavigate(ch.id);
                             }
                         }}
-                        className="cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#5B53E0]/40"
+                        className="cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1976D2]/40"
                     >
                         <div className="flex items-start gap-3.5">
                             <span
                                 className={cn(
-                                    "w-11 h-11 shrink-0 rounded-[12px] flex items-center justify-center",
+                                    "w-11 h-11 shrink-0 rounded-[4px] flex items-center justify-center",
                                     ch.chip
                                 )}
                             >
@@ -103,7 +103,7 @@ export default function JobSourcingTab({
                             </span>
                             <div className="min-w-0 flex-1">
                                 <div className="flex items-center gap-2 mb-1">
-                                    <h4 className="text-[13.5px] font-bold text-[#15171C]">
+                                    <h4 className="text-[13.5px] font-bold text-[#212121]">
                                         {tr(`jobSourcing.${ch.titleKey}`)}
                                     </h4>
                                     {ch.live && (
@@ -112,11 +112,11 @@ export default function JobSourcingTab({
                                         </Badge>
                                     )}
                                 </div>
-                                <p className="text-[12px] text-[#8A929E] leading-relaxed">
+                                <p className="text-[12px] text-[#757575] leading-relaxed">
                                     {tr(`jobSourcing.${ch.descKey}`)}
                                 </p>
                             </div>
-                            <span className="material-symbols-rounded text-[20px] text-[#C3C7CE] shrink-0">
+                            <span className="material-symbols-rounded text-[20px] text-[#BDBDBD] shrink-0">
                                 chevron_right
                             </span>
                         </div>

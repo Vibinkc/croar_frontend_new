@@ -283,7 +283,7 @@ export default function ScenarioManagement() {
                     >
                         <ArrowLeft className="w-4 h-4" />
                     </button>
-                    <div className="w-9 h-9 bg-violet-50 text-[#7C3AED] rounded-xl flex items-center justify-center">
+                    <div className="w-9 h-9 bg-violet-50 text-[#1E88E5] rounded-xl flex items-center justify-center">
                         <span className="material-symbols-rounded">architecture</span>
                     </div>
                     <div>
@@ -317,7 +317,7 @@ export default function ScenarioManagement() {
                                 });
                                 setIsCreating(true);
                             }}
-                            className="px-6 py-2.5 bg-[#7C3AED] text-white rounded-xl hover:bg-[#6D28D9] transition-all font-black text-[9px]   flex items-center gap-2 shadow-xl shadow-indigo-100"
+                            className="px-6 py-2.5 bg-[#1E88E5] text-white rounded-xl hover:bg-[#1565C0] transition-all font-black text-[9px]   flex items-center gap-2 shadow-xl shadow-indigo-100"
                         >
                             <span className="material-symbols-rounded text-base">add</span>
                             {tr("aiTraining.newScenario")}
@@ -325,7 +325,7 @@ export default function ScenarioManagement() {
                     )}
                     <button 
                         onClick={fetchScenarios}
-                        className="w-10 h-10 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#7C3AED] hover:bg-slate-50 hover:border-violet-100 transition-all flex items-center justify-center shadow-sm"
+                        className="w-10 h-10 bg-white border border-slate-200 rounded-xl text-slate-400 hover:text-[#1E88E5] hover:bg-slate-50 hover:border-violet-100 transition-all flex items-center justify-center shadow-sm"
                     >
                         <RefreshCcw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                     </button>
@@ -333,13 +333,13 @@ export default function ScenarioManagement() {
             </div>
             <div className="flex flex-col md:flex-row items-center gap-4">
                 <div className="flex-1 relative w-full group">
-                    <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg transition-colors group-focus-within:text-[#7C3AED]">search</span>
+                    <span className="material-symbols-rounded absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-lg transition-colors group-focus-within:text-[#1E88E5]">search</span>
                     <input
                         type="text"
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder={tr("aiTraining.searchScenarios")}
-                        className="w-full h-12 bg-white border border-slate-100 rounded-xl pl-12 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#7C3AED] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none shadow-sm"
+                        className="w-full h-12 bg-white border border-slate-100 rounded-xl pl-12 pr-4 text-[13px] font-bold text-slate-700 placeholder:text-slate-400 focus:border-[#1E88E5] focus:ring-4 focus:ring-indigo-500/5 transition-all outline-none shadow-sm"
                     />
                 </div>
                 
@@ -368,7 +368,7 @@ export default function ScenarioManagement() {
                     >
                         <div className="p-8 pb-4 space-y-6">
                             <div className="flex justify-between items-start">
-                                <div className="w-12 h-12 bg-[#7C3AED] text-white rounded-xl flex items-center justify-center shadow-sm">
+                                <div className="w-12 h-12 bg-[#1E88E5] text-white rounded-xl flex items-center justify-center shadow-sm">
                                     <Brain className="w-6 h-6" />
                                 </div>
                                 <div className="flex items-center gap-1">
@@ -398,8 +398,8 @@ export default function ScenarioManagement() {
                             <div className="space-y-2">
                                 <div className="flex items-center justify-between">
                                     <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-violet-50 border border-violet-100 rounded-lg">
-                                        <span className="w-1 h-1 rounded-full bg-[#7C3AED]" />
-                                        <span className="text-[8px] font-black text-[#7C3AED] uppercase tracking-widest">{sc.category}</span>
+                                        <span className="w-1 h-1 rounded-full bg-[#1E88E5]" />
+                                        <span className="text-[8px] font-black text-[#1E88E5] uppercase tracking-widest">{sc.category}</span>
                                     </div>
                                     <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">{sc.difficulty}</span>
                                 </div>
@@ -414,7 +414,7 @@ export default function ScenarioManagement() {
                             <div className="px-8 py-5 flex items-center gap-4 bg-slate-50/50 border-t border-slate-50 rounded-b-2xl">
                                 <button 
                                     onClick={() => setIsAssigningId(sc.id)}
-                                    className="flex-1 h-11 bg-[#7C3AED] hover:bg-[#6D28D9] text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95 group/btn"
+                                    className="flex-1 h-11 bg-[#1E88E5] hover:bg-[#1565C0] text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-lg active:scale-95 group/btn"
                                 >
                                     <Play className="w-3.5 h-3.5" />
                                     {tr("general.assignScenario")}
@@ -578,7 +578,7 @@ export default function ScenarioManagement() {
                                         form="architect-form"
                                         type="submit"
                                         disabled={submitting}
-                                        className="px-10 h-14 bg-[#7C3AED] text-white rounded-xl font-black text-[10px]  tracking-[0.3em] hover:bg-[#6D28D9] transition-all active:scale-95 shadow-2xl flex items-center gap-3"
+                                        className="px-10 h-14 bg-[#1E88E5] text-white rounded-xl font-black text-[10px]  tracking-[0.3em] hover:bg-[#1565C0] transition-all active:scale-95 shadow-2xl flex items-center gap-3"
                                     >
                                         {submitting && <div className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />}
                                         {submitting ? tr("aiTraining.saving") : editingId ? tr("aiTraining.updateScenario") : tr("aiTraining.saveScenario")}
@@ -654,7 +654,7 @@ export default function ScenarioManagement() {
                                 <button 
                                     onClick={handleAssign}
                                     disabled={assigning || selectedEmployees.length === 0}
-                                    className="w-full h-16 bg-[#7C3AED] text-white rounded-xl font-black text-[11px]  tracking-[0.3em] hover:bg-[#6D28D9] transition-all shadow-2xl disabled:opacity-30 active:scale-95 flex items-center justify-center gap-4"
+                                    className="w-full h-16 bg-[#1E88E5] text-white rounded-xl font-black text-[11px]  tracking-[0.3em] hover:bg-[#1565C0] transition-all shadow-2xl disabled:opacity-30 active:scale-95 flex items-center justify-center gap-4"
                                 >
                                     {assigning && <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />}
                                     {assigning ? tr("aiTraining.assigning") : tr("general.assignScenario")}
