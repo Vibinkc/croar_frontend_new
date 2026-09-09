@@ -45,6 +45,7 @@ const NAV_I18N: Record<string, string> = {
     "Matches": "nav.matches",
     "Activities": "nav.activities",
     "Reports": "nav.reports",
+    "Administration": "nav.administration",
     "Advanced Search": "nav.advancedSearch",
     "Folders": "nav.folders",
     "Shortlisted Talent": "nav.shortlistedTalent",
@@ -170,6 +171,7 @@ export default function EnterprisePortalLayout({
                 "/enterprise/activities": "candidates:read",
                 "/enterprise/matches/recommendations": "candidates:read",
                 "/enterprise/reports": "candidates:read",
+                "/enterprise/administration": "organization:read",
                 "/enterprise/sourcing/hub": "candidates:read",
                 "/enterprise/communication": "communications:read",
                 "/enterprise/automation": "automation:read",
@@ -336,6 +338,7 @@ export default function EnterprisePortalLayout({
                 { label: "Permissions", icon: "admin_panel_settings", path: "/enterprise/settings/roles", permission: "organization:moderate" },
                 { label: "Partners", icon: "corporate_fare", path: "/enterprise/companies", permission: "platform:read" },
                 { label: "Templates", icon: "dashboard_customize", path: "/enterprise/templates", permission: "organization:read" },
+                { label: "Administration", icon: "admin_panel_settings", path: "/enterprise/administration", permission: "organization:read" },
             ]
         }
     ];
