@@ -46,6 +46,8 @@ const LEAVES: Record<string, string> = {
     // page is called anywhere else in the product.
     gdpr: "GDPR Tracking",
     import: "Data Import",
+    guests: "Guests",
+    groups: "Groups",
 };
 
 /**
