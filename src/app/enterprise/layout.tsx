@@ -16,6 +16,9 @@ import { Icon } from "@/components/ds";
 // other labels fall back to their English text until they're migrated).
 const NAV_I18N: Record<string, string> = {
     // Section titles
+    "Recruitment Center": "nav.secRecruitment",
+    "After Hire": "nav.secAfterHire",
+    "Settings & Analytics": "nav.secSettings",
     "Hiring Hub": "nav.hiringHub",
     "Talent Search": "nav.talentSearch",
     "Automation": "nav.automation",
@@ -88,6 +91,24 @@ function CroarMark({ size = 36 }: { size?: number }) {
             style={{ width: size, height: size, background: "linear-gradient(135deg,#42A5F5,#1976D2)" }}
         >
             <svg width={inner} height={inner} viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L4.5 13H11l-1 9 8.5-11H12l1-9z"/></svg>
+        </div>
+    );
+}
+
+/**
+ * A sidebar section label — small, grey, and paired with a hairline that runs to the edge of
+ * the rail. Manatal uses exactly this to break a long sidebar into readable blocks, and the
+ * rule matters as much as the word: without it the label reads as a disabled nav item.
+ *
+ * Not a button and not focusable. It names a group of links; it is not one.
+ */
+function SectionHeader({ label }: { label: React.ReactNode }) {
+    return (
+        <div className="flex items-center gap-2 px-3.5 pt-5 pb-1.5 select-none" aria-hidden="true">
+            <span className="text-[10.5px] font-medium tracking-[0.08em] uppercase text-[#9E9E9E] whitespace-nowrap">
+                {label}
+            </span>
+            <span className="flex-1 h-px bg-[#E0E0E0]" />
         </div>
     );
 }
@@ -227,6 +248,7 @@ export default function EnterprisePortalLayout({
     const navGroups = [
         {
             title: "Hiring Hub",
+            section: "",
             icon: "business_center",
             items: [
                 { label: "Dashboard", icon: "dashboard", path: "/enterprise/dashboard", permission: "organization:read" },
@@ -258,6 +280,7 @@ export default function EnterprisePortalLayout({
         // out there?". Folding them together buries the database under the search.
         {
             title: "Candidates",
+            section: "",
             icon: "groups",
             items: [
                 { label: "Candidates List", icon: "format_list_bulleted", path: "/enterprise/candidates", permission: "candidates:read" },
@@ -272,6 +295,7 @@ export default function EnterprisePortalLayout({
         // Activities, which is where Manatal puts its own Inbox.
         {
             title: "Mail",
+            section: "",
             icon: "mail",
             items: [
                 { label: "Mail", icon: "mail", path: "/enterprise/communication", permission: "communications:read" },
@@ -279,6 +303,7 @@ export default function EnterprisePortalLayout({
         },
         {
             title: "Sourcing Hub",
+            section: "Recruitment Center",
             icon: "travel_explore",
             items: [
                 { label: "Sourcing Hub", icon: "travel_explore", path: "/enterprise/sourcing/hub", permission: "candidates:read" },
@@ -294,6 +319,7 @@ export default function EnterprisePortalLayout({
         },
         {
             title: "Automation",
+            section: "Recruitment Center",
             icon: "rocket_launch",
             items: [
                 { label: "Canvas", icon: "account_tree", path: "/enterprise/automation", permission: "automation:read" },
@@ -304,7 +330,16 @@ export default function EnterprisePortalLayout({
             ]
         },
         {
+            title: "AI & Training",
+            section: "Recruitment Center",
+            icon: "psychology",
+            items: [
+                { label: "Scenario Architect", icon: "architecture", path: "/enterprise/ai-training/scenarios", permission: "ai_training:read" },
+            ]
+        },
+        {
             title: "Post Onboarding",
+            section: "After Hire",
             icon: "groups",
             items: [
                 { label: "Employees", icon: "badge", path: "/enterprise/employees", permission: "employees:read" },
@@ -318,6 +353,7 @@ export default function EnterprisePortalLayout({
         },
         {
             title: "Payroll",
+            section: "After Hire",
             icon: "account_balance_wallet",
             items: [
                 { label: "Payroll Dashboard", icon: "space_dashboard", path: "/enterprise/payroll/dashboard", permission: "payroll:read" },
@@ -333,16 +369,10 @@ export default function EnterprisePortalLayout({
             ]
         },
         /*
-        {
-            title: "AI & Training",
-            icon: "psychology",
-            items: [
-                { label: "Scenario Architect", icon: "architecture", path: "/enterprise/ai-training/scenarios", permission: "ai_training:read" },
-            ]
-        },
         */
         {
             title: "Reports",
+            section: "Settings & Analytics",
             icon: "leaderboard",
             items: [
                 { label: "Reports", icon: "leaderboard", path: "/enterprise/reports", permission: "candidates:read" },
@@ -353,6 +383,7 @@ export default function EnterprisePortalLayout({
         // Manatal lists it here too, beside Reports.
         {
             title: "Career Page",
+            section: "Settings & Analytics",
             icon: "public",
             items: [
                 { label: "Career Page", icon: "public", path: "/enterprise/career-page", permission: "jobs:read" },
@@ -363,6 +394,7 @@ export default function EnterprisePortalLayout({
         // single-item group renders flat, so this is one link and not an accordion.
         {
             title: "Administration",
+            section: "Settings & Analytics",
             icon: "admin_panel_settings",
             items: [
                 { label: "Administration", icon: "admin_panel_settings", path: "/enterprise/administration", permission: "organization:read" },
@@ -378,6 +410,9 @@ export default function EnterprisePortalLayout({
         {
             title: "Career Page",
             icon: "public",
+            // The career-page sidebar is one group on its own, so it needs no section label —
+            // but it goes through the same renderer, which reads this field.
+            section: "",
             items: [
                 { label: "Job Posts", icon: "list_alt", path: "/enterprise/career-page", permission: "jobs:read" },
                 { label: "Career Page Settings", icon: "tune", path: "/enterprise/career-page/settings", permission: "jobs:read" },
@@ -583,9 +618,21 @@ export default function EnterprisePortalLayout({
                     )}
 
                     <nav data-tour="nav" className={isSidebarCollapsed ? "space-y-4 px-1" : "space-y-1 px-1"}>
-                        {sidebarGroups.map((group) => {
+                        {sidebarGroups.map((group, gi) => {
                             const open = isSidebarCollapsed ? true : isGroupOpen(group.title);
                             const hasActive = group.items.some((i) => isItemActive(i.path));
+
+                            // Manatal breaks its sidebar into named blocks — "Recruitment Center",
+                            // "Settings & Analytics" — with a small grey label and a hairline rule.
+                            // The header belongs to the first group of each run, so it prints once
+                            // per section; the array is kept in section order for that reason.
+                            // The first block is deliberately unheaded: what you use every day
+                            // needs no label to explain it.
+                            const prev = gi > 0 ? sidebarGroups[gi - 1].section : "";
+                            const header =
+                                !isSidebarCollapsed && group.section && group.section !== prev
+                                    ? group.section
+                                    : null;
 
                             // One child means there is nothing to disclose: render it flat, with
                             // the group's icon, so it reads as the destination it is. The label
@@ -594,8 +641,9 @@ export default function EnterprisePortalLayout({
                                 const only = group.items[0];
                                 const active = isItemActive(only.path);
                                 return (
+                                    <div key={group.title}>
+                                    {header && <SectionHeader label={navLabel(header)} />}
                                     <Link
-                                        key={group.title}
                                         href={only.path}
                                         className={`flex items-center gap-3 px-3.5 py-2.5 mb-2 rounded-[4px] transition-all duration-150 text-[12.5px] ${
                                             active
@@ -606,11 +654,13 @@ export default function EnterprisePortalLayout({
                                         <Icon name={group.icon} className={`text-[18px] ${active ? "text-[#1976D2]" : "text-[#757575]"}`} />
                                         <span className="whitespace-nowrap">{navLabel(only.label === group.title ? group.title : only.label)}</span>
                                     </Link>
+                                    </div>
                                 );
                             }
 
                             return (
                                 <div key={group.title} className={isSidebarCollapsed ? "" : "mb-2"}>
+                                    {header && <SectionHeader label={navLabel(header)} />}
                                     {isSidebarCollapsed && (
                                         <div className="text-center mt-4 mb-2 px-1 select-none">
                                             <span className="text-[10px] font-medium tracking-widest uppercase text-[#9E9E9E] block whitespace-nowrap truncate">
