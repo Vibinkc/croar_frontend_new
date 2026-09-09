@@ -43,6 +43,7 @@ const NAV_I18N: Record<string, string> = {
     "Sourcing Hub": "nav.sourcingHub",
     "Candidates List": "nav.candidatesList",
     "Matches": "nav.matches",
+    "Activities": "nav.activities",
     "Reports": "nav.reports",
     "Advanced Search": "nav.advancedSearch",
     "Folders": "nav.folders",
@@ -166,6 +167,7 @@ export default function EnterprisePortalLayout({
                 "/enterprise/candidates/search": "candidates:read",
                 "/enterprise/candidates/folders": "candidates:read",
                 "/enterprise/matches": "candidates:read",
+                "/enterprise/activities": "candidates:read",
                 "/enterprise/matches/recommendations": "candidates:read",
                 "/enterprise/reports": "candidates:read",
                 "/enterprise/sourcing/hub": "candidates:read",
@@ -252,6 +254,7 @@ export default function EnterprisePortalLayout({
                 { label: "Advanced Search", icon: "search", path: "/enterprise/candidates/search", permission: "candidates:read" },
                 { label: "Folders", icon: "folder", path: "/enterprise/candidates/folders", permission: "candidates:read" },
                 { label: "Matches", icon: "how_to_reg", path: "/enterprise/matches", permission: "candidates:read" },
+                { label: "Activities", icon: "calendar_today", path: "/enterprise/activities", permission: "candidates:read" },
             ]
         },
         {
