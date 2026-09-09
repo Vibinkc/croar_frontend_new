@@ -191,7 +191,10 @@ export default function GlobalTasksPage() {
                     glow="rgba(25,118,210,0.28)"
                 />
                 <StatCard
-                    label={tr("postOnboarding.inProgress")}
+                    /* Counts every task that is not finished, which is the number worth knowing —
+                       but it was labelled "In Progress" while also counting Pending ones, so the
+                       tile read 6 beside three rows actually in progress. */
+                    label={tr("postOnboarding.openTasks")}
                     value={tasks.filter(t => t.status !== 'Done' && t.status !== 'Completed').length}
                     icon="sync"
                     gradient="linear-gradient(135deg,#42A5F5,#1565C0)"
