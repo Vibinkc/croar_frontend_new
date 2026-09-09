@@ -233,8 +233,9 @@ export default function EnterprisePortalLayout({
                 { label: "Croar Pilot", icon: "smart_toy", path: "/enterprise/croar-pilot", permission: "jobs:read" },
                 { label: "Jobs", icon: "work", path: "/enterprise/jobs", permission: "jobs:read" },
                 { label: "Mail", icon: "mail", path: "/enterprise/communication", permission: "communications:read" },
-                { label: "Career Page", icon: "public", path: "/enterprise/career-page", permission: "jobs:read" },
-                { label: "Job Portals", icon: "share", path: "/enterprise/settings/job-portals", permission: "jobs:read" },
+                // Career Page moved out to the top level, and Job Portals removed: it is the same
+                // screen as Administration -> Job Boards -> Free Job Boards, and one setting
+                // reachable from two places in the nav is how the two drift apart.
                 { label: "Onboarding Hub", icon: "hub", path: "/enterprise/onboarding", permission: "onboarding:read" },
             ]
         },
@@ -336,6 +337,16 @@ export default function EnterprisePortalLayout({
             icon: "leaderboard",
             items: [
                 { label: "Reports", icon: "leaderboard", path: "/enterprise/reports", permission: "candidates:read" },
+            ]
+        },
+        // Top level rather than buried in Hiring Hub. It is a public-facing surface with its own
+        // sub-navigation once you are inside it, not one screen among a hiring workflow — and
+        // Manatal lists it here too, beside Reports.
+        {
+            title: "Career Page",
+            icon: "public",
+            items: [
+                { label: "Career Page", icon: "public", path: "/enterprise/career-page", permission: "jobs:read" },
             ]
         },
         // Top level, and last — Manatal puts Administration at the bottom of its sidebar, below
