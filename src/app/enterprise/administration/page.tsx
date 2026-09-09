@@ -25,6 +25,8 @@ export interface AdminItem {
     href?: string;
     unavailable?: string;
     available: boolean;
+    /** MDI glyph, set on the backend item next to the name and href it belongs with. */
+    icon?: string;
 }
 export interface AdminSection {
     id: string;
