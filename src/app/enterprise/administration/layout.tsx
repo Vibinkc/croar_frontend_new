@@ -48,6 +48,13 @@ const LEAVES: Record<string, string> = {
     import: "Data Import",
     guests: "Guests",
     groups: "Groups",
+    candidates: "Candidates",
+    departments: "Departments",
+    matches: "Matches",
+    dashboard: "Dashboard widgets",
+    general: "General",
+    branded: "Branded Resume",
+    custom: "Custom Resume",
 };
 
 /**
