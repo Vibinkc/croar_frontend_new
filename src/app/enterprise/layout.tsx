@@ -338,6 +338,15 @@ export default function EnterprisePortalLayout({
                 { label: "Permissions", icon: "admin_panel_settings", path: "/enterprise/settings/roles", permission: "organization:moderate" },
                 { label: "Partners", icon: "corporate_fare", path: "/enterprise/companies", permission: "platform:read" },
                 { label: "Templates", icon: "dashboard_customize", path: "/enterprise/templates", permission: "organization:read" },
+            ]
+        },
+        // Top level, and last — Manatal puts Administration at the bottom of its sidebar, below
+        // Settings, because it is somewhere you go deliberately rather than pass through. A
+        // single-item group renders flat, so this is one link and not an accordion.
+        {
+            title: "Administration",
+            icon: "admin_panel_settings",
+            items: [
                 { label: "Administration", icon: "admin_panel_settings", path: "/enterprise/administration", permission: "organization:read" },
             ]
         }
