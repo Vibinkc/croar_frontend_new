@@ -232,10 +232,9 @@ export default function EnterprisePortalLayout({
                 { label: "Dashboard", icon: "dashboard", path: "/enterprise/dashboard", permission: "organization:read" },
                 { label: "Croar Pilot", icon: "smart_toy", path: "/enterprise/croar-pilot", permission: "jobs:read" },
                 { label: "Jobs", icon: "work", path: "/enterprise/jobs", permission: "jobs:read" },
-                { label: "Mail", icon: "mail", path: "/enterprise/communication", permission: "communications:read" },
-                // Career Page moved out to the top level, and Job Portals removed: it is the same
-                // screen as Administration -> Job Boards -> Free Job Boards, and one setting
-                // reachable from two places in the nav is how the two drift apart.
+                // Mail and Career Page moved out to the top level. Job Portals removed outright:
+                // it is the same screen as Administration -> Job Boards -> Free Job Boards, and
+                // one setting reachable from two places in the nav is how the two drift apart.
                 { label: "Onboarding Hub", icon: "hub", path: "/enterprise/onboarding", permission: "onboarding:read" },
             ]
         },
@@ -266,6 +265,16 @@ export default function EnterprisePortalLayout({
                 { label: "Folders", icon: "folder", path: "/enterprise/candidates/folders", permission: "candidates:read" },
                 { label: "Matches", icon: "how_to_reg", path: "/enterprise/matches", permission: "candidates:read" },
                 { label: "Activities", icon: "calendar_today", path: "/enterprise/activities", permission: "candidates:read" },
+            ]
+        },
+        // Somewhere you sit and work, not a step in the hiring flow — and the inbox is checked
+        // far more often than anything else that was in Hiring Hub. Placed straight after
+        // Activities, which is where Manatal puts its own Inbox.
+        {
+            title: "Mail",
+            icon: "mail",
+            items: [
+                { label: "Mail", icon: "mail", path: "/enterprise/communication", permission: "communications:read" },
             ]
         },
         {
