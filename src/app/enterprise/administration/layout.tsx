@@ -42,6 +42,10 @@ const LEAVES: Record<string, string> = {
     wallet: "Credits",
     templates: "Templates",
     portals: "Job Portals",
+    // Title-casing the segment would render these "Gdpr" and "Import", which is not what either
+    // page is called anywhere else in the product.
+    gdpr: "GDPR Tracking",
+    import: "Data Import",
 };
 
 /**
