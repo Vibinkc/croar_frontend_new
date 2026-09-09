@@ -314,7 +314,6 @@ export default function EnterprisePortalLayout({
                 { label: "Projects", icon: "workspaces", path: "/enterprise/projects", permission: "projects:read" },
                 { label: "Tasks", icon: "checklist", path: "/enterprise/tasks", permission: "tasks:read" },
                 { label: "Skill Assessments", icon: "quiz", path: "/enterprise/skill-assessments", permission: "assessments:read" },
-                { label: "Video Reviews", icon: "smart_display", path: "/enterprise/skill-assessments/video-reviews", permission: "assessments:read" },
                 { label: "360 Assessments", icon: "360", path: "/enterprise/assessments-360", permission: "assessments:read" },
                 { label: "HR Surveys", icon: "poll", path: "/enterprise/surveys", permission: "surveys:read" },
                 // Last in the group because it is last in the lifecycle.
