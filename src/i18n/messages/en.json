@@ -5802,6 +5802,7 @@
         "archiveSubtitle": "Restore or permanently delete archived records.",
         "archiveTitle": "Archive Data",
         "archivedOn": "archived {date}",
+        "breadcrumb": "Breadcrumb",
         "cancel": "Cancel",
         "clear": "Clear",
         "detail": "Detail",

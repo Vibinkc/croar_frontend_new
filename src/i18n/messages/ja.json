@@ -5802,6 +5802,7 @@
         "archiveSubtitle": "アーカイブされた記録を復元、または完全に削除します。",
         "archiveTitle": "アーカイブデータ",
         "archivedOn": "{date} にアーカイブ",
+        "breadcrumb": "パンくずリスト",
         "cancel": "キャンセル",
         "clear": "クリア",
         "detail": "詳細",

@@ -62,11 +62,6 @@ export default function AdministrationSectionPage() {
             </div>
 
             <div className="flex-1 overflow-y-auto px-6 py-4 min-h-0">
-                <nav className="flex items-center gap-1.5 mb-4 text-[12.5px]">
-                    <Link href="/enterprise/administration" className="text-[#1976D2] hover:underline">{tr("admin.title")}</Link>
-                    <Icon name="chevron-right" className="text-[15px] text-[#BDBDBD]" />
-                    <span className="text-[#616161]">{section?.name || params.section}</span>
-                </nav>
 
                 {loading ? (
                     <div className="flex justify-center py-20">

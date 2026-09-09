@@ -172,6 +172,14 @@ export default function EnterprisePortalLayout({
                 "/enterprise/matches/recommendations": "candidates:read",
                 "/enterprise/reports": "candidates:read",
                 "/enterprise/administration": "organization:read",
+                "/enterprise/administration/account-and-users/account": "organization:read",
+                "/enterprise/administration/account-and-users/users": "organization:moderate",
+                "/enterprise/administration/account-and-users/roles": "organization:moderate",
+                "/enterprise/administration/account-and-users/partners": "platform:read",
+                "/enterprise/administration/integrations/tools": "jobs:read",
+                "/enterprise/administration/credits/wallet": "organization:read",
+                "/enterprise/administration/customization/templates": "organization:read",
+                "/enterprise/administration/job-boards/portals": "jobs:read",
                 "/enterprise/sourcing/hub": "candidates:read",
                 "/enterprise/communication": "communications:read",
                 "/enterprise/automation": "automation:read",
@@ -324,20 +332,10 @@ export default function EnterprisePortalLayout({
         },
         */
         {
-            title: "General",
-            icon: "settings",
+            title: "Reports",
+            icon: "leaderboard",
             items: [
-                // Manatal files Reports under Settings & Analytics; General is Croar's equivalent.
-                // It sits first because it is the one item here people open weekly rather than
-                // when something needs configuring.
                 { label: "Reports", icon: "leaderboard", path: "/enterprise/reports", permission: "candidates:read" },
-                { label: "Settings", icon: "settings", path: "/enterprise/settings", permission: "organization:read" },
-                { label: "Integrations", icon: "extension", path: "/enterprise/integrations", permission: "jobs:read" },
-                { label: "Credits", icon: "account_balance_wallet", path: "/enterprise/credits", permission: "organization:read" },
-                { label: "Team", icon: "groups", path: "/enterprise/team", permission: "organization:moderate" },
-                { label: "Permissions", icon: "admin_panel_settings", path: "/enterprise/settings/roles", permission: "organization:moderate" },
-                { label: "Partners", icon: "corporate_fare", path: "/enterprise/companies", permission: "platform:read" },
-                { label: "Templates", icon: "dashboard_customize", path: "/enterprise/templates", permission: "organization:read" },
             ]
         },
         // Top level, and last — Manatal puts Administration at the bottom of its sidebar, below

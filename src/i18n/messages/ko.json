@@ -5802,6 +5802,7 @@
         "archiveSubtitle": "보관된 기록을 복원하거나 영구 삭제합니다.",
         "archiveTitle": "아카이브 데이터",
         "archivedOn": "{date} 보관",
+        "breadcrumb": "경로 표시",
         "cancel": "취소",
         "clear": "지우기",
         "detail": "상세",
