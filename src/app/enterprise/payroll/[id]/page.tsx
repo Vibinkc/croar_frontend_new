@@ -234,6 +234,19 @@ export default function CycleDetail({ params }: { params: Promise<{ id: string }
                   {tr("payroll.markAsPaid")}
                 </button>
               )}
+              {/* Send every payslip at once. The endpoint shipped with the module but was
+                  never wired to a control, so the only way to send payslips was to open
+                  each one and email it individually. Paid cycles only — that is what the
+                  server enforces. */}
+              {cycle.status === "PAID" && can("payroll:pay") && (
+                <button
+                  onClick={() => act(() => payrollApi.emailCyclePayslips(id), tr("payroll.emailAllConfirm"))}
+                  disabled={busy}
+                  className="btn-accent"
+                >
+                  {tr("payroll.emailAllPayslips")}
+                </button>
+              )}
               {cycle.status !== "PAID" && cycle.status !== "CANCELLED" && can("payroll:manage") && (
                 <button
                   onClick={() => act(() => payrollApi.cancelCycle(id), tr("payroll.cancelCycleConfirm"))}

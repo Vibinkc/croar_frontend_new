@@ -9,6 +9,7 @@ import {
   payrollApi,
   timesheetApi,
   type Holiday,
+  type HolidayImportResult,
   type PayrollCycle,
   type Timesheet,
   type TimesheetStatus,
@@ -57,6 +58,8 @@ export default function TimesheetsPage() {
   const [config, setConfig] = useState<WorkCalendarConfig | null>(null);
   const [holidays, setHolidays] = useState<Holiday[]>([]);
   const [holForm, setHolForm] = useState({ holiday_date: "", name: "" });
+  const [importing, setImporting] = useState(false);
+  const [importResult, setImportResult] = useState<HolidayImportResult | null>(null);
 
   const cycle = cycles.find((c) => c.id === cycleId) || null;
   const cycleEditable = cycle?.status === "DRAFT" || cycle?.status === "PROCESSING";
@@ -181,6 +184,41 @@ export default function TimesheetsPage() {
       setHolidays(await calendarApi.listHolidays());
     } catch (err) {
       setError((err as Error).message);
+    }
+  }
+
+  /** A two-column starter file, so nobody has to guess the shape. */
+  function downloadHolidayTemplate() {
+    const year = new Date().getFullYear();
+    const csv = [
+      "Date,Holiday",
+      `${year}-01-26,Republic Day`,
+      `${year}-08-15,Independence Day`,
+      `${year}-10-02,Gandhi Jayanti`,
+    ].join("\n");
+    // utf-8 BOM so Excel opens accented names correctly instead of as mojibake.
+    const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "holidays-template.csv";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  async function importHolidays(file: File) {
+    setImporting(true);
+    setImportResult(null);
+    try {
+      const res = await calendarApi.importHolidays(file);
+      setImportResult(res);
+      setHolidays(await calendarApi.listHolidays());
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setImporting(false);
     }
   }
 
@@ -506,6 +544,78 @@ export default function TimesheetsPage() {
                   >
                     {tr("payroll.addHoliday")}
                   </button>
+                </div>
+              )}
+
+              {/* Bulk import. One at a time is fine for a correction, but nobody types a
+                  whole year — and a calendar with no holidays inflates working days, which
+                  under-pays anyone with loss-of-pay. */}
+              {canEdit && (
+                <div className="mt-4 rounded-[4px] border border-dashed border-[#BDBDBD] bg-[#FAFAFA] px-4 py-3">
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="text-[13px] font-semibold text-[#212121]">
+                        {tr("payroll.importHolidaysTitle")}
+                      </div>
+                      <p className="mt-0.5 text-[12px] text-[#757575]">
+                        {tr("payroll.importHolidaysHint")}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={downloadHolidayTemplate}
+                        className="inline-flex items-center h-9 px-3 rounded-[4px] border border-[#E0E0E0] bg-white text-[12.5px] font-semibold text-[#424242] hover:bg-[#F5F5F5] transition-colors"
+                      >
+                        {tr("payroll.downloadTemplate")}
+                      </button>
+                      <label
+                        className={`inline-flex items-center h-9 px-4 rounded-[4px] text-[12.5px] font-semibold transition-colors ${
+                          importing
+                            ? "bg-[#E0E0E0] text-[#9E9E9E] cursor-wait"
+                            : "bg-[#1976D2] text-white hover:bg-[#1565C0] cursor-pointer"
+                        }`}
+                      >
+                        {importing ? tr("payroll.importing") : tr("payroll.chooseFile")}
+                        <input
+                          type="file"
+                          accept=".csv,text/csv,.xlsx,.xls"
+                          disabled={importing}
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            // Reset so choosing the same file twice still fires onChange.
+                            e.target.value = "";
+                            if (f) void importHolidays(f);
+                          }}
+                        />
+                      </label>
+                    </div>
+                  </div>
+
+                  {importResult && (
+                    <div className="mt-3 rounded-[4px] border border-[#C8E6C9] bg-[#E8F5E9] px-3 py-2 text-[12.5px] text-[#2E7D32]">
+                      <span className="font-semibold">
+                        {tr("payroll.importedCount", { n: importResult.created })}
+                      </span>
+                      {importResult.skipped.length > 0 && (
+                        <span className="ml-2 text-[#616161]">
+                          {tr("payroll.importSkipped", { n: importResult.skipped.length })}
+                        </span>
+                      )}
+                      {importResult.invalid.length > 0 && (
+                        <div className="mt-1.5 text-[#E65100]">
+                          {tr("payroll.importInvalid", { n: importResult.invalid.length })}
+                          <ul className="mt-1 ml-4 list-disc">
+                            {importResult.invalid.slice(0, 5).map((v, i) => (
+                              <li key={i}>
+                                {tr("payroll.importRow", { row: v.row })} — “{v.value}” ({v.reason})
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

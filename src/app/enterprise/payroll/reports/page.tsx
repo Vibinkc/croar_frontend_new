@@ -29,12 +29,66 @@ const STATUS_TONE: Record<
   CANCELLED: "danger",
 };
 
+/**
+ * A report with no parameters: two buttons, CSV and PDF.
+ *
+ * Most of the new reports take nothing but a format, so the card is factored out rather
+ * than repeated six times. The ones that need a cycle picker stay written out in full.
+ */
+function SimpleReport({
+  icon, tone, bg, title, hint, busy, keyBase, run, download,
+}: {
+  icon: string;
+  tone: string;
+  bg: string;
+  title: string;
+  hint: string;
+  busy: string | null;
+  keyBase: string;
+  run: (format: "csv" | "pdf") => Promise<void>;
+  download: (key: string, fn: () => Promise<void>) => Promise<void>;
+}) {
+  return (
+    <Card interactive padding="lg" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex items-start gap-4 min-w-0">
+        <span
+          className="w-11 h-11 rounded-[4px] flex items-center justify-center shrink-0"
+          style={{ background: bg, color: tone }}
+        >
+          <i className={`mdi ${icon} text-[22px]`} />
+        </span>
+        <div className="min-w-0">
+          <h3 className="text-[15px] font-bold text-[#212121]">{title}</h3>
+          <p className="text-[12.5px] text-[#757575] mt-0.5">{hint}</p>
+        </div>
+      </div>
+      <div className="flex gap-2 shrink-0">
+        <Button
+          variant="secondary" size="sm"
+          icon={busy === `${keyBase}-csv` ? "hourglass_empty" : "table_view"}
+          disabled={busy === `${keyBase}-csv`}
+          onClick={() => download(`${keyBase}-csv`, () => run("csv"))}
+        >CSV</Button>
+        <Button
+          variant="secondary" size="sm"
+          icon={busy === `${keyBase}-pdf` ? "hourglass_empty" : "picture_as_pdf"}
+          disabled={busy === `${keyBase}-pdf`}
+          onClick={() => download(`${keyBase}-pdf`, () => run("pdf"))}
+        >PDF</Button>
+      </div>
+    </Card>
+  );
+}
+
 export default function ReportsPage() {
     const { t: tr } = useI18n();
   const [cycles, setCycles] = useState<PayrollCycle[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<string | null>(null);
+  const [skippedCycle, setSkippedCycle] = useState("");
+  const [varFrom, setVarFrom] = useState("");
+  const [varTo, setVarTo] = useState("");
 
   useEffect(() => {
     payrollApi
@@ -64,6 +118,13 @@ export default function ReportsPage() {
   const hasRegister = (c: PayrollCycle) => (c.totals?.headcount ?? 0) > 0;
   const readyCount = cycles.filter(hasRegister).length;
   const noCycles = cycles.length === 0;
+
+  // Skipped Summary and Variance both read payslip data, so a never-run cycle has
+  // nothing to say. Offering it in the picker only produces a 409.
+  const ranCycles = cycles.filter((c) => c.status !== "DRAFT");
+  // Comparing a cycle with itself is rejected by the API; disable rather than let
+  // the user press it and read an error.
+  const varReady = Boolean(varFrom && varTo && varFrom !== varTo);
 
   return (
     <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
@@ -103,6 +164,147 @@ export default function ReportsPage() {
           glow="rgba(21,101,192,0.25)"
         />
       </StatGrid>
+
+      {/* ── Reports that answer "why wasn't this person paid?" ──────────────
+          Missing Information runs before a cycle, Skipped Summary after it.
+          Between them they catch nearly every reason somebody is left out, so
+          they lead the page rather than sitting below the registers. */}
+      <div className="space-y-3">
+        <div>
+          <h2 className="text-[15px] font-bold text-[#212121]">{tr("payroll.beforeAndAfter")}</h2>
+          <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("payroll.beforeAndAfterHint")}</p>
+        </div>
+
+        <SimpleReport
+          icon="mdi-account-alert"
+          tone="#E65100"
+          bg="#FFF3E0"
+          title={tr("payroll.missingInfoTitle")}
+          hint={tr("payroll.missingInfoHint")}
+          busy={busy}
+          keyBase="missing"
+          run={(fmt) => reportsApi.missingInformation(fmt)}
+          download={download}
+        />
+
+        {/* Skipped Summary needs a cycle, and only a cycle that has been run. */}
+        <Card interactive padding="lg" className="flex flex-col gap-3">
+          <div className="flex items-start gap-4 min-w-0">
+            <span className="w-11 h-11 rounded-[4px] bg-[#FFEBEE] text-[#C62828] flex items-center justify-center shrink-0">
+              <i className="mdi mdi-account-off text-[22px]" />
+            </span>
+            <div className="min-w-0">
+              <h3 className="text-[15px] font-bold text-[#212121]">{tr("payroll.skippedTitle")}</h3>
+              <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("payroll.skippedHint")}</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <select
+              value={skippedCycle}
+              onChange={(e) => setSkippedCycle(e.target.value)}
+              className="h-9 min-w-[200px] rounded-[4px] border border-[#E0E0E0] bg-white px-3 text-[13px] text-[#212121]"
+            >
+              <option value="">{tr("payroll.chooseCycle")}</option>
+              {ranCycles.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+            <Button
+              variant="secondary" size="sm"
+              icon={busy === "skipped-csv" ? "hourglass_empty" : "table_view"}
+              disabled={!skippedCycle || busy === "skipped-csv"}
+              onClick={() => download("skipped-csv", () => reportsApi.skippedSummary(skippedCycle, "csv"))}
+            >CSV</Button>
+            <Button
+              variant="secondary" size="sm"
+              icon={busy === "skipped-pdf" ? "hourglass_empty" : "picture_as_pdf"}
+              disabled={!skippedCycle || busy === "skipped-pdf"}
+              onClick={() => download("skipped-pdf", () => reportsApi.skippedSummary(skippedCycle, "pdf"))}
+            >PDF</Button>
+          </div>
+        </Card>
+
+        {/* Variance compares two cycles, so it needs two pickers. */}
+        <Card interactive padding="lg" className="flex flex-col gap-3">
+          <div className="flex items-start gap-4 min-w-0">
+            <span className="w-11 h-11 rounded-[4px] bg-[#EDE7F6] text-[#5E35B1] flex items-center justify-center shrink-0">
+              <i className="mdi mdi-swap-vertical-bold text-[22px]" />
+            </span>
+            <div className="min-w-0">
+              <h3 className="text-[15px] font-bold text-[#212121]">{tr("payroll.varianceTitle")}</h3>
+              <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("payroll.varianceHint")}</p>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <select
+              value={varFrom}
+              onChange={(e) => setVarFrom(e.target.value)}
+              className="h-9 min-w-[180px] rounded-[4px] border border-[#E0E0E0] bg-white px-3 text-[13px] text-[#212121]"
+            >
+              <option value="">{tr("payroll.fromCycle")}</option>
+              {ranCycles.map((c) => (<option key={c.id} value={c.id}>{c.name}</option>))}
+            </select>
+            <i className="mdi mdi-arrow-right text-[#9E9E9E]" />
+            <select
+              value={varTo}
+              onChange={(e) => setVarTo(e.target.value)}
+              className="h-9 min-w-[180px] rounded-[4px] border border-[#E0E0E0] bg-white px-3 text-[13px] text-[#212121]"
+            >
+              <option value="">{tr("payroll.toCycle")}</option>
+              {ranCycles.map((c) => (<option key={c.id} value={c.id}>{c.name}</option>))}
+            </select>
+            <Button
+              variant="secondary" size="sm"
+              icon={busy === "variance-csv" ? "hourglass_empty" : "table_view"}
+              disabled={!varReady || busy === "variance-csv"}
+              title={varFrom && varFrom === varTo ? tr("payroll.pickTwoCycles") : undefined}
+              onClick={() => download("variance-csv", () => reportsApi.variance(varFrom, varTo, "csv"))}
+            >CSV</Button>
+            <Button
+              variant="secondary" size="sm"
+              icon={busy === "variance-pdf" ? "hourglass_empty" : "picture_as_pdf"}
+              disabled={!varReady || busy === "variance-pdf"}
+              onClick={() => download("variance-pdf", () => reportsApi.variance(varFrom, varTo, "pdf"))}
+            >PDF</Button>
+          </div>
+          {varFrom && varFrom === varTo && (
+            <p className="text-[12px] text-[#E65100]">{tr("payroll.pickTwoCycles")}</p>
+          )}
+        </Card>
+      </div>
+
+      {/* ── Registers and statutory ─────────────────────────────────────── */}
+      <div className="space-y-3">
+        <div>
+          <h2 className="text-[15px] font-bold text-[#212121]">{tr("payroll.registersTitle")}</h2>
+          <p className="text-[12.5px] text-[#757575] mt-0.5">{tr("payroll.registersHint")}</p>
+        </div>
+
+        <SimpleReport
+          icon="mdi-cash-multiple" tone="#00695C" bg="#E0F2F1"
+          title={tr("payroll.masterCtcTitle")} hint={tr("payroll.masterCtcHint")}
+          busy={busy} keyBase="ctc"
+          run={(fmt) => reportsApi.masterCtc(fmt)} download={download}
+        />
+        <SimpleReport
+          icon="mdi-account-group" tone="#1565C0" bg="#E3F2FD"
+          title={tr("payroll.hrRegisterTitle")} hint={tr("payroll.hrRegisterHint")}
+          busy={busy} keyBase="hrreg"
+          run={(fmt) => reportsApi.hrRegister(fmt)} download={download}
+        />
+        <SimpleReport
+          icon="mdi-calculator-variant" tone="#4527A0" bg="#EDE7F6"
+          title={tr("payroll.taxComputationTitle")} hint={tr("payroll.taxComputationHint")}
+          busy={busy} keyBase="taxcomp"
+          run={(fmt) => reportsApi.taxComputation(fmt)} download={download}
+        />
+        <SimpleReport
+          icon="mdi-bank-transfer" tone="#AD1457" bg="#FCE4EC"
+          title={tr("payroll.tdsReportTitle")} hint={tr("payroll.tdsReportHint")}
+          busy={busy} keyBase="tds"
+          run={(fmt) => reportsApi.tds(fmt)} download={download}
+        />
+      </div>
 
       {/* Payroll summary (all cycles) */}
       <Card interactive padding="lg" className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">

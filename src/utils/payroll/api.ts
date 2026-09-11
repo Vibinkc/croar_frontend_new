@@ -308,6 +308,12 @@ export const apiClient = {
       headers: { "Content-Type": "application/json", ...authHeaders() },
       body: JSON.stringify(body),
     }).then(handle<T>),
+  patch: <T>(path: string, body: unknown) =>
+    fetch(`${API_ROOT}${path}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json", ...authHeaders() },
+      body: JSON.stringify(body),
+    }).then(handle<T>),
   del: <T>(path: string) =>
     fetch(`${API_ROOT}${path}`, {
       method: "DELETE",
@@ -357,12 +363,24 @@ async function downloadFile(path: string): Promise<void> {
   // Fallback when the filename header is unavailable: pick an extension from the
   // content type so a CSV never ends up named ".pdf" (Content-Type is always
   // exposed to JS; Content-Disposition needs an explicit CORS expose-header).
-  const contentType = res.headers.get("Content-Type") || "";
-  const ext = contentType.includes("csv")
-    ? "csv"
-    : contentType.includes("pdf")
-      ? "pdf"
-      : "bin";
+  const contentType = (res.headers.get("Content-Type") || "").toLowerCase();
+  // Ordered longest-match-first: the .docx and .xlsx types both contain
+  // "openxmlformats", so a loose check would pick whichever came first.
+  const TYPE_EXT: [string, string][] = [
+    ["wordprocessingml.document", "docx"],
+    ["spreadsheetml.sheet", "xlsx"],
+    ["presentationml.presentation", "pptx"],
+    ["msword", "doc"],
+    ["ms-excel", "xls"],
+    ["csv", "csv"],
+    ["pdf", "pdf"],
+    ["json", "json"],
+    ["zip", "zip"],
+    ["png", "png"],
+    ["jpeg", "jpg"],
+    ["plain", "txt"],
+  ];
+  const ext = TYPE_EXT.find(([needle]) => contentType.includes(needle))?.[1] ?? "bin";
   const filename = match ? match[1] : `download.${ext}`;
   const url = window.URL.createObjectURL(blob);
   const a = document.createElement("a");
@@ -578,7 +596,23 @@ export const calendarApi = {
   createHoliday: (holiday_date: string, name: string) =>
     apiClient.post<Holiday>(`${CAL}/holidays`, { holiday_date, name }),
   deleteHoliday: (id: string) => apiClient.del<void>(`${CAL}/holidays/${id}`),
+  // Bulk import from a spreadsheet. Typing a year of holidays one at a time is a job
+  // nobody does, and an empty calendar silently inflates every month's working days.
+  importHolidays: (file: File, replace = false) => {
+    const form = new FormData();
+    form.append("file", file);
+    form.append("replace", String(replace));
+    return apiClient.postForm<HolidayImportResult>(`${CAL}/holidays/import`, form);
+  },
 };
+
+export interface HolidayImportResult {
+  created: number;
+  replaced: number;
+  skipped: { date: string; name: string; reason: string }[];
+  /** Rows that could not be read at all — reported rather than silently dropped. */
+  invalid: { row: string; value: string; reason: string }[];
+}
 
 // --- Leave management ------------------------------------------------------
 const LV = "/api/v1/enterprise/leave";
@@ -679,6 +713,28 @@ export const reportsApi = {
     downloadFile(`${R}/salary-register?cycle_id=${cycleId}&format=${format}`),
   payrollSummary: (format: ReportFormat) =>
     downloadFile(`${R}/payroll-summary?format=${format}`),
+
+  // Reports that answer "why wasn't this person paid?". Run missing-information
+  // before a cycle and skipped-summary after it; between them they catch nearly
+  // every reason somebody is left out.
+  missingInformation: (format: ReportFormat) =>
+    downloadFile(`${R}/missing-information?format=${format}`),
+  skippedSummary: (cycleId: string, format: ReportFormat) =>
+    downloadFile(`${R}/skipped-summary?cycle_id=${cycleId}&format=${format}`),
+  variance: (fromCycleId: string, toCycleId: string, format: ReportFormat) =>
+    downloadFile(
+      `${R}/variance?from_cycle_id=${fromCycleId}&to_cycle_id=${toCycleId}&format=${format}`,
+    ),
+  masterCtc: (format: ReportFormat) => downloadFile(`${R}/master-ctc?format=${format}`),
+  hrRegister: (format: ReportFormat) => downloadFile(`${R}/hr-register?format=${format}`),
+  taxComputation: (format: ReportFormat, financialYear?: string) =>
+    downloadFile(
+      `${R}/tax-computation?format=${format}${financialYear ? `&financial_year=${financialYear}` : ""}`,
+    ),
+  tds: (format: ReportFormat, financialYear?: string) =>
+    downloadFile(
+      `${R}/tds?format=${format}${financialYear ? `&financial_year=${financialYear}` : ""}`,
+    ),
 };
 
 // --- Settings (organisation profile) ---------------------------------------
@@ -1231,3 +1287,182 @@ export function inr(value: number | string | null | undefined, currency = "INR")
   const { symbol, sep, amount } = moneyParts(value, currency);
   return `${symbol}${sep}${amount}`;
 }
+
+// --- Attendance -------------------------------------------------------------
+// Presence, which is not the same thing as a timesheet. A timesheet is hours
+// claimed against work; attendance is whether somebody turned up. Payroll has
+// been inferring the second from the first.
+const ATT = "/api/v1/enterprise/attendance";
+
+export type AttendanceStatus =
+  | "present"
+  | "absent"
+  | "half_day"
+  | "leave"
+  | "holiday"
+  | "weekly_off";
+export type WorkMode = "office" | "remote" | "hybrid" | "field";
+export type RegularizationStatus = "pending" | "approved" | "rejected" | "cancelled";
+
+export interface Shift {
+  id: string;
+  name: string;
+  starts_at: string;
+  ends_at: string;
+  break_minutes: number;
+  half_day_after_minutes: number;
+  full_day_after_minutes: number;
+  working_days: string;
+  is_default: boolean;
+}
+
+export interface AttendancePunch {
+  id: string;
+  direction: "in" | "out";
+  punched_at: string;
+  source: string;
+  location: string | null;
+  note: string | null;
+}
+
+export interface AttendanceDay {
+  id: string;
+  employee_id: string;
+  employee_name?: string;
+  employee_code?: string;
+  work_date: string;
+  shift_id: string | null;
+  shift: string | null;
+  status: AttendanceStatus;
+  work_mode: string | null;
+  source: string;
+  first_in: string | null;
+  last_out: string | null;
+  work_minutes: number;
+  work_hours: number;
+  late_minutes: number;
+  note: string | null;
+  locked: boolean;
+  punches: AttendancePunch[];
+}
+
+export interface AttendanceTotals {
+  present: number;
+  absent: number;
+  half_day: number;
+  leave: number;
+  holiday: number;
+  weekly_off: number;
+  payable_days: number;
+  work_hours: number;
+}
+
+export interface AttendanceMonth {
+  month: string;
+  days: AttendanceDay[];
+  totals: AttendanceTotals;
+}
+
+export interface MyAttendance extends AttendanceMonth {
+  employee_id: string;
+  punched_in: boolean;
+  today: AttendanceDay | null;
+}
+
+export interface AttendanceSummaryRow {
+  employee_id: string;
+  employee_name: string;
+  employee_code: string;
+  payable_days: number;
+  present: number;
+  half_day: number;
+  absent: number;
+  leave: number;
+  work_hours: number;
+}
+
+export interface Regularization {
+  id: string;
+  employee_id: string;
+  employee_name: string;
+  work_date: string;
+  requested_status: AttendanceStatus;
+  requested_in: string | null;
+  requested_out: string | null;
+  requested_work_mode: string | null;
+  reason: string;
+  status: RegularizationStatus;
+  requested_at: string | null;
+  decided_at: string | null;
+  decision_note: string | null;
+}
+
+export const attendanceApi = {
+  listShifts: () => apiClient.get<Shift[]>(`${ATT}/shifts`),
+  createShift: (body: Omit<Shift, "id">) =>
+    apiClient.post<{ id: string; name: string }>(`${ATT}/shifts`, body),
+  updateShift: (id: string, body: Omit<Shift, "id">) =>
+    apiClient.patch<{ id: string; name: string }>(`${ATT}/shifts/${id}`, body),
+  deleteShift: (id: string) => apiClient.del<void>(`${ATT}/shifts/${id}`),
+
+  month: (params: { month?: string; employee_id?: string; status?: AttendanceStatus }) => {
+    const q = new URLSearchParams();
+    if (params.month) q.set("month", params.month);
+    if (params.employee_id) q.set("employee_id", params.employee_id);
+    if (params.status) q.set("status", params.status);
+    const qs = q.toString();
+    return apiClient.get<AttendanceMonth>(`${ATT}${qs ? `?${qs}` : ""}`);
+  },
+  mine: (month?: string) =>
+    apiClient.get<MyAttendance>(`${ATT}/me${month ? `?month=${month}` : ""}`),
+  punch: (body: {
+    direction: "in" | "out";
+    work_mode?: WorkMode;
+    location?: string;
+    note?: string;
+    at?: string;
+  }) =>
+    apiClient.post<{
+      day_id: string;
+      work_date: string;
+      direction: string;
+      punched_at: string;
+      status: AttendanceStatus;
+      work_minutes: number;
+    }>(`${ATT}/punch`, body),
+  mark: (body: {
+    employee_id: string;
+    work_date: string;
+    status: AttendanceStatus;
+    work_mode?: WorkMode;
+    shift_id?: string;
+    first_in?: string;
+    last_out?: string;
+    note?: string;
+  }) => apiClient.post<{ id: string; work_date: string; status: string }>(`${ATT}/mark`, body),
+  summary: (period_start: string, period_end: string) =>
+    apiClient.get<AttendanceSummaryRow[]>(
+      `${ATT}/summary?period_start=${period_start}&period_end=${period_end}`,
+    ),
+
+  listRegularizations: (params: { status?: RegularizationStatus; mine?: boolean } = {}) => {
+    const q = new URLSearchParams();
+    if (params.status) q.set("status", params.status);
+    if (params.mine) q.set("mine", "true");
+    const qs = q.toString();
+    return apiClient.get<Regularization[]>(`${ATT}/regularizations${qs ? `?${qs}` : ""}`);
+  },
+  requestRegularization: (body: {
+    work_date: string;
+    requested_status: AttendanceStatus;
+    requested_in?: string;
+    requested_out?: string;
+    requested_work_mode?: WorkMode;
+    reason: string;
+  }) => apiClient.post<{ id: string; status: string }>(`${ATT}/regularizations`, body),
+  decideRegularization: (id: string, decision: "approved" | "rejected", note?: string) =>
+    apiClient.post<{ id: string; status: string }>(
+      `${ATT}/regularizations/${id}/decide`,
+      { decision, note },
+    ),
+};

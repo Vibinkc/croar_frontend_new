@@ -519,6 +519,27 @@ export default function LeavePage() {
           subtitle={tr("payroll.leaveTypesSub")}
         />
 
+        {/* Seed the usual set in one click. The endpoint shipped with the module but had no
+            control, so a new company had to hand-create every leave type before anyone could
+            request leave at all. Only offered while the list is empty — re-seeding a
+            configured company is not something anyone means to do. */}
+        {canEdit && types.length === 0 && (
+          <div className="mb-5 rounded-[4px] border border-dashed border-[#BDBDBD] bg-[#FAFAFA] px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="text-[13px] font-semibold text-[#212121]">
+                {tr("payroll.seedLeaveTitle")}
+              </div>
+              <p className="mt-0.5 text-[12px] text-[#757575]">{tr("payroll.seedLeaveHint")}</p>
+            </div>
+            <button
+              onClick={() => run(() => leaveApi.seedDefaultTypes())}
+              className="inline-flex items-center h-9 px-4 rounded-[4px] bg-[#1976D2] text-white text-[12.5px] font-semibold hover:bg-[#1565C0] transition-colors shrink-0"
+            >
+              {tr("payroll.seedLeaveAction")}
+            </button>
+          </div>
+        )}
+
         {types.length > 0 && (
           <ul className="mb-5 flex flex-col gap-2">
             {types.map((t) => (

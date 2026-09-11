@@ -65,6 +65,11 @@ interface EmployeeFormData {
     about_yourself: string;
     pan_card_number: string;
     aadhar_card_number: string;
+    bank_account_no: string;
+    uan: string;
+    esic_number: string;
+    date_of_joining: string;
+    location: string;
     passport_number: string;
     date_of_birth: string;
     gender: string;
@@ -119,6 +124,11 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
         about_yourself: "",
         pan_card_number: "",
         aadhar_card_number: "",
+        bank_account_no: "",
+        uan: "",
+        esic_number: "",
+        date_of_joining: "",
+        location: "",
         passport_number: "",
         date_of_birth: "",
         gender: "",
@@ -299,6 +309,7 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
         { id: "job", label: tr("forms.tabJobInformation"), icon: "work" },
         { id: "personal", label: tr("forms.tabPersonalInformation"), icon: "person" },
         { id: "contact", label: tr("forms.tabContactInfo"), icon: "location_on" },
+        { id: "payroll", label: tr("forms.tabPayroll"), icon: "account_balance_wallet" },
         { id: "documents", label: tr("forms.tabDocumentsOthers"), icon: "folder" },
     ];
 
@@ -473,6 +484,35 @@ export default function EmployeeForm({ employeeId, candidateId }: EmployeeFormPr
                             <Input id="emp-passport_number" name="passport_number" value={formData.passport_number} onChange={handleChange} className={jetbrainsMono.className} />
                         </Field>
                     </div>
+                </Card>
+            )}
+
+            {activeTab === "payroll" && (
+                <Card padding="lg" className="space-y-6 animate-in fade-in duration-300">
+                    <CardHeader title={tr("forms.payrollDetails")} subtitle={tr("forms.payrollDetailsSubtitle")} />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <Field label={tr("forms.bankAccountNo")} htmlFor="emp-bank_account_no" hint={tr("forms.bankAccountHint")}>
+                            <Input id="emp-bank_account_no" name="bank_account_no" value={formData.bank_account_no} onChange={handleChange} className={jetbrainsMono.className} />
+                        </Field>
+                        <Field label={tr("forms.dateOfJoining")} htmlFor="emp-date_of_joining" hint={tr("forms.dateOfJoiningHint")}>
+                            <Input id="emp-date_of_joining" name="date_of_joining" type="date" value={formData.date_of_joining} onChange={handleChange} />
+                        </Field>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                        <Field label={tr("forms.uan")} htmlFor="emp-uan" hint={tr("forms.uanHint")}>
+                            <Input id="emp-uan" name="uan" value={formData.uan} onChange={handleChange} className={jetbrainsMono.className} />
+                        </Field>
+                        <Field label={tr("forms.esicNumber")} htmlFor="emp-esic_number" hint={tr("forms.esicHint")}>
+                            <Input id="emp-esic_number" name="esic_number" value={formData.esic_number} onChange={handleChange} className={jetbrainsMono.className} />
+                        </Field>
+                        <Field label={tr("forms.workLocation")} htmlFor="emp-location">
+                            <Input id="emp-location" name="location" value={formData.location} onChange={handleChange} />
+                        </Field>
+                    </div>
+
+                    <p className="text-[12.5px] text-[#757575]">{tr("forms.payrollFieldsNote")}</p>
                 </Card>
             )}
 

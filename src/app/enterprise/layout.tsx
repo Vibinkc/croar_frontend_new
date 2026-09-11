@@ -20,6 +20,7 @@ const NAV_I18N: Record<string, string> = {
     "Talent Search": "nav.talentSearch",
     "Automation": "nav.automation",
     "Post Onboarding": "nav.postOnboarding",
+    "Attendance": "nav.attendance",
     "Payroll": "nav.payroll",
     "AI & Training": "nav.aiTraining",
     "General": "nav.general",
@@ -316,6 +317,7 @@ export default function EnterprisePortalLayout({
                 { label: "Skill Assessments", icon: "quiz", path: "/enterprise/skill-assessments", permission: "assessments:read" },
                 { label: "360 Assessments", icon: "360", path: "/enterprise/assessments-360", permission: "assessments:read" },
                 { label: "HR Surveys", icon: "poll", path: "/enterprise/surveys", permission: "surveys:read" },
+                { label: "Attendance", icon: "fingerprint", path: "/enterprise/attendance", permission: "employees:read" },
                 // Last in the group because it is last in the lifecycle.
                 { label: "Offboarding", icon: "logout", path: "/enterprise/offboarding", permission: "employees:read" },
             ]
