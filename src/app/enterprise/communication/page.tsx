@@ -14,6 +14,7 @@ import { Button } from '../../../components/ui/button';
 import { Input } from '../../../components/ui/input';
 import { Badge } from '../../../components/ui/badge';
 import { PageHelp } from "@/components/ds";
+import { stripTags } from "@/utils/html";
 
 interface Email {
     id: string;
@@ -337,7 +338,7 @@ const MailboxPage = () => {
 
     const filteredEmails = Array.isArray(emails) ? emails.filter((e: Email) => {
         const q = searchQuery.toLowerCase();
-        const bodyText = (e.body || "").replace(/<[^>]{0,4096}>/g, " ").toLowerCase();
+        const bodyText = stripTags(e.body, " ").toLowerCase();
         return (
             (e.subject?.toLowerCase() || "").includes(q) ||
             (e.sender_email?.toLowerCase() || "").includes(q) ||
@@ -484,7 +485,7 @@ const MailboxPage = () => {
                                         {email.subject}
                                     </h3>
                                     <p className="text-[12px] text-[#9E9E9E] line-clamp-1">
-                                        {(email.body || '').replace(/<[^>]{0,4096}>/g, '')}
+                                        {stripTags(email.body)}
                                     </p>
                                 </div>
                             </div>

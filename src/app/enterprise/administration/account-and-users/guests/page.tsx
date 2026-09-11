@@ -19,6 +19,7 @@ import { BACKEND_URL } from "@/utils/api";
 import { useI18n } from "@/context/I18nContext";
 import { useAuth } from "@/context/AuthContext";
 import { Badge, Button, EmptyState, Icon, PageHeader, cn } from "@/components/ds";
+import { useAutoFocus } from "@/hooks/useAutoFocus";
 
 type Access = "all_department_jobs" | "specific_jobs";
 
@@ -303,6 +304,7 @@ function GuestDialog({ guest, departments, jobs, token, t, onClose, onSaved }: {
     const [description, setDescription] = useState(guest?.description || "");
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
+    const fullNameRef = useAutoFocus<HTMLInputElement>();
 
     const save = async () => {
         setSaving(true); setError("");
@@ -342,7 +344,7 @@ function GuestDialog({ guest, departments, jobs, token, t, onClose, onSaved }: {
 
                 <label className="flex flex-col gap-1">
                     <span className="text-[12px] text-[#616161]">{t("guests.fullName")}</span>
-                    <input className={CONTROL} value={fullName} maxLength={255} autoFocus
+                    <input className={CONTROL} value={fullName} maxLength={255} ref={fullNameRef}
                            onChange={(e) => setFullName(e.target.value)} />
                 </label>
                 <label className="flex flex-col gap-1">

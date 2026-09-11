@@ -9,6 +9,7 @@ import { useI18n } from "@/context/I18nContext";
 import { API_BASE_URL } from "@/lib/api-config";
 import { PageHelp, Icon } from "@/components/ds";
 import { randomToken } from "@/utils/randomId";
+import { stripTagsAndEntities } from "@/utils/html";
 
 interface Message {
     role: "user" | "agent";
@@ -640,7 +641,7 @@ function readPilotHandoff(): Handoff | null {
 }
 
 const cleanText = (s: unknown) =>
-    String(s || "").replace(/<[^>]+>/g, " ").replace(/&nbsp;|&amp;|&lt;|&gt;/g, " ").replace(/\s+/g, " ").trim();
+    stripTagsAndEntities(String(s || ""), " ", true);
 
 // While the Pilot works, poll the backend for the REAL step it's on right now (e.g. "Generating the
 // questions…") and show exactly that — no guessing. Falls back to a single "Working on it…" line

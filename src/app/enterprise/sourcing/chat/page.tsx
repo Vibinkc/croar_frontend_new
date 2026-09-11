@@ -46,6 +46,8 @@ import {
 import { Chart } from "react-google-charts";
 import { API_BASE_URL } from "@/lib/api-config";
 import { PageHelp, Icon } from "@/components/ds";
+import { stripTagsAndEntities } from "@/utils/html";
+import { useAutoFocus } from "@/hooks/useAutoFocus";
 
 interface Profile {
     full_name: string;
@@ -227,6 +229,7 @@ export default function ProfileSourcingChatPage() {
     const [isShortlistModalOpen, setIsShortlistModalOpen] = useState(false);
     const [jobs, setJobs] = useState<{id: string, title: string}[]>([]);
     const [selectedJobId, setSelectedJobId] = useState("");
+    const shortlistNameRef = useAutoFocus<HTMLInputElement>();
     // When we arrived here sourcing FOR a specific job (from the Pipeline / a job page), lock the
     // shortlist to that one job. When the user came in freely and searched, this stays null (all jobs).
     const [lockedJobId, setLockedJobId] = useState<string | null>(null);
@@ -849,11 +852,7 @@ export default function ProfileSourcingChatPage() {
                 lockJob(ctx.id); // came in FOR this job → shortlist only to it (ref set synchronously)
             }
             // Strip HTML/entities so a rich-text JD never leaks tags into the search query.
-            const clean = (s: string) => (s || "")
-                .replace(/<[^>]*>/g, " ")
-                .replace(/&nbsp;|&amp;|&lt;|&gt;/g, " ")
-                .replace(/\s+/g, " ")
-                .trim();
+            const clean = (s: string) => stripTagsAndEntities(s);
             const jd = (ctx?.description || "").trim();
             const title = clean(ctx?.title || "");
             const skills = clean(ctx?.skills || "");
@@ -1020,7 +1019,7 @@ export default function ProfileSourcingChatPage() {
                                         value={searchMenuFilter}
                                         onChange={(e) => setSearchMenuFilter(e.target.value)}
                                         placeholder={tr("sourcingChat.findSearches")}
-                                        autoFocus
+                                        ref={shortlistNameRef}
                                         className="w-full h-10 px-3 rounded-[4px] border border-[#1976D2]/50 focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 text-[13px] text-[#263238] placeholder:text-[#9E9E9E] outline-none mb-2"
                                     />
                                     <div className="max-h-[300px] overflow-y-auto -mx-1 px-1">

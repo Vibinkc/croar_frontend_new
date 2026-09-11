@@ -17,6 +17,7 @@ import { BACKEND_URL } from "@/utils/api";
 import { useI18n } from "@/context/I18nContext";
 import { useAuth } from "@/context/AuthContext";
 import { Badge, Button, EmptyState, PageHeader, cn } from "@/components/ds";
+import { useAutoFocus } from "@/hooks/useAutoFocus";
 
 interface Folder {
     id: string;
@@ -83,6 +84,8 @@ export default function FoldersPage() {
     const [renameDraft, setRenameDraft] = useState("");
     const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
     const [toast, setToast] = useState("");
+    const newFolderRef = useAutoFocus<HTMLInputElement>();
+    const renameRef = useAutoFocus<HTMLInputElement>();
 
     const auth = { Authorization: `Bearer ${token}` };
     const say = (m: string) => {
@@ -236,7 +239,7 @@ export default function FoldersPage() {
                     {creating && (
                         <div className="p-3 border-b border-[#E0E0E0] flex flex-col gap-2 bg-[#FAFAFA]">
                             <input
-                                autoFocus
+                                ref={newFolderRef}
                                 className={INPUT}
                                 value={draftName}
                                 placeholder={tr("folders.namePlaceholder")}
@@ -278,7 +281,7 @@ export default function FoldersPage() {
                                     {renamingId === f.id ? (
                                         <div className="p-3 flex flex-col gap-2">
                                             <input
-                                                autoFocus
+                                                ref={renameRef}
                                                 className={INPUT}
                                                 value={renameDraft}
                                                 onChange={(e) => setRenameDraft(e.target.value)}

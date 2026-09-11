@@ -14,6 +14,7 @@ import {
 } from "@/utils/payroll/api";
 import { Banner } from "@/components/payroll/ui";
 import { useAuth } from "@/components/payroll/AuthProvider";
+import { useAutoFocus } from "@/hooks/useAutoFocus";
 import {
   Button,
   Card,
@@ -140,6 +141,7 @@ export default function SettingsPage() {
   // True once the user picks "Custom…" so the input stays visible even while
   // the typed code is empty or partially typed.
   const [customCurrency, setCustomCurrency] = useState(false);
+  const firstFieldRef = useAutoFocus<HTMLInputElement>();
 
   useEffect(() => {
     settingsApi
@@ -329,7 +331,7 @@ export default function SettingsPage() {
                 {customCurrency && (
                   <input
                     className={INPUT_CLS}
-                    autoFocus
+                    ref={firstFieldRef}
                     required
                     maxLength={8}
                     placeholder={tr("payroll.currencyCodePlaceholder")}

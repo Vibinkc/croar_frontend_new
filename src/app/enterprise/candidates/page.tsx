@@ -23,6 +23,7 @@ import {
     Briefcase,
 } from "@/components/icons";
 import { jetbrainsMono, PageHelp } from "@/components/ds";
+import { useAutoFocus } from "@/hooks/useAutoFocus";
 
 interface Job {
     id: string;
@@ -192,6 +193,7 @@ export default function AllCandidatesPage() {
     const [sendingJobId, setSendingJobId] = useState<string | null>(null);
     const [inviteMsg, setInviteMsg] = useState<string>("");
     const [jobSearch, setJobSearch] = useState("");
+    const jobSearchRef = useAutoFocus<HTMLInputElement>();
 
     const openInvite = async (candidate: Candidate) => {
         setInviteCandidate(candidate);
@@ -524,7 +526,7 @@ export default function AllCandidatesPage() {
                                         <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-[#9E9E9E]" />
                                         <input
                                             type="text"
-                                            autoFocus
+                                            ref={jobSearchRef}
                                             value={jobSearch}
                                             onChange={(e) => setJobSearch(e.target.value)}
                                             placeholder={tr("pipeline.searchJobsPlaceholder")}

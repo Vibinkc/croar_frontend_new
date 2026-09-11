@@ -15,6 +15,7 @@ import {
     PageHeader,
     jetbrainsMono,
 } from "@/components/ds";
+import { useAutoFocus } from "@/hooks/useAutoFocus";
 
 interface Question {
     id: string;
@@ -58,6 +59,7 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
     const [isAiWizardOpen, setIsAiWizardOpen] = useState(false);
     const [industryNature, setIndustryNature] = useState("");
     const [generatingAi, setGeneratingAi] = useState(false);
+    const industryRef = useAutoFocus<HTMLInputElement>();
 
     // Form State
     const [formData, setFormData] = useState({
@@ -401,7 +403,7 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
                                     value={industryNature}
                                     onChange={(e) => setIndustryNature(e.target.value)}
                                     placeholder={isEdit ? tr("forms.industryPlaceholderEdit") : tr("forms.industryPlaceholderNew")}
-                                    autoFocus
+                                    ref={industryRef}
                                 />
                             </Field>
                             <Button

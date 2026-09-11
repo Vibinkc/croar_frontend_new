@@ -16,6 +16,7 @@ import {
     Button,
     jetbrainsMono,
 } from "@/components/ds";
+import { useAutoFocus } from "@/hooks/useAutoFocus";
 
 interface SurveyType {
     id: string;
@@ -81,6 +82,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
     const [isAiModalOpen, setIsAiModalOpen] = useState(false);
     const [industryNature, setIndustryNature] = useState("");
     const [generatingAi, setGeneratingAi] = useState(false);
+    const industryRef = useAutoFocus<HTMLInputElement>();
 
     // Form State
     const [formData, setFormData] = useState({
@@ -469,7 +471,7 @@ export default function SurveyTemplateForm({ mode, templateId }: SurveyTemplateF
                                     value={industryNature}
                                     onChange={(e) => setIndustryNature(e.target.value)}
                                     placeholder={tr("forms2.industryPlaceholder")}
-                                    autoFocus
+                                    ref={industryRef}
                                 />
                             </Field>
                             <Button

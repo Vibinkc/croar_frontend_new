@@ -6,6 +6,7 @@ import { useI18n } from "@/context/I18nContext";
 import { API_BASE_URL } from "@/lib/api-config";
 import { Search, Loader2, X, MoreHorizontal, ChevronDown, Plus, CheckCircle2, Mail } from "@/components/icons";
 import ConnectMailbox from "@/components/sourcing/ConnectMailbox";
+import { useAutoFocus } from "@/hooks/useAutoFocus";
 
 interface Connection {
     connection_id: string;
@@ -110,6 +111,7 @@ export default function ConnectionsPanel() {
     const [menuPos, setMenuPos] = useState<{ right: number; top?: number; bottom?: number }>({ right: 0, top: 0 });
     const [disc, setDisc] = useState<{ id: string; email: string } | null>(null);
     const [discText, setDiscText] = useState("");
+    const disconnectRef = useAutoFocus<HTMLInputElement>();
 
     useEffect(() => {
         const p = new URLSearchParams(window.location.search);
@@ -301,7 +303,7 @@ export default function ConnectionsPanel() {
                         <h3 className="text-[18px] font-bold text-[#212121] break-words">{t("integrations.disconnectTitle").replace("{email}", disc.email)}</h3>
                         <p className="text-[13.5px] text-[#616161] mt-2.5 leading-relaxed">{t("integrations.disconnectDesc")}</p>
                         <label className="block text-[13px] font-bold text-[#212121] mt-5 mb-2">{t("integrations.typeToConfirm")}</label>
-                        <input value={discText} onChange={(e) => setDiscText(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") confirmDisconnect(); }} autoFocus placeholder="DISCONNECT" className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15" />
+                        <input value={discText} onChange={(e) => setDiscText(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") confirmDisconnect(); }} ref={disconnectRef} placeholder="DISCONNECT" className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15" />
                         <div className="flex justify-end gap-2.5 mt-5">
                             <button onClick={() => { setDisc(null); setDiscText(""); }} className="h-10 px-4 rounded-[4px] border border-[#E0E0E0] text-[13px] font-semibold text-[#424242] hover:bg-[#FAFAFA]">{t("integrations.cancel")}</button>
                             <button onClick={confirmDisconnect} disabled={discText.trim().toUpperCase() !== "DISCONNECT"} className="h-10 px-5 rounded-[4px] bg-[#DC2626] text-white text-[13px] font-bold hover:bg-[#B91C1C] disabled:bg-[#FBD9D9] disabled:text-white disabled:cursor-not-allowed">{t("integrations.confirm")}</button>

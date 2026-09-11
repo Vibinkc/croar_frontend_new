@@ -8,6 +8,7 @@ import { API_BASE_URL } from "@/lib/api-config";
 import {
     Search, Filter, FolderOpen, Plus, Bookmark, Send, ThumbsUp, Loader2, X, Bot, MoreHorizontal, Lock,
 } from "@/components/icons";
+import { useAutoFocus } from "@/hooks/useAutoFocus";
 
 interface Project {
     project_id: string;
@@ -46,6 +47,7 @@ export default function ProjectsPage() {
     const [statusFilter, setStatusFilter] = useState<"all" | "calibrating" | "sourcing" | "none">("all");
     const [menuId, setMenuId] = useState<string | null>(null);
     const [menuPos, setMenuPos] = useState<{ right: number; top?: number; bottom?: number }>({ right: 0, top: 0 });
+    const projectNameRef = useAutoFocus<HTMLInputElement>();
 
     const fetchProjects = async () => {
         if (!token) return;
@@ -257,7 +259,7 @@ export default function ProjectsPage() {
                             value={newName}
                             onChange={(e) => setNewName(e.target.value)}
                             onKeyDown={(e) => { if (e.key === "Enter") createProject(); }}
-                            autoFocus
+                            ref={projectNameRef}
                             placeholder={t("projects.namePlaceholder")}
                             className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15"
                         />

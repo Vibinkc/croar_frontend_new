@@ -8,6 +8,7 @@
 
 import { useEffect, useState } from "react";
 import { Icon, cn } from "@/components/ds";
+import { useAutoFocus } from "@/hooks/useAutoFocus";
 
 export function Panel({ title, description, children }: {
     title: string; description?: string; children: React.ReactNode;
@@ -60,6 +61,7 @@ export function TextRow({ label, hint, value, placeholder, disabled, onSave }: {
 }) {
     const [editing, setEditing] = useState(false);
     const [draft, setDraft] = useState(value || "");
+    const draftRef = useAutoFocus<HTMLInputElement>();
 
     useEffect(() => { setDraft(value || ""); }, [value]);
 
@@ -77,7 +79,7 @@ export function TextRow({ label, hint, value, placeholder, disabled, onSave }: {
             </span>
             {editing ? (
                 <input
-                    autoFocus
+                    ref={draftRef}
                     className="flex-1 h-9 px-3 rounded-[4px] border border-[#1976D2] bg-white text-[13px] text-[#212121] outline-none"
                     value={draft}
                     placeholder={placeholder}

@@ -8,6 +8,7 @@ import { useI18n } from "@/context/I18nContext";
 import { API_BASE_URL } from "@/lib/api-config";
 import { Search, Filter, Plus, Loader2, Mail, MoreHorizontal, X, ChevronDown, Zap, Reply, ThumbsUp, Send } from "@/components/icons";
 import ConnectMailbox from "@/components/sourcing/ConnectMailbox";
+import { useAutoFocus } from "@/hooks/useAutoFocus";
 
 interface Sequence {
     sequence_id: string;
@@ -37,6 +38,7 @@ export default function SequencesPage() {
     const [sentByDay, setSentByDay] = useState<Record<string, number>>({});
     const [showConnectGate, setShowConnectGate] = useState(false);
     const [checkingConn, setCheckingConn] = useState(false);
+    const seqNameRef = useAutoFocus<HTMLInputElement>();
 
     // Before creating a sequence, require the org to have a connected mailbox.
     const openCreate = async () => {
@@ -221,7 +223,7 @@ export default function SequencesPage() {
                 <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowCreate(false)}>
                     <div className="bg-white p-6 rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-md w-full space-y-4" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-between"><h3 className="text-[16px] font-bold text-[#212121]">{t("sequences.newSequence")}</h3><button onClick={() => setShowCreate(false)} className="p-1.5 hover:bg-[#EEEEEE] text-[#9E9E9E] rounded-lg"><X className="w-4 h-4" /></button></div>
-                        <input value={newName} onChange={(e) => setNewName(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") createSeq(); }} autoFocus placeholder={t("sequences.namePlaceholder")} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15" />
+                        <input value={newName} onChange={(e) => setNewName(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") createSeq(); }} ref={seqNameRef} placeholder={t("sequences.namePlaceholder")} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15" />
                         <div className="flex justify-end gap-2.5">
                             <button onClick={() => setShowCreate(false)} className="h-10 px-4 rounded-[4px] border border-[#E0E0E0] text-[13px] font-semibold text-[#424242] hover:bg-[#FAFAFA]">{t("common.cancel")}</button>
                             <button onClick={createSeq} disabled={!newName.trim() || creating} className="h-10 px-5 rounded-[4px] bg-[#1976D2] text-white text-[13px] font-bold hover:bg-[#1565C0] disabled:opacity-50 flex items-center gap-2">{creating && <Loader2 className="w-4 h-4 animate-spin" />} {t("common.create")}</button>

@@ -16,6 +16,7 @@ import { BACKEND_URL } from "@/utils/api";
 import { useI18n } from "@/context/I18nContext";
 import { useAuth } from "@/context/AuthContext";
 import { Badge, Button, EmptyState, Icon, PageHeader, cn } from "@/components/ds";
+import { useAutoFocus } from "@/hooks/useAutoFocus";
 
 interface HeldBy {
     assignment_id: string;
@@ -313,6 +314,7 @@ function AssetDialog({ asset, summary, token, t, onClose, onSaved }: {
     });
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
+    const assetTagRef = useAutoFocus<HTMLInputElement>();
     const set = (k: string, v: string) => setF((x) => ({ ...x, [k]: v }));
 
     const save = async () => {
@@ -344,7 +346,7 @@ function AssetDialog({ asset, summary, token, t, onClose, onSaved }: {
             <div className="p-5 flex flex-col gap-3 overflow-y-auto">
                 <div className="grid grid-cols-2 gap-3">
                     <Field label={t("assets.tag")}>
-                        <input className={CONTROL} value={f.asset_tag} maxLength={60} autoFocus
+                        <input className={CONTROL} value={f.asset_tag} maxLength={60} ref={assetTagRef}
                                placeholder="IT-001" onChange={(e) => set("asset_tag", e.target.value)} />
                     </Field>
                     <Field label={t("assets.category")}>

@@ -17,6 +17,7 @@ import { BACKEND_URL } from "@/utils/api";
 import { useI18n } from "@/context/I18nContext";
 import { useAuth } from "@/context/AuthContext";
 import { Badge, Button, EmptyState, Icon, cn } from "@/components/ds";
+import { useAutoFocus } from "@/hooks/useAutoFocus";
 
 export type Entity = "candidate" | "job" | "department" | "guest" | "match";
 
@@ -226,6 +227,7 @@ function FieldDialog({ field, entity, types, token, t, onClose, onSaved }: {
     const [showOnCreate, setShowOnCreate] = useState(field?.show_on_create ?? true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
+    const labelRef = useAutoFocus<HTMLInputElement>();
 
     const needsOptions = fieldType === "select" || fieldType === "multiselect";
 
@@ -270,7 +272,7 @@ function FieldDialog({ field, entity, types, token, t, onClose, onSaved }: {
                 <div className="p-5 flex flex-col gap-3 overflow-y-auto">
                     <label className="flex flex-col gap-1">
                         <span className="text-[12px] text-[#616161]">{t("custom.label")}</span>
-                        <input className={CONTROL} value={label} maxLength={120} autoFocus
+                        <input className={CONTROL} value={label} maxLength={120} ref={labelRef}
                                placeholder={t("custom.labelPlaceholder")} onChange={(e) => setLabel(e.target.value)} />
                         {field && (
                             <span className="text-[11.5px] text-[#9E9E9E]">

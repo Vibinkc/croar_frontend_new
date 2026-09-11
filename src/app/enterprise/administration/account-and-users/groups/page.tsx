@@ -18,6 +18,7 @@ import { BACKEND_URL } from "@/utils/api";
 import { useI18n } from "@/context/I18nContext";
 import { useAuth } from "@/context/AuthContext";
 import { Badge, Button, EmptyState, Icon, PageHeader, cn } from "@/components/ds";
+import { useAutoFocus } from "@/hooks/useAutoFocus";
 
 interface Member { id: string; name: string; email: string; is_active: boolean }
 interface RoleOpt { id: string; name: string; description?: string | null; is_system: boolean }
@@ -295,6 +296,7 @@ function GroupDialog({ group, colours, token, t, onClose, onSaved }: {
     const [colour, setColour] = useState(group?.colour || colours[0] || "#1976D2");
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
+    const nameRef = useAutoFocus<HTMLInputElement>();
 
     const save = async () => {
         setSaving(true); setError("");
@@ -339,7 +341,7 @@ function GroupDialog({ group, colours, token, t, onClose, onSaved }: {
 
                 <label className="flex flex-col gap-1">
                     <span className="text-[12px] text-[#616161]">{t("groups.nameLabel")}</span>
-                    <input className={CONTROL} value={name} maxLength={120} autoFocus
+                    <input className={CONTROL} value={name} maxLength={120} ref={nameRef}
                            placeholder={t("groups.namePlaceholder")} onChange={(e) => setName(e.target.value)} />
                 </label>
                 <label className="flex flex-col gap-1">

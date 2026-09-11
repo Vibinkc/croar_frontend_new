@@ -38,6 +38,7 @@ import {
     Network
 } from "@/components/icons";
 import { jetbrainsMono, Button, Card, CardHeader, Field, Input, Textarea, Select, PageHeader, cn, Icon } from "@/components/ds";
+import { stripTags } from "@/utils/html";
 
 // Remove the temporary <mark> highlight tags the AI adds around newly-inserted JD text, keeping the
 // inner text. Used before persisting a job and before re-sending the JD to the AI, so highlights are
@@ -542,13 +543,13 @@ export default function JobForm({ mode, jobId }: JobFormProps) {
     }, [highlightAdd]);
 
     // Does a real (non-empty) job description exist yet? Only then do we offer "Add more with AI".
-    const hasJD = (formData.description || "").replace(/<[^>]*>/g, "").trim().length > 10;
+    const hasJD = stripTags(formData.description).trim().length > 10;
 
     // Fold the user's extra points into the CURRENT description via AI, preserving what's there.
     const addToJDWithAI = async () => {
         const extra = additionalJD.trim();
         if (!extra) return;
-        if (!formData.description || formData.description.replace(/<[^>]*>/g, "").trim().length < 10) {
+        if (!formData.description || stripTags(formData.description).trim().length < 10) {
             alert(tr("jobForm.writeJDFirst"));
             return;
         }

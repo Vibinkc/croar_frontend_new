@@ -14,6 +14,7 @@ import { BACKEND_URL } from "@/utils/api";
 import { useI18n } from "@/context/I18nContext";
 import { useAuth } from "@/context/AuthContext";
 import { Button, Icon, cn } from "@/components/ds";
+import { useAutoFocus } from "@/hooks/useAutoFocus";
 
 interface TagRow { id: string; name: string; colour: string; used_by: number }
 
@@ -156,9 +157,10 @@ function EditRow({ tag, colours, t, onCancel, onSave }: {
 }) {
     const [n, setN] = useState(tag.name);
     const [c, setC] = useState(tag.colour);
+    const tagNameRef = useAutoFocus<HTMLInputElement>();
     return (
         <>
-            <input className={cn(CONTROL, "w-[180px]")} value={n} maxLength={60} autoFocus
+            <input className={cn(CONTROL, "w-[180px]")} value={n} maxLength={60} ref={tagNameRef}
                    onChange={(e) => setN(e.target.value)} />
             <span className="flex items-center gap-1.5">
                 {colours.map((x) => (

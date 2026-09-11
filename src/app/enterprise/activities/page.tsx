@@ -22,6 +22,7 @@ import { BACKEND_URL } from "@/utils/api";
 import { useI18n } from "@/context/I18nContext";
 import { useAuth } from "@/context/AuthContext";
 import { Badge, Button, EmptyState, Icon, PageHeader, cn } from "@/components/ds";
+import { useAutoFocus } from "@/hooks/useAutoFocus";
 
 type View = "upcoming" | "past" | "completed" | "all";
 type Mode = "list" | "day" | "week" | "month";
@@ -590,6 +591,7 @@ function ActivityForm({ activity, options, onClose, onSaved, token, tr }: {
     const [notes, setNotes] = useState(activity?.notes || "");
     const [saving, setSaving] = useState(false);
     const [err, setErr] = useState("");
+    const titleRef = useAutoFocus<HTMLInputElement>();
 
     const save = async () => {
         if (!title.trim()) { setErr(tr("activities.titleRequired")); return; }
@@ -644,7 +646,7 @@ function ActivityForm({ activity, options, onClose, onSaved, token, tr }: {
 
                     <label className="flex flex-col gap-1">
                         <span className="text-[12px] text-[#616161]">{tr("activities.colTitle")}</span>
-                        <input autoFocus className={CONTROL} value={title} placeholder={tr("activities.titlePlaceholder")}
+                        <input ref={titleRef} className={CONTROL} value={title} placeholder={tr("activities.titlePlaceholder")}
                                onChange={(e) => setTitle(e.target.value)} />
                     </label>
 
