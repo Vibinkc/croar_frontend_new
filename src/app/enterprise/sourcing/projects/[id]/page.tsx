@@ -12,6 +12,7 @@ import {
     ChevronLeft, ChevronRight, Users, CheckCircle2,
 } from "@/components/icons";
 import { Icon } from "@/components/ds";
+import { locationAfterIn, trimTrailingDots } from "@/utils/text";
 
 interface Project {
     project_id: string;
@@ -86,10 +87,11 @@ function deriveFilters(text: string): string[] {
     const t = (text || "").trim();
     if (!t) return [];
     const out: string[] = [];
-    const role = t.split(/\s+(?:in|with|based|expert|experienced|,)/i)[0].trim();
+    // See the note in the sourcing chat page: \s not \s+, because the result is trimmed anyway.
+    const role = t.split(/\s(?:in|with|based|expert|experienced|,)/i)[0].trim();
     if (role && role.length < 40) out.push(role);
-    const loc = t.match(/\bin\s+([A-Z][A-Za-z .'-]+?)(?:\s*,|\s+(?:with|and|expert|experienced)\b|$)/i);
-    if (loc?.[1]) out.push(loc[1].trim());
+    const loc = locationAfterIn(t, ["with", "and", "expert", "experienced"]);
+    if (loc) out.push(loc.trim());
     return out.slice(0, 3);
 }
 
@@ -1424,8 +1426,10 @@ function deriveCriteria(text: string): string[] {
     const t = (text || "").trim();
     if (!t) return [];
     const out: string[] = [];
-    const m = t.match(/(?:skilled in|experience (?:in|with)|expertise in|expert in|background in)\s+(.+?)(?:\.|$)/i);
-    if (m?.[1]) out.push(...m[1].split(/,|\band\b|\bor\b/i).map((s) => s.replace(/[.]+$/, "").trim()).filter((s) => s.length > 1 && s.length < 24));
+    // `(.[^.]*)` instead of `(.+?)(?:\.|$)`: same language, but "." is no longer matchable by
+    // both halves of the pattern.
+    const m = t.match(/(?:skilled in|experience (?:in|with)|expertise in|expert in|background in)\s+(.[^.]*)/i);
+    if (m?.[1]) out.push(...m[1].split(/,|\band\b|\bor\b/i).map((s) => trimTrailingDots(s).trim()).filter((s) => s.length > 1 && s.length < 24));
     if (/\berp\b/i.test(t)) out.push("ERP");
     if (/\benterprise\b/i.test(t)) out.push("Enterprise");
     return Array.from(new Set(out)).slice(0, 5);

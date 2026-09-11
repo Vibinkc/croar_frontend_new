@@ -27,7 +27,10 @@ const fillPreview = (s: string) => {
     // "|", but left the engine exponentially many ways to split the groups when the closing
     // brace was missing, so a pasted "{a|a|a|a..." could hang the tab.
     out = out.replace(/\{([^{}|]+\|[^{}]+)\}/g, (_m, g) => String(g).split("|")[0]);
-    out = out.replace(/\{\{\s*([^{}]+?)\s*\}\}/g, "$1");
+    // The field name is trimmed in code rather than by \s* on either side of a lazy group.
+    // Those three could all match a space, which is what made this quadratic: 2,000 characters
+    // of "{{" plus spaces took 2.3 seconds, and 8,000 took over two minutes.
+    out = out.replace(/\{\{([^{}]+)\}\}/g, (_m, field) => String(field).trim());
     return out;
 };
 

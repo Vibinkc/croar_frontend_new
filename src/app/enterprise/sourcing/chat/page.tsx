@@ -48,6 +48,7 @@ import { API_BASE_URL } from "@/lib/api-config";
 import { PageHelp, Icon } from "@/components/ds";
 import { stripTagsAndEntities } from "@/utils/html";
 import { useAutoFocus } from "@/hooks/useAutoFocus";
+import { locationAfterIn, trimTrailingDots } from "@/utils/text";
 
 interface Profile {
     full_name: string;
@@ -174,14 +175,15 @@ const profileMatchPercent = (profile: Profile, criteria: string[]): number | nul
 /** Short role label for the filters chip (e.g. "Marketing Manager in Europe…" → "Marketing Manager"). */
 const deriveRoleLabel = (text: string): string => {
     const t = (text || "").trim();
-    const head = t.split(/\s+(?:in|with|working|skilled|based|at)\b|,/i)[0].trim();
+    // One \s rather than \s+: the head is trimmed immediately after, so a run of spaces before
+    // the keyword lands in the same place, and a bare \s cannot backtrack through that run.
+    const head = t.split(/\s(?:in|with|working|skilled|based|at)\b|,/i)[0].trim();
     return head.length >= 2 && head.length <= 40 ? head : t.slice(0, 28);
 };
 
 /** Best-effort location for the filters chip ("…in Europe, German-speaking" → "Europe"). */
 const deriveLocationLabel = (text: string): string | null => {
-    const m = (text || "").match(/\bin\s+([A-Za-z][A-Za-z .'-]+?)(?:\s*,|\s+(?:with|working|skilled|and|at)\b|$)/i);
-    const loc = m?.[1]?.trim();
+    const loc = locationAfterIn(text || "", ["with", "working", "skilled", "and", "at"])?.trim();
     return loc && loc.length <= 30 ? loc : null;
 };
 
@@ -191,12 +193,14 @@ const deriveCriteriaFromQuery = (text: string): string[] => {
     if (!t) return [];
     const out: string[] = [];
     // Skills clause: "skilled in X, Y and Z" / "experience in X" / "expertise in X".
-    const m = t.match(/(?:skilled in|proficient in|experience (?:in|with)|expertise in|using|knows)\s+(.+?)(?:\.|$)/i);
+    // `(.[^.]*)` instead of `(.+?)(?:\.|$)`: one character then everything up to the next dot.
+    // Same language, but "." is no longer matchable by both halves of the pattern.
+    const m = t.match(/(?:skilled in|proficient in|experience (?:in|with)|expertise in|using|knows)\s+(.[^.]*)/i);
     if (m?.[1]) {
         out.push(
             ...m[1]
                 .split(/,|\band\b|\bor\b|\/|&|\+/i)
-                .map((s) => s.replace(/[.]+$/, "").trim())
+                .map((s) => trimTrailingDots(s).trim())
                 .filter((s) => s.length > 1 && s.length < 32),
         );
     }
