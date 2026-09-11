@@ -74,7 +74,10 @@ export default function VideoReviewsPage() {
                   <div key={i} className="grid gap-2">
                     <p className="text-[13.5px] font-semibold text-[#424242]"><span className="text-[#757575]">Q{i + 1}.</span> {a.question}</p>
                     {a.video_url ? (
-                      <video src={`${BACKEND_URL}${a.video_url}`} controls className="w-full max-w-md rounded-xl border border-[#E0E0E0] bg-black" />
+                      <video src={`${BACKEND_URL}${a.video_url}`} controls className="w-full max-w-md rounded-xl border border-[#E0E0E0] bg-black">
+                        {/* Submissions arrive without captions. */}
+                        <track kind="captions" />
+                      </video>
                     ) : (
                       <p className="text-xs italic text-rose-400">No video submitted for this question.</p>
                     )}
@@ -83,8 +86,12 @@ export default function VideoReviewsPage() {
               </div>
 
               <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-[#EEF0F4] pt-4">
-                <label className="text-[12.5px] font-semibold text-[#424242]">Score (0–100)</label>
+                {/* Paired by id rather than left floating: the label sits beside the field, so
+                    nothing tied it to the control for a screen reader. One row per submission,
+                    hence the attempt id in the name. */}
+                <label htmlFor={`score-${it.attempt_id}`} className="text-[12.5px] font-semibold text-[#424242]">Score (0–100)</label>
                 <input
+                  id={`score-${it.attempt_id}`}
                   type="number" min={0} max={100}
                   value={scores[it.attempt_id] ?? ""}
                   onChange={(e) => setScores((s) => ({ ...s, [it.attempt_id]: e.target.value }))}

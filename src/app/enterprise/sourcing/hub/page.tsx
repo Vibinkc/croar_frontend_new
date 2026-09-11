@@ -85,7 +85,7 @@ function Avatar({ name, src, size = 40 }: { name: string; src?: string | null; s
         >
             {src && !broken ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
-                <img src={src} alt="" className="w-full h-full object-cover" onError={() => setBroken(true)} />
+                <img role="presentation" src={src} alt="" className="w-full h-full object-cover" onError={() => setBroken(true)} />
             ) : (
                 name.trim().charAt(0).toUpperCase() || "?"
             )}
@@ -797,9 +797,9 @@ export default function SourcingHub() {
 
             {/* ── profile drawer ───────────────────────────────────────────────── */}
             {viewing && (
-                <div className="fixed inset-0 z-[200] flex justify-end" onClick={() => setDrawerAt(null)}>
+                <div role="presentation" className="fixed inset-0 z-[200] flex justify-end" onClick={() => setDrawerAt(null)}>
                     <div className="absolute inset-0 bg-[#212121]/45" />
-                    <div className="relative w-full max-w-[860px] h-full bg-[#F5F6F8] flex flex-col shadow-[0_14px_34px_rgba(0,0,0,0.16)]"
+                    <div role="presentation" className="relative w-full max-w-[860px] h-full bg-[#F5F6F8] flex flex-col shadow-[0_14px_34px_rgba(0,0,0,0.16)]"
                          onClick={(e) => e.stopPropagation()}>
                         {/* title band */}
                         <div className="px-6 h-[58px] shrink-0 bg-[#1976D2] text-white flex items-center justify-between gap-3">
@@ -938,9 +938,9 @@ export default function SourcingHub() {
 
             {/* ── add to job ───────────────────────────────────────────────────── */}
             {jobPicker && (
-                <div className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={() => setJobPicker(null)}>
+                <div role="presentation" className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={() => setJobPicker(null)}>
                     <div className="absolute inset-0 bg-[#212121]/45" />
-                    <div className="relative w-full max-w-[520px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)]"
+                    <div role="presentation" className="relative w-full max-w-[520px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)]"
                          onClick={(e) => e.stopPropagation()}>
                         <div className="px-5 py-4 border-b border-[#E0E0E0] flex items-center justify-between gap-3">
                             <div className="min-w-0">
@@ -1007,9 +1007,9 @@ export default function SourcingHub() {
 
             {/* ── add to folder ────────────────────────────────────────────────── */}
             {folderPicker && (
-                <div className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={() => setFolderPicker(null)}>
+                <div role="presentation" className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={() => setFolderPicker(null)}>
                     <div className="absolute inset-0 bg-[#212121]/45" />
-                    <div className="relative w-full max-w-[520px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)]"
+                    <div role="presentation" className="relative w-full max-w-[520px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)]"
                          onClick={(e) => e.stopPropagation()}>
                         <div className="px-5 py-4 border-b border-[#E0E0E0] flex items-center justify-between gap-3">
                             <div className="min-w-0">
@@ -1083,9 +1083,9 @@ export default function SourcingHub() {
 
             {/* ── where the data comes from ────────────────────────────────────── */}
             {provenance && (
-                <div className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={() => setProvenance(false)}>
+                <div role="presentation" className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={() => setProvenance(false)}>
                     <div className="absolute inset-0 bg-[#212121]/45" />
-                    <div className="relative w-full max-w-[480px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] p-6"
+                    <div role="presentation" className="relative w-full max-w-[480px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] p-6"
                          onClick={(e) => e.stopPropagation()}>
                         <h3 className="text-[17px] font-extrabold tracking-[-0.3px] text-[#212121] mb-2">{tr("hub.whereFrom")}</h3>
                         <p className="text-[13px] text-[#4F4F4F] leading-relaxed">{tr("hub.whereFromBody")}</p>

@@ -66,7 +66,7 @@ function IntegrationLogo({ name, src, colour }: { name: string; src?: string | n
         return (
             <span className="w-10 h-10 shrink-0 rounded-[4px] border border-[#E0E0E0] bg-white flex items-center justify-center overflow-hidden">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={src} alt="" className="w-5 h-5 object-contain" onError={() => setFailed(true)} />
+                <img role="presentation" src={src} alt="" className="w-5 h-5 object-contain" onError={() => setFailed(true)} />
             </span>
         );
     }

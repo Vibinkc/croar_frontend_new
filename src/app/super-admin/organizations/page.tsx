@@ -382,7 +382,7 @@ function OrganizationsContent() {
                             {/* Account type */}
                             <div className="pt-5 border-t border-[#EEEEEE] space-y-4">
                                 <h3 className="text-[13px] font-bold text-[#212121]">{t("superAdmin.accountType")}</h3>
-                                <label className="flex items-start gap-3 cursor-pointer">
+                                <label aria-label={t("superAdmin.thisIsConsultancy")} className="flex items-start gap-3 cursor-pointer">
                                     <input
                                         type="checkbox"
                                         checked={newIsConsultancy}
@@ -458,7 +458,7 @@ function OrganizationsContent() {
 
                             <div className="pt-5 border-t border-[#EEEEEE] space-y-4">
                                 <h3 className="text-[13px] font-bold text-[#212121]">{t("superAdmin.accountType")}</h3>
-                                <label className="flex items-start gap-3 cursor-pointer">
+                                <label aria-label={t("superAdmin.thisIsConsultancy")} className="flex items-start gap-3 cursor-pointer">
                                     <input
                                         type="checkbox"
                                         checked={editIsConsultancy}

@@ -158,7 +158,7 @@ export default function ProjectsPage() {
                     </button>
                     {showFilter && (
                         <>
-                            <div className="fixed inset-0 z-40" onClick={() => setShowFilter(false)} />
+                            <div role="presentation" className="fixed inset-0 z-40" onClick={() => setShowFilter(false)} />
                             <div className="absolute left-0 top-12 z-50 w-52 bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_16px_40px_rgba(0,0,0,0.18)] p-1.5">
                                 {([["all", t("projects.allProjects")], ["calibrating", t("projects.calibrating")], ["sourcing", t("projects.sourcing")], ["none", t("projects.noAgent")]] as const).map(([k, label]) => (
                                     <button key={k} onClick={() => { setStatusFilter(k); setShowFilter(false); }} className={`w-full text-left px-3 py-2 rounded-[4px] text-[13px] font-semibold hover:bg-[#FAFAFA] ${statusFilter === k ? "text-[#1976D2] bg-[#F3F9FE]" : "text-[#424242]"}`}>{label}</button>
@@ -239,7 +239,7 @@ export default function ProjectsPage() {
             {/* Row action menu (fixed so it escapes the table's overflow clipping) */}
             {menuId && (
                 <>
-                    <div className="fixed inset-0 z-40" onClick={() => setMenuId(null)} />
+                    <div role="presentation" className="fixed inset-0 z-40" onClick={() => setMenuId(null)} />
                     <div style={{ position: "fixed", top: menuPos.top, bottom: menuPos.bottom, right: menuPos.right }} className="z-50 w-40 bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_12px_30px_rgba(0,0,0,0.16)] p-1.5">
                         <button onClick={() => router.push(`/enterprise/sourcing/projects/${menuId}`)} className="w-full text-left px-3 py-2 rounded-[4px] text-[13px] font-semibold text-[#424242] hover:bg-[#FAFAFA]">{t("projects.open")}</button>
                         <button onClick={() => deleteProject(menuId)} className="w-full text-left px-3 py-2 rounded-[4px] text-[13px] font-semibold text-[#C62828] hover:bg-rose-50">{t("common.delete")}</button>
@@ -249,8 +249,8 @@ export default function ProjectsPage() {
 
             {/* Create modal */}
             {showCreate && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowCreate(false)}>
-                    <div className="bg-white p-6 rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-md w-full space-y-4" onClick={(e) => e.stopPropagation()}>
+                <div role="presentation" className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowCreate(false)}>
+                    <div role="presentation" className="bg-white p-6 rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-md w-full space-y-4" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-between">
                             <h3 className="text-[16px] font-bold text-[#212121]">{t("projects.createNew")}</h3>
                             <button onClick={() => setShowCreate(false)} className="p-1.5 hover:bg-[#EEEEEE] text-[#9E9E9E] rounded-lg"><X className="w-4 h-4" /></button>

@@ -211,7 +211,7 @@ export default function SequencesPage() {
             {/* Row action menu (fixed so it escapes the table's overflow clipping) */}
             {menuId && (
                 <>
-                    <div className="fixed inset-0 z-40" onClick={() => setMenuId(null)} />
+                    <div role="presentation" className="fixed inset-0 z-40" onClick={() => setMenuId(null)} />
                     <div style={{ position: "fixed", top: menuPos.top, bottom: menuPos.bottom, right: menuPos.right }} className="z-50 w-36 bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_12px_30px_rgba(0,0,0,0.16)] p-1.5">
                         <button onClick={() => { router.push(`/enterprise/sourcing/sequences/${menuId}`); }} className="w-full text-left px-3 py-2 rounded-[4px] text-[13px] font-semibold text-[#424242] hover:bg-[#FAFAFA]">{t("common.edit")}</button>
                         <button onClick={() => deleteSeq(menuId)} className="w-full text-left px-3 py-2 rounded-[4px] text-[13px] font-semibold text-[#C62828] hover:bg-rose-50">{t("common.delete")}</button>
@@ -220,8 +220,8 @@ export default function SequencesPage() {
             )}
 
             {showCreate && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowCreate(false)}>
-                    <div className="bg-white p-6 rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-md w-full space-y-4" onClick={(e) => e.stopPropagation()}>
+                <div role="presentation" className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowCreate(false)}>
+                    <div role="presentation" className="bg-white p-6 rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-md w-full space-y-4" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-between"><h3 className="text-[16px] font-bold text-[#212121]">{t("sequences.newSequence")}</h3><button onClick={() => setShowCreate(false)} className="p-1.5 hover:bg-[#EEEEEE] text-[#9E9E9E] rounded-lg"><X className="w-4 h-4" /></button></div>
                         <input value={newName} onChange={(e) => setNewName(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") createSeq(); }} ref={seqNameRef} placeholder={t("sequences.namePlaceholder")} className="w-full h-11 px-3.5 rounded-[4px] border border-[#E0E0E0] text-[13px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15" />
                         <div className="flex justify-end gap-2.5">
@@ -234,8 +234,8 @@ export default function SequencesPage() {
 
             {/* Connect-mailbox gate — shown when creating a sequence with no mailbox connected */}
             {showConnectGate && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowConnectGate(false)}>
-                    <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] w-full max-w-lg max-h-[90vh] overflow-y-auto no-scrollbar" onClick={(e) => e.stopPropagation()}>
+                <div role="presentation" className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowConnectGate(false)}>
+                    <div role="presentation" className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] w-full max-w-lg max-h-[90vh] overflow-y-auto no-scrollbar" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-between px-6 py-4 border-b border-[#E0E0E0]">
                             <h3 className="text-[16px] font-bold text-[#212121]">{t("sequences.createSequence")}</h3>
                             <button onClick={() => setShowConnectGate(false)} className="h-8 px-3 rounded-[4px] border border-[#E0E0E0] text-[12.5px] font-semibold text-[#424242] hover:bg-[#FAFAFA]">{t("common.close")}</button>

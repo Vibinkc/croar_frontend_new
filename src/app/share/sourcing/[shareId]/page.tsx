@@ -175,8 +175,8 @@ export default function SharedSourcingPage() {
 
             {/* Account gate */}
             {showGate && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowGate(false)}>
-                    <div className="bg-white p-6 rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-md w-full space-y-4" onClick={(e) => e.stopPropagation()}>
+                <div role="presentation" className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowGate(false)}>
+                    <div role="presentation" className="bg-white p-6 rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-md w-full space-y-4" onClick={(e) => e.stopPropagation()}>
                         <h3 className="text-[17px] font-bold text-[#212121]">{t("candidate.createCroarAccount")}</h3>
                         <p className="text-[13.5px] text-[#616161] -mt-1">{t("candidate.gateDescription")}</p>
                         <div className="flex items-center justify-end gap-2.5">

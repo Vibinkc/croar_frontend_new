@@ -264,9 +264,9 @@ function Shell({ title, onClose, children, wide }: {
     title: string; onClose: () => void; children: React.ReactNode; wide?: boolean;
 }) {
     return (
-        <div className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={onClose}>
+        <div role="presentation" className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={onClose}>
             <div className="absolute inset-0 bg-black/45" />
-            <div
+            <div role="presentation"
                 className={cn(
                     "relative w-full bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_8px_24px_rgba(0,0,0,0.18)] max-h-[86vh] flex flex-col",
                     wide ? "max-w-[620px]" : "max-w-[480px]"
@@ -462,9 +462,9 @@ function Confirm({ title, body, confirmLabel, cancelLabel, onCancel, onConfirm }
     onCancel: () => void; onConfirm: () => void;
 }) {
     return (
-        <div className="fixed inset-0 z-[215] flex items-center justify-center px-4" onClick={onCancel}>
+        <div role="presentation" className="fixed inset-0 z-[215] flex items-center justify-center px-4" onClick={onCancel}>
             <div className="absolute inset-0 bg-black/45" />
-            <div className="relative w-full max-w-[400px] bg-white rounded-[4px] border border-[#E0E0E0] p-5 shadow-[0_8px_24px_rgba(0,0,0,0.18)]"
+            <div role="presentation" className="relative w-full max-w-[400px] bg-white rounded-[4px] border border-[#E0E0E0] p-5 shadow-[0_8px_24px_rgba(0,0,0,0.18)]"
                  onClick={(e) => e.stopPropagation()}>
                 <h3 className="text-[15px] font-medium text-[#212121]">{title}</h3>
                 <p className="text-[13px] text-[#616161] mt-1.5 leading-relaxed">{body}</p>

@@ -271,9 +271,9 @@ function CreateDialog({ options, employees, token, t, onClose, onSaved }: {
     const ready = employeeId && reason && (reason !== "other" || reasonOther.trim());
 
     return (
-        <div className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={onClose}>
+        <div role="presentation" className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={onClose}>
             <div className="absolute inset-0 bg-black/45" />
-            <div className="relative w-full max-w-[560px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_8px_24px_rgba(0,0,0,0.18)] max-h-[88vh] flex flex-col"
+            <div role="presentation" className="relative w-full max-w-[560px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_8px_24px_rgba(0,0,0,0.18)] max-h-[88vh] flex flex-col"
                  onClick={(e) => e.stopPropagation()}>
                 <div className="px-5 h-[52px] bg-[#1976D2] text-white flex items-center justify-between shrink-0">
                     <h3 className="text-[16px] font-medium">{t("offb.createTitle")}</h3>
@@ -383,9 +383,9 @@ function Detail({ o, token, t, onClose, onChanged, onAct, onToast }: {
         .filter((g) => g.items.length);
 
     return (
-        <div className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={onClose}>
+        <div role="presentation" className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={onClose}>
             <div className="absolute inset-0 bg-black/45" />
-            <div className="relative w-full max-w-[680px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_8px_24px_rgba(0,0,0,0.18)] max-h-[90vh] flex flex-col"
+            <div role="presentation" className="relative w-full max-w-[680px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_8px_24px_rgba(0,0,0,0.18)] max-h-[90vh] flex flex-col"
                  onClick={(e) => e.stopPropagation()}>
                 <div className="px-5 h-[52px] bg-[#1976D2] text-white flex items-center justify-between shrink-0">
                     <h3 className="text-[16px] font-medium truncate">{o.employee_name}</h3>
@@ -494,15 +494,15 @@ function ConditionDialog({ task, t, onClose, onPick }: {
 }) {
     const [c, setC] = useState("good");
     return (
-        <div className="fixed inset-0 z-[215] flex items-center justify-center px-4" onClick={onClose}>
+        <div role="presentation" className="fixed inset-0 z-[215] flex items-center justify-center px-4" onClick={onClose}>
             <div className="absolute inset-0 bg-black/45" />
-            <div className="relative w-full max-w-[440px] bg-white rounded-[4px] border border-[#E0E0E0] p-5 shadow-[0_8px_24px_rgba(0,0,0,0.18)]"
+            <div role="presentation" className="relative w-full max-w-[440px] bg-white rounded-[4px] border border-[#E0E0E0] p-5 shadow-[0_8px_24px_rgba(0,0,0,0.18)]"
                  onClick={(e) => e.stopPropagation()}>
                 <h3 className="text-[15px] font-medium text-[#212121]">{task.title}</h3>
                 <p className="text-[13px] text-[#616161] mt-1.5 leading-relaxed">{t("offb.conditionAsk")}</p>
                 <div className="flex flex-col gap-2 mt-3">
                     {["good", "damaged", "unusable", "not_returned"].map((x) => (
-                        <label key={x} className={cn(
+                        <label key={x} aria-label={t(`assets.cond_${x}`)} className={cn(
                             "flex items-start gap-2.5 px-3 py-2 rounded-[4px] border cursor-pointer transition-colors",
                             c === x ? "border-[#1976D2] bg-[#E3F2FD]" : "border-[#E0E0E0] hover:border-[#1976D2]"
                         )}>

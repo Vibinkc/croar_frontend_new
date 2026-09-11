@@ -649,7 +649,7 @@ export default function ProjectDetailPage() {
                                                         {(m.profiles || []).map((p, pi) => (
                                                             <div key={pi} className="rounded-[4px] border border-[#E0E0E0] p-3.5 hover:bg-[#FAFAFA]/50 transition-colors overflow-hidden">
                                                                 <div className="flex items-start justify-between gap-3 min-w-0">
-                                                                    <div className="cursor-pointer min-w-0 flex-1" onClick={() => openReview(m.profiles || [], pi)}>
+                                                                    <div role="presentation" className="cursor-pointer min-w-0 flex-1" onClick={() => openReview(m.profiles || [], pi)}>
                                                                         <div className="flex items-center gap-2 min-w-0">
                                                                             <span className="text-[13px] font-bold text-[#212121] truncate">{p.full_name}</span>
                                                                             {p.profile_url && <a href={p.profile_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="text-[#1976D2] text-[11.5px] font-semibold inline-flex items-center gap-0.5 shrink-0">{(p.platform || "").toLowerCase().includes("linkedin") ? "LinkedIn" : tr("agent.profile")}<ExternalLink className="w-3 h-3" /></a>}
@@ -907,7 +907,7 @@ export default function ProjectDetailPage() {
                                                         return (
                                                             <tr key={c.shortlist_id} className="border-t border-[#EEEEEE] hover:bg-[#FAFAFA]/50">
                                                                 <td className="px-4 py-3">
-                                                                    <div className="min-w-0 cursor-pointer" onClick={() => openReview([p], 0)}>
+                                                                    <div role="presentation" className="min-w-0 cursor-pointer" onClick={() => openReview([p], 0)}>
                                                                         <div className="flex items-center gap-2 min-w-0">
                                                                             <span className="text-[13.5px] font-bold text-[#212121] truncate">{p.full_name || "Unknown"}</span>
                                                                             {p.profile_url && <a href={p.profile_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} className="text-[#1976D2] text-[11px] font-semibold inline-flex items-center gap-0.5 shrink-0">{tr("agent.profile")}<ExternalLink className="w-3 h-3" /></a>}
@@ -942,8 +942,8 @@ export default function ProjectDetailPage() {
                 {replyView && (() => {
                     const c = replyView; const p = c.profile || {};
                     return (
-                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-start justify-center px-4 py-10 overflow-y-auto no-scrollbar" onClick={() => setReplyView(null)}>
-                        <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
+                    <div role="presentation" className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-start justify-center px-4 py-10 overflow-y-auto no-scrollbar" onClick={() => setReplyView(null)}>
+                        <div role="presentation" className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
                             <div className="p-5 border-b border-[#E0E0E0] flex items-center justify-between gap-3">
                                 <div className="min-w-0">
                                     <h3 className="text-[16px] font-bold text-[#212121] truncate">{tr("agent.conversation")}</h3>
@@ -989,8 +989,8 @@ export default function ProjectDetailPage() {
                     const edu = p.raw_data?.education || p.raw_data?.school || null;
                     const verdictBadge = (v: string) => v === "Good Match" ? "bg-[#E8F5E9] text-[#2E7D32]" : v === "Partial Match" ? "bg-[#FFF3E0] text-[#E65100]" : "bg-[#EEEEEE] text-[#757575]";
                     return (
-                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-start justify-center px-4 py-8 overflow-y-auto no-scrollbar" onClick={() => setReviewList(null)}>
-                        <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
+                    <div role="presentation" className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-start justify-center px-4 py-8 overflow-y-auto no-scrollbar" onClick={() => setReviewList(null)}>
+                        <div role="presentation" className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
                             {/* Header */}
                             <div className="p-5 border-b border-[#E0E0E0] flex items-center justify-between">
                                 <h3 className="text-[17px] font-bold text-[#212121]">{tr("agent.reviewProfiles")}</h3>
@@ -1053,7 +1053,7 @@ export default function ProjectDetailPage() {
                                                     {p.raw_data?.phone && <p className="flex items-center gap-2"><Phone className="w-4 h-4 text-[#757575]" /> {p.raw_data.phone}</p>}
                                                     {p.platform && (
                                                         <p className="text-[#616161] flex items-center gap-1.5">{tr("agent.sourceLabel")}
-                                                            <img src={`https://www.google.com/s2/favicons?sz=64&domain=${platformDomain(p.platform)}`} alt={p.platform} className="w-4 h-4 rounded-sm object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+                                                            <img role="presentation" src={`https://www.google.com/s2/favicons?sz=64&domain=${platformDomain(p.platform)}`} alt="" className="w-4 h-4 rounded-sm object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
                                                             <span className="capitalize font-semibold text-[#424242]">{p.platform}</span>
                                                         </p>
                                                     )}
@@ -1099,8 +1099,8 @@ export default function ProjectDetailPage() {
 
                 {/* Criteria editor modal — ranked, most→least important */}
                 {showCriteriaEdit && (
-                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowCriteriaEdit(false)}>
-                        <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-2xl w-full max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+                    <div role="presentation" className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowCriteriaEdit(false)}>
+                        <div role="presentation" className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-2xl w-full max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
                             <div className="p-6 pb-3 flex items-center justify-between">
                                 <h3 className="text-[17px] font-bold text-[#212121] flex items-center gap-2"><Sparkles className="w-4 h-4 text-[#1976D2]" /> {tr("agent.criteria")}</h3>
                                 <button onClick={() => setShowCriteriaEdit(false)} className="p-1.5 hover:bg-[#EEEEEE] text-[#9E9E9E] rounded-lg"><X className="w-4 h-4" /></button>
@@ -1142,8 +1142,8 @@ export default function ProjectDetailPage() {
 
                 {/* Filters editor modal — titles + location + keywords */}
                 {showFilterEdit && (
-                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowFilterEdit(false)}>
-                        <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-lg w-full max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+                    <div role="presentation" className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowFilterEdit(false)}>
+                        <div role="presentation" className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-lg w-full max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
                             <div className="p-6 pb-3 flex items-center justify-between">
                                 <h3 className="text-[17px] font-bold text-[#212121] flex items-center gap-2"><Filter className="w-4 h-4 text-[#1976D2]" /> {tr("agent.filters")}</h3>
                                 <button onClick={() => setShowFilterEdit(false)} className="p-1.5 hover:bg-[#EEEEEE] text-[#9E9E9E] rounded-lg"><X className="w-4 h-4" /></button>
@@ -1184,8 +1184,8 @@ export default function ProjectDetailPage() {
 
                 {/* Talent Insights modal */}
                 {showInsights && (
-                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-start justify-center px-4 py-8 overflow-y-auto no-scrollbar" onClick={() => setShowInsights(false)}>
-                        <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
+                    <div role="presentation" className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-start justify-center px-4 py-8 overflow-y-auto no-scrollbar" onClick={() => setShowInsights(false)}>
+                        <div role="presentation" className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
                             <div className="p-6 border-b border-[#E0E0E0] flex items-center justify-between sticky top-0 bg-white rounded-t-[16px]">
                                 <h3 className="text-[17px] font-bold text-[#212121]">{tr("agent.talentInsights")} <span className="text-[#757575] font-semibold text-[14px]">({talent ? shortNum(talent.total) : "…"} matches)</span></h3>
                                 <button onClick={() => setShowInsights(false)} className="p-1.5 hover:bg-[#EEEEEE] text-[#9E9E9E] rounded-lg"><X className="w-4 h-4" /></button>
@@ -1350,7 +1350,7 @@ export default function ProjectDetailPage() {
                                 </button>
                                 {showAtsMenu && (
                                     <>
-                                        <div className="fixed inset-0 z-40" onClick={() => setShowAtsMenu(false)} />
+                                        <div role="presentation" className="fixed inset-0 z-40" onClick={() => setShowAtsMenu(false)} />
                                         <div className="absolute right-0 top-7 z-50 w-56 max-h-64 overflow-y-auto bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_12px_30px_rgba(0,0,0,0.16)] p-1.5">
                                             {project.ats_job_id && <button onClick={() => { patch({ ats_job_id: "", ats_job_title: "" }); setShowAtsMenu(false); }} className="w-full text-left px-2.5 py-1.5 rounded-[4px] text-[12.5px] font-semibold text-[#C62828] hover:bg-rose-50">{tr("agent.unlink")}</button>}
                                             {jobs.length === 0 ? <p className="px-2.5 py-2 text-[12px] text-[#9E9E9E]">{tr("agent.noJobsFound")}</p> : jobs.map((j) => (

@@ -1501,7 +1501,7 @@ export default function ProfileSourcingChatPage() {
                                                             <td className="px-4 py-3">
                                                                 {profile.profile_url ? (
                                                                     <a href={profile.profile_url} target="_blank" rel="noreferrer" onClick={(e) => e.stopPropagation()} title={profile.platform}>
-                                                                        <img src={`https://www.google.com/s2/favicons?sz=64&domain=${getPlatformDomain(profile.platform)}`} alt={profile.platform} className="w-4 h-4 rounded-sm object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
+                                                                        <img role="presentation" src={`https://www.google.com/s2/favicons?sz=64&domain=${getPlatformDomain(profile.platform)}`} alt="" className="w-4 h-4 rounded-sm object-contain" onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }} />
                                                                     </a>
                                                                 ) : <span className="text-[#BDBDBD]">—</span>}
                                                             </td>
@@ -1574,9 +1574,9 @@ export default function ProfileSourcingChatPage() {
                                                         })}
                                                         {profile.platform && (
                                                             <div className="flex items-center gap-1.5 shrink-0 text-[#616161] font-bold text-[10px]">
-                                                                <img 
+                                                                <img role="presentation" 
                                                                     src={`https://www.google.com/s2/favicons?sz=64&domain=${getPlatformDomain(profile.platform)}`} 
-                                                                    alt={profile.platform} 
+                                                                    alt="" 
                                                                     className="w-3.5 h-3.5 rounded-sm object-contain"
                                                                     onError={(e) => {
                                                                         (e.target as HTMLImageElement).style.display = 'none';
@@ -1769,8 +1769,8 @@ export default function ProfileSourcingChatPage() {
 
             {/* Share public link modal. */}
             {isShareModalOpen && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center animate-in fade-in duration-200" onClick={() => setIsShareModalOpen(false)}>
-                    <div className="bg-white p-6 rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-xl w-full mx-4 space-y-4 animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+                <div role="presentation" className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center animate-in fade-in duration-200" onClick={() => setIsShareModalOpen(false)}>
+                    <div role="presentation" className="bg-white p-6 rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-xl w-full mx-4 space-y-4 animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-start justify-between">
                             <h3 className="text-[17px] font-bold text-[#212121]">{tr("sourcingChat.sharePublic")}</h3>
                             <button onClick={() => setIsShareModalOpen(false)} className="p-1.5 hover:bg-[#EEEEEE] text-[#9E9E9E] hover:text-[#4F4F4F] rounded-lg"><X className="w-4 h-4" /></button>
@@ -1814,8 +1814,8 @@ export default function ProfileSourcingChatPage() {
 
             {/* Edit Criteria Modal — ranking criteria, most→least important. */}
             {isCriteriaModalOpen && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center animate-in fade-in duration-200" onClick={() => setIsCriteriaModalOpen(false)}>
-                    <div className="bg-white p-6 rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-lg w-full mx-4 space-y-4 animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
+                <div role="presentation" className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center animate-in fade-in duration-200" onClick={() => setIsCriteriaModalOpen(false)}>
+                    <div role="presentation" className="bg-white p-6 rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-lg w-full mx-4 space-y-4 animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-between">
                             <h3 className="text-[15px] font-bold text-[#212121] flex items-center gap-2"><Sparkles className="w-4 h-4 text-[#1976D2]" /> {tr("sourcingChat.criteria")}</h3>
                             <button onClick={() => setIsCriteriaModalOpen(false)} className="p-1.5 hover:bg-[#EEEEEE] text-[#9E9E9E] hover:text-[#4F4F4F] rounded-lg"><X className="w-4 h-4" /></button>
@@ -2105,9 +2105,9 @@ export default function ProfileSourcingChatPage() {
 
                         <div className="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
                             <div className="flex items-center gap-4">
-                                <img 
+                                <img role="presentation" 
                                     src={selectedProfile.avatar_url || `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedProfile.full_name)}&background=random&color=fff&size=128`} 
-                                    alt={selectedProfile.full_name} 
+                                    alt="" 
                                     className="w-16 h-16 rounded-[4px] object-cover border-2 border-[#E0E0E0] shadow-sm"
                                     onError={(e) => {
                                         (e.target as HTMLImageElement).src = `https://ui-avatars.com/api/?name=${encodeURIComponent(selectedProfile.full_name)}&background=random&color=fff&size=128`;

@@ -725,7 +725,7 @@ const MailboxPage = () => {
             {/* Candidate Fit — real AI metrics for the selected email's candidate */}
             {fit.open && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-[#212121]/50 backdrop-blur-sm" onClick={() => setFit(f => ({ ...f, open: false }))} />
+                    <div role="presentation" className="absolute inset-0 bg-[#212121]/50 backdrop-blur-sm" onClick={() => setFit(f => ({ ...f, open: false }))} />
                     <div className="relative z-10 w-full max-w-[460px] max-h-[88vh] overflow-y-auto bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_22px_60px_rgba(0,0,0,0.24)]">
                         <div className="px-5 py-4 border-b border-[#E0E0E0] flex items-center justify-between gap-3">
                             <div className="flex items-center gap-2.5 min-w-0">

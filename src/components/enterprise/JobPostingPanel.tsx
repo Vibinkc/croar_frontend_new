@@ -628,7 +628,7 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                                             <span className="w-8 h-8 shrink-0 rounded-[4px] border border-[#E0E0E0] bg-white flex items-center justify-center overflow-hidden">
                                                 {portal.logo ? (
                                                     /* eslint-disable-next-line @next/next/no-img-element */
-                                                    <img
+                                                    <img role="presentation"
                                                         src={portal.logo}
                                                         alt=""
                                                         className="w-5 h-5 object-contain"
@@ -733,7 +733,7 @@ export default function JobPostingPanel({ jobId, jobTitle, token, postings = [],
                                                 <span className="w-14 h-14 shrink-0 rounded-[4px] border border-[#E0E0E0] bg-white flex items-center justify-center overflow-hidden">
                                                     {portal.logo ? (
                                                         /* eslint-disable-next-line @next/next/no-img-element */
-                                                        <img
+                                                        <img role="presentation"
                                                             src={portal.logo}
                                                             alt=""
                                                             className="w-8 h-8 object-contain"

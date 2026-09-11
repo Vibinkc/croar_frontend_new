@@ -278,9 +278,9 @@ function Tile({ label, value, urgent, active, onClick }: {
 
 function Shell({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
     return (
-        <div className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={onClose}>
+        <div role="presentation" className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={onClose}>
             <div className="absolute inset-0 bg-black/45" />
-            <div className="relative w-full max-w-[520px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_8px_24px_rgba(0,0,0,0.18)] max-h-[88vh] flex flex-col"
+            <div role="presentation" className="relative w-full max-w-[520px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_8px_24px_rgba(0,0,0,0.18)] max-h-[88vh] flex flex-col"
                  onClick={(e) => e.stopPropagation()}>
                 <div className="px-5 h-[52px] bg-[#1976D2] text-white flex items-center justify-between shrink-0">
                     <h3 className="text-[16px] font-medium truncate">{title}</h3>
@@ -492,7 +492,7 @@ function ReturnDialog({ asset, conditions, token, t, onClose, onSaved }: {
                 <Field label={t("assets.condition")} hint={t("assets.conditionHint")}>
                     <div className="flex flex-col gap-2">
                         {conditions.map((c) => (
-                            <label key={c} className={cn(
+                            <label key={c} aria-label={t(`assets.cond_${c}`)} className={cn(
                                 "flex items-start gap-2.5 px-3 py-2 rounded-[4px] border cursor-pointer transition-colors",
                                 condition === c ? "border-[#1976D2] bg-[#E3F2FD]" : "border-[#E0E0E0] hover:border-[#1976D2]"
                             )}>

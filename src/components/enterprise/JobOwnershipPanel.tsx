@@ -225,7 +225,7 @@ export default function JobOwnershipPanel({
             {/* Assign modal */}
             {modalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-[#212121]/50 backdrop-blur-sm" onClick={() => setModalOpen(false)} />
+                    <div role="presentation" className="absolute inset-0 bg-[#212121]/50 backdrop-blur-sm" onClick={() => setModalOpen(false)} />
                     <div className="bg-white w-full max-w-[420px] max-h-[85vh] overflow-y-auto rounded-[4px] shadow-2xl relative z-10 border border-[#E0E0E0]">
                         <div className="px-5 py-4 border-b border-[#E0E0E0] flex items-center justify-between sticky top-0 bg-white">
                             <h3 className="text-[15px] font-bold text-[#212121]">{tr("jobs.assignOwnership")}</h3>

@@ -355,7 +355,7 @@ export default function SkillAssessmentsPage() {
 
             {loading ? (
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                    {[...Array(6)].map((_, i) => <div key={i} className="h-44 rounded-[4px] bg-[#F5F6F8] border border-[#E0E0E0] animate-pulse" />)}
+                    {[...new Array(6)].map((_, i) => <div key={i} className="h-44 rounded-[4px] bg-[#F5F6F8] border border-[#E0E0E0] animate-pulse" />)}
                 </div>
             ) : error ? (
                 <Card padding="none"><EmptyState tone="muted" icon="error" title={tr("postOnboarding.couldntLoad")} description={error} action={<Button variant="secondary" onClick={load}>{tr("postOnboarding.retry")}</Button>} /></Card>

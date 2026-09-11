@@ -197,7 +197,7 @@ export default function SurveyDashboard() {
 
                         <div className="divide-y divide-[#EEEEEE]">
                             {filteredInstances.map((instance) => (
-                                <div
+                                <div role="presentation"
                                     key={instance.id}
                                     onClick={() => router.push(`/enterprise/surveys/instances/${instance.id}`)}
                                     className="grid grid-cols-[1fr_auto] md:grid-cols-[2.4fr_1.2fr_1fr_140px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#FAFAFA] transition-colors group cursor-pointer"

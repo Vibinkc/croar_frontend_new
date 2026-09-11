@@ -164,7 +164,7 @@ export default function ImportPage() {
 
                     {!preview && !result && (
                         <>
-                            <div
+                            <div role="presentation"
                                 onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
                                 onDragLeave={() => setDragging(false)}
                                 onDrop={(e) => {
@@ -259,7 +259,7 @@ export default function ImportPage() {
                             )}
 
                             <div className="bg-white border border-[#E0E0E0] rounded-[4px] p-5 flex flex-col gap-3">
-                                <label className="flex items-start gap-2.5 cursor-pointer">
+                                <label aria-label={t("import.updateExisting")} className="flex items-start gap-2.5 cursor-pointer">
                                     <input type="checkbox" className="mt-0.5 accent-[#1976D2]" checked={updateExisting}
                                            onChange={(e) => setUpdateExisting(e.target.checked)} />
                                     <span>
@@ -267,7 +267,7 @@ export default function ImportPage() {
                                         <span className="block text-[12px] text-[#757575]">{t("import.updateExistingHint")}</span>
                                     </span>
                                 </label>
-                                <label className="flex items-start gap-2.5 cursor-pointer">
+                                <label aria-label={t("import.consentGranted")} className="flex items-start gap-2.5 cursor-pointer">
                                     <input type="checkbox" className="mt-0.5 accent-[#1976D2]" checked={consent === "granted"}
                                            onChange={(e) => setConsent(e.target.checked ? "granted" : "")} />
                                     <span>

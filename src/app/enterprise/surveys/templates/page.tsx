@@ -157,7 +157,7 @@ export default function SurveyTemplates() {
             ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     {filteredTemplates.map((tpl) => (
-                        <div
+                        <div role="presentation"
                             key={tpl.id}
                             onClick={() => router.push(`/enterprise/surveys/templates/edit/${tpl.id}`)}
                             className="group bg-white border border-[#E0E0E0] rounded-[4px] p-5 flex flex-col transition-colors hover:border-[#E0E0E0] cursor-pointer"

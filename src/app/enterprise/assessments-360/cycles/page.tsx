@@ -171,7 +171,7 @@ export default function X360CyclesList() {
 
                         <div className="divide-y divide-[#EEEEEE]">
                             {filteredCycles.map((cycle) => (
-                                <div
+                                <div role="presentation"
                                     key={cycle.id}
                                     className="grid grid-cols-[1fr_auto] md:grid-cols-[2.4fr_1.4fr_1fr_140px] gap-x-4 gap-y-2 items-center px-4 md:px-5 py-3.5 hover:bg-[#FAFAFA] transition-colors cursor-pointer group"
                                     onClick={() => router.push(`/enterprise/assessments-360/cycles/${cycle.id}`)}

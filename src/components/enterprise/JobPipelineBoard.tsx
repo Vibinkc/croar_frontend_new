@@ -243,7 +243,7 @@ export default function JobPipelineBoard({
                     {menu?.id === app.id && (
                         <>
                             {/* Click-away layer, so the menu closes without a document listener. */}
-                            <div className="fixed inset-0 z-[60]" onClick={closeMenu} />
+                            <div role="presentation" className="fixed inset-0 z-[60]" onClick={closeMenu} />
                             <div
                                 style={{ top: menu.top, left: menu.left }}
                                 className="fixed z-[61] w-52 max-h-[60vh] overflow-y-auto bg-white border border-[#E0E0E0] rounded-[4px] shadow-[0_10px_28px_rgba(0,0,0,0.14)] py-1.5"

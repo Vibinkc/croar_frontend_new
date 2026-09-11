@@ -52,7 +52,7 @@ function Mark({ item }: { item: Integration }) {
         >
             {item.icon_url && !failed ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
-                <img src={item.icon_url} alt="" className="w-6 h-6 object-contain" onError={() => setFailed(true)} />
+                <img role="presentation" src={item.icon_url} alt="" className="w-6 h-6 object-contain" onError={() => setFailed(true)} />
             ) : (
                 <span className="text-[15px] font-extrabold" style={{ color: item.brand_color }}>
                     {item.name.charAt(0)}

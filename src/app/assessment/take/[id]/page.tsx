@@ -102,9 +102,15 @@ function VideoAnswerRecorder({ attemptId, questionId, existingUrl, onUploaded }:
       </div>
       <div className="relative rounded-2xl overflow-hidden bg-black aspect-video border border-slate-800">
         {phase === "recorded" && (previewUrl || uploaded) ? (
-          <video src={previewUrl || `${BACKEND_URL}${existingUrl}`} controls className="w-full h-full object-contain" />
+          <video src={previewUrl || `${BACKEND_URL}${existingUrl}`} controls className="w-full h-full object-contain">
+            {/* No caption file exists for a candidate's own recording. */}
+            <track kind="captions" />
+          </video>
         ) : (
-          <video ref={liveRef} playsInline className="w-full h-full object-cover" />
+          <video ref={liveRef} playsInline className="w-full h-full object-cover">
+            {/* Live self-view; nothing to caption. */}
+            <track kind="captions" />
+          </video>
         )}
         {phase === "recording" && (
           <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-rose-600 text-white text-[11px] font-black px-2.5 py-1 rounded-full">

@@ -1077,7 +1077,7 @@ export default function ShortlistedTalentPage() {
                                         })()}
                                     </td>
                                     <td className="px-6 py-4">
-                                        <div className="relative inline-block" onClick={(e) => e.stopPropagation()}>
+                                        <div role="presentation" className="relative inline-block" onClick={(e) => e.stopPropagation()}>
                                             <button onClick={() => setOpenStatusId(openStatusId === item.shortlist_id ? null : item.shortlist_id)} className="inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-[#424242] hover:text-[#212121]">
                                                 <span className={`w-2 h-2 rounded-full ${statusDot(item.status)}`} />
                                                 {item.status || "Not Contacted"}
@@ -1085,7 +1085,7 @@ export default function ShortlistedTalentPage() {
                                             </button>
                                             {openStatusId === item.shortlist_id && (
                                                 <>
-                                                    <div className="fixed inset-0 z-40" onClick={() => setOpenStatusId(null)} />
+                                                    <div role="presentation" className="fixed inset-0 z-40" onClick={() => setOpenStatusId(null)} />
                                                     <div className="absolute left-0 top-7 z-50 w-44 bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_12px_30px_rgba(0,0,0,0.16)] p-1.5">
                                                         {OUTREACH_STATUSES.map((s) => (
                                                             <button key={s} onClick={() => updateStatus(item, s)} className={`w-full flex items-center gap-2 text-left px-2.5 py-1.5 rounded-[4px] text-[12.5px] font-semibold hover:bg-[#FAFAFA] ${(item.status || "Not Contacted") === s ? "text-[#1976D2]" : "text-[#424242]"}`}>

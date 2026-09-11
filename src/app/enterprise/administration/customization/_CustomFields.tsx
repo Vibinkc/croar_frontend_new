@@ -173,9 +173,9 @@ export function CustomFields({ entity }: { entity: Entity }) {
             )}
 
             {confirmDelete && (
-                <div className="fixed inset-0 z-[215] flex items-center justify-center px-4" onClick={() => setConfirmDelete(null)}>
+                <div role="presentation" className="fixed inset-0 z-[215] flex items-center justify-center px-4" onClick={() => setConfirmDelete(null)}>
                     <div className="absolute inset-0 bg-black/45" />
-                    <div className="relative w-full max-w-[400px] bg-white rounded-[4px] border border-[#E0E0E0] p-5 shadow-[0_8px_24px_rgba(0,0,0,0.18)]"
+                    <div role="presentation" className="relative w-full max-w-[400px] bg-white rounded-[4px] border border-[#E0E0E0] p-5 shadow-[0_8px_24px_rgba(0,0,0,0.18)]"
                          onClick={(e) => e.stopPropagation()}>
                         <h3 className="text-[15px] font-medium text-[#212121]">
                             {t("custom.deleteTitle", { label: confirmDelete.label })}
@@ -258,9 +258,9 @@ function FieldDialog({ field, entity, types, token, t, onClose, onSaved }: {
     };
 
     return (
-        <div className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={onClose}>
+        <div role="presentation" className="fixed inset-0 z-[210] flex items-center justify-center px-4" onClick={onClose}>
             <div className="absolute inset-0 bg-black/45" />
-            <div className="relative w-full max-w-[480px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_8px_24px_rgba(0,0,0,0.18)] max-h-[86vh] flex flex-col"
+            <div role="presentation" className="relative w-full max-w-[480px] bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_8px_24px_rgba(0,0,0,0.18)] max-h-[86vh] flex flex-col"
                  onClick={(e) => e.stopPropagation()}>
                 <div className="px-5 h-[52px] bg-[#1976D2] text-white flex items-center justify-between shrink-0">
                     <h3 className="text-[16px] font-medium">{field ? t("custom.editTitle") : t("custom.newTitle")}</h3>
@@ -304,7 +304,7 @@ function FieldDialog({ field, entity, types, token, t, onClose, onSaved }: {
                                placeholder={t("custom.helpPlaceholder")} />
                     </label>
 
-                    <label className="flex items-start gap-2.5 cursor-pointer">
+                    <label aria-label={t("custom.requiredLabel")} className="flex items-start gap-2.5 cursor-pointer">
                         <input type="checkbox" className="mt-0.5 accent-[#1976D2]" checked={required}
                                onChange={(e) => setRequired(e.target.checked)} />
                         <span>
@@ -312,7 +312,7 @@ function FieldDialog({ field, entity, types, token, t, onClose, onSaved }: {
                             <span className="block text-[12px] text-[#757575]">{t("custom.requiredHint")}</span>
                         </span>
                     </label>
-                    <label className="flex items-start gap-2.5 cursor-pointer">
+                    <label aria-label={t("custom.onCreateLabel")} className="flex items-start gap-2.5 cursor-pointer">
                         <input type="checkbox" className="mt-0.5 accent-[#1976D2]" checked={showOnCreate}
                                onChange={(e) => setShowOnCreate(e.target.checked)} />
                         <span>

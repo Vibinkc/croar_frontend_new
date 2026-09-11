@@ -162,7 +162,7 @@ function RolesContent() {
 
             {isLoading && roles.length === 0 ? (
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                    {[...Array(6)].map((_, i) => (
+                    {[...new Array(6)].map((_, i) => (
                         <div key={i} className="bg-white border border-[#E0E0E0] rounded-[4px] p-5 md:p-6 min-h-[180px] animate-pulse">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="w-9 h-9 rounded-[4px] bg-[#EEEEEE]" />
@@ -369,7 +369,7 @@ export default function RolesPage() {
             <div className="px-4 sm:px-5 md:px-7 pb-10 space-y-6 max-w-[1320px] mx-auto w-full">
                 <div className="h-12 rounded-[4px] bg-[#EEEEEE] animate-pulse" />
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-                    {[...Array(6)].map((_, i) => (
+                    {[...new Array(6)].map((_, i) => (
                         <div key={i} className="bg-white border border-[#E0E0E0] rounded-[4px] p-6 min-h-[180px] animate-pulse" />
                     ))}
                 </div>

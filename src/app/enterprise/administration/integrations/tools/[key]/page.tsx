@@ -203,7 +203,7 @@ export default function IntegrationDetail() {
                     >
                         {item.icon_url ? (
                             /* eslint-disable-next-line @next/next/no-img-element */
-                            <img
+                            <img role="presentation"
                                 src={item.icon_url}
                                 alt=""
                                 className="w-8 h-8 object-contain"

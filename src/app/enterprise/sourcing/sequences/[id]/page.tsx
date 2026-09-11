@@ -259,7 +259,7 @@ export default function SequenceEditorPage() {
                                                 {[["10px", "1"], ["13px", "2"], ["14px", "3"], ["16px", "4"], ["18px", "5"], ["24px", "6"]].map(([lbl, v]) => <option key={v} value={v}>{lbl}</option>)}
                                             </select>
                                             <label title={t("sequenceEditor.textColor")} className="w-8 h-8 rounded-[3px] border border-[#E0E0E0] bg-white flex items-center justify-center cursor-pointer text-[13px] font-bold text-[#424242] relative overflow-hidden">A<input type="color" onChange={(e) => exec("foreColor", e.target.value)} className="w-0 h-0 opacity-0 absolute" /></label>
-                                            <label title={t("sequenceEditor.highlight")} className="w-8 h-8 rounded-[3px] border border-[#E0E0E0] bg-white flex items-center justify-center cursor-pointer relative overflow-hidden"><span className="w-4 h-2 rounded-sm bg-[#FDE047]" /><input type="color" onChange={(e) => exec("hiliteColor", e.target.value)} className="w-0 h-0 opacity-0 absolute" /></label>
+                                            <label title={t("sequenceEditor.highlight")} aria-label={t("sequenceEditor.highlight")} className="w-8 h-8 rounded-[3px] border border-[#E0E0E0] bg-white flex items-center justify-center cursor-pointer relative overflow-hidden"><span className="w-4 h-2 rounded-sm bg-[#FDE047]" /><input type="color" onChange={(e) => exec("hiliteColor", e.target.value)} className="w-0 h-0 opacity-0 absolute" /></label>
                                         </div>
                                         <div ref={editorRef} contentEditable suppressContentEditableWarning onInput={syncBody} className="min-h-[260px] max-h-[44vh] overflow-y-auto no-scrollbar px-4 py-3 text-[14px] text-[#263238] leading-relaxed outline-none [&_a]:text-[#1976D2] [&_a]:underline [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5" data-placeholder={t("sequenceEditor.writePlaceholder")} />
                                     </div>
@@ -272,8 +272,8 @@ export default function SequenceEditorPage() {
 
             {/* Preview and test modal */}
             {showPreview && cur && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => { setShowPreview(false); setTestSent(false); }}>
-                    <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-2xl w-full max-h-[88vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+                <div role="presentation" className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => { setShowPreview(false); setTestSent(false); }}>
+                    <div role="presentation" className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-2xl w-full max-h-[88vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
                         <div className="p-5 border-b border-[#E0E0E0] flex items-center justify-between">
                             <h3 className="text-[16px] font-bold text-[#212121]">{t("sequenceEditor.previewSendTest")} · {t("sequenceEditor.step", { n: sel + 1 })}</h3>
                             <button onClick={() => { setShowPreview(false); setTestSent(false); }} className="p-1.5 hover:bg-[#EEEEEE] text-[#9E9E9E] rounded-lg"><X className="w-4 h-4" /></button>
@@ -302,8 +302,8 @@ export default function SequenceEditorPage() {
 
             {/* Generate step modal */}
             {showGen && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowGen(false)}>
-                    <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-3xl w-full max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
+                <div role="presentation" className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowGen(false)}>
+                    <div role="presentation" className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-3xl w-full max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
                         <div className="p-5 border-b border-[#E0E0E0] flex items-center justify-between">
                             <h3 className="text-[16px] font-bold text-[#212121] flex items-center gap-2"><Sparkles className="w-4 h-4 text-[#1976D2]" /> {t("sequenceEditor.generateStepAI")}</h3>
                             <button onClick={() => setShowGen(false)} className="p-1.5 hover:bg-[#EEEEEE] text-[#9E9E9E] rounded-lg"><X className="w-4 h-4" /></button>
