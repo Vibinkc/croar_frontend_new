@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { API_BASE_URL } from "@/lib/api-config";
 import { PageHelp, Icon } from "@/components/ds";
+import { randomToken } from "@/utils/randomId";
 
 interface Message {
     role: "user" | "agent";
@@ -34,11 +35,12 @@ interface PilotPrefill {
     assessment?: string;
 }
 
-// crypto.randomUUID is unavailable on non-secure (HTTP) origins / older browsers.
+// crypto.randomUUID is unavailable on non-secure (HTTP) origins / older browsers, so the
+// fallback keeps its own shape but draws from the CSPRNG rather than Math.random.
 const makeThreadId = () =>
     typeof crypto !== "undefined" && crypto.randomUUID
         ? crypto.randomUUID()
-        : `pilot-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        : `pilot-${Date.now()}-${randomToken()}`;
 
 const EXAMPLES = [
     "I need a senior React frontend developer in Bangalore, 2 openings",

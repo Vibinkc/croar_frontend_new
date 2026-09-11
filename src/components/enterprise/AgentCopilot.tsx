@@ -5,17 +5,19 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { API_BASE_URL } from '@/lib/api-config';
 import { useI18n } from '@/context/I18nContext';
 import { Icon } from "@/components/ds";
+import { randomToken } from "@/utils/randomId";
 
 interface Message {
     role: 'user' | 'agent';
     content: string;
 }
 
-// crypto.randomUUID is unavailable on non-secure (HTTP) origins / older browsers.
+// crypto.randomUUID is unavailable on non-secure (HTTP) origins / older browsers, so the
+// fallback keeps its own shape but draws from the CSPRNG rather than Math.random.
 const makeThreadId = () =>
     (typeof crypto !== 'undefined' && crypto.randomUUID)
         ? crypto.randomUUID()
-        : `thread-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+        : `thread-${Date.now()}-${randomToken()}`;
 
 const AgentCopilot = () => {
     const { t: tr } = useI18n();

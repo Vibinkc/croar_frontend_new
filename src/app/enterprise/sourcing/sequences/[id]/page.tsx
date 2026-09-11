@@ -22,7 +22,11 @@ const PREVIEW_SAMPLE: Record<string, string> = { "First Name": "Alex", "Current 
 const fillPreview = (s: string) => {
     let out = s || "";
     for (const [k, v] of Object.entries(PREVIEW_SAMPLE)) out = out.split(`{{${k}}}`).join(v);
-    out = out.replace(/\{([^{}|]+(?:\|[^{}]+)+)\}/g, (_m, g) => String(g).split("|")[0]);
+    // Spintax: {one|two|three} previews as its first option. Written without a nested
+    // quantifier — `(?:\|[^{}]+)+` accepted the same strings, since [^{}] already includes
+    // "|", but left the engine exponentially many ways to split the groups when the closing
+    // brace was missing, so a pasted "{a|a|a|a..." could hang the tab.
+    out = out.replace(/\{([^{}|]+\|[^{}]+)\}/g, (_m, g) => String(g).split("|")[0]);
     out = out.replace(/\{\{\s*([^{}]+?)\s*\}\}/g, "$1");
     return out;
 };

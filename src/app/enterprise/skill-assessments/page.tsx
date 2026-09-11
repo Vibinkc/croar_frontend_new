@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { apiClient } from "@/utils/api";
+import { randomId } from "@/utils/randomId";
 import { useI18n } from "@/context/I18nContext";
 import {
     PageHeader, Card, CardHeader, Button, Input, Textarea, Field, Select, Badge,
@@ -177,7 +178,7 @@ export default function SkillAssessmentsPage() {
 
     // ── Manual question manager ──────────────────────────────────────────────
     const rawToEdit = (q: Record<string, unknown>): QEdit => ({
-        id: String(q.id || (crypto.randomUUID?.() ?? Math.random().toString(36).slice(2))),
+        id: String(q.id || randomId()),
         type: /COD/i.test(String(q.type)) ? "CODING" : "APTITUDE",
         question: String(q.question || q.problem_statement || q.question_text || ""),
         options: Array.isArray(q.options) ? (q.options as string[]) : ["", "", "", ""],
@@ -189,7 +190,7 @@ export default function SkillAssessmentsPage() {
         setQList(((t.generated_questions as Record<string, unknown>[]) || []).map(rawToEdit));
     };
 
-    const newId = () => (crypto.randomUUID?.() ?? Math.random().toString(36).slice(2));
+    const newId = () => randomId();
     const addMcq = () => setQList((p) => [...p, { id: newId(), type: "APTITUDE", question: "", options: ["", "", "", ""], correct_answer: "" }]);
     const addCoding = () => setQList((p) => [...p, { id: newId(), type: "CODING", question: "", options: [], correct_answer: "" }]);
     const updateQ = (id: string, patch: Partial<QEdit>) => setQList((p) => p.map((q) => (q.id === id ? { ...q, ...patch } : q)));

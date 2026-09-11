@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { GenLanguage, localeToLanguageName } from "@/i18n/config";
 import GenLanguageSelect from "@/components/ds/GenLanguageSelect";
+import { randomToken } from "@/utils/randomId";
 import {
   Brain,
   Wand2, 
@@ -148,7 +149,7 @@ export default function TemplateBuilder({
 
   const addQuestion = () => {
     const newQ: Question = {
-      id: Math.random().toString(36).substring(2, 11),
+      id: randomToken(9),
       question: "",
       type: "TECHNICAL",
       expected_answer_points: [],
