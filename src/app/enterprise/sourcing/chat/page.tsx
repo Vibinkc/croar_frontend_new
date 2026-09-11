@@ -69,7 +69,7 @@ interface Profile {
 const timeAgo = (iso?: string | null): string | null => {
     if (!iso) return null;
     const then = new Date(iso).getTime();
-    if (isNaN(then)) return null;
+    if (Number.isNaN(then)) return null;
     const secs = Math.max(0, Math.floor((Date.now() - then) / 1000));
     if (secs < 60) return "just now";
     const mins = Math.floor(secs / 60);

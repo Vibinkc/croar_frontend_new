@@ -167,9 +167,9 @@ export default function ScreeningAutomationPage() {
   // Stored send_at is naive UTC → render as a LOCAL wall-clock for the datetime-local input, so editing
   // shows the right local time and re-saving doesn't drift the stored time by the UTC offset each edit.
   const toLocalInput = (raw: string): string => {
-    const iso = /[zZ]|[+-]\d\d:?\d\d$/.test(raw) ? raw : `${raw.replace(" ", "T")}Z`;
+    const iso = /[zZ]|(?:[+-]\d\d:?\d\d$)/.test(raw) ? raw : `${raw.replace(" ", "T")}Z`;
     const d = new Date(iso);
-    if (isNaN(d.getTime())) return "";
+    if (Number.isNaN(d.getTime())) return "";
     const p = (n: number) => String(n).padStart(2, "0");
     return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
   };

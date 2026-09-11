@@ -61,7 +61,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
     const formatDate = useCallback(
         (d: Date | string, opts?: Intl.DateTimeFormatOptions) => {
             const dt = typeof d === "string" ? new Date(d) : d;
-            if (isNaN(dt.getTime())) return "";
+            if (Number.isNaN(dt.getTime())) return "";
             return new Intl.DateTimeFormat(country.intlLocale, opts || { year: "numeric", month: "short", day: "numeric" }).format(dt);
         },
         [country],

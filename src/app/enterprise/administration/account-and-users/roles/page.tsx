@@ -50,8 +50,12 @@ function EnterpriseRolesContent() {
     const [typeFilter, setTypeFilter] = useState("ALL");
     const [initialSnapshot, setInitialSnapshot] = useState("");
 
+    // Sorted so the snapshot does not depend on the order permissions happen to arrive in; the
+    // comparator is explicit because a bare .sort() compares by UTF-16 code unit, which is only
+    // incidentally alphabetical. Both snapshots go through this same function, so what matters
+    // is that the order is stable, and it is.
     const snapshotOf = (n: string, d: string, perms: string[]) =>
-        JSON.stringify({ n, d, perms: [...perms].sort() });
+        JSON.stringify({ n, d, perms: [...perms].sort((a, b) => a.localeCompare(b)) });
 
     useEffect(() => {
         fetchData();

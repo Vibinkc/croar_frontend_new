@@ -19,7 +19,7 @@ interface Sequence {
     stats?: { total?: number; active?: number; opened?: number; clicked?: number; replied?: number; interested?: number; bounced?: number };
 }
 
-const fmtDate = (iso?: string) => { if (!iso) return ""; const d = new Date(iso); return isNaN(d.getTime()) ? "" : d.toLocaleDateString(undefined, { month: "short", day: "2-digit", year: "numeric" }); };
+const fmtDate = (iso?: string) => { if (!iso) return ""; const d = new Date(iso); return Number.isNaN(d.getTime()) ? "" : d.toLocaleDateString(undefined, { month: "short", day: "2-digit", year: "numeric" }); };
 
 export default function SequencesPage() {
     const { token } = useAuth();

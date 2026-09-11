@@ -122,7 +122,9 @@ export default function MyTimesheetDetailPage({ params }: { params: Promise<{ id
         </div>
       ) : ts ? (
         <>
-          <StatGrid className={summary.length === 1 ? "lg:grid-cols-3" : "lg:grid-cols-3"}>
+          {/* Three columns regardless of how many summary cards there are — the grid lets a
+              short row sit left-aligned rather than stretching the cards. */}
+          <StatGrid className="lg:grid-cols-3">
             {summary.map((s) => (
               <StatCard key={s.label} label={s.label} value={Number(s.value).toLocaleString("en-IN", { maximumFractionDigits: 2 })} icon={s.icon} gradient={s.grad} glow={s.glow} />
             ))}

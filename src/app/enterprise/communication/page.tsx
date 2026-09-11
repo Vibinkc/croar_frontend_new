@@ -457,7 +457,7 @@ const MailboxPage = () => {
                             "bg-[#E3F2FD] text-[#1565C0]",
                             "bg-[#FFEBEE] text-[#C62828]",
                         ];
-                        const av = palette[(who.charCodeAt(0) || 0) % palette.length];
+                        const av = palette[(who.codePointAt(0) || 0) % palette.length];
                         return (
                             <div
                                 key={email.id}

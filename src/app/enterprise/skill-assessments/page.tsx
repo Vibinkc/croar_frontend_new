@@ -266,7 +266,7 @@ export default function SkillAssessmentsPage() {
             let correct = correctI >= 0 ? (r[correctI] || "").trim() : "";
             if (correct && !options.includes(correct)) {
                 const L = correct.toUpperCase();
-                if (/^[A-Z]$/.test(L)) correct = options[L.charCodeAt(0) - 65] || correct;
+                if (/^[A-Z]$/.test(L)) correct = options[(L.codePointAt(0) ?? 0) - 65] || correct;
                 else if (/^\d+$/.test(correct)) correct = options[Number(correct) - 1] || correct;
             }
             imported.push({ id: newId(), type, question, options: type === "CODING" ? [] : (options.length ? options : ["", "", "", ""]), correct_answer: type === "CODING" ? "" : correct });

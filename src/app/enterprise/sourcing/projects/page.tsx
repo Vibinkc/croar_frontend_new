@@ -29,7 +29,7 @@ const AGENT_STATUS: Record<string, { label: string; dot: string; text: string }>
 const fmtDate = (iso?: string) => {
     if (!iso) return "";
     const d = new Date(iso);
-    return isNaN(d.getTime()) ? "" : d.toLocaleDateString(undefined, { month: "short", day: "2-digit", year: "numeric" });
+    return Number.isNaN(d.getTime()) ? "" : d.toLocaleDateString(undefined, { month: "short", day: "2-digit", year: "numeric" });
 };
 
 export default function ProjectsPage() {

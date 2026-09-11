@@ -735,7 +735,8 @@ export default function KanbanBoardPage() {
     // Real, distinct sources present in the data — so the filter offers exactly
     // what exists and always matches what's stored (no hardcoded mismatch).
     const sourceOptions = useMemo(
-        () => Array.from(new Set(applications.map(a => a.source).filter(Boolean))).sort() as string[],
+        () => (Array.from(new Set(applications.map(a => a.source).filter(Boolean))) as string[])
+            .sort((a, b) => a.localeCompare(b)),
         [applications]
     );
 

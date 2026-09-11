@@ -127,7 +127,7 @@ const statusDot = (s?: string) => {
 const shortlistTimeAgo = (iso?: string): string => {
     if (!iso) return "—";
     const then = new Date(iso).getTime();
-    if (isNaN(then)) return "—";
+    if (Number.isNaN(then)) return "—";
     const secs = Math.max(0, Math.floor((Date.now() - then) / 1000));
     const mins = Math.floor(secs / 60), hrs = Math.floor(mins / 60), days = Math.floor(hrs / 24);
     if (secs < 60) return "just now";
@@ -637,8 +637,8 @@ export default function ShortlistedTalentPage() {
             const raw = s.candidate_interest?.total_experience ?? s.profile?.total_experience ?? s.profile?.years_experience ?? s.profile?.raw_data?.total_experience;
             if (raw == null) return null;
             const m = String(raw).match(/(\d+(?:\.\d+)?)/);
-            const n = m ? parseFloat(m[1]) : NaN;
-            return isNaN(n) ? null : Math.min(n, 50);
+            const n = m ? Number.parseFloat(m[1]) : Number.NaN;
+            return Number.isNaN(n) ? null : Math.min(n, 50);
         };
         const expValues = list.map(parseExp).filter((n): n is number => n != null).sort((a, b) => a - b);
         const pctile = (p: number) => {

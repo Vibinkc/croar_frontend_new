@@ -34,7 +34,7 @@ export default function VideoReviewsPage() {
 
   const submitReview = async (attemptId: string) => {
     const raw = scores[attemptId];
-    const score = Math.max(0, Math.min(100, parseInt(raw || "", 10)));
+    const score = Math.max(0, Math.min(100, Number.parseInt(raw || "", 10)));
     if (Number.isNaN(score)) return;
     setSaving(attemptId);
     try {

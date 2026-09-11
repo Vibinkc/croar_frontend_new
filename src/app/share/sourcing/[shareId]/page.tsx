@@ -64,7 +64,7 @@ export default function SharedSourcingPage() {
     const createdOn = useMemo(() => {
         if (!data?.created_at) return null;
         const d = new Date(data.created_at);
-        return isNaN(d.getTime()) ? null : d.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+        return Number.isNaN(d.getTime()) ? null : d.toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
     }, [data?.created_at]);
 
     if (loading) {

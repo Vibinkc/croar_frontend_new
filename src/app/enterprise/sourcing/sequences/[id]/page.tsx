@@ -16,7 +16,7 @@ interface Seq { sequence_id: string; name: string; owner?: string; privacy?: str
 const SNIPPETS = ["Spintax Greeting", "First Name", "Current Company", "Job Title", "Education", "Sender First Name", "Current Location", "Current Role"];
 // Plain text → HTML (newlines to <br>) unless it already contains markup.
 const toHtml = (s: string) => (s && /<[a-z][\s\S]*>/i.test(s) ? s : (s || "").replace(/\n/g, "<br>"));
-const fmtDate = (iso?: string) => { if (!iso) return ""; const d = new Date(iso); return isNaN(d.getTime()) ? "" : d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }); };
+const fmtDate = (iso?: string) => { if (!iso) return ""; const d = new Date(iso); return Number.isNaN(d.getTime()) ? "" : d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }); };
 // Sample values used to render a live preview of merge fields.
 const PREVIEW_SAMPLE: Record<string, string> = { "First Name": "Alex", "Current Company": "Acme Corp", "Job Title": "Senior Engineer", "Current Role": "Senior Engineer", "Education": "Stanford University", "Sender First Name": "Vibin", "Current Location": "San Francisco, CA" };
 const fillPreview = (s: string) => {

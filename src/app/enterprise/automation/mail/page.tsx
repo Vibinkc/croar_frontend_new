@@ -202,9 +202,9 @@ export default function MailAutomationPage() {
   // so editing shows the correct local time and re-saving (new Date(local).toISOString()) doesn't drift
   // the stored time by the user's UTC offset on every edit.
   const toLocalInput = (raw: string): string => {
-    const iso = /[zZ]|[+-]\d\d:?\d\d$/.test(raw) ? raw : `${raw.replace(" ", "T")}Z`;
+    const iso = /[zZ]|(?:[+-]\d\d:?\d\d$)/.test(raw) ? raw : `${raw.replace(" ", "T")}Z`;
     const d = new Date(iso);
-    if (isNaN(d.getTime())) return "";
+    if (Number.isNaN(d.getTime())) return "";
     const p = (n: number) => String(n).padStart(2, "0");
     return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
   };
@@ -565,7 +565,7 @@ export default function MailAutomationPage() {
                       <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-1.5 text-[13px] font-semibold text-[#424242]">
                           <Clock className="w-4 h-4 text-[#757575]" />
-                          {a.is_immediate ? tr("automation.immediate") : new Date(/[zZ]|[+-]\d\d:?\d\d$/.test(a.send_at!) ? a.send_at! : `${a.send_at!.replace(" ", "T")}Z`).toLocaleString()}
+                          {a.is_immediate ? tr("automation.immediate") : new Date(/[zZ]|(?:[+-]\d\d:?\d\d$)/.test(a.send_at!) ? a.send_at! : `${a.send_at!.replace(" ", "T")}Z`).toLocaleString()}
                         </div>
                         {a.auto_move && (
                           <div className="flex items-center gap-1 mt-1 text-[10px] font-bold text-[#2E7D32] uppercase tracking-wider">

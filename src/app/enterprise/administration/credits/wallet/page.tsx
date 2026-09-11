@@ -81,7 +81,7 @@ export default function CreditsPage() {
   }, [load]);
 
   const grant = async () => {
-    const amount = parseFloat(grantAmt);
+    const amount = Number.parseFloat(grantAmt);
     if (!amount || amount <= 0) return;
     setGranting(true);
     try {

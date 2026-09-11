@@ -25,7 +25,9 @@ export function CroarLogo({ size = 34, showWordmark = true, dark = false, classN
             {showWordmark && (
                 <span className="flex flex-col leading-none">
                     <span className={cn("text-[18px] font-extrabold tracking-[-0.3px]", dark ? "text-white" : "text-[#212121]")}>Croar</span>
-                    <span className={cn("text-[10px] mt-0.5", dark ? "text-[#757575]" : "text-[#757575]")}>HR Cloud</span>
+                    {/* Mid-grey reads on both the light and dark chrome, so this one does not
+                        switch on `dark` the way the wordmark above it does. */}
+                    <span className={cn("text-[10px] mt-0.5", "text-[#757575]")}>HR Cloud</span>
                 </span>
             )}
         </span>

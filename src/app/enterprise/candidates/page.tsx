@@ -54,7 +54,7 @@ const AVATAR_PALETTE = [
     "bg-[#E3F2FD] text-[#1565C0]",
     "bg-[#FFEBEE] text-[#C62828]",
 ];
-const avatarFor = (name: string) => AVATAR_PALETTE[(name?.charCodeAt(0) || 0) % AVATAR_PALETTE.length];
+const avatarFor = (name: string) => AVATAR_PALETTE[(name?.codePointAt(0) || 0) % AVATAR_PALETTE.length];
 
 const CandidateProfileModal = ({ candidate, onClose }: { candidate: Candidate; onClose: () => void }) => {
     const { t: tr } = useI18n();

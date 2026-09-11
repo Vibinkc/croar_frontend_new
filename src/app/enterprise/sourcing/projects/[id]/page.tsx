@@ -807,7 +807,7 @@ export default function ProjectDetailPage() {
                                             min={1}
                                             max={365}
                                             value={responseWindow > 0 ? responseWindow : ""}
-                                            onChange={(e) => { const n = parseInt(e.target.value, 10); setResponseWindow(Number.isFinite(n) && n > 0 ? Math.min(365, n) : 0); }}
+                                            onChange={(e) => { const n = Number.parseInt(e.target.value, 10); setResponseWindow(Number.isFinite(n) && n > 0 ? Math.min(365, n) : 0); }}
                                             placeholder={tr("agent.customWindowPlaceholder")}
                                             className={`w-24 h-9 rounded-[4px] border px-3 text-[13px] font-semibold text-[#212121] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15 ${responseWindow > 0 && ![1, 2, 3, 5, 7].includes(responseWindow) ? "border-[#1976D2] bg-[#F3F9FE]" : "border-[#E0E0E0] bg-white"}`}
                                         />
