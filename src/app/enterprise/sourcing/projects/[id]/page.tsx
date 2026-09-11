@@ -942,7 +942,7 @@ export default function ProjectDetailPage() {
                 {replyView && (() => {
                     const c = replyView; const p = c.profile || {};
                     return (
-                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-start justify-center px-4 py-10 overflow-y-auto no-scrollbar" onClick={() => setReplyView(null)}>
+                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-start justify-center px-4 py-10 overflow-y-auto no-scrollbar" onClick={() => setReplyView(null)}>
                         <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
                             <div className="p-5 border-b border-[#E0E0E0] flex items-center justify-between gap-3">
                                 <div className="min-w-0">
@@ -989,7 +989,7 @@ export default function ProjectDetailPage() {
                     const edu = p.raw_data?.education || p.raw_data?.school || null;
                     const verdictBadge = (v: string) => v === "Good Match" ? "bg-[#E8F5E9] text-[#2E7D32]" : v === "Partial Match" ? "bg-[#FFF3E0] text-[#E65100]" : "bg-[#EEEEEE] text-[#757575]";
                     return (
-                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-start justify-center px-4 py-8 overflow-y-auto no-scrollbar" onClick={() => setReviewList(null)}>
+                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-start justify-center px-4 py-8 overflow-y-auto no-scrollbar" onClick={() => setReviewList(null)}>
                         <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
                             {/* Header */}
                             <div className="p-5 border-b border-[#E0E0E0] flex items-center justify-between">
@@ -1099,7 +1099,7 @@ export default function ProjectDetailPage() {
 
                 {/* Criteria editor modal — ranked, most→least important */}
                 {showCriteriaEdit && (
-                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-center justify-center px-4" onClick={() => setShowCriteriaEdit(false)}>
+                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowCriteriaEdit(false)}>
                         <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-2xl w-full max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
                             <div className="p-6 pb-3 flex items-center justify-between">
                                 <h3 className="text-[17px] font-bold text-[#212121] flex items-center gap-2"><Sparkles className="w-4 h-4 text-[#1976D2]" /> {tr("agent.criteria")}</h3>
@@ -1142,7 +1142,7 @@ export default function ProjectDetailPage() {
 
                 {/* Filters editor modal — titles + location + keywords */}
                 {showFilterEdit && (
-                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-center justify-center px-4" onClick={() => setShowFilterEdit(false)}>
+                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowFilterEdit(false)}>
                         <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-lg w-full max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
                             <div className="p-6 pb-3 flex items-center justify-between">
                                 <h3 className="text-[17px] font-bold text-[#212121] flex items-center gap-2"><Filter className="w-4 h-4 text-[#1976D2]" /> {tr("agent.filters")}</h3>
@@ -1184,7 +1184,7 @@ export default function ProjectDetailPage() {
 
                 {/* Talent Insights modal */}
                 {showInsights && (
-                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-start justify-center px-4 py-8 overflow-y-auto no-scrollbar" onClick={() => setShowInsights(false)}>
+                    <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-start justify-center px-4 py-8 overflow-y-auto no-scrollbar" onClick={() => setShowInsights(false)}>
                         <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
                             <div className="p-6 border-b border-[#E0E0E0] flex items-center justify-between sticky top-0 bg-white rounded-t-[16px]">
                                 <h3 className="text-[17px] font-bold text-[#212121]">{tr("agent.talentInsights")} <span className="text-[#757575] font-semibold text-[14px]">({talent ? shortNum(talent.total) : "…"} matches)</span></h3>

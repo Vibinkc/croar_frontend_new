@@ -1,510 +1,711 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+/**
+ * Enterprise dashboard.
+ *
+ * Rebuilt around one question: what needs a person today. The previous version led with a
+ * greeting, four decorative module cards carrying hardcoded English feature lists, and a donut
+ * that summed candidates, applications, interviews and AI matches into a single total — which is
+ * not a quantity of anything, since those are different entities at different stages and one
+ * candidate can be several applications.
+ *
+ * What replaces it:
+ *   Queues      work waiting on somebody, biggest first, each one a link to where you clear it.
+ *   Pipeline    where live applications stand right now, as a share of those still open.
+ *               Deliberately not a funnel: status_id is a current state, so the stages
+ *               are disjoint buckets and a stage-to-stage conversion would be
+ *               meaningless — and no stage history is kept anywhere to compute one.
+ *   Workforce   headcount, probation, recent joiners.
+ *   Payroll     the open cycle and the last one paid, including who it skipped.
+ *
+ * Anything the signed-in user cannot see is absent from the response, so the section simply does
+ * not render. A zero would read as "nothing to do", which is a different claim.
+ */
+
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { JetBrains_Mono } from "next/font/google";
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { useCachedFetch } from "@/hooks/useCachedFetch";
-import { PageHelp, Icon } from "@/components/ds";
+import { Badge, Card, Icon, PageHelp } from "@/components/ds";
 import ThemeToggle from "@/components/ThemeToggle";
 
-// JetBrains Mono — the design system's numeric/data typeface for stats & counts.
-const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
+const mono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
-const DEFAULT_STATS: Stats = {
-    active_jobs: 0,
-    total_candidates: 0,
-    total_applications: 0,
-    interviews_scheduled: 0,
-    agent_name: "COMMANDER",
-    high_value_matches: 0,
+type Tone = "info" | "success" | "warning" | "danger";
+
+interface Queue {
+  key: string;
+  label: string;
+  count: number;
+  href: string;
+  hint: string;
+  tone: Tone;
+}
+
+interface Overview {
+  as_of: string;
+  queues: Queue[];
+  pipeline: {
+    stages: { stage: string; count: number; share: number }[];
+    in_play: number;
+    total_applications: number;
+    hired: number;
+    rejected: number;
+    withdrawn: number;
+    hire_rate: number;
+    job_id: string | null;
+  } | null;
+  workforce: {
+    headcount: number;
+    on_probation: number;
+    joined_last_30_days: number;
+    assets_issued: number;
+  } | null;
+  upcoming?: UpcomingItem[];
+  upcoming_window_days?: number;
+  payroll: {
+    open_cycle: CycleBrief | null;
+    last_paid_cycle: CycleBrief | null;
+    currency: string;
+    payslips_last_cycle: number;
+  } | null;
+  hiring?: {
+    active_jobs: number;
+    total_jobs: number;
+    candidates: number;
+    applications_30d: number;
+    applications_prev_30d: number;
+  };
+  job_options?: JobOption[];
+}
+
+interface UpcomingItem {
+  date: string;
+  days_away: number;
+  label: string;
+  detail: string;
+  kind: "holiday" | "payroll" | "probation" | "asset" | "interview";
+  href: string;
+}
+
+interface JobOption {
+  id: string;
+  title: string;
+  status: string;
+  /** Applications on this requisition. Shown in the dropdown so you can see which
+   *  roles have anybody in them without opening each one. */
+  applications: number;
+}
+
+type Pipeline = NonNullable<Overview["pipeline"]>;
+
+interface CycleBrief {
+  id: string;
+  name: string;
+  status: string;
+  pay_date: string;
+  headcount: number;
+  net: number;
+  skipped: number;
+}
+
+const TONE: Record<Tone, { fg: string; bg: string; border: string }> = {
+  info: { fg: "#1565C0", bg: "#E3F2FD", border: "#BBDEFB" },
+  success: { fg: "#2E7D32", bg: "#E8F5E9", border: "#C8E6C9" },
+  warning: { fg: "#E65100", bg: "#FFF3E0", border: "#FFE0B2" },
+  danger: { fg: "#C62828", bg: "#FFEBEE", border: "#FFCDD2" },
 };
 
-interface Stats {
-    active_jobs: number;
-    total_candidates: number;
-    total_applications: number;
-    interviews_scheduled: number;
-    agent_name: string;
-    high_value_matches: number;
+const UPCOMING_KIND: Record<string, { icon: string; fg: string; bg: string }> = {
+  holiday: { icon: "mdi-calendar-star", fg: "#00695C", bg: "#E0F2F1" },
+  payroll: { icon: "mdi-cash-clock", fg: "#1565C0", bg: "#E3F2FD" },
+  probation: { icon: "mdi-account-clock", fg: "#E65100", bg: "#FFF3E0" },
+  asset: { icon: "mdi-laptop", fg: "#5E35B1", bg: "#EDE7F6" },
+  interview: { icon: "mdi-account-voice", fg: "#00838F", bg: "#E0F7FA" },
+};
+
+const CYCLE_TONE: Record<string, "neutral" | "info" | "success" | "indigo" | "danger"> = {
+  DRAFT: "neutral",
+  PROCESSING: "info",
+  APPROVED: "success",
+  PAID: "indigo",
+  CANCELLED: "danger",
+};
+
+function money(n: number, currency: string): string {
+  try {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency,
+      maximumFractionDigits: 0,
+    }).format(n);
+  } catch {
+    // An unrecognised currency code should not take the tile down.
+    return `${currency} ${Math.round(n).toLocaleString("en-IN")}`;
+  }
 }
 
 export default function EnterpriseDashboard() {
-    const { user, token, role, canAccess, isLoading: isAuthLoading } = useAuth();
-    const { t } = useI18n();
-    const [greeting, setGreeting] = useState("");
+  const { token } = useAuth();
+  const { t } = useI18n();
 
-    // Cached: revisiting the dashboard shows the last stats INSTANTLY, then refreshes
-    // in the background instead of blocking on a fresh fetch every time.
-    const { data: statsData, isLoading, error, mutate } = useCachedFetch<Stats>(
-        token ? `${BACKEND_URL}/api/v1/enterprise/dashboard/stats` : null,
-        { token },
-    );
-    const stats = statsData ?? DEFAULT_STATS;
-    // Distinguish a genuine "brand-new org" (loaded, all zeros) from a failed fetch. On error
-    // with no cached data we must NOT render the zero-state as if the data really is empty.
-    const loadFailed = !!error && !statsData;
+  const { data, isLoading, error, mutate } = useCachedFetch<Overview>(
+    token ? `${BACKEND_URL}/api/v1/enterprise/dashboard/overview` : null,
+    { token },
+  );
 
-    useEffect(() => {
-        const hour = new Date().getHours();
-        const g = hour < 12 ? "dashboard.greetingMorning" : hour < 18 ? "dashboard.greetingAfternoon" : "dashboard.greetingEvening";
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setGreeting(g);
-    }, []);
+  // On a failed fetch with nothing cached we must not render zeros: an established company
+  // would look empty, which is worse than showing an error.
+  const loadFailed = !!error && !data;
 
-    const modules = [
-        {
-            title: t("dashboard.modManageJobs"),
-            description: t("dashboard.modManageJobsDesc"),
-            icon: "business_center",
-            path: "/enterprise/jobs",
-            badge: t("dashboard.badgeActive"),
-            color: "purple",
-            features: ["AI Job Description", "Job Boards", "Hiring Budget"],
-            permission: "jobs:read"
-        },
-        {
-            title: t("dashboard.candidates"),
-            description: t("dashboard.modCandidatesDesc"),
-            icon: "psychology",
-            path: "/enterprise/candidates/kanban",
-            badge: t("dashboard.badgeAiScreening"),
-            color: "indigo",
-            features: ["Auto-Sync", "Background Check", "Group Actions"],
-            permission: "candidates:read"
-        },
-        {
-            title: t("dashboard.mod360"),
-            description: t("dashboard.mod360Desc"),
-            icon: "360",
-            path: "/enterprise/assessments-360",
-            badge: t("dashboard.badgePerformance"),
-            color: "emerald",
-            features: ["Reports", "Reviews", "Comparisons"],
-            permission: "assessments:read"
-        },
-        {
-            title: t("dashboard.modSurveys"),
-            description: t("dashboard.modSurveysDesc"),
-            icon: "poll",
-            path: "/enterprise/surveys",
-            badge: t("dashboard.badgeInsights"),
-            color: "rose",
-            features: ["Engagement", "Culture", "Analytics"],
-            permission: "surveys:read"
-        }
-    ];
+  // `data?.queues ?? []` creates a fresh array on every render when data is absent, which
+  // would make the two memos below recompute each time. Splitting them apart keeps the
+  // dependency stable.
+  const queues = useMemo(() => data?.queues ?? [], [data]);
+  const needsAction = useMemo(() => queues.filter((q) => q.count > 0), [queues]);
+  const clear = useMemo(() => queues.filter((q) => q.count === 0), [queues]);
 
-    interface ColorClasses {
-        border: string;
-        bg: string;
-        text: string;
-        dot: string;
-    }
+  // ── Pipeline job filter ────────────────────────────────────────────────
+  // Filtering is its own fetch against /dashboard/pipeline rather than a parameter on the
+  // overview, because narrowing by job must not narrow the queues, workforce or payroll —
+  // none of those belong to a single requisition.
+  const [jobFilter, setJobFilter] = useState("");
+  // The result carries the job it belongs to. That makes a stale result detectable on read,
+  // so the effect never has to clear state synchronously just to stay honest.
+  const [filtered, setFiltered] = useState<{ jobId: string; data: Pipeline } | null>(null);
+  const [filtering, setFiltering] = useState(false);
 
-    const getColorClasses = (color: string): ColorClasses => {
-        const colors: Record<string, ColorClasses> = {
-            indigo: { border: "border-[#BBDEFB]", bg: "bg-[#E3F2FD]", text: "text-[#1976D2]", dot: "bg-[#1976D2]" },
-            purple: { border: "border-[#BBDEFB]", bg: "bg-[#E3F2FD]", text: "text-[#1976D2]", dot: "bg-[#1976D2]" },
-            rose: { border: "border-[#FFCDD2]", bg: "bg-[#FFEBEE]", text: "text-[#E53935]", dot: "bg-[#E53935]" },
-            emerald: { border: "border-[#C8E6C9]", bg: "bg-[#E8F5E9]", text: "text-[#2E7D32]", dot: "bg-[#2E7D32]" },
-        };
-        return colors[color] || { border: "border-[#E0E0E0]", bg: "bg-[#F5F6F8]", text: "text-[#424242]", dot: "bg-[#757575]" };
+  useEffect(() => {
+    if (!token || !jobFilter) return;
+
+    let cancelled = false;
+    fetch(`${BACKEND_URL}/api/v1/enterprise/dashboard/pipeline?job_id=${jobFilter}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      // A late response from a filter the user has already moved off must not land, so the
+      // cancelled flag gates the write rather than the request.
+      .then((p: Pipeline) => {
+        if (!cancelled) setFiltered({ jobId: jobFilter, data: p });
+      })
+      .catch(() => {
+        if (!cancelled) setFiltered(null);
+      })
+      .finally(() => {
+        if (!cancelled) setFiltering(false);
+      });
+
+    return () => {
+      cancelled = true;
     };
+  }, [token, jobFilter]);
 
-    // Pipeline composition for the donut chart (real, live values).
-    const pipeline = [
-        { name: t("dashboard.pipeCandidates"), value: stats.total_candidates, color: "#1976D2" },
-        { name: t("dashboard.pipeApplications"), value: stats.total_applications, color: "#42A5F5" },
-        { name: t("dashboard.pipeInterviews"), value: stats.interviews_scheduled, color: "#90CAF9" },
-        { name: t("dashboard.pipeRecommended"), value: stats.high_value_matches, color: "#2E7D32" },
-    ];
-    const pipelineTotal = pipeline.reduce((sum, p) => sum + p.value, 0);
+  // The filtered result replaces the company-wide one while a job is selected, and only when
+  // it actually belongs to the selected job.
+  const forThisJob = filtered?.jobId === jobFilter ? filtered.data : null;
+  const pipeline = (jobFilter ? forThisJob : data?.pipeline) ?? null;
+  const jobOptions = data?.job_options ?? [];
+  const selectedJob = jobOptions.find((j) => j.id === jobFilter) ?? null;
 
-    const statCards = [
-        { label: t("dashboard.activeJobs"), value: stats.active_jobs, icon: "work", grad: "linear-gradient(135deg,#42A5F5,#1976D2)", glow: "rgba(25,118,210,0.28)", perm: "jobs:read" },
-        { label: t("dashboard.totalCandidates"), value: stats.total_candidates, icon: "groups", grad: "linear-gradient(135deg,#66BB6A,#2E7D32)", glow: "rgba(46,125,50,0.25)", perm: "candidates:read" },
-        { label: t("dashboard.applications"), value: stats.total_applications, icon: "conversion_path", grad: "linear-gradient(135deg,#42A5F5,#1565C0)", glow: "rgba(21,101,192,0.25)", perm: "candidates:read" },
-        { label: t("dashboard.interviews"), value: stats.interviews_scheduled, icon: "videocam", grad: "linear-gradient(135deg,#FFB74D,#EF6C00)", glow: "rgba(239,108,0,0.25)", perm: "candidates:read" },
-    ].filter((s) => canAccess(s.perm));
+  /**
+   * A one-line reading of the pipeline, because a bar chart built from three applications
+   * tells you nothing a sentence cannot. This is what the card leads with.
+   */
+  const pipelineSummary = useMemo(() => {
+    if (!pipeline) return null;
+    const { in_play, total_applications, stages } = pipeline;
+    if (total_applications === 0) return t("dashboard.pipeNoApplications");
+    if (in_play === 0) return t("dashboard.pipeNoneOpen", { total: total_applications });
+    const busiest = [...stages].sort((a, b) => b.count - a.count)[0];
+    const onlyStage = stages.filter((s) => s.count > 0).length === 1;
+    return onlyStage
+      ? t("dashboard.pipeAllAtOneStage", {
+          n: in_play,
+          stage: t(`dashboard.stage.${busiest.stage}`),
+        })
+      : t("dashboard.pipeSpread", {
+          n: in_play,
+          stage: t(`dashboard.stage.${busiest.stage}`),
+          at: busiest.count,
+        });
+  }, [pipeline, t]);
 
-    return (
-        <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
-            {/* Header (sticky) */}
-            <header className="sticky top-0 z-20 py-3 bg-[#F5F6F8]/95 backdrop-blur-sm border-b border-[#E0E0E0] flex items-center justify-between gap-4">
-                {/* Left: title + live status */}
-                <div>
-                    <div className="flex items-center gap-1.5">
-                        <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#212121] leading-tight">{t("dashboard.title")}</h1>
-                        <PageHelp title={t("dashboard.title")}>
-                            <p>{t("dashboard.helpP1")}</p>
-                            <p>{t("dashboard.helpP2")}</p>
-                        </PageHelp>
-                    </div>
-                    <p className="text-[12.5px] text-[#757575] mt-0.5">{t("dashboard.subtitle")}</p>
-                </div>
-
-                {/* Right: theme toggle. Search lives in the app bar now — two boxes
-                    opening the same palette read as one of them being broken. */}
-                <div className="flex items-center gap-2.5 shrink-0">
-                    <ThemeToggle />
-                </div>
-            </header>
-
-            {/* Load-failure banner — without this a failed /stats fetch silently falls back to
-                all-zeros, making an established org look brand-new. Show it + offer a retry. */}
-            {loadFailed && (
-                <div className="flex items-center justify-between gap-4 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3">
-                    <div className="flex items-center gap-2.5 min-w-0">
-                        <i className="mdi mdi-alert-circle text-[#E53935]" />
-                        <div className="min-w-0">
-                            <p className="text-[13px] font-bold text-[#212121]">Couldn&apos;t load your dashboard stats</p>
-                            <p className="text-[12px] text-[#757575] truncate">The numbers below may be unavailable. Check your connection and try again.</p>
-                        </div>
-                    </div>
-                    <button
-                        onClick={() => { void mutate(); }}
-                        className="shrink-0 px-3 py-1.5 rounded-[4px] bg-[#E53935] text-white text-[12px] font-semibold hover:bg-[#DC2626] transition-colors"
-                    >
-                        {t("common.retry")}
-                    </button>
-                </div>
-            )}
-
-            {/* Hero band */}
-            <section
-                className="relative overflow-hidden rounded-[4px] p-7 md:p-9 bg-white border border-[#E0E0E0] shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.08)]"
-            >
-                {/* Decorative rings */}
-                <div className="pointer-events-none absolute -right-20 -top-24 w-80 h-80 rounded-full border border-[#E3F2FD]" />
-                <div className="pointer-events-none absolute -right-2 -top-10 w-48 h-48 rounded-full border border-[#F1F8FE]" />
-
-                <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-7">
-                    <div className="max-w-xl">
-                        <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-[4px] bg-[#E8F5E9] text-[10px] font-medium text-[#2E7D32] mb-4">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#66BB6A] animate-pulse"></span>
-                            {t("dashboard.liveOverview")}
-                        </div>
-                        <h1 className="text-[30px] md:text-[38px] font-medium tracking-[-0.5px] leading-[1.05] text-[#212121]">
-                            {greeting ? t(greeting) : ""}, <span className="text-[#1976D2]">{isLoading ? 'there' : stats.agent_name}</span>
-                        </h1>
-                        <p className="text-[#616161] text-[14.5px] leading-relaxed mt-3 max-w-md">
-                            {isLoading ? (
-                                t("dashboard.loadingSnapshot")
-                            ) : (
-                                (() => {
-                                    const n = stats.high_value_matches;
-                                    const parts = t("dashboard.aiRecommended", { count: n }).split(String(n));
-                                    return <>{parts[0]}<span className={`text-[#212121] font-medium ${jetbrainsMono.className}`}>{n}</span>{parts.slice(1).join(String(n))}</>;
-                                })()
-                            )}
-                        </p>
-                        <div className="flex flex-wrap gap-2.5 mt-6">
-                            {canAccess("jobs:read") && (
-                                <Link href="/enterprise/croar-pilot" className="h-[44px] px-5 bg-[#1976D2] text-white rounded-[4px] text-[14px] font-semibold hover:bg-[#1565C0] transition-colors shadow-[0_1px_3px_rgba(0,0,0,0.20)] flex items-center gap-2">
-                                    <i className="mdi mdi-robot text-[19px]" />
-                                    {t("dashboard.hireWithAI")}
-                                </Link>
-                            )}
-                            {canAccess("jobs:create") && (
-                                <Link href="/enterprise/jobs/create" className="h-[44px] px-5 bg-white border border-[#E0E0E0] text-[#1976D2] rounded-[4px] text-[14px] font-medium hover:bg-[#E3F2FD] transition-colors flex items-center gap-2">
-                                    <i className="mdi mdi-plus-box text-[19px]" />
-                                    {t("dashboard.postNewJob")}
-                                </Link>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Stat cards (inside the hero, right side) */}
-                    <div className="relative z-10 w-full lg:w-[360px] shrink-0 grid grid-cols-2 gap-3">
-                        {statCards.map((s) => (
-                            <div key={s.label} className="rounded-[4px] bg-[#FAFAFA] border border-[#E0E0E0] p-4 hover:bg-[#F5F6F8] transition-colors">
-                                <span
-                                    className="w-9 h-9 rounded-[4px] flex items-center justify-center text-white mb-3"
-                                    style={{ background: s.grad, boxShadow: `0 6px 14px ${s.glow}` }}
-                                >
-                                    <Icon name={s.icon} className="text-[19px]" />
-                                </span>
-                                <div className={`text-[26px] font-medium tracking-[-0.5px] text-[#212121] leading-none ${jetbrainsMono.className}`}>
-                                    {isLoading ? '—' : s.value}
-                                </div>
-                                <span className="block text-[10.5px] font-medium uppercase tracking-[0.04em] text-[#757575] mt-1.5">{s.label}</span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Getting Started checklist — guides a new user; hides once set up.
-                Suppressed on load failure so we don't show it to an established org whose
-                stats merely failed to fetch (which would otherwise read as all-zeros). */}
-            {!isLoading && !loadFailed && !(stats.active_jobs > 0 && stats.total_candidates > 0) && (
-                <section className="bg-white border border-[#E0E0E0] rounded-[4px] p-6">
-                    <div className="flex items-center gap-2 mb-1">
-                        <i className="mdi mdi-rocket-launch text-[#1976D2]" />
-                        <h3 className="text-[15px] font-bold text-[#212121]">{t("dashboard.gettingStarted")}</h3>
-                    </div>
-                    <p className="text-[13px] text-[#757575] mb-5">{t("dashboard.gettingStartedDesc")}</p>
-                    <div className="grid gap-3 md:grid-cols-3">
-                        {[
-                            {
-                                done: stats.active_jobs > 0,
-                                title: t("dashboard.step1Title"),
-                                desc: t("dashboard.step1Desc"),
-                                actions: [
-                                    { label: t("dashboard.hireWithAI"), href: "/enterprise/croar-pilot", primary: true, perm: "jobs:read" },
-                                    { label: t("dashboard.postManually"), href: "/enterprise/jobs/create", primary: false, perm: "jobs:create" },
-                                ],
-                            },
-                            {
-                                done: stats.total_candidates > 0,
-                                title: t("dashboard.step2Title"),
-                                desc: t("dashboard.step2Desc"),
-                                actions: [
-                                    { label: t("dashboard.sourceCandidates"), href: "/enterprise/sourcing/chat", primary: true, perm: "candidates:read" },
-                                    { label: t("dashboard.viewJobs"), href: "/enterprise/jobs", primary: false, perm: "jobs:read" },
-                                ],
-                            },
-                            {
-                                done: stats.total_applications > 0,
-                                title: t("dashboard.step3Title"),
-                                desc: t("dashboard.step3Desc"),
-                                actions: [
-                                    { label: t("dashboard.openPipeline"), href: "/enterprise/candidates/kanban", primary: true, perm: "candidates:read" },
-                                ],
-                            },
-                        ].map((step, i) => (
-                            <div key={i} className={`rounded-[4px] border p-4 ${step.done ? "border-[#C8E6C9] bg-[#E8F5E9]/50" : "border-[#E0E0E0] bg-[#F5F6F8]/60"}`}>
-                                <div className="flex items-center gap-2 mb-2">
-                                    <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold ${step.done ? "bg-[#2E7D32] text-white" : "bg-[#E3F2FD] text-[#1976D2]"}`}>
-                                        {step.done ? "✓" : i + 1}
-                                    </span>
-                                    <span className="text-[13px] font-bold text-[#212121]">{step.title}</span>
-                                </div>
-                                <p className="text-[12px] text-[#757575] mb-3 leading-relaxed">{step.desc}</p>
-                                {!step.done && (
-                                    <div className="flex flex-wrap gap-2">
-                                        {step.actions.filter((a) => canAccess(a.perm)).map((a) => (
-                                            <Link key={a.label} href={a.href} className={`px-3 py-1.5 rounded-[4px] text-[12px] font-semibold transition-colors ${a.primary ? "bg-[#1976D2] text-white hover:bg-[#1565C0]" : "bg-white border border-[#E0E0E0] text-[#424242] hover:bg-[#F5F6F8]"}`}>
-                                                {a.label}
-                                            </Link>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                </section>
-            )}
-
-            {/* Insights row: hiring funnel + pipeline composition */}
-            {canAccess("candidates:read") && (
-                <section className="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-1 items-stretch">
-                    {/* Hiring funnel — built from live stats */}
-                    {(() => {
-                        const rows = [
-                            { label: t("dashboard.candidates"), value: stats.total_candidates, color: "#1976D2", light: "#42A5F5" },
-                            { label: t("dashboard.applications"), value: stats.total_applications, color: "#6E63E6", light: "#90CAF9" },
-                            { label: t("dashboard.interviews"), value: stats.interviews_scheduled, color: "#42A5F5", light: "#C4BFF2" },
-                            { label: t("dashboard.recommended"), value: stats.high_value_matches, color: "#2E7D32", light: "#66BB6A" },
-                        ];
-                        const max = Math.max(...rows.map((r) => r.value), 1);
-                        return (
-                            <div className="lg:col-span-8 bg-white border border-[#E0E0E0] rounded-[4px] p-6">
-                                <div className="flex items-center justify-between mb-6">
-                                    <div>
-                                        <h3 className="text-[15px] font-bold text-[#212121]">{t("dashboard.pipelineOverview")}</h3>
-                                        <p className="text-[12.5px] text-[#757575] mt-0.5">{t("dashboard.liveCounts")}</p>
-                                    </div>
-                                    <Link href="/enterprise/candidates/kanban" className="text-[12.5px] font-semibold text-[#1976D2] hover:underline">{t("dashboard.viewPipeline")}</Link>
-                                </div>
-                                <div className="flex flex-col gap-4">
-                                    {rows.map((r, idx) => {
-                                        const widthPct = isLoading ? 0 : Math.max((r.value / max) * 100, r.value > 0 ? 8 : 2);
-                                        const prev = rows[idx - 1];
-                                        // Only show a step ratio when it's a genuine narrowing (value <= prev).
-                                        // Candidates→Applications can grow (one candidate → many applications),
-                                        // so a ">100% conversion" there is meaningless — omit it instead.
-                                        const conv =
-                                            idx > 0 && prev.value > 0 && r.value <= prev.value
-                                                ? Math.round((r.value / prev.value) * 100)
-                                                : null;
-                                        return (
-                                            <div key={r.label}>
-                                                <div className="flex items-center justify-between mb-1.5">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="w-2.5 h-2.5 rounded-[3px]" style={{ background: r.color }} />
-                                                        <span className="text-[12.5px] font-semibold text-[#424242]">{r.label}</span>
-                                                    </div>
-                                                    <div className="flex items-center gap-2.5">
-                                                        {conv !== null && (
-                                                            <span className="text-[10.5px] font-semibold text-[#757575] bg-[#EEEEEE] px-1.5 py-0.5 rounded-[3px]">{conv}%</span>
-                                                        )}
-                                                        <span className={`text-[13.5px] font-semibold text-[#212121] ${jetbrainsMono.className}`}>{isLoading ? '—' : r.value}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="h-[10px] bg-[#EEEEEE] rounded-[3px] overflow-hidden">
-                                                    <div className="h-full rounded-[3px] transition-all duration-700" style={{ width: `${widthPct}%`, background: `linear-gradient(90deg, ${r.light}, ${r.color})` }} />
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-
-                                <div className="mt-5 pt-4 border-t border-[#E0E0E0] grid grid-cols-3 gap-3">
-                                    <div className="bg-[#FAFAFA] border border-[#E0E0E0]/60 rounded-[4px] p-2.5 text-center">
-                                        <p className="text-[9.5px] uppercase tracking-wider font-bold text-[#757575]">{t("dashboard.activeJobs")}</p>
-                                        <p className={`text-[17px] font-extrabold text-[#212121] mt-1.5 ${jetbrainsMono.className}`}>{isLoading ? '—' : stats.active_jobs}</p>
-                                    </div>
-                                    <div className="bg-[#FAFAFA] border border-[#E0E0E0]/60 rounded-[4px] p-2.5 text-center">
-                                        <p className="text-[9.5px] uppercase tracking-wider font-bold text-[#757575]">{t("dashboard.aiMatches")}</p>
-                                        <p className={`text-[17px] font-extrabold text-[#212121] mt-1.5 ${jetbrainsMono.className}`}>{isLoading ? '—' : stats.high_value_matches}</p>
-                                    </div>
-                                    <div className="bg-[#FAFAFA] border border-[#E0E0E0]/60 rounded-[4px] p-2.5 text-center">
-                                        <p className="text-[9.5px] uppercase tracking-wider font-bold text-[#757575]">{t("dashboard.recommendedRate")}</p>
-                                        <p className={`text-[17px] font-extrabold text-[#212121] mt-1.5 ${jetbrainsMono.className}`}>
-                                            {/* Both scoped to applications (high_value_matches counts applications with
-                                                ai_match_score >= 80), so this is a true rate and can't exceed 100%. */}
-                                            {isLoading ? '—' : (stats.total_applications > 0 ? `${Math.min(100, Math.round((stats.high_value_matches / stats.total_applications) * 100))}%` : "0%")}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })()}
-
-                    {/* Pipeline composition donut */}
-                    <div className="lg:col-span-4 bg-white border border-[#E0E0E0] p-6 rounded-[4px]">
-                            <h3 className="text-[15px] font-bold text-[#212121]">{t("dashboard.pipelineComposition")}</h3>
-                            <p className="text-[12.5px] text-[#757575] mt-0.5 mb-3">{t("dashboard.distStages")}</p>
-                            {pipelineTotal === 0 ? (
-                                <div className="flex flex-col items-center justify-center text-center py-10">
-                                    <div className="w-12 h-12 rounded-[4px] bg-[#F5F6F8] text-[#757575] flex items-center justify-center mb-3">
-                                        <i className="mdi mdi-chart-donut text-2xl" />
-                                    </div>
-                                    <p className="text-[13px] text-[#757575]">{t("dashboard.noPipelineData")}</p>
-                                </div>
-                            ) : (
-                                <>
-                                    <div className="relative h-[176px]">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <PieChart>
-                                                <Pie data={pipeline} dataKey="value" nameKey="name" innerRadius={56} outerRadius={80} paddingAngle={2} stroke="none">
-                                                    {pipeline.map((p) => <Cell key={p.name} fill={p.color} />)}
-                                                </Pie>
-                                            </PieChart>
-                                        </ResponsiveContainer>
-                                        <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                            <span className={`text-[26px] font-semibold text-[#212121] leading-none ${jetbrainsMono.className}`}>{pipelineTotal}</span>
-                                            <span className="text-[11px] text-[#757575] mt-1">{t("dashboard.pipeTotal")}</span>
-                                        </div>
-                                    </div>
-                                    <div className="mt-4 space-y-2">
-                                        {pipeline.map((p) => (
-                                            <div key={p.name} className="flex items-center gap-2">
-                                                <span className="w-2.5 h-2.5 rounded-[3px]" style={{ background: p.color }} />
-                                                <span className="text-[12.5px] text-[#424242] flex-1">{p.name}</span>
-                                                <span className={`text-[12.5px] font-semibold text-[#212121] ${jetbrainsMono.className}`}>{p.value}</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                </section>
-            )}
-
-            {/* Modules + needs-attention row */}
-            <section className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
-                {/* Module quick-access */}
-                <div className="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {modules.filter(m => canAccess(m.permission)).map((module) => (
-                        <Link href={module.path} key={module.title} className="group h-full">
-                            <div className="relative bg-white border border-[#E0E0E0] p-5 rounded-[4px] hover:border-[#1976D2]/40 transition-colors duration-150 h-full overflow-hidden flex flex-col">
-                                <div className={`w-11 h-11 rounded-[4px] ${getColorClasses(module.color).bg} ${getColorClasses(module.color).text} flex items-center justify-center mb-4`}>
-                                    <Icon name={module.icon} className="text-xl" />
-                                </div>
-                                <h3 className="text-[15px] font-bold text-[#212121] tracking-[-0.2px] group-hover:text-[#1976D2] transition-colors">
-                                    {module.title}
-                                </h3>
-                                <p className="text-[13px] text-[#757575] leading-relaxed mt-1 mb-4 flex-1">
-                                    {module.description}
-                                </p>
-                                <div className="flex items-center gap-1 text-[12px] font-semibold text-[#1976D2]">
-                                    {t("dashboard.open")}
-                                    <i className="mdi mdi-arrow-right text-base group-hover:translate-x-1 transition-transform" />
-                                </div>
-                            </div>
-                        </Link>
-                    ))}
-                </div>
-
-                {/* Needs your attention — real, clickable items from your live stats */}
-                <div className="lg:col-span-4 h-full bg-white border border-[#E0E0E0] p-6 rounded-[4px] flex flex-col">
-                        <div className="flex items-center justify-between mb-5">
-                            <span className="text-[15px] font-bold text-[#212121]">{t("dashboard.needsAttention")}</span>
-                            <div className="w-2.5 h-2.5 rounded-full bg-[#66BB6A] border-4 border-[#E8F5E9]"></div>
-                        </div>
-
-                        {isLoading ? (
-                            <div className="flex-1 flex items-center justify-center text-[#BDBDBD] text-sm py-10">{t("common.loading")}</div>
-                        ) : (() => {
-                            const items = [
-                                { show: stats.high_value_matches > 0, count: stats.high_value_matches, label: t("dashboard.attnRecommended"), icon: "stars", color: "text-[#1976D2] bg-[#E3F2FD]" },
-                                { show: stats.interviews_scheduled > 0, count: stats.interviews_scheduled, label: t("dashboard.attnInterviews"), icon: "videocam", color: "text-[#EF6C00] bg-[#FFF3E0]" },
-                                { show: stats.total_applications > 0, count: stats.total_applications, label: t("dashboard.attnApplications"), icon: "conversion_path", color: "text-[#2E7D32] bg-[#E8F5E9]" },
-                            ].filter((i) => i.show && canAccess("candidates:read"));
-
-                            if (items.length === 0) {
-                                return (
-                                    <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
-                                        <div className="w-12 h-12 rounded-[4px] bg-[#E8F5E9] text-[#2E7D32] flex items-center justify-center mb-3">
-                                            <i className="mdi mdi-check-circle-outline text-2xl" />
-                                        </div>
-                                        <p className="text-[14px] font-semibold text-[#212121]">You&apos;re all caught up</p>
-                                        <p className="text-[12px] text-[#757575] mt-1">{t("dashboard.attentionEmpty")}</p>
-                                    </div>
-                                );
-                            }
-                            return (
-                                <div className="space-y-2.5 flex-1">
-                                    {items.map((i) => (
-                                        <Link key={i.label} href="/enterprise/candidates/kanban" className="flex items-center gap-3 p-3 rounded-[4px] border border-[#E0E0E0] hover:border-[#1976D2]/40 hover:bg-[#F5F6F8]/60 transition-colors group">
-                                            <div className={`w-10 h-10 rounded-[4px] flex items-center justify-center shrink-0 ${i.color}`}>
-                                                <Icon name={i.icon} className="text-xl" />
-                                            </div>
-                                            <div className="flex-1 min-w-0">
-                                                <span className={`text-[19px] font-semibold text-[#212121] leading-none ${jetbrainsMono.className}`}>{i.count}</span>
-                                                <p className="text-[12px] text-[#757575] leading-tight mt-1">{i.label}</p>
-                                            </div>
-                                            <i className="mdi mdi-chevron-right text-[#BDBDBD] group-hover:text-[#1976D2] group-hover:translate-x-0.5 transition-all" />
-                                        </Link>
-                                    ))}
-                                </div>
-                            );
-                        })()}
-
-                        {/* Quick actions */}
-                        <div className="mt-5 pt-4 border-t border-[#E0E0E0]">
-                            <p className="text-[10px] font-bold text-[#757575] uppercase tracking-[0.08em] mb-2.5">{t("dashboard.quickActions")}</p>
-                            <div className="flex flex-wrap gap-2">
-                                {canAccess("jobs:read") && (
-                                    <Link href="/enterprise/croar-pilot" className="px-3 py-2 rounded-[4px] bg-[#1976D2] text-white text-[12px] font-semibold hover:bg-[#1565C0] transition-colors flex items-center gap-1.5">
-                                        <i className="mdi mdi-robot text-base" /> {t("dashboard.hireWithAI")}
-                                    </Link>
-                                )}
-                                {canAccess("candidates:read") && (
-                                    <Link href="/enterprise/sourcing/chat" className="px-3 py-2 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-[12px] font-semibold hover:bg-[#F5F6F8] transition-colors flex items-center gap-1.5">
-                                        <i className="mdi mdi-account-search text-base" /> {t("dashboard.source")}
-                                    </Link>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-            </section>
+  return (
+    <div className="px-4 sm:px-5 md:px-7 pb-4 sm:pb-5 md:pb-7 space-y-6 max-w-[1320px] mx-auto w-full animate-in fade-in duration-500">
+      <header className="sticky top-0 z-20 py-3 bg-[#F5F6F8]/95 backdrop-blur-sm border-b border-[#E0E0E0] flex items-center justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex items-center gap-1.5">
+            <h1 className="text-[22px] font-extrabold tracking-[-0.5px] text-[#212121] leading-tight">
+              {t("dashboard.title")}
+            </h1>
+            <PageHelp title={t("dashboard.title")}>
+              <p>{t("dashboard.helpQueues")}</p>
+              <p>{t("dashboard.helpPermissions")}</p>
+            </PageHelp>
+          </div>
+          <p className="text-[12.5px] text-[#757575] mt-0.5">{t("dashboard.subtitleNew")}</p>
         </div>
-    );
+        <div className="flex items-center gap-2.5 shrink-0">
+          <button
+            onClick={() => void mutate()}
+            className="h-9 px-3 rounded-[4px] border border-[#E0E0E0] bg-white text-[12.5px] font-semibold text-[#424242] hover:bg-[#F5F6F8] transition-colors flex items-center gap-1.5"
+          >
+            <Icon name="refresh" className="text-[16px]" />
+            {t("common.refresh")}
+          </button>
+          <ThemeToggle />
+        </div>
+      </header>
+
+      {loadFailed && (
+        <div className="flex items-center justify-between gap-4 rounded-[4px] border border-[#FFCDD2] bg-[#FFEBEE] px-4 py-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <i className="mdi mdi-alert-circle text-[#E53935]" />
+            <div className="min-w-0">
+              <p className="text-[13px] font-bold text-[#212121]">{t("dashboard.loadFailedTitle")}</p>
+              <p className="text-[12px] text-[#757575]">{t("dashboard.loadFailedDesc")}</p>
+            </div>
+          </div>
+          <button
+            onClick={() => void mutate()}
+            className="shrink-0 px-3 py-1.5 rounded-[4px] bg-[#E53935] text-white text-[12px] font-semibold hover:bg-[#DC2626] transition-colors"
+          >
+            {t("common.retry")}
+          </button>
+        </div>
+      )}
+
+      {/* ── Needs your attention ─────────────────────────────────────────── */}
+      <section className="space-y-3">
+        <div className="flex items-baseline justify-between gap-3 flex-wrap">
+          <div>
+            <h2 className="text-[16px] font-bold text-[#212121]">{t("dashboard.needsAttention")}</h2>
+            <p className="text-[12.5px] text-[#757575] mt-0.5">{t("dashboard.needsAttentionHint")}</p>
+          </div>
+          {data?.as_of && (
+            <span className={`text-[11.5px] text-[#9E9E9E] ${mono.className}`}>
+              {t("dashboard.asOf")} {new Date(data.as_of).toLocaleTimeString()}
+            </span>
+          )}
+        </div>
+
+        {isLoading && !data ? (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="h-[104px] rounded-[4px] border border-[#E0E0E0] bg-white animate-pulse" />
+            ))}
+          </div>
+        ) : needsAction.length === 0 && !loadFailed ? (
+          <Card padding="lg" className="flex items-center gap-4">
+            <span className="w-11 h-11 rounded-[4px] bg-[#E8F5E9] text-[#2E7D32] flex items-center justify-center shrink-0">
+              <i className="mdi mdi-check-all text-[24px]" />
+            </span>
+            <div>
+              <h3 className="text-[15px] font-bold text-[#212121]">{t("dashboard.allClearTitle")}</h3>
+              <p className="text-[13px] text-[#757575] mt-0.5">{t("dashboard.allClearDesc")}</p>
+            </div>
+          </Card>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {needsAction.map((q) => {
+              const tone = TONE[q.tone] ?? TONE.info;
+              return (
+                <Link key={q.key} href={q.href} className="group">
+                  <div
+                    className="h-full rounded-[4px] border bg-white p-4 transition-all hover:shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
+                    style={{ borderColor: tone.border }}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div
+                        className={`text-[30px] font-semibold leading-none ${mono.className}`}
+                        style={{ color: tone.fg }}
+                      >
+                        {q.count}
+                      </div>
+                      <span
+                        className="w-7 h-7 rounded-[4px] flex items-center justify-center shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                        style={{ background: tone.bg, color: tone.fg }}
+                      >
+                        <i className="mdi mdi-arrow-right text-[16px]" />
+                      </span>
+                    </div>
+                    <div className="text-[13.5px] font-semibold text-[#212121] mt-2.5 group-hover:text-[#1976D2] transition-colors">
+                      {q.label}
+                    </div>
+                    <p className="text-[12px] text-[#757575] mt-1 leading-snug">{q.hint}</p>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Cleared queues stay visible, small — a queue at zero is information, and hiding it
+            makes it impossible to tell "nothing waiting" from "not shown to you". */}
+        {clear.length > 0 && (
+          <div className="flex flex-wrap gap-2 pt-1">
+            {clear.map((q) => (
+              <Link
+                key={q.key}
+                href={q.href}
+                className="inline-flex items-center gap-1.5 rounded-[4px] border border-[#E0E0E0] bg-[#FAFAFA] px-2.5 py-1.5 text-[12px] text-[#757575] hover:bg-white hover:text-[#424242] transition-colors"
+              >
+                <i className="mdi mdi-check text-[14px] text-[#81C784]" />
+                {q.label}
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* ── Where candidates are now ─────────────────────────────────────── */}
+      {pipeline && (
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
+          <Card padding="lg" className="lg:col-span-8 space-y-4">
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <h2 className="text-[16px] font-bold text-[#212121]">{t("dashboard.pipelineTitle")}</h2>
+
+                {jobOptions.length > 0 && (
+                  <div className="flex items-center gap-2 shrink-0">
+                    <select
+                      value={jobFilter}
+                      onChange={(e) => {
+                        // Set the loading flag here rather than inside the effect: the effect
+                        // may not fire at all (no token), and a spinner that never clears is
+                        // worse than no spinner.
+                        setFiltering(Boolean(e.target.value));
+                        setJobFilter(e.target.value);
+                      }}
+                      className="h-8 max-w-[260px] rounded-[4px] border border-[#E0E0E0] bg-white px-2 text-[12.5px] text-[#212121] focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 outline-none transition-all"
+                    >
+                      <option value="">{t("dashboard.allJobs")}</option>
+                      {jobOptions.map((j) => (
+                        <option key={j.id} value={j.id}>
+                          {/* The count sits in the label because most requisitions have none,
+                              and a list of bare titles hides that. */}
+                          {j.title} ({j.applications})
+                        </option>
+                      ))}
+                    </select>
+                    {jobFilter && (
+                      <button
+                        onClick={() => {
+                          setFiltering(false);
+                          setJobFilter("");
+                        }}
+                        className="h-8 px-2.5 rounded-[4px] border border-[#E0E0E0] bg-white text-[12px] font-semibold text-[#757575] hover:text-[#424242] hover:bg-[#F5F6F8] transition-colors"
+                      >
+                        {t("dashboard.clearFilter")}
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* The sentence, not the chart, is the headline. Three applications do not need
+                  a visualisation to be understood. */}
+              {filtering ? (
+                <p className="text-[13px] text-[#9E9E9E]">{t("dashboard.filtering")}</p>
+              ) : (
+                <p className="text-[13px] text-[#424242] leading-relaxed">
+                  {selectedJob && (
+                    <span className="font-semibold text-[#212121]">{selectedJob.title}: </span>
+                  )}
+                  {pipelineSummary}
+                </p>
+              )}
+            </div>
+
+            {pipeline.in_play > 0 && (
+              <div className="rounded-[4px] border border-[#EEEEEE] overflow-hidden">
+                {pipeline.stages.map((s) => (
+                  <div
+                    key={s.stage}
+                    className="flex items-center gap-3 px-3.5 py-2.5 border-b border-[#F5F5F5] last:border-0"
+                  >
+                    <span className="w-[104px] shrink-0 text-[13px] font-medium text-[#424242]">
+                      {t(`dashboard.stage.${s.stage}`)}
+                    </span>
+                    {/* Bars are shares of the open pipeline, which is a real proportion of a
+                        real total — unlike a stage-to-stage conversion, which this data
+                        cannot support. An empty stage shows a hairline so the row still
+                        reads as a row. */}
+                    <div className="flex-1 h-5 rounded-[3px] bg-[#F5F6F8] overflow-hidden">
+                      <div
+                        className="h-full rounded-[3px] bg-[#1976D2] transition-all"
+                        style={{ width: s.count > 0 ? `${Math.max(s.share, 4)}%` : "0%" }}
+                      />
+                    </div>
+                    <span
+                      className={`w-8 shrink-0 text-right text-[14px] font-semibold ${mono.className} ${
+                        s.count > 0 ? "text-[#212121]" : "text-[#BDBDBD]"
+                      }`}
+                    >
+                      {s.count}
+                    </span>
+                    <span
+                      className={`w-11 shrink-0 text-right text-[12px] ${mono.className} ${
+                        s.count > 0 ? "text-[#757575]" : "text-[#D0D0D0]"
+                      }`}
+                    >
+                      {s.count > 0 ? `${s.share}%` : "—"}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Outcomes are separate from stages on purpose: hired, rejected and withdrawn are
+                endings, not places an application waits. Mixing them into the same bars is
+                what made the old chart unreadable. */}
+            <div className="pt-1">
+              <div className="text-[11px] font-semibold uppercase tracking-[0.06em] text-[#9E9E9E] mb-2">
+                {t("dashboard.outcomesLabel")}
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { label: t("dashboard.stage.Hired"), value: pipeline.hired, color: "#2E7D32", bg: "#E8F5E9" },
+                  { label: t("dashboard.rejected"), value: pipeline.rejected, color: "#C62828", bg: "#FFEBEE" },
+                  { label: t("dashboard.withdrawn"), value: pipeline.withdrawn, color: "#757575", bg: "#F5F6F8" },
+                  { label: t("dashboard.hireRate"), value: `${pipeline.hire_rate}%`, color: "#1565C0", bg: "#E3F2FD" },
+                ].map((o) => (
+                  <div key={o.label} className="rounded-[4px] px-3 py-2" style={{ background: o.bg }}>
+                    <div className={`text-[17px] font-semibold leading-none ${mono.className}`} style={{ color: o.color }}>
+                      {o.value}
+                    </div>
+                    <div className="text-[11px] text-[#757575] mt-1">{o.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <p className="text-[11.5px] text-[#9E9E9E] leading-snug pt-1 border-t border-[#F5F5F5]">
+              {t(selectedJob ? "dashboard.pipelineFootnoteJob" : "dashboard.pipelineFootnote", {
+                total: pipeline.total_applications,
+              })}
+            </p>
+          </Card>
+
+          {/* Hiring + workforce, compact */}
+          <div className="lg:col-span-4 space-y-5">
+            {data?.hiring && (
+              <Card padding="lg" className="space-y-3">
+                <h3 className="text-[14px] font-bold text-[#212121]">{t("dashboard.openRoles")}</h3>
+                <div className="flex items-end gap-2">
+                  <span className={`text-[34px] font-semibold leading-none text-[#1565C0] ${mono.className}`}>
+                    {data.hiring.active_jobs}
+                  </span>
+                  <span className="text-[12.5px] text-[#757575] pb-1">
+                    {t("dashboard.ofTotalJobs", { total: data.hiring.total_jobs })}
+                  </span>
+                </div>
+                <p className="text-[12px] text-[#757575] leading-snug">{t("dashboard.openRolesHint")}</p>
+                <div className="pt-2 border-t border-[#EEEEEE] space-y-1.5 text-[12.5px]">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#757575]">{t("dashboard.candidatePool")}</span>
+                    <b className={`text-[#212121] ${mono.className}`}>{data.hiring.candidates}</b>
+                  </div>
+                  {/* A count alone cannot tell a filling pipeline from a dried-up one, so the
+                      previous 30 days sits beside it. */}
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#757575]">{t("dashboard.apps30d")}</span>
+                    <span className={mono.className}>
+                      <b className="text-[#212121]">{data.hiring.applications_30d}</b>
+                      <span className="text-[#9E9E9E]"> / {data.hiring.applications_prev_30d}</span>
+                    </span>
+                  </div>
+                  <p className="text-[11.5px] text-[#9E9E9E] leading-snug pt-0.5">
+                    {data.hiring.applications_30d === 0 && data.hiring.applications_prev_30d === 0
+                      ? t("dashboard.apps30dNone")
+                      : t("dashboard.apps30dHint")}
+                  </p>
+                </div>
+              </Card>
+            )}
+
+            {data?.workforce && (
+              <Card padding="lg" className="space-y-3">
+                <h3 className="text-[14px] font-bold text-[#212121]">{t("dashboard.workforceTitle")}</h3>
+                {[
+                  { label: t("dashboard.headcount"), value: data.workforce.headcount },
+                  { label: t("dashboard.onProbation"), value: data.workforce.on_probation },
+                  { label: t("dashboard.joined30"), value: data.workforce.joined_last_30_days },
+                  { label: t("dashboard.assetsIssued"), value: data.workforce.assets_issued },
+                ].map((row) => (
+                  <div key={row.label} className="flex items-center justify-between text-[13px]">
+                    <span className="text-[#616161]">{row.label}</span>
+                    <b className={`text-[#212121] ${mono.className}`}>{row.value}</b>
+                  </div>
+                ))}
+                <Link href="/enterprise/employees" className="block pt-1 text-[12.5px] font-semibold text-[#1976D2] hover:underline">
+                  {t("dashboard.viewEmployees")}
+                </Link>
+              </Card>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* ── Payroll ──────────────────────────────────────────────────────── */}
+      {data?.payroll && (
+        <section className="space-y-3">
+          <div>
+            <h2 className="text-[16px] font-bold text-[#212121]">{t("dashboard.payrollTitle")}</h2>
+            <p className="text-[12.5px] text-[#757575] mt-0.5">{t("dashboard.payrollHint")}</p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            {([
+              ["open", data.payroll.open_cycle, t("dashboard.openCycle"), t("dashboard.noOpenCycle")],
+              ["paid", data.payroll.last_paid_cycle, t("dashboard.lastPaid"), t("dashboard.noPaidCycle")],
+            ] as [string, CycleBrief | null, string, string][]).map(([key, cycle, heading, empty]) => (
+              <Card key={key} padding="lg" className="space-y-3">
+                <div className="flex items-center justify-between gap-3">
+                  <h3 className="text-[14px] font-bold text-[#212121]">{heading}</h3>
+                  {cycle && <Badge tone={CYCLE_TONE[cycle.status] ?? "neutral"}>{cycle.status}</Badge>}
+                </div>
+                {!cycle ? (
+                  <p className="text-[13px] text-[#757575]">{empty}</p>
+                ) : (
+                  <>
+                    <div className="text-[15px] font-semibold text-[#212121]">{cycle.name}</div>
+                    <div className="grid grid-cols-2 gap-3 pt-1">
+                      <div>
+                        <div className="text-[11px] uppercase tracking-[0.05em] text-[#9E9E9E]">
+                          {t("dashboard.netPay")}
+                        </div>
+                        <div className={`text-[18px] font-semibold text-[#212121] ${mono.className}`}>
+                          {money(cycle.net, data.payroll!.currency)}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-[11px] uppercase tracking-[0.05em] text-[#9E9E9E]">
+                          {t("dashboard.employeesPaid")}
+                        </div>
+                        <div className={`text-[18px] font-semibold text-[#212121] ${mono.className}`}>
+                          {cycle.headcount}
+                        </div>
+                      </div>
+                    </div>
+                    {/* Who the run left out. Reading zero here is the point — a non-zero is
+                        the first thing to chase after a run. */}
+                    {cycle.skipped > 0 && (
+                      <Link
+                        href="/enterprise/payroll/reports"
+                        className="flex items-center gap-2 rounded-[4px] bg-[#FFEBEE] border border-[#FFCDD2] px-3 py-2 text-[12.5px] font-semibold text-[#C62828] hover:bg-[#FFE5E5] transition-colors"
+                      >
+                        <i className="mdi mdi-account-off text-[15px]" />
+                        {t("dashboard.skippedCount", { n: cycle.skipped })}
+                      </Link>
+                    )}
+                    <div className="flex items-center justify-between pt-2 border-t border-[#EEEEEE] text-[12.5px]">
+                      <span className="text-[#757575]">
+                        {t("dashboard.payDate")}{" "}
+                        <span className={mono.className}>{cycle.pay_date}</span>
+                      </span>
+                      <Link href={`/enterprise/payroll/${cycle.id}`} className="font-semibold text-[#1976D2] hover:underline">
+                        {t("dashboard.openCycleLink")}
+                      </Link>
+                    </div>
+                  </>
+                )}
+              </Card>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ── Coming up ────────────────────────────────────────────────────────
+          The only section that looks forwards. The queues say what is late and the counts
+          say what exists; a probation decision or a public holiday is only useful to know
+          before the date, so it gets its own dated list. */}
+      {data?.upcoming && (
+        <section className="space-y-3">
+          <div>
+            <h2 className="text-[16px] font-bold text-[#212121]">{t("dashboard.upcomingTitle")}</h2>
+            <p className="text-[12.5px] text-[#757575] mt-0.5">
+              {t("dashboard.upcomingHint", { days: data.upcoming_window_days ?? 30 })}
+            </p>
+          </div>
+
+          {data.upcoming.length === 0 ? (
+            <Card padding="lg">
+              <p className="text-[13px] text-[#757575]">
+                {t("dashboard.upcomingEmpty", { days: data.upcoming_window_days ?? 30 })}
+              </p>
+            </Card>
+          ) : (
+            <Card padding="none" className="overflow-hidden">
+              {data.upcoming.map((e, i) => {
+                const kind = UPCOMING_KIND[e.kind] ?? UPCOMING_KIND.holiday;
+                // "Today" and "Tomorrow" read better than "+0d"; past that, a day count is
+                // clearer than a date the reader has to subtract from.
+                const when =
+                  e.days_away === 0
+                    ? t("dashboard.today")
+                    : e.days_away === 1
+                      ? t("dashboard.tomorrow")
+                      : t("dashboard.inDays", { n: e.days_away });
+                return (
+                  <Link
+                    key={`${e.kind}-${e.date}-${i}`}
+                    href={e.href}
+                    className="flex items-start gap-3.5 px-4 py-3 border-b border-[#F5F5F5] last:border-0 hover:bg-[#FAFAFA] transition-colors group"
+                  >
+                    <span
+                      className="w-9 h-9 rounded-[4px] flex items-center justify-center shrink-0 mt-0.5"
+                      style={{ background: kind.bg, color: kind.fg }}
+                    >
+                      <i className={`mdi ${kind.icon} text-[18px]`} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex flex-wrap items-baseline gap-x-2">
+                        <span className="text-[13.5px] font-semibold text-[#212121] group-hover:text-[#1976D2] transition-colors">
+                          {e.label}
+                        </span>
+                        <span className={`text-[12px] ${mono.className} text-[#9E9E9E]`}>{e.date}</span>
+                      </div>
+                      <p className="text-[12px] text-[#757575] mt-0.5 leading-snug">{e.detail}</p>
+                    </div>
+                    <span
+                      className={`shrink-0 text-[12px] font-semibold whitespace-nowrap mt-1 ${mono.className}`}
+                      style={{ color: e.days_away <= 3 ? "#E65100" : "#9E9E9E" }}
+                    >
+                      {when}
+                    </span>
+                  </Link>
+                );
+              })}
+            </Card>
+          )}
+        </section>
+      )}
+
+      {/* ── Jump to ──────────────────────────────────────────────────────── */}
+      <section className="space-y-3">
+        <h2 className="text-[16px] font-bold text-[#212121]">{t("dashboard.jumpTo")}</h2>
+        <div className="flex flex-wrap gap-2">
+          {[
+            { label: t("dashboard.linkPilot"), href: "/enterprise/croar-pilot", icon: "robot" },
+            { label: t("dashboard.linkPostJob"), href: "/enterprise/jobs/create", icon: "plus-box" },
+            { label: t("dashboard.linkAttendance"), href: "/enterprise/attendance", icon: "fingerprint" },
+            { label: t("dashboard.linkPayroll"), href: "/enterprise/payroll", icon: "cash-multiple" },
+            { label: t("dashboard.linkReports"), href: "/enterprise/payroll/reports", icon: "file-chart" },
+          ].map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="inline-flex items-center gap-2 rounded-[4px] border border-[#E0E0E0] bg-white px-3.5 py-2 text-[13px] font-medium text-[#424242] hover:border-[#90CAF9] hover:text-[#1565C0] hover:bg-[#F5FAFE] transition-colors"
+            >
+              <i className={`mdi mdi-${l.icon} text-[17px]`} />
+              {l.label}
+            </Link>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
 }

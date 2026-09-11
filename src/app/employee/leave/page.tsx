@@ -189,7 +189,7 @@ export default function MyLeavePage() {
 
       {/* Request modal */}
       {open && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm">
           <Card padding="none" className="w-full max-w-lg animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between px-6 py-5 border-b border-[#E0E0E0]">
               <h2 className="text-[17px] font-extrabold tracking-[-0.3px] text-[#212121]">{tr("employee.requestLeave")}</h2>

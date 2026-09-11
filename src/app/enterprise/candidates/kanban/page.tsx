@@ -161,7 +161,7 @@ function CandidateModal({ application, isOpen, onClose, onStatusUpdate, onRefres
             role="button"
             tabIndex={0}
             aria-label={t("pipeline.closePanel")}
-            className="fixed inset-0 z-50 flex items-center justify-end bg-[#1E2A38]/40 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-center justify-end bg-[#1E2A38]/40 backdrop-blur-sm"
             onClick={onClose}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { onClose(); } }}
         >

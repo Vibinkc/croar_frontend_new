@@ -62,7 +62,7 @@ const CandidateProfileModal = ({ candidate, onClose }: { candidate: Candidate; o
         <div
             role="button"
             tabIndex={0}
-            className="fixed inset-0 z-50 flex items-center justify-end bg-[#212121]/40 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-center justify-end bg-[#212121]/40 backdrop-blur-sm"
             onClick={onClose}
             onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { onClose(); } }}
         >

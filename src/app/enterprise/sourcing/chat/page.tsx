@@ -1770,7 +1770,7 @@ export default function ProfileSourcingChatPage() {
 
             {/* Share public link modal. */}
             {isShareModalOpen && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-center justify-center animate-in fade-in duration-200" onClick={() => setIsShareModalOpen(false)}>
+                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center animate-in fade-in duration-200" onClick={() => setIsShareModalOpen(false)}>
                     <div className="bg-white p-6 rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-xl w-full mx-4 space-y-4 animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-start justify-between">
                             <h3 className="text-[17px] font-bold text-[#212121]">{tr("sourcingChat.sharePublic")}</h3>
@@ -1815,7 +1815,7 @@ export default function ProfileSourcingChatPage() {
 
             {/* Edit Criteria Modal — ranking criteria, most→least important. */}
             {isCriteriaModalOpen && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-center justify-center animate-in fade-in duration-200" onClick={() => setIsCriteriaModalOpen(false)}>
+                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center animate-in fade-in duration-200" onClick={() => setIsCriteriaModalOpen(false)}>
                     <div className="bg-white p-6 rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-lg w-full mx-4 space-y-4 animate-in zoom-in-95 duration-200" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-between">
                             <h3 className="text-[15px] font-bold text-[#212121] flex items-center gap-2"><Sparkles className="w-4 h-4 text-[#1976D2]" /> {tr("sourcingChat.criteria")}</h3>
@@ -1871,7 +1871,7 @@ export default function ProfileSourcingChatPage() {
 
             {/* Edit Rule Filter Modal */}
             {isFilterModalOpen && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-center justify-center animate-in fade-in duration-200">
+                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center animate-in fade-in duration-200">
                     <div className="bg-white p-6 rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-md w-full mx-4 space-y-4 animate-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between">
                             <h3 className="text-[15px] font-bold text-[#212121] flex items-center gap-2"><Filter className="w-4 h-4 text-[#1976D2]" /> {tr("sourcingChat.refineConstraints")}</h3>
@@ -1963,7 +1963,7 @@ export default function ProfileSourcingChatPage() {
                 </div>
             )}
             {isJobModalOpen && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
                     <div className="bg-white rounded-[4px] p-6 max-w-2xl w-full shadow-[0_14px_34px_rgba(0,0,0,0.16)] border border-[#E0E0E0] flex flex-col space-y-4 max-h-[90vh]">
                         <div className="flex items-center justify-between">
                             <h3 className="text-[15px] font-bold text-[#212121] flex items-center gap-2">
@@ -2013,7 +2013,7 @@ export default function ProfileSourcingChatPage() {
             )}
 
             {isBooleanModalOpen && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
                     <div className="bg-white rounded-[4px] p-6 max-w-xl w-full shadow-[0_14px_34px_rgba(0,0,0,0.16)] border border-[#E0E0E0] flex flex-col space-y-4">
                         <div className="flex items-center justify-between">
                             <h3 className="text-[15px] font-bold text-[#212121] flex items-center gap-2">
@@ -2050,7 +2050,7 @@ export default function ProfileSourcingChatPage() {
             )}
 
             {isCompetitorModalOpen && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4 animate-in fade-in duration-200">
                     <div className="bg-white rounded-[4px] p-6 max-w-xl w-full shadow-[0_14px_34px_rgba(0,0,0,0.16)] border border-[#E0E0E0] flex flex-col space-y-4">
                         <div className="flex items-center justify-between">
                             <h3 className="text-[15px] font-bold text-[#212121] flex items-center gap-2">
@@ -2261,7 +2261,7 @@ export default function ProfileSourcingChatPage() {
             )}
             {/* Shortlist Job Modal */}
             {isShortlistModalOpen && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-center justify-center animate-in fade-in duration-200">
+                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center animate-in fade-in duration-200">
                     <div className="bg-white p-6 rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-md w-full mx-4 space-y-6 animate-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between">
                             <div className="space-y-1">
@@ -2331,7 +2331,7 @@ export default function ProfileSourcingChatPage() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={() => setIsHistoryOpen(false)}
-                            className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50"
+                            className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100]"
                         />
                         
                         {/* Right-Side Sidebar Drawer */}

@@ -745,7 +745,7 @@ export default function StructuresPage() {
                       {Number(lopDays) > 0 ? tr("payroll.afterLopDays", { count: Number(lopDays) }) : tr("payroll.fullMonthNoLop")}
                     </span>
                   </div>
-                  <div className="grid grid-cols-3 gap-4 p-4">
+                  <div className="flex flex-col gap-1.5 p-4">
                     <Stat label={tr("payroll.gross")} value={inr(gross, currency)} />
                     <Stat label={tr("payroll.deductions")} value={`- ${inr(totalDeductions, currency)}`} tone="text-[#C62828]" />
                     <Stat label={tr("payroll.netPay")} value={inr(net, currency)} tone="text-[#2E7D32]" big />
@@ -791,15 +791,24 @@ export default function StructuresPage() {
   );
 }
 
+/**
+ * One figure in the estimated-salary panel, as a label/value row.
+ *
+ * Was a column in a three-across grid with `break-words`. In a narrow panel a third of the
+ * width cannot hold "₹ 1,00,000.00" in a monospace face, and break-words then split it — the
+ * currency symbol onto one line, or the number itself cut between its last two digits.
+ */
 function Stat({ label, value, tone = "text-[#212121]", big = false }: { label: string; value: string; tone?: string; big?: boolean }) {
   return (
-    <div className="min-w-0">
-      <div className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{label}</div>
-      <div
-        className={`font-bold leading-tight break-words ${tone} ${jetbrainsMono.className} ${big ? "text-[16px]" : "text-[14px]"}`}
+    <div className="flex items-baseline justify-between gap-3">
+      <span className="min-w-0 truncate text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">
+        {label}
+      </span>
+      <span
+        className={`shrink-0 font-bold tabular-nums whitespace-nowrap leading-tight ${tone} ${jetbrainsMono.className} ${big ? "text-[16px]" : "text-[14px]"}`}
       >
         {value}
-      </div>
+      </span>
     </div>
   );
 }

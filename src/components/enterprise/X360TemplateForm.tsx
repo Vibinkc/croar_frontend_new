@@ -377,7 +377,7 @@ export default function X360TemplateForm({ mode, templateId }: X360TemplateFormP
 
             {/* AI Wizard Modal */}
             {isAiWizardOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#212121]/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#212121]/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
                     <Card padding="none" className="w-full max-w-md shadow-[0_24px_60px_rgba(0,0,0,0.24)] overflow-hidden animate-in zoom-in-95 duration-200">
                         <div className="p-5 border-b border-[#E0E0E0] flex justify-between items-center bg-[#FAFAFA]">
                             <div className="flex items-center gap-2.5">

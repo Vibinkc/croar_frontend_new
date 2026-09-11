@@ -482,7 +482,7 @@ export default function TemplatesPage() {
       </div>
 
       {open && (
-        <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 sm:p-6 bg-[#212121]/40 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto p-4 sm:p-6 bg-[#212121]/40 backdrop-blur-sm">
           <Card padding="none" className="w-full max-w-6xl my-auto shadow-[0_24px_60px_rgba(0,0,0,0.22)] overflow-hidden">
             <div className="flex items-center justify-between gap-3 px-6 py-4 border-b border-[#E0E0E0]">
               <div className="flex items-center gap-2.5">
@@ -568,10 +568,14 @@ export default function TemplatesPage() {
                         </p>
                       )}
                     </div>
-                    <div className="grid grid-cols-3 gap-4 px-4 pb-3">
+                    {/* Rows, not columns. Net gets a rule above it because it is the total of
+                        the two lines before it, not a third sibling. */}
+                    <div className="flex flex-col gap-1.5 px-4 pb-3">
                       <PreviewStat label={tr("payroll.gross")} value={inr(gross, currency)} />
                       <PreviewStat label={tr("payroll.deductions")} value={`- ${inr(totalDeductions, currency)}`} tone="text-[#C62828]" />
-                      <PreviewStat label={tr("payroll.net")} value={inr(net, currency)} tone="text-[#2E7D32]" big />
+                      <div className="mt-0.5 border-t border-dashed border-[#E0E0E0] pt-1.5">
+                        <PreviewStat label={tr("payroll.net")} value={inr(net, currency)} tone="text-[#2E7D32]" big />
+                      </div>
                     </div>
                     {earningLines.length > 0 && (
                       <div className="border-t border-[#E0E0E0] px-4 py-3">
@@ -697,7 +701,7 @@ function ApplyModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto p-4 sm:p-6 bg-[#212121]/40 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto p-4 sm:p-6 bg-[#212121]/40 backdrop-blur-sm">
       <Card padding="none" className="w-full max-w-3xl my-auto shadow-[0_24px_60px_rgba(0,0,0,0.22)] overflow-hidden">
         <div className="flex items-center justify-between gap-3 px-6 py-4 border-b border-[#E0E0E0]">
           <div className="flex items-center gap-2.5">
@@ -790,13 +794,28 @@ function ApplyModal({
 // ---------------------------------------------------------------------------
 // Shared bits
 // ---------------------------------------------------------------------------
+/**
+ * One figure in the preview panel, as a label/value row.
+ *
+ * This used to be a column in a three-across grid with `break-words`, which is a bad pairing in
+ * a narrow sidebar: a third of the width cannot hold "₹ 1,00,000.00" in a monospace face, and
+ * break-words then split it wherever it ran out — the currency symbol onto one line and the
+ * amount onto the next, or worse, the number itself cut between its last two digits.
+ *
+ * A row gives the value the full width, matches the earnings breakdown directly underneath, and
+ * `whitespace-nowrap` guarantees an amount is never broken across lines.
+ */
 function PreviewStat({ label, value, tone = "text-[#212121]", big = false }: { label: string; value: string; tone?: string; big?: boolean }) {
   return (
-    <div className="min-w-0">
-      <div className="text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">{label}</div>
-      <div className={`font-bold tabular-nums leading-tight break-words ${tone} ${jetbrainsMono.className} ${big ? "text-[15px]" : "text-[13px]"}`}>
+    <div className="flex items-baseline justify-between gap-3">
+      <span className="min-w-0 truncate text-[11px] font-semibold uppercase tracking-[0.04em] text-[#757575]">
+        {label}
+      </span>
+      <span
+        className={`shrink-0 font-bold tabular-nums whitespace-nowrap leading-tight ${tone} ${jetbrainsMono.className} ${big ? "text-[15px]" : "text-[13px]"}`}
+      >
         {value}
-      </div>
+      </span>
     </div>
   );
 }

@@ -268,7 +268,7 @@ export default function SequenceEditorPage() {
 
             {/* Preview and test modal */}
             {showPreview && cur && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-center justify-center px-4" onClick={() => { setShowPreview(false); setTestSent(false); }}>
+                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => { setShowPreview(false); setTestSent(false); }}>
                     <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-2xl w-full max-h-[88vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
                         <div className="p-5 border-b border-[#E0E0E0] flex items-center justify-between">
                             <h3 className="text-[16px] font-bold text-[#212121]">{t("sequenceEditor.previewSendTest")} · {t("sequenceEditor.step", { n: sel + 1 })}</h3>
@@ -298,7 +298,7 @@ export default function SequenceEditorPage() {
 
             {/* Generate step modal */}
             {showGen && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-center justify-center px-4" onClick={() => setShowGen(false)}>
+                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowGen(false)}>
                     <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-3xl w-full max-h-[85vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
                         <div className="p-5 border-b border-[#E0E0E0] flex items-center justify-between">
                             <h3 className="text-[16px] font-bold text-[#212121] flex items-center gap-2"><Sparkles className="w-4 h-4 text-[#1976D2]" /> {t("sequenceEditor.generateStepAI")}</h3>

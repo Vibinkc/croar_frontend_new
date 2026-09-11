@@ -990,7 +990,7 @@ export default function CroarPilotPage() {
                     aria-label={t("croarPilot.closeHistory")}
                     onClick={() => setShowHistory(false)}
                     onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") setShowHistory(false); }}
-                    className="fixed inset-0 z-40 bg-[#1E2A38]/40 backdrop-blur-sm"
+                    className="fixed inset-0 z-[100] bg-[#1E2A38]/40 backdrop-blur-sm"
                 />
             )}
 

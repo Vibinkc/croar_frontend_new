@@ -400,7 +400,7 @@ export default function SkillAssessmentsPage() {
 
             {/* Create modal */}
             {creating && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm">
                     <Card padding="none" className="w-full max-w-lg animate-in fade-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between px-6 py-5 border-b border-[#E0E0E0]">
                             <h2 className="text-[17px] font-extrabold tracking-[-0.3px] text-[#212121]">{tr("postOnboarding.newSkillAssessment")}</h2>
@@ -447,7 +447,7 @@ export default function SkillAssessmentsPage() {
 
             {/* Assign modal */}
             {assignFor && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm">
                     <Card padding="none" className="w-full max-w-xl max-h-[88vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between px-6 py-5 border-b border-[#E0E0E0]">
                             <div className="min-w-0">
@@ -484,7 +484,7 @@ export default function SkillAssessmentsPage() {
 
             {/* Results modal */}
             {resultsFor && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm">
                     <Card padding="none" className="w-full max-w-2xl max-h-[88vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between px-6 py-5 border-b border-[#E0E0E0]">
                             <div className="min-w-0">
@@ -528,7 +528,7 @@ export default function SkillAssessmentsPage() {
 
             {/* Question manager — add manually or import CSV */}
             {qMgrFor && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm">
                     <Card padding="none" className="w-full max-w-2xl max-h-[92vh] flex flex-col animate-in fade-in zoom-in-95 duration-200">
                         <div className="flex items-center justify-between px-6 py-5 border-b border-[#E0E0E0]">
                             <div className="min-w-0">

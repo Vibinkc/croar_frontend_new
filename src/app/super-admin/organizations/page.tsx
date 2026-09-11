@@ -349,7 +349,7 @@ function OrganizationsContent() {
 
             {/* Create Organization modal */}
             {isCreating && (
-                <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
+                <div className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
                     <Card padding="none" className="w-full max-w-2xl my-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
                         <div className="flex items-start justify-between gap-3 px-6 py-5 border-b border-[#E0E0E0]">
                             <div className="flex items-center gap-3 min-w-0">
@@ -426,7 +426,7 @@ function OrganizationsContent() {
 
             {/* Edit Organization modal */}
             {editing && (
-                <div className="fixed inset-0 z-50 flex items-start sm:items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
+                <div className="fixed inset-0 z-[100] flex items-start sm:items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
                     <Card padding="none" className="w-full max-w-xl my-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
                         <div className="flex items-start justify-between gap-3 px-6 py-5 border-b border-[#E0E0E0]">
                             <div className="flex items-center gap-3 min-w-0">

@@ -106,7 +106,7 @@ export function Modal({
     <div
       role="button"
       tabIndex={-1}
-      className="payroll-scope fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-6 backdrop-blur-sm"
+      className="payroll-scope fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/50 p-6 backdrop-blur-sm"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       onKeyDown={(e) => { if (e.key === "Escape" || e.key === "Enter") onClose(); }}
     >

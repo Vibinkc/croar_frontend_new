@@ -206,7 +206,7 @@ export default function OrganizationUserManagement() {
             </div>
 
             {showModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-[#212121]/40 backdrop-blur-sm">
                     <Card padding="lg" className="max-w-md w-full shadow-xl animate-in fade-in zoom-in-95 duration-150">
                         <div className="flex items-center justify-between mb-5">
                             <div className="flex items-center gap-2.5">

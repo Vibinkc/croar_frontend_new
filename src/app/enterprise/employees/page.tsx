@@ -356,7 +356,7 @@ export default function EmployeesPage() {
                 <div
                     role="button"
                     tabIndex={-1}
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-[#212121]/40 p-4 backdrop-blur-sm"
+                    className="fixed inset-0 z-[100] flex items-center justify-center bg-[#212121]/40 p-4 backdrop-blur-sm"
                     onClick={(e) => { if (e.target === e.currentTarget) setAccountEmp(null); }}
                     onKeyDown={(e) => { if (e.key === "Escape" || e.key === "Enter") setAccountEmp(null); }}
                 >

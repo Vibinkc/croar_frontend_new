@@ -1056,7 +1056,7 @@ export default function ProfileSourcingPage() {
             )}
 
             {isFilterModalOpen && (
-                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
                     <div className="bg-white rounded-[24px] shadow-2xl border border-[#E0E0E0] max-w-4xl w-full flex flex-col h-[600px] overflow-hidden animate-in zoom-in-95 duration-200">
                         {/* Modal Header */}
                         <div className="flex justify-between items-center p-6 border-b border-[#E0E0E0]">
@@ -1154,7 +1154,7 @@ export default function ProfileSourcingPage() {
                 <div
                     role="button"
                     tabIndex={0}
-                    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex justify-end"
+                    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex justify-end"
                     onClick={() => setSelectedProfileDetails(null)}
                     onKeyDown={(e) => {
                         if (e.key === "Enter" || e.key === " ") setSelectedProfileDetails(null);

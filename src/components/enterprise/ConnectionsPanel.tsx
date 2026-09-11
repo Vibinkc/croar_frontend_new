@@ -296,7 +296,7 @@ export default function ConnectionsPanel() {
 
             {/* Disconnect confirmation — type DISCONNECT to confirm */}
             {disc && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-center justify-center px-4" onClick={() => { setDisc(null); setDiscText(""); }}>
+                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => { setDisc(null); setDiscText(""); }}>
                     <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] w-full max-w-[440px] p-6" onClick={(e) => e.stopPropagation()}>
                         <h3 className="text-[18px] font-bold text-[#212121] break-words">{t("integrations.disconnectTitle").replace("{email}", disc.email)}</h3>
                         <p className="text-[13.5px] text-[#616161] mt-2.5 leading-relaxed">{t("integrations.disconnectDesc")}</p>
@@ -312,7 +312,7 @@ export default function ConnectionsPanel() {
 
             {/* Connect modal */}
             {showConnect && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-center justify-center px-4" onClick={() => setShowConnect(false)}>
+                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowConnect(false)}>
                     <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] w-full max-w-lg max-h-[90vh] overflow-y-auto no-scrollbar" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-between px-6 py-4 border-b border-[#E0E0E0]">
                             <h3 className="text-[16px] font-bold text-[#212121]">{t("integrations.addMailbox")}</h3>

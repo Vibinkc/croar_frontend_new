@@ -1185,7 +1185,7 @@ function MappingWizard({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#212121]/40 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#212121]/40 backdrop-blur-sm p-4">
       <div className="flex max-h-[85vh] w-full max-w-3xl flex-col rounded-[4px] border border-[#E0E0E0] bg-white shadow-[0_24px_60px_rgba(0,0,0,0.24)]">
         <div className="flex items-start justify-between gap-3 border-b border-[#E0E0E0] px-5 py-4">
           <div className="min-w-0">

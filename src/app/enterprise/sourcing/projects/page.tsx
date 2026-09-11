@@ -247,7 +247,7 @@ export default function ProjectsPage() {
 
             {/* Create modal */}
             {showCreate && (
-                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-50 flex items-center justify-center px-4" onClick={() => setShowCreate(false)}>
+                <div className="fixed inset-0 bg-[#212121]/40 backdrop-blur-sm z-[100] flex items-center justify-center px-4" onClick={() => setShowCreate(false)}>
                     <div className="bg-white p-6 rounded-[4px] border border-[#E0E0E0] shadow-[0_14px_34px_rgba(0,0,0,0.16)] max-w-md w-full space-y-4" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center justify-between">
                             <h3 className="text-[16px] font-bold text-[#212121]">{t("projects.createNew")}</h3>
