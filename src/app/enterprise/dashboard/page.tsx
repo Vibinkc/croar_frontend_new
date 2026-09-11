@@ -30,7 +30,6 @@ import { useI18n } from "@/context/I18nContext";
 import { BACKEND_URL } from "@/utils/api";
 import { useCachedFetch } from "@/hooks/useCachedFetch";
 import { Badge, Card, Icon, PageHelp } from "@/components/ds";
-import ThemeToggle from "@/components/ThemeToggle";
 
 const mono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500", "600", "700"] });
 
@@ -256,7 +255,6 @@ export default function EnterpriseDashboard() {
             <Icon name="refresh" className="text-[16px]" />
             {t("common.refresh")}
           </button>
-          <ThemeToggle />
         </div>
       </header>
 

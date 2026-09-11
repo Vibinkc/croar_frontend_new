@@ -10,6 +10,7 @@ import CommandPalette from "@/components/enterprise/CommandPalette";
 import { GuideProvider, Tour, HelpButton, GuideBook } from "@/components/guide";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { useI18n } from "@/context/I18nContext";
+import ThemeToggle from "@/components/ThemeToggle";
 import { Icon } from "@/components/ds";
 
 // Maps known nav labels to i18n keys (Talent Search section is translated in this slice;
@@ -501,6 +502,10 @@ export default function EnterprisePortalLayout({
 
                 <div className="flex items-center gap-0.5 shrink-0">
                     <LanguageSwitcher compact />
+                    {/* In the app bar rather than on one page: the theme is an app-wide
+                        setting, and hunting for it on the dashboard is the wrong place to
+                        look from any other screen. */}
+                    <ThemeToggle variant="header" />
                     <Link
                         href="/enterprise/settings"
                         title={t("nav.settings")}
@@ -573,8 +578,8 @@ export default function EnterprisePortalLayout({
                 className={`
                 fixed inset-y-0 left-0 z-50 ${isSidebarCollapsed ? 'w-[72px]' : 'w-[248px]'} flex flex-col transition-all duration-300 ease-in-out md:translate-x-0 md:relative md:h-auto border-r border-[#E0E0E0]
                 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}
+                bg-white
             `}
-                style={{ background: "#FFFFFF" }}
             >
                 <div className="p-3 flex-1 overflow-y-auto no-scrollbar flex flex-col">
                     {/* Navigation Groups — collapsible accordion (keeps the long menu scannable) */}

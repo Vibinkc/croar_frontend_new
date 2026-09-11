@@ -635,3 +635,84 @@ button, a, span, p, label {
 :root[data-theme="dark"] .payroll-scope thead {
   background-color: #1b1f27;
 }
+
+/* ── Dark mode: the greys and tints the original pass missed ────────────────
+ *
+ * The first pass remapped #212121, #424242 and #4F4F4F but stopped there, so every label
+ * written in the lighter greys stayed mid-grey on a near-black ground — legible in theory,
+ * unreadable in practice. The sidebar is built almost entirely from these three, which is why
+ * it was the most obvious casualty.
+ *
+ * Each value is lifted enough to hold contrast against #16191f without going pure white, so the
+ * hierarchy between primary, secondary and muted text survives the flip instead of collapsing
+ * into one tone.
+ */
+:root[data-theme="dark"] .text-\[\#616161\] {
+  color: #b4bac4;
+}
+:root[data-theme="dark"] .text-\[\#757575\] {
+  color: #a3a9b3;
+}
+:root[data-theme="dark"] .text-\[\#9E9E9E\] {
+  color: #8b919b;
+}
+:root[data-theme="dark"] .hover\:text-\[\#212121\]:hover {
+  color: #eceef1;
+}
+:root[data-theme="dark"] .hover\:text-\[\#424242\]:hover {
+  color: #d5d9df;
+}
+
+/* The selected nav item and every other pale-blue tint. #E3F2FD is a wash of the brand on
+ * white; on a dark ground the equivalent is a low-luminance brand tint, not a pale one, or the
+ * selected row glows brighter than anything around it. */
+:root[data-theme="dark"] .bg-\[\#E3F2FD\] {
+  background-color: #16304a;
+}
+:root[data-theme="dark"] .hover\:bg-\[\#E3F2FD\]:hover {
+  background-color: #1b3b5c;
+}
+
+/* Brand blue is the one colour that must shift rather than stay put: #1976D2 fails contrast
+ * against #16191f. This lifts it to the same hue at a readable luminance. */
+:root[data-theme="dark"] .text-\[\#1976D2\] {
+  color: #64b5f6;
+}
+:root[data-theme="dark"] .border-\[\#1976D2\] {
+  border-color: #64b5f6;
+}
+:root[data-theme="dark"] .hover\:text-\[\#1976D2\]:hover {
+  color: #90caf9;
+}
+
+/* ── Dark mode: prose inside chat bubbles and help panels ───────────────────
+ *
+ * Croar Pilot, the sourcing sequences editor, the job description and the help popovers all
+ * style their rendered markdown with Tailwind arbitrary variants — `[&_strong]:text-[#212121]`
+ * and friends. Those compile to a *different* class name from the plain `text-[#212121]`, so
+ * none of the remaps above ever matched them and the bold text in a Pilot reply stayed
+ * near-black on a near-black bubble: present, selectable, and invisible.
+ *
+ * The selectors below are the escaped forms of those generated classes. They read badly, which
+ * is a fair argument for moving this prose styling into a named class one day; until then this
+ * fixes all five call sites without touching a component.
+ */
+:root[data-theme="dark"] .\[\&_strong\]\:text-\[\#212121\] strong,
+:root[data-theme="dark"] .\[\&_h1\]\:text-\[\#212121\] h1,
+:root[data-theme="dark"] .\[\&_h2\]\:text-\[\#212121\] h2,
+:root[data-theme="dark"] .\[\&_h3\]\:text-\[\#212121\] h3 {
+  color: #eceef1;
+}
+
+:root[data-theme="dark"] .\[\&_a\]\:text-\[\#1976D2\] a {
+  color: #64b5f6;
+}
+
+/* Inline code: a pale-blue chip on white becomes a deep one on dark, or it flares. */
+:root[data-theme="dark"] .\[\&_code\]\:bg-\[\#E3F2FD\] code {
+  background-color: #16304a;
+}
+:root[data-theme="dark"] .\[\&_code\]\:text-\[\#1565C0\] code,
+:root[data-theme="dark"] .\[\&_code\]\:text-\[\#1976D2\] code {
+  color: #90caf9;
+}
