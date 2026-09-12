@@ -1997,13 +1997,6 @@ export default function ProfileSourcingChatPage() {
                                     className="w-full bg-white border border-[#E0E0E0] rounded-[4px] px-4 py-3 text-[13.5px] font-medium text-[#212121] placeholder:text-[#9E9E9E] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/20 transition-all"
                                 />
                             </div>
-                            <div className="border-t border-[#E0E0E0] pt-3 space-y-2">
-                                <label htmlFor="job-upload-button" className="text-[13px] font-semibold text-[#212121] flex items-center gap-2">{tr("sourcingChat.uploadJD")}</label>
-                                <p className="text-xs text-[#9E9E9E] font-medium">{tr("sourcingChat.uploadJDNote")}</p>
-                                <button id="job-upload-button" className="h-9 px-4 border border-[#E0E0E0] rounded-[4px] bg-white text-[#424242] text-[13px] font-semibold hover:bg-[#F5F6F8] transition-colors shadow-sm">
-                                    {tr("sourcingChat.upload")}
-                                </button>
-                            </div>
                         </div>
                         <button 
                             onClick={() => setIsJobModalOpen(false)}

@@ -8,10 +8,6 @@ import { BACKEND_URL } from "@/utils/api";
 import {
     ArrowLeft,
     Plus,
-    Search,
-    Filter,
-    FileEdit,
-    Trash2,
     FolderOpen,
     ListChecks,
 } from "@/components/icons";
@@ -169,14 +165,6 @@ export default function CategoryDedicatedView({ params }: { params: Promise<{ ca
                                 <h2 className="text-[15px] font-bold text-[#212121]">{tr("assess360.competencyInventory")}</h2>
                                 <p className="text-[12.5px] text-[#757575] mt-0.5 capitalize">{tr("assess360.repositoryFor")} {categoryLabel.toLowerCase()}</p>
                             </div>
-                            <div className="flex items-center gap-2 shrink-0">
-                                <button className="w-9 h-9 flex items-center justify-center rounded-[4px] bg-white border border-[#E0E0E0] text-[#9E9E9E] hover:text-[#1976D2] hover:bg-[#F5F6F8] transition-colors" aria-label={tr("common.search")}>
-                                    <Search className="w-4 h-4" />
-                                </button>
-                                <button className="w-9 h-9 flex items-center justify-center rounded-[4px] bg-white border border-[#E0E0E0] text-[#9E9E9E] hover:text-[#1976D2] hover:bg-[#F5F6F8] transition-colors" aria-label={tr("assess360.filter")}>
-                                    <Filter className="w-4 h-4" />
-                                </button>
-                            </div>
                         </div>
 
                         {loading ? (
@@ -227,15 +215,6 @@ export default function CategoryDedicatedView({ params }: { params: Promise<{ ca
                                                 <Badge tone="indigo">{q.type}</Badge>
                                             </div>
 
-                                            {/* Actions */}
-                                            <div className="flex items-center gap-1 justify-end">
-                                                <button className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#E3F2FD] hover:text-[#1976D2] transition-colors md:opacity-0 md:group-hover:opacity-100" title={tr("common.edit")}>
-                                                    <FileEdit className="w-4 h-4" />
-                                                </button>
-                                                <button className="w-9 h-9 flex items-center justify-center rounded-[4px] text-[#9E9E9E] hover:bg-[#FFEBEE] hover:text-[#C62828] transition-colors md:opacity-0 md:group-hover:opacity-100" title={tr("common.delete")}>
-                                                    <Trash2 className="w-4 h-4" />
-                                                </button>
-                                            </div>
                                         </div>
                                     ))}
                                 </div>

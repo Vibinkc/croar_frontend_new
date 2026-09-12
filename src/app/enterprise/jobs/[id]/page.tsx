@@ -477,9 +477,6 @@ export default function JobDetailPage() {
                     </div>
                 </div>
                 <div className="flex items-center gap-2.5 shrink-0">
-                    <Button variant="secondary" aria-label={tr("jobDetail.share")} className="w-10 h-10 px-0">
-                        <i className="mdi mdi-share-variant text-xl" />
-                    </Button>
                     {canAccess("jobs:update") && (
                         <Link href={`/enterprise/jobs/${id}/edit`}>
                             <Button size="sm" icon="edit">{tr("common.edit")}</Button>
@@ -596,59 +593,166 @@ export default function JobDetailPage() {
                     {/* Active Tab Content (Overview) */}
                     {activeTab === "overview" && (
                         <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                {/* Pipeline Visualization */}
-                                <Card className="lg:col-span-2 overflow-hidden">
-                                     <div className="flex items-center justify-between mb-8">
-                                        <div>
-                                            <h3 className="text-sm font-bold text-[#212121]  tracking-tight">{tr("jobDetail.recruitmentPipeline")}</h3>
-                                            <p className="text-[10px] font-bold text-[#9E9E9E]   mt-0.5">{tr("jobDetail.distRounds")}</p>
+                            {/* One two-column layout for the whole tab rather than two separate three-column
+                                rows. The wide charts stack in the main column and the narrow summaries stack
+                                in the rail beside them, so each column ends where its own content ends and
+                                neither leaves a gap waiting for the other. items-start stops the two from
+                                stretching to a shared height. */}
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                                <div className="lg:col-span-2 space-y-6">
+                                    <Card className="overflow-hidden">
+                                         <div className="flex items-center justify-between mb-6">
+                                            <div>
+                                                <h3 className="text-sm font-bold text-[#212121]  tracking-tight">{tr("jobDetail.recruitmentPipeline")}</h3>
+                                                <p className="text-[10px] font-bold text-[#9E9E9E]   mt-0.5">{tr("jobDetail.distRounds")}</p>
+                                            </div>
+                                            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#FAFAFA] border border-[#E0E0E0] rounded-[4px]">
+                                                <span className="w-2 h-2 rounded-full bg-[#1976D2]"></span>
+                                                <span className="text-[10px] font-bold text-[#4F4F4F]  tracking-tight">{totalCandidates} {tr("jobDetail.total")}</span>
+                                            </div>
                                         </div>
-                                        <div className="flex items-center gap-1.5 px-2.5 py-1 bg-[#FAFAFA] border border-[#E0E0E0] rounded-[4px]">
-                                            <span className="w-2 h-2 rounded-full bg-[#1976D2]"></span>
-                                            <span className="text-[10px] font-bold text-[#4F4F4F]  tracking-tight">{totalCandidates} {tr("jobDetail.total")}</span>
+
+                                        <div className="h-[300px] w-full">
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <BarChart data={pipelineData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E0E0E0" />
+                                                    <XAxis 
+                                                        dataKey="name" 
+                                                        axisLine={false} 
+                                                        tickLine={false} 
+                                                        tick={{ fontSize: 10, fontWeight: 700, fill: '#757575' }} 
+                                                        dy={10}
+                                                    />
+                                                    <YAxis 
+                                                        axisLine={false} 
+                                                        tickLine={false} 
+                                                        tick={{ fontSize: 10, fontWeight: 700, fill: '#BDBDBD' }}
+                                                    />
+                                                    <RechartsTooltip 
+                                                        cursor={{ fill: '#FAFAFA' }}
+                                                        content={({ active, payload }) => {
+                                                            if (active && payload && payload.length) {
+                                                                return (
+                                                                    <div className="bg-[#212121] border border-[#263238] rounded-[4px] p-3 shadow-xl">
+                                                                        <p className="text-[10px] font-bold text-[#9E9E9E]   leading-none mb-1">{payload[0].payload.name}</p>
+                                                                        <p className="text-xs font-bold text-white">{tr("jobDetail.nCandidates", { count: payload[0].value as number })}</p>
+                                                                    </div>
+                                                                );
+                                                            }
+                                                            return null;
+                                                        }}
+                                                    />
+                                                    <Bar dataKey="count" radius={[6, 6, 0, 0]} barSize={40}>
+                                                        {pipelineData.map((entry, index) => (
+                                                            <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "#1976D2" : "#42A5F5"} fillOpacity={1 - (index * 0.1)} />
+                                                        ))}
+                                                    </Bar>
+                                                </BarChart>
+                                            </ResponsiveContainer>
                                         </div>
+                                    </Card>
+
+                                    {/* The donut is narrow and the trend is wide, so they keep the 1:2 split
+                                        they had before, now nested inside the main column. */}
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6 items-start">
+                                    <Card>
+                                        <h3 className="text-[15px] font-bold text-[#212121]">{tr("jobDetail.matchScoreMix")}</h3>
+                                        <p className="text-[12.5px] text-[#757575] mt-0.5 mb-3">{tr("jobDetail.aiFitPipeline")}</p>
+                                        {scoreTotal === 0 ? (
+                                            <div className="flex flex-col items-center justify-center text-center py-10">
+                                                <div className="w-12 h-12 rounded-[4px] bg-[#F5F6F8] text-[#757575] flex items-center justify-center mb-3">
+                                                    <i className="mdi mdi-chart-donut text-2xl" />
+                                                </div>
+                                                <p className="text-[13px] text-[#757575]">{tr("jobDetail.noScoredCandidates")}</p>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div className="relative h-[170px]">
+                                                    <ResponsiveContainer width="100%" height="100%">
+                                                        <PieChart>
+                                                            <Pie data={scoreBuckets} dataKey="value" nameKey="name" innerRadius={54} outerRadius={78} paddingAngle={2} stroke="none">
+                                                                {scoreBuckets.map((b) => <Cell key={b.name} fill={b.color} />)}
+                                                            </Pie>
+                                                        </PieChart>
+                                                    </ResponsiveContainer>
+                                                    <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                                                        <span className={`text-[26px] font-semibold text-[#212121] leading-none ${jetbrainsMono.className}`}>{scoreTotal}</span>
+                                                        <span className="text-[11px] text-[#757575] mt-1">{tr("jobDetail.candidatesLower")}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="mt-4 space-y-2">
+                                                    {scoreBuckets.map((b) => (
+                                                        <div key={b.name} className="flex items-center gap-2">
+                                                            <span className="w-2.5 h-2.5 rounded-[3px]" style={{ background: b.color }} />
+                                                            <span className="text-[12.5px] text-[#424242] flex-1">{b.name}</span>
+                                                            <span className={`text-[12.5px] font-semibold text-[#212121] ${jetbrainsMono.className}`}>{b.value}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </>
+                                        )}
+                                    </Card>
+                                    <Card className="lg:col-span-1 xl:col-span-2">
+                                        <h3 className="text-[15px] font-bold text-[#212121]">{tr("jobDetail.applicationsOverTime")}</h3>
+                                        <p className="text-[12.5px] text-[#757575] mt-0.5 mb-3">{tr("jobDetail.last14Days")}</p>
+                                        {!hasTimeData ? (
+                                            <div className="flex flex-col items-center justify-center text-center py-14">
+                                                <div className="w-12 h-12 rounded-[4px] bg-[#F5F6F8] text-[#757575] flex items-center justify-center mb-3">
+                                                    <i className="mdi mdi-chart-line text-2xl" />
+                                                </div>
+                                                <p className="text-[13px] text-[#757575]">{tr("jobDetail.noApplicationsWindow")}</p>
+                                            </div>
+                                        ) : (
+                                            <div className="h-[200px] w-full">
+                                                <ResponsiveContainer width="100%" height="100%">
+                                                    <AreaChart data={appsByDay} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                                        <defs>
+                                                            <linearGradient id="appsArea" x1="0" y1="0" x2="0" y2="1">
+                                                                <stop offset="0%" stopColor="#1976D2" stopOpacity={0.28} />
+                                                                <stop offset="100%" stopColor="#1976D2" stopOpacity={0} />
+                                                            </linearGradient>
+                                                        </defs>
+                                                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E0E0E0" />
+                                                        <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 600, fill: '#757575' }} interval={1} dy={8} />
+                                                        <YAxis axisLine={false} tickLine={false} allowDecimals={false} tick={{ fontSize: 10, fontWeight: 600, fill: '#BDBDBD' }} />
+                                                        <RechartsTooltip
+                                                            cursor={{ stroke: '#1976D2', strokeWidth: 1, strokeDasharray: '4 4' }}
+                                                            content={({ active, payload }) => {
+                                                                if (active && payload && payload.length) {
+                                                                    return (
+                                                                        <div className="bg-[#1E2A38] rounded-[4px] px-3 py-2 shadow-xl">
+                                                                            <p className="text-[10px] font-semibold text-[#9E9E9E] leading-none mb-1">{payload[0].payload.label}</p>
+                                                                            <p className="text-[12.5px] font-semibold text-white">{tr("jobDetail.nApplicants", { count: payload[0].value as number })}</p>
+                                                                        </div>
+                                                                    );
+                                                                }
+                                                                return null;
+                                                            }}
+                                                        />
+                                                        <Area type="monotone" dataKey="count" stroke="#1976D2" strokeWidth={2.5} fill="url(#appsArea)" dot={false} activeDot={{ r: 4, fill: '#1976D2' }} />
+                                                    </AreaChart>
+                                                </ResponsiveContainer>
+                                            </div>
+                                        )}
+                                    </Card>
                                     </div>
 
-                                    <div className="h-[300px] w-full">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <BarChart data={pipelineData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E0E0E0" />
-                                                <XAxis 
-                                                    dataKey="name" 
-                                                    axisLine={false} 
-                                                    tickLine={false} 
-                                                    tick={{ fontSize: 10, fontWeight: 700, fill: '#757575' }} 
-                                                    dy={10}
-                                                />
-                                                <YAxis 
-                                                    axisLine={false} 
-                                                    tickLine={false} 
-                                                    tick={{ fontSize: 10, fontWeight: 700, fill: '#BDBDBD' }}
-                                                />
-                                                <RechartsTooltip 
-                                                    cursor={{ fill: '#FAFAFA' }}
-                                                    content={({ active, payload }) => {
-                                                        if (active && payload && payload.length) {
-                                                            return (
-                                                                <div className="bg-[#212121] border border-[#263238] rounded-[4px] p-3 shadow-xl">
-                                                                    <p className="text-[10px] font-bold text-[#9E9E9E]   leading-none mb-1">{payload[0].payload.name}</p>
-                                                                    <p className="text-xs font-bold text-white">{tr("jobDetail.nCandidates", { count: payload[0].value as number })}</p>
-                                                                </div>
-                                                            );
-                                                        }
-                                                        return null;
-                                                    }}
-                                                />
-                                                <Bar dataKey="count" radius={[6, 6, 0, 0]} barSize={40}>
-                                                    {pipelineData.map((entry, index) => (
-                                                        <Cell key={`cell-${index}`} fill={index % 2 === 0 ? "#1976D2" : "#42A5F5"} fillOpacity={1 - (index * 0.1)} />
-                                                    ))}
-                                                </Bar>
-                                            </BarChart>
-                                        </ResponsiveContainer>
+                                    {/* A full-width strip closing the main column rather than a block in the rail. It
+                                        reads as a conclusion drawn from the charts above it, and put here it is what
+                                        makes the two columns finish together: in the rail it left roughly 300px of
+                                        empty space beside it, and laid out wide its two sentences need fewer lines. */}
+                                    <div className="rounded-[4px] px-6 py-5 shadow-[0_10px_24px_rgba(25,118,210,0.3)] flex items-center gap-4" style={{ background: "linear-gradient(135deg,#6E63E6,#1565C0)" }}>
+                                        <div className="w-10 h-10 rounded-[4px] bg-white/15 flex items-center justify-center text-white shrink-0">
+                                            <i className="mdi mdi-trending-up text-white" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <h4 className="text-[15px] font-bold text-white tracking-tight">{tr("jobDetail.quickInsight")}</h4>
+                                            <p className="text-white/80 text-[11px] font-medium leading-relaxed mt-0.5">
+                                                {tr("jobDetail.quickInsightPre")} <strong>{pipelineData.length > 0 ? pipelineData.reduce((prev, current) => (prev.count > current.count) ? prev : current).name : tr("jobDetail.initialStage")}</strong> {tr("jobDetail.quickInsightPost")}
+                                            </p>
+                                        </div>
                                     </div>
-                                </Card>
+                                </div>
 
                                 {/* Summary Sidebar */}
                                 <div className="space-y-6">
@@ -680,104 +784,7 @@ export default function JobDetailPage() {
                                             ))}
                                         </div>
                                     </Card>
-
-                                    <div className="rounded-[4px] p-6 shadow-[0_10px_24px_rgba(25,118,210,0.3)]" style={{ background: "linear-gradient(135deg,#6E63E6,#1565C0)" }}>
-                                        <div className="w-10 h-10 rounded-[4px] bg-white/15 flex items-center justify-center text-white mb-4">
-                                            <i className="mdi mdi-trending-up text-white" />
-                                        </div>
-                                        <h4 className="text-[15px] font-bold text-white tracking-tight">{tr("jobDetail.quickInsight")}</h4>
-                                        <p className="text-white/80 text-[11px] font-medium leading-relaxed mt-1">
-                                            {tr("jobDetail.quickInsightPre")} <strong>{pipelineData.length > 0 ? pipelineData.reduce((prev, current) => (prev.count > current.count) ? prev : current).name : tr("jobDetail.initialStage")}</strong> {tr("jobDetail.quickInsightPost")}
-                                        </p>
-                                    </div>
                                 </div>
-                            </div>
-
-                            {/* Extra insights: match-score mix + applications over time */}
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                                {/* Match-score distribution donut */}
-                                <Card>
-                                    <h3 className="text-[15px] font-bold text-[#212121]">{tr("jobDetail.matchScoreMix")}</h3>
-                                    <p className="text-[12.5px] text-[#757575] mt-0.5 mb-3">{tr("jobDetail.aiFitPipeline")}</p>
-                                    {scoreTotal === 0 ? (
-                                        <div className="flex flex-col items-center justify-center text-center py-10">
-                                            <div className="w-12 h-12 rounded-[4px] bg-[#F5F6F8] text-[#757575] flex items-center justify-center mb-3">
-                                                <i className="mdi mdi-chart-donut text-2xl" />
-                                            </div>
-                                            <p className="text-[13px] text-[#757575]">{tr("jobDetail.noScoredCandidates")}</p>
-                                        </div>
-                                    ) : (
-                                        <>
-                                            <div className="relative h-[170px]">
-                                                <ResponsiveContainer width="100%" height="100%">
-                                                    <PieChart>
-                                                        <Pie data={scoreBuckets} dataKey="value" nameKey="name" innerRadius={54} outerRadius={78} paddingAngle={2} stroke="none">
-                                                            {scoreBuckets.map((b) => <Cell key={b.name} fill={b.color} />)}
-                                                        </Pie>
-                                                    </PieChart>
-                                                </ResponsiveContainer>
-                                                <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                                    <span className={`text-[26px] font-semibold text-[#212121] leading-none ${jetbrainsMono.className}`}>{scoreTotal}</span>
-                                                    <span className="text-[11px] text-[#757575] mt-1">{tr("jobDetail.candidatesLower")}</span>
-                                                </div>
-                                            </div>
-                                            <div className="mt-4 space-y-2">
-                                                {scoreBuckets.map((b) => (
-                                                    <div key={b.name} className="flex items-center gap-2">
-                                                        <span className="w-2.5 h-2.5 rounded-[3px]" style={{ background: b.color }} />
-                                                        <span className="text-[12.5px] text-[#424242] flex-1">{b.name}</span>
-                                                        <span className={`text-[12.5px] font-semibold text-[#212121] ${jetbrainsMono.className}`}>{b.value}</span>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </>
-                                    )}
-                                </Card>
-
-                                {/* Applications over time (area) */}
-                                <Card className="lg:col-span-2">
-                                    <h3 className="text-[15px] font-bold text-[#212121]">{tr("jobDetail.applicationsOverTime")}</h3>
-                                    <p className="text-[12.5px] text-[#757575] mt-0.5 mb-3">{tr("jobDetail.last14Days")}</p>
-                                    {!hasTimeData ? (
-                                        <div className="flex flex-col items-center justify-center text-center py-14">
-                                            <div className="w-12 h-12 rounded-[4px] bg-[#F5F6F8] text-[#757575] flex items-center justify-center mb-3">
-                                                <i className="mdi mdi-chart-line text-2xl" />
-                                            </div>
-                                            <p className="text-[13px] text-[#757575]">{tr("jobDetail.noApplicationsWindow")}</p>
-                                        </div>
-                                    ) : (
-                                        <div className="h-[200px] w-full">
-                                            <ResponsiveContainer width="100%" height="100%">
-                                                <AreaChart data={appsByDay} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                                    <defs>
-                                                        <linearGradient id="appsArea" x1="0" y1="0" x2="0" y2="1">
-                                                            <stop offset="0%" stopColor="#1976D2" stopOpacity={0.28} />
-                                                            <stop offset="100%" stopColor="#1976D2" stopOpacity={0} />
-                                                        </linearGradient>
-                                                    </defs>
-                                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E0E0E0" />
-                                                    <XAxis dataKey="label" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 600, fill: '#757575' }} interval={1} dy={8} />
-                                                    <YAxis axisLine={false} tickLine={false} allowDecimals={false} tick={{ fontSize: 10, fontWeight: 600, fill: '#BDBDBD' }} />
-                                                    <RechartsTooltip
-                                                        cursor={{ stroke: '#1976D2', strokeWidth: 1, strokeDasharray: '4 4' }}
-                                                        content={({ active, payload }) => {
-                                                            if (active && payload && payload.length) {
-                                                                return (
-                                                                    <div className="bg-[#1E2A38] rounded-[4px] px-3 py-2 shadow-xl">
-                                                                        <p className="text-[10px] font-semibold text-[#9E9E9E] leading-none mb-1">{payload[0].payload.label}</p>
-                                                                        <p className="text-[12.5px] font-semibold text-white">{tr("jobDetail.nApplicants", { count: payload[0].value as number })}</p>
-                                                                    </div>
-                                                                );
-                                                            }
-                                                            return null;
-                                                        }}
-                                                    />
-                                                    <Area type="monotone" dataKey="count" stroke="#1976D2" strokeWidth={2.5} fill="url(#appsArea)" dot={false} activeDot={{ r: 4, fill: '#1976D2' }} />
-                                                </AreaChart>
-                                            </ResponsiveContainer>
-                                        </div>
-                                    )}
-                                </Card>
                             </div>
                         </div>
                     )}
@@ -1102,7 +1109,6 @@ export default function JobDetailPage() {
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4 text-right">
-                                                    <Button variant="secondary" size="sm">{tr("jobDetail.track")}</Button>
                                                 </td>
                                             </tr>
                                         ))}
@@ -1239,9 +1245,6 @@ export default function JobDetailPage() {
                                                         {new Date(app.applied_at).toLocaleDateString()}
                                                     </td>
                                                     <td className="px-6 py-4 text-right">
-                                                        <button className="text-[#E0E0E0] hover:text-[#1976D2] transition-colors">
-                                                            <i className="mdi mdi-arrow-right text-lg" />
-                                                        </button>
                                                     </td>
                                                 </tr>
                                             ))}

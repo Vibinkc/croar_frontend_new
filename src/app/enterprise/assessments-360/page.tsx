@@ -262,13 +262,6 @@ export default function X360Dashboard() {
                                     {/* Status (desktop) */}
                                     <div className="hidden md:flex items-center">{statusBadge(cycle.status)}</div>
 
-                                    {/* Actions */}
-                                    <div className="flex items-center justify-end">
-                                        <button className="inline-flex items-center gap-1.5 h-8 px-3 rounded-[4px] bg-white border border-[#E0E0E0] text-[#424242] text-[12px] font-semibold hover:bg-[#212121] hover:text-white hover:border-[#212121] transition-colors">
-                                            {tr("payroll.manage")}
-                                            <i className="mdi mdi-trending-up text-[15px]" />
-                                        </button>
-                                    </div>
                                 </div>
                             ))}
                         </div>

@@ -1074,30 +1074,6 @@ export default function ProfileSourcingPage() {
 
                         {/* Modal Body */}
                         <div className="flex-1 flex overflow-hidden">
-                            {/* Left Sidebar */}
-                            <div className="w-56 bg-[#FAFAFA] border-r border-[#E0E0E0] p-4 space-y-1">
-                                {[
-                                    { id: "general", label: tr("sourcingIndex.filterGeneral"), icon: Users },
-                                    { id: "location", label: tr("sourcingIndex.filterLocations"), icon: MapPin },
-                                    { id: "job", label: tr("sourcingIndex.filterJob"), icon: Briefcase },
-                                    { id: "company", label: tr("sourcingIndex.filterCompany"), icon: Building },
-                                    { id: "industry", label: tr("sourcingIndex.filterIndustry"), icon: Trophy },
-                                    { id: "funding", label: tr("sourcingIndex.filterFunding"), icon: DollarSign },
-                                    { id: "skills", label: tr("sourcingIndex.filterSkills"), icon: Code },
-                                    { id: "power", label: tr("sourcingIndex.filterPower"), icon: Zap }
-                                ].map((tab) => (
-                                    <button
-                                        key={tab.id}
-                                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-xs transition-all ${tab.id === "general"
-                                                ? "bg-white text-[#1976D2] shadow-sm border border-[#E0E0E0]/80"
-                                                : "text-[#616161] hover:text-[#263238]"
-                                            }`}
-                                    >
-                                        <tab.icon className={`w-4 h-4 ${tab.id === "general" ? "text-[#1976D2]" : "text-[#9E9E9E]"}`} />
-                                        {tab.label}
-                                    </button>
-                                ))}
-                            </div>
 
                             {/* Right Settings */}
                             <div className="flex-1 p-8 space-y-6 overflow-y-auto custom-scrollbar">

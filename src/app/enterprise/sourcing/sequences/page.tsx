@@ -6,7 +6,7 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ReferenceLine, ResponsiveContai
 import { useAuth } from "@/context/AuthContext";
 import { useI18n } from "@/context/I18nContext";
 import { API_BASE_URL } from "@/lib/api-config";
-import { Search, Filter, Plus, Loader2, Mail, MoreHorizontal, X, ChevronDown, Zap, Reply, ThumbsUp, Send } from "@/components/icons";
+import { Search, Plus, Loader2, Mail, MoreHorizontal, X, ChevronDown, Zap, Reply, ThumbsUp, Send } from "@/components/icons";
 import ConnectMailbox from "@/components/sourcing/ConnectMailbox";
 import { useAutoFocus } from "@/hooks/useAutoFocus";
 
@@ -168,7 +168,6 @@ export default function SequencesPage() {
                     <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#9E9E9E]" />
                     <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t("sequences.searchPlaceholder")} className="w-full h-11 pl-10 pr-4 rounded-[4px] border border-[#E0E0E0] bg-white text-[13px] outline-none focus:border-[#1976D2] focus:ring-2 focus:ring-[#1976D2]/15" />
                 </div>
-                <button className="h-11 px-4 rounded-[4px] border border-[#E0E0E0] bg-white text-[13px] font-semibold text-[#424242] hover:bg-[#FAFAFA] flex items-center gap-2"><Filter className="w-4 h-4 text-[#1976D2]" /> {t("sequences.allOwners")}</button>
             </div>
 
             <div className="bg-white rounded-[4px] border border-[#E0E0E0] shadow-sm overflow-x-auto">

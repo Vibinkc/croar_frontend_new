@@ -602,9 +602,6 @@ export default function PublicJobPage() {
                         {t("candidate.poweredBy")} <span className="text-[#1976D2] font-semibold">Croar</span>
                     </p>
                     <div className="flex items-center gap-6 text-[#9E9E9E] text-[12.5px] font-medium">
-                        <button type="button" className="hover:text-[#1976D2] transition-colors">{t("candidate.privacy")}</button>
-                        <button type="button" className="hover:text-[#1976D2] transition-colors">{t("candidate.terms")}</button>
-                        <button type="button" className="hover:text-[#1976D2] transition-colors">{t("candidate.contact")}</button>
                     </div>
                 </div>
             </footer>

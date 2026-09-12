@@ -21,6 +21,11 @@ interface Activity {
     created_at: string;
 }
 
+/** Activity entries shown at once. Five keeps this column near the height of the pipeline chart
+ *  it sits beside; a job with months of history used to stretch the row and leave the chart
+ *  floating above a large empty space. */
+const ACTIVITY_PAGE_SIZE = 5;
+
 function initials(name?: string): string {
     if (!name) return "?";
     const p = name.trim().split(/\s+/);
@@ -73,6 +78,10 @@ export default function JobOwnershipPanel({
     const [ownerId, setOwnerId] = useState<string>(owner?.id || "");
     const [collabIds, setCollabIds] = useState<string[]>(collaborators.map((c) => c.id));
     const [saving, setSaving] = useState(false);
+    // The activity list used to render every entry, which on a long-running job made this column
+    // taller than the pipeline chart beside it and left a dead gap under the chart. Five at a
+    // time keeps the two columns roughly level whatever the history looks like.
+    const [activityPage, setActivityPage] = useState(1);
 
     const loadActivity = useCallback(async () => {
         if (!token) return;
@@ -80,7 +89,12 @@ export default function JobOwnershipPanel({
             const res = await fetch(`${BACKEND_URL}/api/v1/enterprise/jobs/${jobId}/activity`, {
                 headers: { Authorization: `Bearer ${token}` },
             });
-            if (res.ok) setActivity(await res.json());
+            if (res.ok) {
+                setActivity(await res.json());
+                // A reassign prepends new entries, so go back to the newest page rather than
+                // leaving the reader on a page that now holds different rows.
+                setActivityPage(1);
+            }
         } catch {
             /* ignore */
         }
@@ -138,6 +152,10 @@ export default function JobOwnershipPanel({
         () => activity.find((a) => a.action === "viewed")?.actor_name,
         [activity],
     );
+
+    const activityPages = Math.max(1, Math.ceil(activity.length / ACTIVITY_PAGE_SIZE));
+    // Guard against a page that no longer exists — the list can shrink between loads.
+    const currentActivityPage = Math.min(activityPage, activityPages);
 
     return (
         <div className="bg-white rounded-[4px] border border-[#E0E0E0] p-5">
@@ -205,20 +223,53 @@ export default function JobOwnershipPanel({
                 {activity.length === 0 ? (
                     <p className="text-[12px] text-[#9E9E9E]">{tr("jobs.noActivity")}</p>
                 ) : (
-                    <div className="space-y-3">
-                        {activity.map((a) => (
-                            <div key={a.id} className="flex gap-2.5">
-                                <Avatar name={a.actor_name || undefined} size={22} />
-                                <div className="min-w-0 flex-1">
-                                    <p className="text-[12px] text-[#424242] leading-snug">
-                                        <span className="font-semibold text-[#212121]">{a.actor_name || "Someone"}</span>{" "}
-                                        {actionLabel(a)}
-                                    </p>
-                                    <p className="text-[10.5px] text-[#9E9E9E]">{relTime(a.created_at)}</p>
+                    <>
+                        <div className="space-y-3">
+                            {activity
+                                .slice((currentActivityPage - 1) * ACTIVITY_PAGE_SIZE, currentActivityPage * ACTIVITY_PAGE_SIZE)
+                                .map((a) => (
+                                    <div key={a.id} className="flex gap-2.5">
+                                        <Avatar name={a.actor_name || undefined} size={22} />
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-[12px] text-[#424242] leading-snug">
+                                                <span className="font-semibold text-[#212121]">{a.actor_name || "Someone"}</span>{" "}
+                                                {actionLabel(a)}
+                                            </p>
+                                            <p className="text-[10.5px] text-[#9E9E9E]">{relTime(a.created_at)}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                        </div>
+                        {activityPages > 1 && (
+                            <div className="mt-3 pt-3 border-t border-[#F5F6F8] flex items-center justify-between gap-2">
+                                <span className="text-[11px] text-[#9E9E9E] tabular-nums">
+                                    {(currentActivityPage - 1) * ACTIVITY_PAGE_SIZE + 1}–
+                                    {Math.min(currentActivityPage * ACTIVITY_PAGE_SIZE, activity.length)}{" "}
+                                    {tr("pipeline.ofLabel")} {activity.length}
+                                </span>
+                                <div className="flex items-center gap-1.5">
+                                    <button
+                                        type="button"
+                                        onClick={() => setActivityPage((p) => Math.max(1, p - 1))}
+                                        disabled={currentActivityPage <= 1}
+                                        aria-label={tr("pipeline.previous")}
+                                        className="h-7 px-2 rounded-[4px] bg-white border border-[#E0E0E0] text-[11.5px] font-semibold text-[#424242] hover:bg-[#F5F6F8] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        {tr("pipeline.previous")}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setActivityPage((p) => Math.min(activityPages, p + 1))}
+                                        disabled={currentActivityPage >= activityPages}
+                                        aria-label={tr("pipeline.next")}
+                                        className="h-7 px-2 rounded-[4px] bg-white border border-[#E0E0E0] text-[11.5px] font-semibold text-[#424242] hover:bg-[#F5F6F8] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                    >
+                                        {tr("pipeline.next")}
+                                    </button>
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                        )}
+                    </>
                 )}
             </div>
 

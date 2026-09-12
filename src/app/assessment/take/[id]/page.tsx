@@ -11,7 +11,6 @@ import {
   ChevronLeft, 
   Play, 
   Send, 
-  HelpCircle, 
   Info, 
   Code2, 
   CheckCircle2, 
@@ -472,9 +471,6 @@ export default function CandidateAssessmentPage() {
               <Timer className="w-4 h-4" />
               <span className="font-mono font-black text-sm">{formatTime(timeLeft)}</span>
             </div>
-            <button className="text-slate-500 hover:text-white transition-colors">
-              <HelpCircle className="w-5 h-5" />
-            </button>
           </div>
         </header>
 

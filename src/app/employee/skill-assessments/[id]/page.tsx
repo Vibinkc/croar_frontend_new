@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Editor from "@monaco-editor/react";
 import {
-  Timer, ChevronRight, ChevronLeft, Play, Send, HelpCircle, Info, Code2,
+  Timer, ChevronRight, ChevronLeft, Play, Send, Info, Code2,
   CheckCircle2, AlertCircle, Clock, Layout, Terminal, Activity,
 } from "@/components/icons";
 import { meApi, type SkillAssessmentDetail, type SkillQuestion } from "@/utils/payroll/api";
@@ -217,7 +217,6 @@ export default function EmployeeSkillAssessmentTake() {
               <Timer className="w-4 h-4" />
               <span className="font-mono font-black text-sm">{fmt(timeLeft)}</span>
             </div>
-            <button className="text-slate-500 hover:text-white transition-colors"><HelpCircle className="w-5 h-5" /></button>
           </div>
         </header>
 
